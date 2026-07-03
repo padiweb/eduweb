@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ isset($title) ? $title . ' — SiManS' : 'SiManS' }}</title>
+    <title>{{ $title ?? 'Dashboard' }} — SiManS</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full bg-gray-950 text-white antialiased">
 
-<div class="flex h-full">
+<div class="flex h-full min-h-screen">
 
     {{-- ===== SIDEBAR ===== --}}
     <aside id="sidebar"
@@ -22,116 +22,131 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/>
                 </svg>
             </div>
-            <div>
+            <div class="min-w-0">
                 <p class="font-bold text-white text-sm leading-tight">SiManS</p>
-                <p class="text-xs text-gray-400 truncate max-w-[140px]">{{ auth()->user()->school->name }}</p>
+                <p class="text-xs text-gray-400 truncate">{{ auth()->user()->school->name }}</p>
             </div>
         </div>
 
         {{-- Navigation --}}
-        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
             @php $role = auth()->user()->role; @endphp
 
-            {{-- Beranda --}}
             <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="home">
                 Beranda
             </x-sidebar-link>
 
             {{-- ── SISWA ── --}}
             @if($role === 'siswa')
-                <x-sidebar-section label="Akademik"/>
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Akademik</p>
+                </div>
                 <x-sidebar-link href="{{ route('siswa.dashboard') }}" :active="request()->routeIs('siswa.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="qrcode">
+                <x-sidebar-link href="{{ route('siswa.attendance.history') }}" :active="request()->routeIs('siswa.attendance.*')" icon="qrcode">
                     Absensi
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="book">
+                <x-sidebar-link href="#" :active="false" icon="book">
                     Tugas
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="chart-bar">
+                <x-sidebar-link href="#" :active="false" icon="chart-bar">
                     Nilai
                 </x-sidebar-link>
-                <x-sidebar-section label="Informasi"/>
-                <x-sidebar-link href="#" icon="bell">
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Informasi</p>
+                </div>
+                <x-sidebar-link href="#" :active="false" icon="bell">
                     Pengumuman
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="credit-card">
+                <x-sidebar-link href="#" :active="false" icon="credit-card">
                     Status SPP
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="shield">
+                <x-sidebar-link href="#" :active="false" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
             @endif
 
             {{-- ── GURU / WALI KELAS ── --}}
             @if(in_array($role, ['guru', 'wali_kelas']))
-                <x-sidebar-section label="Kelas"/>
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kelas</p>
+                </div>
                 <x-sidebar-link href="{{ route('guru.dashboard') }}" :active="request()->routeIs('guru.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="clipboard">
+                <x-sidebar-link href="{{ route('guru.attendance.index') }}" :active="request()->routeIs('guru.attendance.*')" icon="clipboard">
                     Absensi Siswa
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="book">
+                <x-sidebar-link href="#" :active="false" icon="book">
                     Tugas & Nilai
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="journal">
+                <x-sidebar-link href="#" :active="false" icon="journal">
                     Jurnal Mengajar
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="calendar">
+                <x-sidebar-link href="#" :active="false" icon="calendar">
                     Jadwal
                 </x-sidebar-link>
-                <x-sidebar-section label="Kehadiran"/>
-                <x-sidebar-link href="#" icon="camera">
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kehadiran</p>
+                </div>
+                <x-sidebar-link href="#" :active="false" icon="camera">
                     Absensi Saya
                 </x-sidebar-link>
             @endif
 
             {{-- ── KESISWAAN ── --}}
             @if($role === 'kesiswaan')
-                <x-sidebar-section label="Kesiswaan"/>
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kesiswaan</p>
+                </div>
                 <x-sidebar-link href="{{ route('kesiswaan.dashboard') }}" :active="request()->routeIs('kesiswaan.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="shield">
+                <x-sidebar-link href="#" :active="false" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="clipboard">
+                <x-sidebar-link href="#" :active="false" icon="clipboard">
                     Rekap Absensi
                 </x-sidebar-link>
             @endif
 
             {{-- ── ADMIN ── --}}
             @if($role === 'admin')
-                <x-sidebar-section label="Manajemen"/>
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Manajemen</p>
+                </div>
                 <x-sidebar-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="users">
+                <x-sidebar-link href="#" :active="false" icon="users">
                     Data Pengguna
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="school">
+                <x-sidebar-link href="#" :active="false" icon="school">
                     Data Kelas
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="book">
+                <x-sidebar-link href="#" :active="false" icon="book">
                     Mata Pelajaran
                 </x-sidebar-link>
-                <x-sidebar-section label="Monitoring"/>
-                <x-sidebar-link href="#" icon="clipboard">
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Monitoring</p>
+                </div>
+                <x-sidebar-link href="#" :active="false" icon="clipboard">
                     Rekap Absensi
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="shield">
+                <x-sidebar-link href="#" :active="false" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="credit-card">
+                <x-sidebar-link href="#" :active="false" icon="credit-card">
                     Data SPP
                 </x-sidebar-link>
-                <x-sidebar-section label="Sistem"/>
-                <x-sidebar-link href="#" icon="cog">
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
+                </div>
+                <x-sidebar-link href="#" :active="false" icon="cog">
                     Pengaturan Sekolah
                 </x-sidebar-link>
-                <x-sidebar-link href="#" icon="log">
+                <x-sidebar-link href="#" :active="false" icon="log">
                     Audit Log
                 </x-sidebar-link>
             @endif
@@ -139,8 +154,8 @@
 
         {{-- User card --}}
         <div class="p-3 border-t border-white/5">
-            <div class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group">
-                <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-700 flex items-center justify-center text-xs font-bold text-emerald-400 flex-shrink-0">
+            <div class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-700/50 flex items-center justify-center text-xs font-bold text-emerald-400 flex-shrink-0">
                     {{ auth()->user()->initials }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -160,28 +175,21 @@
     </aside>
 
     {{-- ===== MAIN AREA ===== --}}
-    <div class="flex-1 flex flex-col min-h-0 lg:pl-64">
+    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
 
         {{-- Topbar --}}
         <header class="sticky top-0 z-40 h-14 bg-gray-900/95 backdrop-blur border-b border-white/5 flex items-center gap-4 px-4 lg:px-6">
 
             {{-- Hamburger mobile --}}
-            <button id="sidebar-toggle" class="lg:hidden text-gray-400 hover:text-white">
+            <button id="sidebar-toggle" class="lg:hidden text-gray-400 hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
                 </svg>
             </button>
 
-            {{-- Breadcrumb --}}
-            <div class="flex items-center gap-2 text-sm text-gray-400">
-                @isset($breadcrumb)
-                    {{ $breadcrumb }}
-                @else
-                    <span class="text-white font-medium">{{ $title ?? 'Dashboard' }}</span>
-                @endisset
-            </div>
+            {{-- Page title --}}
+            <span class="text-sm font-semibold text-white">{{ $title ?? 'Dashboard' }}</span>
 
-            {{-- Spacer --}}
             <div class="flex-1"></div>
 
             {{-- Tanggal --}}
@@ -199,20 +207,36 @@
         </header>
 
         {{-- Page Content --}}
-        <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main class="flex-1 p-4 lg:p-6">
 
-            {{-- Flash messages --}}
             @if(session('success'))
-                <div class="mb-4 flex items-center gap-3 bg-emerald-900/40 border border-emerald-700/50 text-emerald-300 px-4 py-3 rounded-xl text-sm">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="mb-5 flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                     {{ session('success') }}
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="mb-4 flex items-center gap-3 bg-red-900/40 border border-red-700/50 text-red-300 px-4 py-3 rounded-xl text-sm">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                <div class="mb-5 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                    </svg>
                     {{ session('error') }}
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="mb-5 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+                    <ul class="space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li class="flex items-center gap-2">
+                                <span class="w-1 h-1 rounded-full bg-red-400 flex-shrink-0"></span>
+                                {{ $error }}
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 
@@ -225,12 +249,18 @@
 <div id="sidebar-overlay" class="fixed inset-0 z-40 bg-black/60 hidden lg:hidden"></div>
 
 <script>
-    const sidebar        = document.getElementById('sidebar');
-    const overlay        = document.getElementById('sidebar-overlay');
-    const toggleBtn      = document.getElementById('sidebar-toggle');
+    const sidebar   = document.getElementById('sidebar');
+    const overlay   = document.getElementById('sidebar-overlay');
+    const toggleBtn = document.getElementById('sidebar-toggle');
 
-    function openSidebar()  { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
-    function closeSidebar() { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+    function openSidebar()  {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    }
+    function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    }
 
     toggleBtn?.addEventListener('click', openSidebar);
     overlay?.addEventListener('click', closeSidebar);

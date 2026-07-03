@@ -10,7 +10,8 @@ class School extends Model
     protected $fillable = [
         'name', 'slug', 'address', 'phone', 'email', 'logo_path', 'npsn',
         'latitude', 'longitude', 'attendance_radius_meters',
-        'school_start_time', 'late_threshold_time',
+        'school_start_time', 'late_threshold_time', 'attendance_close_time',
+        'school_program_years',
         'feature_attendance', 'feature_assignments', 'feature_grades',
         'feature_violations', 'feature_journal', 'feature_prakerin',
         'feature_payment_info', 'feature_cbt_integration',
@@ -18,19 +19,21 @@ class School extends Model
     ];
 
     protected $casts = [
-        'latitude'                  => 'decimal:8',
-        'longitude'                 => 'decimal:8',
-        'active_until'              => 'date',
-        'is_active'                 => 'boolean',
-        'feature_attendance'        => 'boolean',
-        'feature_assignments'       => 'boolean',
-        'feature_grades'            => 'boolean',
-        'feature_violations'        => 'boolean',
-        'feature_journal'           => 'boolean',
-        'feature_prakerin'          => 'boolean',
-        'feature_payment_info'      => 'boolean',
-        'feature_cbt_integration'   => 'boolean',
+        'latitude'                => 'decimal:8',
+        'longitude'               => 'decimal:8',
+        'active_until'            => 'date',
+        'is_active'               => 'boolean',
+        'feature_attendance'      => 'boolean',
+        'feature_assignments'     => 'boolean',
+        'feature_grades'          => 'boolean',
+        'feature_violations'      => 'boolean',
+        'feature_journal'         => 'boolean',
+        'feature_prakerin'        => 'boolean',
+        'feature_payment_info'    => 'boolean',
+        'feature_cbt_integration' => 'boolean',
     ];
+
+    // ── Relasi ─────────────────────────────────────────────────────────────
 
     public function users(): HasMany
     {
@@ -52,6 +55,13 @@ class School extends Model
         return $this->hasMany(Classroom::class);
     }
 
+    public function violationCategories(): HasMany
+    {
+        return $this->hasMany(ViolationCategory::class);
+    }
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+
     public function activeAcademicYear(): ?AcademicYear
     {
         return $this->academicYears()->where('is_active', true)->first();
@@ -61,5 +71,24 @@ class School extends Model
     {
         $column = 'feature_' . $feature;
         return (bool) ($this->{$column} ?? false);
+    }
+
+    /**
+     * Total semester berdasarkan program sekolah.
+     * 3 tahun = 6 semester, 4 tahun = 8 semester.
+     */
+    public function getTotalSemestersAttribute(): int
+    {
+        return $this->school_program_years * 2;
+    }
+
+    /**
+     * Apakah sekarang dalam jam aktif absensi?
+     */
+    public function isAttendanceOpen(): bool
+    {
+        $now = now()->format('H:i:s');
+        return $now >= $this->school_start_time
+            && $now <= $this->attendance_close_time;
     }
 }

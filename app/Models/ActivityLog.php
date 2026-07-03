@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
-    public $timestamps = false; // hanya pakai created_at manual
+    // Immutable — tidak ada updated_at
+    public $timestamps = false;
 
     protected $fillable = [
         'school_id', 'user_id', 'user_name', 'user_role',
