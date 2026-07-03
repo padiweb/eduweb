@@ -203,7 +203,7 @@
         showState('submitting');
 
         try {
-            const res  = await fetch('/siswa/absensi/submit', {
+            const res = await fetch('{{ route("siswa.attendance.submit") }}', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
                 body:    JSON.stringify({ token: TOKEN, ...gps }),

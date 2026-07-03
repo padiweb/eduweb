@@ -11,6 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+
+        // Trust semua proxy — wajib untuk ngrok dan reverse proxy lainnya
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role'          => \App\Http\Middleware\CheckRole::class,
             'school.active' => \App\Http\Middleware\CheckSchoolActive::class,

@@ -41,7 +41,7 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Akademik</p>
                 </div>
-                <x-sidebar-link href="{{ route('siswa.dashboard') }}" :active="request()->routeIs('siswa.dashboard')" icon="chart">
+                <x-sidebar-link href="{{ route('siswa.siswa.dashboard') }}" :active="request()->routeIs('siswa.siswa.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('siswa.attendance.history') }}" :active="request()->routeIs('siswa.attendance.*')" icon="qrcode">

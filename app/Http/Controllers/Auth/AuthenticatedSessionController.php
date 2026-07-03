@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
             'guru'       => route('guru.dashboard'),
             'wali_kelas' => route('guru.dashboard'),
             'kesiswaan'  => route('kesiswaan.dashboard'),
-            'siswa'      => route('siswa.dashboard'),
+            'siswa'      => route('siswa.siswa.dashboard'),
             default      => route('dashboard'),
         };
     }

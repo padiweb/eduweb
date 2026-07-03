@@ -98,7 +98,7 @@ class AttendanceController extends Controller
         $qrImage = null;
 
         if ($plainToken) {
-            $qrUrl   = url('/absensi/scan?token=' . $plainToken);
+            $qrUrl = config('app.url') . '/absensi/scan?token=' . $plainToken;
             $qrImage = base64_encode(
                 QrCode::format('svg')->size(300)->errorCorrection('H')->generate($qrUrl)
             );
@@ -126,7 +126,7 @@ class AttendanceController extends Controller
             $teacher
         );
 
-        $qrUrl   = url('/absensi/scan?token=' . $result['plain_token']);
+        $qrUrl = config('app.url') . '/absensi/scan?token=' . $plainToken;
         $qrImage = base64_encode(
             QrCode::format('svg')->size(300)->errorCorrection('H')->generate($qrUrl)
         );
