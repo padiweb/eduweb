@@ -23,7 +23,7 @@
                         <div class="flex-1">
                             <p class="text-sm font-medium text-white">{{ $session->classroom->name }}</p>
                             <p class="text-xs text-gray-500 mt-0.5">
-                                Dibuka oleh {{ $session->openedBy->name }} · {{ $session->created_at->format('H:i') }}
+                                Dibuka oleh {{ $session->openedBy?->name ?? 'Sistem (Otomatis)' }} · {{ $session->created_at->format('H:i') }}
                             </p>
                         </div>
                         <span class="text-sm text-gray-400">

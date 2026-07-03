@@ -143,7 +143,8 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
                 </div>
-                <x-sidebar-link href="#" :active="false" icon="cog">
+                <x-sidebar-link href="{{ route('admin.settings.school') }}" 
+                    :active="request()->routeIs('admin.settings.*')" icon="cog">
                     Pengaturan Sekolah
                 </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="log">

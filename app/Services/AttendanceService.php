@@ -16,13 +16,8 @@ use Illuminate\Support\Facades\Log;
 
 class AttendanceService
 {
-    // ── 1. BUKA / PERBARUI SESI (per kelas per hari) ───────────────────────
+    // ── 1. BUKA / PERBARUI SESI ────────────────────────────────────────────
 
-    /**
-     * Buka sesi absensi untuk satu kelas hari ini.
-     * Jika sesi sudah ada, perbarui QR token-nya saja.
-     * Kembalikan plain token — hanya ada sekali, tidak disimpan di DB.
-     */
     public function openOrRefreshSession(
         School    $school,
         Classroom $classroom,
@@ -36,7 +31,6 @@ class AttendanceService
         $tokenHash  = hash('sha256', $plainToken);
 
         if ($session) {
-            // Sesi sudah ada — perbarui QR saja
             $session->update([
                 'opened_by'       => $openedBy->id,
                 'qr_token_hash'   => $tokenHash,
@@ -45,17 +39,17 @@ class AttendanceService
                 'closed_at'       => null,
             ]);
         } else {
-            // Buka sesi baru
             $session = AttendanceSession::create([
                 'school_id'        => $school->id,
                 'classroom_id'     => $classroom->id,
                 'opened_by'        => $openedBy->id,
+                'auto_created'     => false,
                 'session_date'     => today(),
                 'qr_token_hash'    => $tokenHash,
                 'qr_generated_at'  => now(),
-                'open_time'        => $school->school_start_time,  // e.g. "06:30:00"
-                'close_time'       => $school->attendance_close_time, // e.g. "08:00:00"
-                'late_after'       => $school->late_threshold_time, // e.g. "07:15:00"
+                'open_time'        => $school->school_start_time,
+                'close_time'       => $school->attendance_close_time,
+                'late_after'       => $school->late_threshold_time,
                 'school_latitude'  => $school->latitude,
                 'school_longitude' => $school->longitude,
                 'radius_meters'    => $school->attendance_radius_meters,
@@ -68,12 +62,24 @@ class AttendanceService
         ];
     }
 
-    // ── 2. PROSES SCAN SISWA ───────────────────────────────────────────────
+    // ── 2. REFRESH TOKEN (untuk QR update) ─────────────────────────────────
 
-    /**
-     * Proses scan QR dari siswa.
-     * Validasi berlapis: token → GPS → duplikat → jam.
-     */
+    public function refreshToken(AttendanceSession $session): string
+    {
+        $plainToken = Str::random(40);
+        $tokenHash  = hash('sha256', $plainToken);
+
+        $session->update([
+            'qr_token_hash'   => $tokenHash,
+            'qr_generated_at' => now(),
+            'is_closed'       => false,
+        ]);
+
+        return $plainToken;
+    }
+
+    // ── 3. PROSES SCAN SISWA ───────────────────────────────────────────────
+
     public function processStudentScan(
         string $plainToken,
         User   $student,
@@ -83,7 +89,6 @@ class AttendanceService
         string $ipAddress,
         string $userAgent
     ): Attendance {
-        // ── Cari sesi dari token ──
         $tokenHash = hash('sha256', $plainToken);
         $session   = AttendanceSession::where('qr_token_hash', $tokenHash)
             ->whereDate('session_date', today())
@@ -97,7 +102,6 @@ class AttendanceService
             throw new \RuntimeException('Sesi absensi sudah ditutup.');
         }
 
-        // ── Validasi: siswa terdaftar di kelas ini ──
         $isEnrolled = $session->classroom->students()
             ->where('users.id', $student->id)
             ->exists();
@@ -106,7 +110,6 @@ class AttendanceService
             throw new \RuntimeException('Kamu tidak terdaftar di kelas ini.');
         }
 
-        // ── Validasi: belum absen hari ini ──
         $alreadyScanned = Attendance::where('session_id', $session->id)
             ->where('student_id', $student->id)
             ->exists();
@@ -115,7 +118,6 @@ class AttendanceService
             throw new \RuntimeException('Kamu sudah melakukan absensi hari ini.');
         }
 
-        // ── Validasi: GPS dalam radius sekolah ──
         $distance = $this->calculateDistance(
             $latitude, $longitude,
             (float) $session->school_latitude,
@@ -136,13 +138,10 @@ class AttendanceService
             throw new \RuntimeException('Sinyal GPS terlalu lemah. Pindah ke area terbuka dan coba lagi.');
         }
 
-        // ── Tentukan status berdasar jam scan ──
         $now        = now()->format('H:i:s');
-        $isLateScan = $now > $session->close_time;  // scan setelah jam tutup
+        $isLateScan = $now > $session->close_time;
         $status     = $now > $session->late_after ? 'terlambat' : 'hadir';
 
-        // Jika scan di luar jam aktif (sebelum open atau setelah close)
-        // tetap catat tapi flag sebagai late_scan untuk proses pelanggaran
         if ($now < $session->open_time) {
             throw new \RuntimeException(
                 'Absensi belum dibuka. Scan QR mulai jam ' .
@@ -171,7 +170,6 @@ class AttendanceService
                 'is_late_scan'         => $isLateScan,
             ]);
 
-            // Jika scan di luar jam → buat pelanggaran otomatis
             if ($isLateScan) {
                 $this->createLateViolation($attendance, $session);
             }
@@ -180,13 +178,8 @@ class AttendanceService
         });
     }
 
-    // ── 3. INPUT MANUAL OLEH GURU ──────────────────────────────────────────
+    // ── 4. INPUT MANUAL GURU ───────────────────────────────────────────────
 
-    /**
-     * Guru input absen manual untuk siswa tertentu.
-     * Bisa untuk: HP rusak, sakit, izin, alfa, koreksi.
-     * Alasan wajib diisi — masuk audit trail.
-     */
     public function manualEntry(
         AttendanceSession $session,
         int               $studentId,
@@ -199,10 +192,7 @@ class AttendanceService
             $session, $studentId, $status, $reason, $teacher, $permissionReason
         ) {
             $attendance = Attendance::updateOrCreate(
-                [
-                    'session_id' => $session->id,
-                    'student_id' => $studentId,
-                ],
+                ['session_id' => $session->id, 'student_id' => $studentId],
                 [
                     'school_id'         => $session->school_id,
                     'status'            => $status,
@@ -215,37 +205,31 @@ class AttendanceService
                 ]
             );
 
-            // Log ke activity_logs
             $this->logActivity('attendance.manual_entry', $teacher, [
-                'session_id'  => $session->id,
-                'student_id'  => $studentId,
-                'status'      => $status,
-                'reason'      => $reason,
+                'session_id' => $session->id,
+                'student_id' => $studentId,
+                'status'     => $status,
+                'reason'     => $reason,
             ]);
 
             return $attendance;
         });
     }
 
-    // ── 4. ROLL CALL / VALIDASI GURU ───────────────────────────────────────
+    // ── 5. ROLL CALL ───────────────────────────────────────────────────────
 
-    /**
-     * Guru lakukan roll call — panggil nama siswa satu per satu.
-     * Siswa yang tidak hadir secara fisik diubah ke alfa.
-     * Guru mana saja yang mengajar di kelas itu bisa melakukan ini.
-     */
     public function conductRollCall(
         AttendanceSession $session,
-        array             $presentStudentIds,   // ID siswa yang terbukti hadir fisik
-        array             $absentStudentIds,    // ID siswa yang tidak hadir saat dipanggil
+        array             $presentStudentIds,
+        array             $absentStudentIds,
         User              $teacher,
         ?string           $subjectName = null,
         ?string           $notes = null
     ): void {
         DB::transaction(function () use (
-            $session, $presentStudentIds, $absentStudentIds, $teacher, $subjectName, $notes
+            $session, $presentStudentIds, $absentStudentIds,
+            $teacher, $subjectName, $notes
         ) {
-            // Siswa yang scan tapi ternyata tidak hadir fisik → ubah ke alfa
             foreach ($absentStudentIds as $studentId) {
                 Attendance::updateOrCreate(
                     ['session_id' => $session->id, 'student_id' => $studentId],
@@ -261,7 +245,6 @@ class AttendanceService
                 );
             }
 
-            // Siswa yang belum absen sama sekali → alfa
             $enrolledIds  = $session->classroom->students()->pluck('users.id');
             $recordedIds  = $session->attendances()->pluck('student_id');
             $stillMissing = $enrolledIds->diff($recordedIds)->diff(collect($presentStudentIds));
@@ -280,7 +263,6 @@ class AttendanceService
                 ]);
             }
 
-            // Catat record validasi
             AttendanceValidation::create([
                 'session_id'   => $session->id,
                 'teacher_id'   => $teacher->id,
@@ -289,7 +271,6 @@ class AttendanceService
                 'notes'        => $notes,
             ]);
 
-            // Update flag roll_call_done jika belum
             if (! $session->roll_call_done) {
                 $session->update([
                     'roll_call_done' => true,
@@ -298,19 +279,10 @@ class AttendanceService
                 ]);
             }
         });
-
-        $this->logActivity('attendance.roll_call', $teacher, [
-            'session_id'      => $session->id,
-            'present_count'   => count($presentStudentIds),
-            'absent_count'    => count($absentStudentIds),
-        ]);
     }
 
-    // ── 5. AUTO-ALFA saat sesi ditutup ─────────────────────────────────────
+    // ── 6. AUTO-ALFA SAAT SESI DITUTUP ────────────────────────────────────
 
-    /**
-     * Saat sesi ditutup, siswa yang tidak absen sama sekali → alfa otomatis.
-     */
     public function autoAlfaOnClose(AttendanceSession $session): void
     {
         $enrolledIds = $session->classroom->students()->pluck('users.id');
@@ -326,18 +298,15 @@ class AttendanceService
                     'status'          => 'alfa',
                     'scanned_at'      => null,
                     'is_manual_entry' => true,
-                    'entry_reason'    => 'Tidak absen — otomatis saat sesi ditutup',
+                    'entry_reason'    => 'Otomatis alfa saat sesi ditutup',
                     'entry_at'        => now(),
                 ]);
             }
         });
     }
 
-    // ── 6. REKAP PER SISWA ─────────────────────────────────────────────────
+    // ── 7. REKAP ───────────────────────────────────────────────────────────
 
-    /**
-     * Rekap absensi siswa per bulan.
-     */
     public function getMonthlyRecap(User $student, int $month, int $year): array
     {
         $records = Attendance::where('student_id', $student->id)
@@ -354,15 +323,12 @@ class AttendanceService
             'terlambat' => $records->where('status', 'terlambat')->count(),
             'izin'      => $records->where('status', 'izin')->count(),
             'sakit'     => $records->where('status', 'sakit')->count(),
-            'alfa'       => $records->where('status', 'alfa')->count(),
+            'alfa'      => $records->where('status', 'alfa')->count(),
             'total'     => $records->count(),
             'records'   => $records,
         ];
     }
 
-    /**
-     * Rekap absensi siswa per semester.
-     */
     public function getSemesterRecap(User $student, int $academicYearId): array
     {
         $records = Attendance::where('student_id', $student->id)
@@ -394,17 +360,17 @@ class AttendanceService
                 ->where('name', 'Keterlambatan')
                 ->first();
 
-            if (! $category) return; // Kategori belum dibuat admin
+            if (! $category) return;
 
             Violation::create([
-                'school_id'    => $session->school_id,
-                'student_id'   => $attendance->student_id,
-                'category_id'  => $category->id,
-                'reported_by'  => $session->opened_by,
-                'incident_date'=> today(),
-                'description'  => 'Absensi di luar jam yang ditentukan (scan: ' . now()->format('H:i') . ')',
-                'points'       => $category->default_points,
-                'source'       => 'auto_attendance',
+                'school_id'     => $session->school_id,
+                'student_id'    => $attendance->student_id,
+                'category_id'   => $category->id,
+                'reported_by'   => $session->opened_by ?? 1,
+                'incident_date' => today(),
+                'description'   => 'Absensi terlambat (scan: ' . now()->format('H:i') . ')',
+                'points'        => $category->default_points,
+                'source'        => 'auto_attendance',
             ]);
 
             $attendance->update(['violation_created' => true]);
@@ -414,9 +380,6 @@ class AttendanceService
         }
     }
 
-    /**
-     * Haversine formula — jarak dua koordinat GPS dalam meter.
-     */
     public function calculateDistance(
         float $lat1, float $lon1,
         float $lat2, float $lon2

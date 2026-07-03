@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Attendance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\AttendanceSession;
 use App\Models\AcademicYear;
+use App\Models\Classroom;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -13,7 +15,47 @@ class StudentScanController extends Controller
 {
     public function __construct(private AttendanceService $service) {}
 
-    // ── Landing page setelah scan QR ───────────────────────────────────────
+    // ── Landing page scan QR berbasis kelas (URL permanen) ──────────────────
+    // URL: /absensi/kelas/{classroom}?token=xxx
+    // Token dipakai validasi sekali scan, bukan untuk identifikasi kelas
+
+    public function landingByClassroom(Request $request, Classroom $classroom)
+    {
+        $token = $request->query('token');
+
+        if (! $token) {
+            abort(404, 'QR Code tidak valid.');
+        }
+
+        if (! auth()->check()) {
+            session()->put('scan_token_after_login', $token);
+            session()->put('scan_classroom_after_login', $classroom->id);
+            return redirect()->route('login')
+                ->with('info', 'Silakan login terlebih dahulu untuk melakukan absensi.');
+        }
+
+        $student = auth()->user();
+
+        if ($student->role !== 'siswa') {
+            abort(403, 'Halaman ini hanya untuk siswa.');
+        }
+
+        // Cek apakah siswa sudah absen hari ini
+        $todaySession = AttendanceSession::where('classroom_id', $classroom->id)
+            ->whereDate('session_date', today())
+            ->first();
+
+        $alreadyAbsent = false;
+        if ($todaySession) {
+            $alreadyAbsent = Attendance::where('session_id', $todaySession->id)
+                ->where('student_id', $student->id)
+                ->exists();
+        }
+
+        return view('attendance.student.scan', compact('token', 'classroom', 'alreadyAbsent', 'todaySession'));
+    }
+
+    // ── Landing page scan QR lama (fallback) ────────────────────────────────
 
     public function landing(Request $request)
     {
@@ -33,10 +75,14 @@ class StudentScanController extends Controller
             abort(403, 'Halaman ini hanya untuk siswa.');
         }
 
-        return view('attendance.student.scan', compact('token'));
+        $classroom    = null;
+        $alreadyAbsent = false;
+        $todaySession  = null;
+
+        return view('attendance.student.scan', compact('token', 'classroom', 'alreadyAbsent', 'todaySession'));
     }
 
-    // ── Submit absensi dari siswa (AJAX) ───────────────────────────────────
+    // ── Submit absensi siswa (AJAX) ──────────────────────────────────────────
 
     public function submit(Request $request)
     {
@@ -101,30 +147,25 @@ class StudentScanController extends Controller
         }
     }
 
-    // ── Riwayat absensi siswa ──────────────────────────────────────────────
+    // ── Riwayat absensi siswa ────────────────────────────────────────────────
 
     public function history(Request $request)
     {
         $student = auth()->user();
 
-        // Default: bulan & tahun ini
         $month = (int) $request->get('bulan', now()->month);
         $year  = (int) $request->get('tahun', now()->year);
 
-        // Rekap bulan ini
         $recap = $this->service->getMonthlyRecap($student, $month, $year);
 
-        // Data per hari untuk ditampilkan
         $dailyRecords = $recap['records']->mapWithKeys(function ($att) {
             return [$att->session->session_date->format('Y-m-d') => $att];
         });
 
-        // Daftar tahun ajaran untuk filter semester
         $academicYears = AcademicYear::where('school_id', $student->school_id)
             ->orderByDesc('name')
             ->get();
 
-        // Rekap semester jika dipilih
         $semesterRecap = null;
         if ($request->has('semester_id') && $request->semester_id) {
             $semesterRecap = $this->service->getSemesterRecap(
@@ -133,27 +174,19 @@ class StudentScanController extends Controller
             );
         }
 
-        // Generate daftar bulan untuk dropdown filter
         $months = collect(range(1, 12))->map(fn($m) => [
             'value' => $m,
             'label' => \Carbon\Carbon::create()->month($m)->translatedFormat('F'),
         ]);
 
-        // Generate daftar tahun (5 tahun ke belakang)
         $years = collect(range(now()->year, now()->year - 5))->map(fn($y) => [
             'value' => $y,
             'label' => (string) $y,
         ]);
 
         return view('attendance.student.history', compact(
-            'recap',
-            'dailyRecords',
-            'academicYears',
-            'semesterRecap',
-            'months',
-            'years',
-            'month',
-            'year'
+            'recap', 'dailyRecords', 'academicYears',
+            'semesterRecap', 'months', 'years', 'month', 'year'
         ));
     }
 }

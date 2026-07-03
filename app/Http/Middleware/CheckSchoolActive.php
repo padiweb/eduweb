@@ -30,6 +30,12 @@ class CheckSchoolActive
                 ->withErrors(['email' => 'Masa aktif langganan sekolah telah berakhir.']);
         }
 
+        // Set timezone sesuai sekolah — penting untuk absensi
+        if ($school->timezone) {
+            config(['app.timezone' => $school->timezone]);
+            date_default_timezone_set($school->timezone);
+        }
+
         return $next($request);
     }
 }

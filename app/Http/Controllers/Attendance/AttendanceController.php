@@ -13,7 +13,7 @@ class AttendanceController extends Controller
 {
     public function __construct(private AttendanceService $service) {}
 
-    // ── Halaman utama — daftar kelas + status sesi hari ini ────────────────
+    // ── Halaman utama — daftar kelas + status sesi hari ini ─────────────────
 
     public function index()
     {
@@ -35,7 +35,7 @@ class AttendanceController extends Controller
         return view('attendance.index', compact('classrooms', 'todaySessions'));
     }
 
-    // ── Buka / perbarui sesi untuk satu kelas ──────────────────────────────
+    // ── Buka / refresh sesi manual (jika belum ada atau ingin refresh QR) ───
 
     public function openSession(Request $request)
     {
@@ -53,7 +53,7 @@ class AttendanceController extends Controller
 
         if (! $school->latitude || ! $school->longitude) {
             return back()->with('error',
-                'Koordinat GPS sekolah belum diatur. Hubungi admin untuk mengatur lokasi sekolah.'
+                'Koordinat GPS sekolah belum diatur. Hubungi admin.'
             );
         }
 
@@ -71,7 +71,47 @@ class AttendanceController extends Controller
         }
     }
 
-    // ── Halaman tampilkan QR + rekap real-time ─────────────────────────────
+    // ── Halaman QR per kelas (URL permanen yang bisa ditempel di kelas) ─────
+    // URL: /guru/absensi/kelas/{classroom}
+    // Sistem otomatis cari sesi aktif hari ini
+
+    public function showByClassroom(Classroom $classroom)
+    {
+        $teacher = auth()->user();
+
+        if ($classroom->school_id !== $teacher->school_id) {
+            abort(403);
+        }
+
+        // Cari sesi hari ini untuk kelas ini
+        $session = AttendanceSession::where('classroom_id', $classroom->id)
+            ->whereDate('session_date', today())
+            ->first();
+
+        // Jika belum ada sesi (misal scheduler belum jalan), buat otomatis
+        if (! $session) {
+            $result  = $this->service->openOrRefreshSession(
+                $teacher->school,
+                $classroom,
+                $teacher
+            );
+            $session     = $result['session'];
+            $plainToken  = $result['plain_token'];
+        } else {
+            // Refresh token untuk tampilkan QR terbaru
+            $result      = $this->service->openOrRefreshSession(
+                $teacher->school,
+                $classroom,
+                $teacher
+            );
+            $session     = $result['session'];
+            $plainToken  = $result['plain_token'];
+        }
+
+        return $this->renderSessionPage($session, $plainToken);
+    }
+
+    // ── Halaman QR per sesi ID ───────────────────────────────────────────────
 
     public function show(AttendanceSession $session)
     {
@@ -83,7 +123,6 @@ class AttendanceController extends Controller
 
         $plainToken = session()->pull('qr_plain_token_' . $session->id);
 
-        // Jika halaman di-refresh, buat token baru otomatis
         if (! $plainToken && $session->isActive()) {
             $result     = $this->service->openOrRefreshSession(
                 $teacher->school,
@@ -94,11 +133,20 @@ class AttendanceController extends Controller
             $session    = $result['session'];
         }
 
+        return $this->renderSessionPage($session, $plainToken);
+    }
+
+    // ── Render halaman sesi (shared antara show() dan showByClassroom()) ────
+
+    private function renderSessionPage(AttendanceSession $session, ?string $plainToken)
+    {
         $qrUrl   = null;
         $qrImage = null;
 
         if ($plainToken) {
-            $qrUrl = config('app.url') . '/absensi/scan?token=' . $plainToken;
+            // URL QR berdasarkan classroom — permanen, tidak berubah tiap hari
+            // Token di-resolve server saat siswa scan
+            $qrUrl   = config('app.url') . '/absensi/kelas/' . $session->classroom_id . '?token=' . $plainToken;
             $qrImage = base64_encode(
                 QrCode::format('svg')->size(300)->errorCorrection('H')->generate($qrUrl)
             );
@@ -110,7 +158,7 @@ class AttendanceController extends Controller
         return view('attendance.show', compact('session', 'qrImage', 'qrUrl', 'recap', 'plainToken'));
     }
 
-    // ── Perbarui QR (AJAX) ─────────────────────────────────────────────────
+    // ── Perbarui QR (AJAX) ───────────────────────────────────────────────────
 
     public function refreshQr(AttendanceSession $session)
     {
@@ -126,7 +174,7 @@ class AttendanceController extends Controller
             $teacher
         );
 
-        $qrUrl = config('app.url') . '/absensi/scan?token=' . $plainToken;
+        $qrUrl   = config('app.url') . '/absensi/kelas/' . $session->classroom_id . '?token=' . $result['plain_token'];
         $qrImage = base64_encode(
             QrCode::format('svg')->size(300)->errorCorrection('H')->generate($qrUrl)
         );
@@ -137,7 +185,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // ── Rekap real-time (AJAX polling setiap 5 detik) ─────────────────────
+    // ── Rekap real-time (AJAX polling) ───────────────────────────────────────
 
     public function recap(AttendanceSession $session)
     {
@@ -153,7 +201,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // ── Input manual guru (AJAX) ───────────────────────────────────────────
+    // ── Input manual guru (AJAX) ─────────────────────────────────────────────
 
     public function manualEntry(AttendanceSession $session, Request $request)
     {
@@ -192,7 +240,7 @@ class AttendanceController extends Controller
         }
     }
 
-    // ── Roll call / validasi kehadiran fisik ───────────────────────────────
+    // ── Roll call / validasi kehadiran fisik ─────────────────────────────────
 
     public function rollCall(AttendanceSession $session, Request $request)
     {
@@ -230,7 +278,7 @@ class AttendanceController extends Controller
         }
     }
 
-    // ── Tutup sesi — siswa yang belum absen → alfa otomatis ───────────────
+    // ── Tutup sesi manual ────────────────────────────────────────────────────
 
     public function close(AttendanceSession $session)
     {
@@ -248,7 +296,7 @@ class AttendanceController extends Controller
             ->with('success', 'Sesi absensi ' . $session->classroom->name . ' ditutup.');
     }
 
-    // ── Private helper ─────────────────────────────────────────────────────
+    // ── Private helper ───────────────────────────────────────────────────────
 
     private function buildRecap(AttendanceSession $session): array
     {

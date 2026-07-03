@@ -16,6 +16,7 @@ class School extends Model
         'feature_violations', 'feature_journal', 'feature_prakerin',
         'feature_payment_info', 'feature_cbt_integration',
         'package', 'active_until', 'is_active',
+        'timezone',
     ];
 
     protected $casts = [
