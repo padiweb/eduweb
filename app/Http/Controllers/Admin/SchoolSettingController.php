@@ -55,6 +55,16 @@ class SchoolSettingController extends Controller
 
         $school->update($validated);
 
+        // Update sesi yang sedang aktif hari ini dengan jam baru
+        \App\Models\AttendanceSession::where('school_id', $school->id)
+            ->whereDate('session_date', today())
+            ->where('is_closed', false)
+            ->update([
+                'open_time'  => $validated['school_start_time'],
+                'late_after' => $validated['late_threshold_time'],
+                'close_time' => $validated['attendance_close_time'],
+            ]);
+
         // Set timezone langsung setelah disimpan
         config(['app.timezone' => $validated['timezone']]);
         date_default_timezone_set($validated['timezone']);

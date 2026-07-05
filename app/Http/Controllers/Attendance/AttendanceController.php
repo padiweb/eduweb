@@ -7,13 +7,14 @@ use App\Models\AttendanceSession;
 use App\Models\Classroom;
 use App\Services\AttendanceService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AttendanceController extends Controller
 {
     public function __construct(private AttendanceService $service) {}
 
-    // ── Halaman utama — daftar kelas + status sesi hari ini ─────────────────
+    // ── Daftar kelas + status sesi hari ini ────────────────────────────────
 
     public function index()
     {
@@ -35,7 +36,7 @@ class AttendanceController extends Controller
         return view('attendance.index', compact('classrooms', 'todaySessions'));
     }
 
-    // ── Buka / refresh sesi manual (jika belum ada atau ingin refresh QR) ───
+    // ── Buka / perbarui sesi ───────────────────────────────────────────────
 
     public function openSession(Request $request)
     {
@@ -47,106 +48,47 @@ class AttendanceController extends Controller
         $school    = $teacher->school;
         $classroom = Classroom::findOrFail($validated['classroom_id']);
 
-        if ($classroom->school_id !== $school->id) {
-            abort(403);
-        }
+        if ($classroom->school_id !== $school->id) abort(403);
 
         if (! $school->latitude || ! $school->longitude) {
-            return back()->with('error',
-                'Koordinat GPS sekolah belum diatur. Hubungi admin.'
-            );
+            return back()->with('error', 'Koordinat GPS sekolah belum diatur. Hubungi admin.');
         }
 
-        try {
-            $result = $this->service->openOrRefreshSession($school, $classroom, $teacher);
+        $result = $this->service->openOrRefreshSession($school, $classroom, $teacher);
 
-            session()->put('qr_plain_token_' . $result['session']->id, $result['plain_token']);
+        // Simpan token ke cache — satu sumber kebenaran
+        cache()->put(
+            "session_token_{$result['session']->id}",
+            $result['plain_token'],
+            now()->addHours(10)
+        );
 
-            return redirect()
-                ->route('guru.attendance.show', $result['session']->id)
-                ->with('success', 'Sesi absensi ' . $classroom->name . ' berhasil dibuka.');
-
-        } catch (\RuntimeException $e) {
-            return back()->with('error', $e->getMessage());
-        }
+        return redirect()
+            ->route('guru.attendance.show', $result['session']->id)
+            ->with('success', 'Sesi absensi ' . $classroom->name . ' berhasil dibuka.');
     }
 
-    // ── Halaman QR per kelas (URL permanen yang bisa ditempel di kelas) ─────
-    // URL: /guru/absensi/kelas/{classroom}
-    // Sistem otomatis cari sesi aktif hari ini
-
-    public function showByClassroom(Classroom $classroom)
-    {
-        $teacher = auth()->user();
-
-        if ($classroom->school_id !== $teacher->school_id) {
-            abort(403);
-        }
-
-        // Cari sesi hari ini untuk kelas ini
-        $session = AttendanceSession::where('classroom_id', $classroom->id)
-            ->whereDate('session_date', today())
-            ->first();
-
-        // Jika belum ada sesi (misal scheduler belum jalan), buat otomatis
-        if (! $session) {
-            $result  = $this->service->openOrRefreshSession(
-                $teacher->school,
-                $classroom,
-                $teacher
-            );
-            $session     = $result['session'];
-            $plainToken  = $result['plain_token'];
-        } else {
-            // Refresh token untuk tampilkan QR terbaru
-            $result      = $this->service->openOrRefreshSession(
-                $teacher->school,
-                $classroom,
-                $teacher
-            );
-            $session     = $result['session'];
-            $plainToken  = $result['plain_token'];
-        }
-
-        return $this->renderSessionPage($session, $plainToken);
-    }
-
-    // ── Halaman QR per sesi ID ───────────────────────────────────────────────
+    // ── Tampilkan QR — ambil token dari cache ──────────────────────────────
 
     public function show(AttendanceSession $session)
     {
         $teacher = auth()->user();
 
-        if ($session->school_id !== $teacher->school_id) {
-            abort(403);
-        }
+        if ($session->school_id !== $teacher->school_id) abort(403);
 
-        $plainToken = session()->pull('qr_plain_token_' . $session->id);
+        // Ambil token dari cache (satu sumber — sama dengan halaman cetak)
+        $plainToken = cache()->get("session_token_{$session->id}");
 
+        // Jika tidak ada di cache, generate token baru dan simpan ke cache
         if (! $plainToken && $session->isActive()) {
-            $result     = $this->service->openOrRefreshSession(
-                $teacher->school,
-                $session->classroom,
-                $teacher
-            );
-            $plainToken = $result['plain_token'];
-            $session    = $result['session'];
+            $plainToken = $this->generateAndCacheToken($session);
         }
 
-        return $this->renderSessionPage($session, $plainToken);
-    }
-
-    // ── Render halaman sesi (shared antara show() dan showByClassroom()) ────
-
-    private function renderSessionPage(AttendanceSession $session, ?string $plainToken)
-    {
         $qrUrl   = null;
         $qrImage = null;
 
         if ($plainToken) {
-            // URL QR berdasarkan classroom — permanen, tidak berubah tiap hari
-            // Token di-resolve server saat siswa scan
-            $qrUrl   = config('app.url') . '/absensi/kelas/' . $session->classroom_id . '?token=' . $plainToken;
+            $qrUrl   = config('app.url') . '/absensi/scan?token=' . $plainToken;
             $qrImage = base64_encode(
                 QrCode::format('svg')->size(300)->errorCorrection('H')->generate($qrUrl)
             );
@@ -158,23 +100,18 @@ class AttendanceController extends Controller
         return view('attendance.show', compact('session', 'qrImage', 'qrUrl', 'recap', 'plainToken'));
     }
 
-    // ── Perbarui QR (AJAX) ───────────────────────────────────────────────────
+    // ── Perbarui QR (AJAX) — update cache dan return QR baru ──────────────
 
     public function refreshQr(AttendanceSession $session)
     {
         $teacher = auth()->user();
 
-        if ($session->school_id !== $teacher->school_id) {
-            abort(403);
-        }
+        if ($session->school_id !== $teacher->school_id) abort(403);
 
-        $result  = $this->service->openOrRefreshSession(
-            $teacher->school,
-            $session->classroom,
-            $teacher
-        );
+        // Generate token baru, simpan ke cache (menggantikan yang lama)
+        $plainToken = $this->generateAndCacheToken($session);
 
-        $qrUrl   = config('app.url') . '/absensi/kelas/' . $session->classroom_id . '?token=' . $result['plain_token'];
+        $qrUrl   = config('app.url') . '/absensi/scan?token=' . $plainToken;
         $qrImage = base64_encode(
             QrCode::format('svg')->size(300)->errorCorrection('H')->generate($qrUrl)
         );
@@ -185,13 +122,11 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // ── Rekap real-time (AJAX polling) ───────────────────────────────────────
+    // ── Rekap real-time ────────────────────────────────────────────────────
 
     public function recap(AttendanceSession $session)
     {
-        if ($session->school_id !== auth()->user()->school_id) {
-            abort(403);
-        }
+        if ($session->school_id !== auth()->user()->school_id) abort(403);
 
         $session->load(['classroom.students', 'attendances.student']);
 
@@ -201,7 +136,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-    // ── Input manual guru (AJAX) ─────────────────────────────────────────────
+    // ── Input manual guru ──────────────────────────────────────────────────
 
     public function manualEntry(AttendanceSession $session, Request $request)
     {
@@ -240,15 +175,13 @@ class AttendanceController extends Controller
         }
     }
 
-    // ── Roll call / validasi kehadiran fisik ─────────────────────────────────
+    // ── Roll call ──────────────────────────────────────────────────────────
 
     public function rollCall(AttendanceSession $session, Request $request)
     {
         $teacher = auth()->user();
 
-        if ($session->school_id !== $teacher->school_id) {
-            abort(403);
-        }
+        if ($session->school_id !== $teacher->school_id) abort(403);
 
         $validated = $request->validate([
             'present_ids'   => ['nullable', 'array'],
@@ -259,44 +192,61 @@ class AttendanceController extends Controller
             'notes'         => ['nullable', 'string'],
         ]);
 
-        try {
-            $this->service->conductRollCall(
-                session:           $session,
-                presentStudentIds: $validated['present_ids'] ?? [],
-                absentStudentIds:  $validated['absent_ids'] ?? [],
-                teacher:           $teacher,
-                subjectName:       $validated['subject_name'] ?? null,
-                notes:             $validated['notes'] ?? null,
-            );
+        $this->service->conductRollCall(
+            session:           $session,
+            presentStudentIds: $validated['present_ids'] ?? [],
+            absentStudentIds:  $validated['absent_ids'] ?? [],
+            teacher:           $teacher,
+            subjectName:       $validated['subject_name'] ?? null,
+            notes:             $validated['notes'] ?? null,
+        );
 
-            return redirect()
-                ->route('guru.attendance.show', $session->id)
-                ->with('success', 'Roll call selesai. Data absensi telah diperbarui.');
-
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
-        }
+        return redirect()
+            ->route('guru.attendance.show', $session->id)
+            ->with('success', 'Roll call selesai. Data absensi telah diperbarui.');
     }
 
-    // ── Tutup sesi manual ────────────────────────────────────────────────────
+    // ── Tutup sesi ────────────────────────────────────────────────────────
 
     public function close(AttendanceSession $session)
     {
         $teacher = auth()->user();
 
-        if ($session->school_id !== $teacher->school_id) {
-            abort(403);
-        }
+        if ($session->school_id !== $teacher->school_id) abort(403);
 
         $this->service->autoAlfaOnClose($session);
         $session->close();
 
+        // Hapus token dari cache
+        cache()->forget("session_token_{$session->id}");
+
         return redirect()
             ->route('guru.attendance.index')
-            ->with('success', 'Sesi absensi ' . $session->classroom->name . ' ditutup.');
+            ->with('success', 'Sesi ' . $session->classroom->name . ' ditutup.');
     }
 
-    // ── Private helper ───────────────────────────────────────────────────────
+    // ── Private helpers ────────────────────────────────────────────────────
+
+    /**
+     * Generate token baru, update hash di DB, simpan plain ke cache.
+     * Satu fungsi ini yang jadi sumber kebenaran token.
+     */
+    private function generateAndCacheToken(AttendanceSession $session): string
+    {
+        $plainToken = Str::random(40);
+        $tokenHash  = hash('sha256', $plainToken);
+
+        $session->update([
+            'qr_token_hash'   => $tokenHash,
+            'qr_generated_at' => now(),
+            'is_closed'       => false,
+        ]);
+
+        // Simpan ke cache 10 jam — cukup untuk satu hari sekolah
+        cache()->put("session_token_{$session->id}", $plainToken, now()->addHours(10));
+
+        return $plainToken;
+    }
 
     private function buildRecap(AttendanceSession $session): array
     {
