@@ -34,7 +34,6 @@ Route::middleware(['auth', 'school.active'])->group(function () {
              Route::get('/dashboard', [DashboardController::class, 'admin'])
                   ->name('dashboard');
 
-             // Pengaturan sekolah
              Route::get('/pengaturan', [SchoolSettingController::class, 'index'])
                   ->name('settings.school');
 
@@ -109,9 +108,16 @@ Route::middleware(['auth', 'school.active'])->group(function () {
              Route::get('/dashboard', [DashboardController::class, 'siswa'])
                   ->name('siswa.dashboard');
 
+             // Halaman absensi siswa — GPS langsung dari dashboard (tanpa scan kamera)
+             Route::get('/absensi', function () {
+                 return view('attendance.student.absensi');
+             })->name('attendance.absensi');
+
+             // Submit absensi (AJAX)
              Route::post('/absensi/submit', [StudentScanController::class, 'submit'])
                   ->name('attendance.submit');
 
+             // Riwayat absensi
              Route::get('/absensi/riwayat', [StudentScanController::class, 'history'])
                   ->name('attendance.history');
          });

@@ -44,7 +44,8 @@
                 <x-sidebar-link href="{{ route('siswa.siswa.dashboard') }}" :active="request()->routeIs('siswa.siswa.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="{{ route('siswa.attendance.history') }}" :active="request()->routeIs('siswa.attendance.*')" icon="qrcode">
+                {{-- Absensi — mengarah ke halaman absensi langsung (GPS tanpa scan kamera) --}}
+                <x-sidebar-link href="{{ route('siswa.attendance.absensi') }}" :active="request()->routeIs('siswa.attendance.absensi') || request()->routeIs('siswa.attendance.*')" icon="qrcode">
                     Absensi
                 </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="book">
@@ -143,7 +144,7 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
                 </div>
-                <x-sidebar-link href="{{ route('admin.settings.school') }}" 
+                <x-sidebar-link href="{{ route('admin.settings.school') }}"
                     :active="request()->routeIs('admin.settings.*')" icon="cog">
                     Pengaturan Sekolah
                 </x-sidebar-link>
