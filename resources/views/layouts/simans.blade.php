@@ -148,6 +148,9 @@
                     :active="request()->routeIs('admin.settings.*')" icon="cog">
                     Pengaturan Sekolah
                 </x-sidebar-link>
+                <x-sidebar-link href="{{ route('admin.qr.index') }}" :active="request()->routeIs('admin.qr.*')" icon="qrcode">
+                    Kelola QR Kelas
+                </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="log">
                     Audit Log
                 </x-sidebar-link>

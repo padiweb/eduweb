@@ -6,121 +6,64 @@ use App\Http\Controllers\Attendance\AttendanceController;
 use App\Http\Controllers\Attendance\StudentScanController;
 use App\Http\Controllers\Attendance\ClassQrController;
 use App\Http\Controllers\Admin\SchoolSettingController;
+use App\Http\Controllers\Admin\QrManagementController;
 
-// ── Root ─────────────────────────────────────────────────────────────────────
 Route::get('/', fn() => redirect()->route('login'));
 
-// ── QR Scan via token (dari layar guru) ──────────────────────────────────────
 Route::get('/absensi/scan', [StudentScanController::class, 'landing'])
      ->name('attendance.scan.landing');
 
-// ── QR Permanen per kelas (ditempel di papan kelas) ──────────────────────────
 Route::get('/absensi/kelas/{slug}', [ClassQrController::class, 'scan'])
      ->name('attendance.class.scan');
 
-// ── Semua route butuh login ───────────────────────────────────────────────────
 Route::middleware(['auth', 'school.active'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // ─────────────────────────────────────────────────────────────────────────
     // ADMIN
-    // ─────────────────────────────────────────────────────────────────────────
-    Route::middleware('role:admin')
-         ->prefix('admin')
-         ->name('admin.')
-         ->group(function () {
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
 
-             Route::get('/dashboard', [DashboardController::class, 'admin'])
-                  ->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
 
-             Route::get('/pengaturan', [SchoolSettingController::class, 'index'])
-                  ->name('settings.school');
+        Route::get('/pengaturan', [SchoolSettingController::class, 'index'])->name('settings.school');
+        Route::put('/pengaturan', [SchoolSettingController::class, 'update'])->name('settings.school.update');
+        Route::post('/pengaturan/gps', [SchoolSettingController::class, 'updateGps'])->name('settings.school.gps');
 
-             Route::put('/pengaturan', [SchoolSettingController::class, 'update'])
-                  ->name('settings.school.update');
+        // Kelola QR Kelas — hanya admin
+        Route::get('/qr', [QrManagementController::class, 'index'])->name('qr.index');
+        Route::post('/qr/{classroom}/refresh', [QrManagementController::class, 'refreshToken'])->name('qr.refresh');
+    });
 
-             Route::post('/pengaturan/gps', [SchoolSettingController::class, 'updateGps'])
-                  ->name('settings.school.gps');
-         });
-
-    // ─────────────────────────────────────────────────────────────────────────
     // GURU / WALI KELAS / KESISWAAN / ADMIN
-    // ─────────────────────────────────────────────────────────────────────────
-    Route::middleware('role:guru,wali_kelas,kesiswaan,admin')
-         ->prefix('guru')
-         ->name('guru.')
-         ->group(function () {
+    Route::middleware('role:guru,wali_kelas,kesiswaan,admin')->prefix('guru')->name('guru.')->group(function () {
 
-             Route::get('/dashboard', [DashboardController::class, 'guru'])
-                  ->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'guru'])->name('dashboard');
 
-             Route::prefix('absensi')->name('attendance.')->group(function () {
+        Route::prefix('absensi')->name('attendance.')->group(function () {
+            Route::get('/', [AttendanceController::class, 'index'])->name('index');
+            Route::post('/buka', [AttendanceController::class, 'openSession'])->name('open');
+            Route::get('/sesi/{session}', [AttendanceController::class, 'show'])->name('show');
+            Route::post('/sesi/{session}/refresh-qr', [AttendanceController::class, 'refreshQr'])->name('refresh-qr');
+            Route::get('/sesi/{session}/rekap', [AttendanceController::class, 'recap'])->name('recap');
+            Route::post('/sesi/{session}/manual', [AttendanceController::class, 'manualEntry'])->name('manual');
+            Route::post('/sesi/{session}/roll-call', [AttendanceController::class, 'rollCall'])->name('roll-call');
+            Route::patch('/sesi/{session}/tutup', [AttendanceController::class, 'close'])->name('close');
+            Route::get('/kelas/{classroom}/cetak-qr', [ClassQrController::class, 'print'])->name('class.print-qr');
+        });
+    });
 
-                 Route::get('/', [AttendanceController::class, 'index'])
-                      ->name('index');
-
-                 Route::post('/buka', [AttendanceController::class, 'openSession'])
-                      ->name('open');
-
-                 Route::get('/sesi/{session}', [AttendanceController::class, 'show'])
-                      ->name('show');
-
-                 Route::post('/sesi/{session}/refresh-qr', [AttendanceController::class, 'refreshQr'])
-                      ->name('refresh-qr');
-
-                 Route::get('/sesi/{session}/rekap', [AttendanceController::class, 'recap'])
-                      ->name('recap');
-
-                 Route::post('/sesi/{session}/manual', [AttendanceController::class, 'manualEntry'])
-                      ->name('manual');
-
-                 Route::post('/sesi/{session}/roll-call', [AttendanceController::class, 'rollCall'])
-                      ->name('roll-call');
-
-                 Route::patch('/sesi/{session}/tutup', [AttendanceController::class, 'close'])
-                      ->name('close');
-
-                 Route::get('/kelas/{classroom}/cetak-qr', [ClassQrController::class, 'print'])
-                      ->name('class.print-qr');
-             });
-         });
-
-    // ─────────────────────────────────────────────────────────────────────────
     // KESISWAAN
-    // ─────────────────────────────────────────────────────────────────────────
-    Route::middleware('role:kesiswaan,admin')
-         ->prefix('kesiswaan')
-         ->name('kesiswaan.')
-         ->group(function () {
-             Route::get('/dashboard', [DashboardController::class, 'kesiswaan'])
-                  ->name('dashboard');
-         });
+    Route::middleware('role:kesiswaan,admin')->prefix('kesiswaan')->name('kesiswaan.')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'kesiswaan'])->name('dashboard');
+    });
 
-    // ─────────────────────────────────────────────────────────────────────────
     // SISWA
-    // ─────────────────────────────────────────────────────────────────────────
-    Route::middleware('role:siswa')
-         ->prefix('siswa')
-         ->name('siswa.')
-         ->group(function () {
-
-             Route::get('/dashboard', [DashboardController::class, 'siswa'])
-                  ->name('siswa.dashboard');
-
-             // Halaman absensi siswa — GPS langsung dari dashboard (tanpa scan kamera)
-             Route::get('/absensi', function () {
-                 return view('attendance.student.absensi');
-             })->name('attendance.absensi');
-
-             // Submit absensi (AJAX)
-             Route::post('/absensi/submit', [StudentScanController::class, 'submit'])
-                  ->name('attendance.submit');
-
-             // Riwayat absensi
-             Route::get('/absensi/riwayat', [StudentScanController::class, 'history'])
-                  ->name('attendance.history');
-         });
+    Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'siswa'])->name('siswa.dashboard');
+        Route::get('/absensi', fn() => view('attendance.student.absensi'))->name('attendance.absensi');
+        Route::post('/absensi/submit', [StudentScanController::class, 'submit'])->name('attendance.submit');
+        Route::get('/absensi/riwayat', [StudentScanController::class, 'history'])->name('attendance.history');
+    });
 });
 
 require __DIR__.'/auth.php';

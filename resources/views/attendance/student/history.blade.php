@@ -5,7 +5,7 @@
         <p class="text-gray-400 text-sm mt-1">{{ auth()->user()->name }} · NIS {{ auth()->user()->nis }}</p>
     </div>
 
-    {{-- ── Filter bulan / tahun ── --}}
+    {{-- Filter bulan / tahun --}}
     <form method="GET" class="flex flex-wrap items-center gap-3 mb-6">
         <select name="bulan"
                 class="bg-gray-900 border border-white/10 text-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
@@ -26,7 +26,6 @@
             Tampilkan
         </button>
 
-        {{-- Filter semester --}}
         @if($academicYears->count() > 0)
             <div class="ml-auto flex items-center gap-2">
                 <select name="semester_id"
@@ -42,18 +41,18 @@
         @endif
     </form>
 
-    {{-- ── Rekap semester (jika dipilih) ── --}}
+    {{-- Rekap semester --}}
     @if($semesterRecap)
         <div class="bg-gray-900 border border-emerald-500/20 rounded-xl p-5 mb-6">
             <h2 class="text-sm font-semibold text-white mb-4">Rekap Semester</h2>
             <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
                 @foreach([
-                    ['label' => 'Hadir', 'value' => $semesterRecap['hadir'], 'color' => 'emerald'],
-                    ['label' => 'Terlambat', 'value' => $semesterRecap['terlambat'], 'color' => 'amber'],
-                    ['label' => 'Izin', 'value' => $semesterRecap['izin'], 'color' => 'blue'],
-                    ['label' => 'Sakit', 'value' => $semesterRecap['sakit'], 'color' => 'purple'],
-                    ['label' => 'Alfa', 'value' => $semesterRecap['alfa'], 'color' => 'red'],
-                    ['label' => 'Kehadiran', 'value' => $semesterRecap['attendance_rate'] . '%', 'color' => 'emerald'],
+                    ['label' => 'Hadir',     'value' => $semesterRecap['hadir'],                        'color' => 'emerald'],
+                    ['label' => 'Terlambat', 'value' => $semesterRecap['terlambat'],                    'color' => 'amber'],
+                    ['label' => 'Izin',      'value' => $semesterRecap['izin'],                         'color' => 'blue'],
+                    ['label' => 'Sakit',     'value' => $semesterRecap['sakit'],                        'color' => 'purple'],
+                    ['label' => 'Alfa',      'value' => $semesterRecap['alfa'],                         'color' => 'red'],
+                    ['label' => 'Kehadiran', 'value' => $semesterRecap['attendance_rate'] . '%',        'color' => 'emerald'],
                 ] as $s)
                     <div class="bg-gray-800 rounded-xl p-3 text-center">
                         <p class="text-xl font-bold text-{{ $s['color'] }}-400">{{ $s['value'] }}</p>
@@ -64,14 +63,14 @@
         </div>
     @endif
 
-    {{-- ── Rekap bulan ini ── --}}
+    {{-- Rekap bulan --}}
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
         @foreach([
-            ['label' => 'Hadir', 'value' => $recap['hadir'], 'color' => 'emerald'],
+            ['label' => 'Hadir',     'value' => $recap['hadir'],     'color' => 'emerald'],
             ['label' => 'Terlambat', 'value' => $recap['terlambat'], 'color' => 'amber'],
-            ['label' => 'Izin', 'value' => $recap['izin'], 'color' => 'blue'],
-            ['label' => 'Sakit', 'value' => $recap['sakit'], 'color' => 'purple'],
-            ['label' => 'Alfa', 'value' => $recap['alfa'], 'color' => 'red'],
+            ['label' => 'Izin',      'value' => $recap['izin'],      'color' => 'blue'],
+            ['label' => 'Sakit',     'value' => $recap['sakit'],     'color' => 'purple'],
+            ['label' => 'Alfa',      'value' => $recap['alfa'],      'color' => 'red'],
         ] as $s)
             <div class="bg-gray-900 border border-white/5 rounded-xl p-4 text-center">
                 <p class="text-2xl font-bold text-{{ $s['color'] }}-400">{{ $s['value'] }}</p>
@@ -80,30 +79,50 @@
         @endforeach
     </div>
 
-    {{-- ── Daftar per hari ── --}}
+    {{-- Daftar per hari — terbaru di atas --}}
     <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
-        <div class="px-5 py-4 border-b border-white/5">
+        <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-white">
                 Detail Absensi —
                 {{ \Carbon\Carbon::create()->month($month)->translatedFormat('F') }} {{ $year }}
             </h2>
+            <span class="text-xs text-gray-500">{{ $recap['records']->count() }} hari</span>
         </div>
 
         @if($recap['records']->count() > 0)
             <div class="divide-y divide-white/5">
-                @foreach($recap['records'] as $att)
-                    <div class="flex items-center gap-4 px-5 py-3.5">
+                {{-- sortByDesc session_date agar terbaru di atas --}}
+                @foreach($recap['records']->sortByDesc(fn($att) => $att->session->session_date) as $att)
+                    @php
+                        $colorMap = [
+                            'hadir'     => 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+                            'terlambat' => 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+                            'izin'      => 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+                            'sakit'     => 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+                            'alfa'      => 'text-red-400 bg-red-500/10 border-red-500/20',
+                        ];
+                        $labelMap = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
+                        $isToday  = $att->session->session_date->isToday();
+                    @endphp
+                    <div class="flex items-center gap-4 px-5 py-3.5 {{ $isToday ? 'bg-emerald-500/5' : '' }}">
+
+                        {{-- Tanggal --}}
                         <div class="text-center w-12 flex-shrink-0">
-                            <p class="text-lg font-bold text-white">
+                            <p class="text-lg font-bold {{ $isToday ? 'text-emerald-400' : 'text-white' }}">
                                 {{ $att->session->session_date->format('d') }}
                             </p>
                             <p class="text-xs text-gray-500">
                                 {{ $att->session->session_date->translatedFormat('D') }}
                             </p>
                         </div>
+
+                        {{-- Info --}}
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm text-white">
+                            <p class="text-sm text-white flex items-center gap-2">
                                 {{ $att->session->session_date->translatedFormat('l, d F Y') }}
+                                @if($isToday)
+                                    <span class="text-xs text-emerald-400 font-medium">Hari ini</span>
+                                @endif
                             </p>
                             <p class="text-xs text-gray-500 mt-0.5">
                                 @if($att->scanned_at)
@@ -116,7 +135,11 @@
                                 @endif
                             </p>
                         </div>
-                        <x-status-badge :status="$att->status"/>
+
+                        {{-- Status badge --}}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border flex-shrink-0 {{ $colorMap[$att->status] ?? 'text-gray-400 bg-gray-800 border-white/10' }}">
+                            {{ $labelMap[$att->status] ?? $att->status }}
+                        </span>
                     </div>
                 @endforeach
             </div>

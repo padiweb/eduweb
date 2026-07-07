@@ -29,7 +29,6 @@
         </div>
     @endif
 
-    {{-- Grid kelas --}}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         @forelse($classrooms as $classroom)
             @php
@@ -91,7 +90,7 @@
                     </div>
                 @endif
 
-                {{-- Aksi --}}
+                {{-- Aksi — hanya Lihat Detail + Cetak QR, tidak ada refresh QR --}}
                 <div class="px-5 pb-5 flex gap-2">
                     @if($hasSession)
                         <a href="{{ route('guru.attendance.show', $session->id) }}"
@@ -109,7 +108,7 @@
                         </form>
                     @endif
 
-                    {{-- Tombol cetak QR permanen --}}
+                    {{-- Cetak QR permanen — tetap ada untuk guru --}}
                     @if($classroom->slug)
                         <a href="{{ route('guru.attendance.class.print-qr', $classroom->id) }}"
                            target="_blank"
@@ -121,25 +120,15 @@
                         </a>
                     @endif
 
-                    {{-- Refresh / perbarui sesi --}}
-                    @if($hasSession && ! $session->is_closed)
-                        <form method="POST" action="{{ route('guru.attendance.open') }}">
-                            @csrf
-                            <input type="hidden" name="classroom_id" value="{{ $classroom->id }}">
-                            <button type="submit"
-                                    class="px-3 py-2 text-sm font-medium rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white border border-white/10 transition-colors"
-                                    title="Perbarui QR">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
-                                </svg>
-                            </button>
-                        </form>
-                    @endif
+                    {{-- TIDAK ADA tombol refresh QR di sini --}}
+                    {{-- Perbarui QR hanya bisa dilakukan oleh admin --}}
+                    {{-- di menu Admin > Kelola QR Kelas --}}
                 </div>
             </div>
         @empty
             <div class="col-span-3 bg-gray-900 border border-white/5 rounded-xl p-12 text-center">
                 <p class="text-gray-500">Belum ada kelas aktif di tahun ajaran ini.</p>
+                <p class="text-gray-600 text-sm mt-1">Hubungi admin untuk menambahkan kelas.</p>
             </div>
         @endforelse
     </div>
