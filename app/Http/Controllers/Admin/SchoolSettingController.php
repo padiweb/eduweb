@@ -33,6 +33,11 @@ class SchoolSettingController extends Controller
             'attendance_close_time'    => ['required', 'date_format:H:i'],
             'school_program_years'     => ['required', 'in:3,4'],
             'timezone'                 => ['required', 'in:Asia/Jakarta,Asia/Makassar,Asia/Jayapura'],
+            // Pelanggaran & peringatan
+            'violation_warning1'       => ['required', 'integer', 'min:1', 'max:999'],
+            'violation_warning2'       => ['required', 'integer', 'min:1', 'max:999'],
+            'violation_warning3'       => ['required', 'integer', 'min:1', 'max:999'],
+            'alfa_limit_per_semester'  => ['required', 'integer', 'min:0', 'max:999'],
         ]);
 
         // Validasi urutan jam
@@ -45,6 +50,19 @@ class SchoolSettingController extends Controller
         if ($validated['late_threshold_time'] >= $validated['attendance_close_time']) {
             return back()->withErrors([
                 'attendance_close_time' => 'Jam tutup absensi harus setelah batas terlambat.'
+            ])->withInput();
+        }
+
+        // Validasi urutan batas peringatan
+        if ($validated['violation_warning1'] >= $validated['violation_warning2']) {
+            return back()->withErrors([
+                'violation_warning2' => 'Batas Peringatan 2 harus lebih besar dari Peringatan 1.'
+            ])->withInput();
+        }
+
+        if ($validated['violation_warning2'] >= $validated['violation_warning3']) {
+            return back()->withErrors([
+                'violation_warning3' => 'Batas Peringatan 3 harus lebih besar dari Peringatan 2.'
             ])->withInput();
         }
 

@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-white">Pengaturan Sekolah</h1>
-        <p class="text-gray-400 text-sm mt-1">Kelola informasi, jam absensi, dan lokasi sekolah</p>
+        <p class="text-gray-400 text-sm mt-1">Kelola informasi, jam absensi, lokasi, dan aturan pelanggaran</p>
     </div>
 
     @if(session('success'))
@@ -19,7 +19,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {{-- ── Kolom Kiri: Info + Jam ── --}}
+            {{-- Kolom Kiri: Info + Jam + Pelanggaran --}}
             <div class="lg:col-span-2 space-y-5">
 
                 {{-- Informasi Sekolah --}}
@@ -77,15 +77,9 @@
                             <label class="block text-xs font-medium text-gray-400 mb-1.5">Zona Waktu</label>
                             <select name="timezone"
                                     class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                                <option value="Asia/Jakarta"  {{ old('timezone', $school->timezone ?? 'Asia/Jakarta') === 'Asia/Jakarta'  ? 'selected' : '' }}>
-                                    WIB — Waktu Indonesia Barat (UTC+7)
-                                </option>
-                                <option value="Asia/Makassar" {{ old('timezone', $school->timezone ?? 'Asia/Jakarta') === 'Asia/Makassar' ? 'selected' : '' }}>
-                                    WITA — Waktu Indonesia Tengah (UTC+8)
-                                </option>
-                                <option value="Asia/Jayapura" {{ old('timezone', $school->timezone ?? 'Asia/Jakarta') === 'Asia/Jayapura' ? 'selected' : '' }}>
-                                    WIT — Waktu Indonesia Timur (UTC+9)
-                                </option>
+                                <option value="Asia/Jakarta"  {{ old('timezone', $school->timezone ?? 'Asia/Jakarta') === 'Asia/Jakarta'  ? 'selected' : '' }}>WIB — Waktu Indonesia Barat (UTC+7)</option>
+                                <option value="Asia/Makassar" {{ old('timezone', $school->timezone ?? 'Asia/Jakarta') === 'Asia/Makassar' ? 'selected' : '' }}>WITA — Waktu Indonesia Tengah (UTC+8)</option>
+                                <option value="Asia/Jayapura" {{ old('timezone', $school->timezone ?? 'Asia/Jakarta') === 'Asia/Jayapura' ? 'selected' : '' }}>WIT — Waktu Indonesia Timur (UTC+9)</option>
                             </select>
                         </div>
 
@@ -98,7 +92,7 @@
                     </div>
                 </div>
 
-                {{-- ── Pengaturan Jam Absensi ── --}}
+                {{-- Pengaturan Jam Absensi --}}
                 <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
                     <h2 class="text-sm font-semibold text-white mb-1 flex items-center gap-2">
                         <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -106,128 +100,142 @@
                         </svg>
                         Jam Absensi Siswa
                     </h2>
-                    <p class="text-gray-500 text-xs mb-4">
-                        Siswa hanya bisa scan QR dalam rentang jam buka hingga jam tutup.
-                        Scan setelah batas tepat waktu → status Terlambat.
-                    </p>
-
-                    {{-- Timeline visual --}}
-                    <div class="flex items-center gap-2 mb-5 overflow-x-auto pb-2">
-                        <div class="flex-shrink-0 text-center">
-                            <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2 min-w-[80px]">
-                                <p class="text-xs text-emerald-400 font-medium">Buka</p>
-                                <p class="text-white font-bold text-sm">{{ substr($school->school_start_time, 0, 5) }}</p>
-                            </div>
-                        </div>
-                        <div class="flex-1 h-0.5 bg-emerald-500/30 min-w-[20px]"></div>
-                        <div class="flex-shrink-0 text-center">
-                            <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2 min-w-[80px]">
-                                <p class="text-xs text-amber-400 font-medium">Batas</p>
-                                <p class="text-white font-bold text-sm">{{ substr($school->late_threshold_time, 0, 5) }}</p>
-                            </div>
-                        </div>
-                        <div class="flex-1 h-0.5 bg-amber-500/30 min-w-[20px]"></div>
-                        <div class="flex-shrink-0 text-center">
-                            <div class="bg-red-500/10 border border-red-500/30 rounded-xl px-3 py-2 min-w-[80px]">
-                                <p class="text-xs text-red-400 font-medium">Tutup</p>
-                                <p class="text-white font-bold text-sm">{{ substr($school->attendance_close_time, 0, 5) }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Siswa hanya bisa scan QR dalam rentang jam buka hingga jam tutup.</p>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-medium text-gray-400 mb-1.5">
-                                Jam Buka Absensi <span class="text-red-400">*</span>
-                            </label>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Jam Buka <span class="text-red-400">*</span></label>
                             <input type="time" name="school_start_time"
                                    value="{{ old('school_start_time', substr($school->school_start_time, 0, 5)) }}"
                                    class="w-full bg-gray-800 border {{ $errors->has('school_start_time') ? 'border-red-500' : 'border-white/10' }} text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                            <p class="text-gray-600 text-xs mt-1">Siswa mulai bisa scan QR</p>
                             @error('school_start_time') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
-
                         <div>
-                            <label class="block text-xs font-medium text-gray-400 mb-1.5">
-                                Batas Tepat Waktu <span class="text-red-400">*</span>
-                            </label>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Batas Terlambat <span class="text-red-400">*</span></label>
                             <input type="time" name="late_threshold_time"
                                    value="{{ old('late_threshold_time', substr($school->late_threshold_time, 0, 5)) }}"
-                                   class="w-full bg-gray-800 border {{ $errors->has('late_threshold_time') ? 'border-red-500' : 'border-amber-500/30' }} text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition-colors">
-                            <p class="text-gray-600 text-xs mt-1">Setelah jam ini → Terlambat</p>
+                                   class="w-full bg-gray-800 border {{ $errors->has('late_threshold_time') ? 'border-red-500' : 'border-white/10' }} text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             @error('late_threshold_time') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
-
                         <div>
-                            <label class="block text-xs font-medium text-gray-400 mb-1.5">
-                                Jam Tutup Absensi <span class="text-red-400">*</span>
-                            </label>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Jam Tutup <span class="text-red-400">*</span></label>
                             <input type="time" name="attendance_close_time"
                                    value="{{ old('attendance_close_time', substr($school->attendance_close_time, 0, 5)) }}"
-                                   class="w-full bg-gray-800 border {{ $errors->has('attendance_close_time') ? 'border-red-500' : 'border-red-500/20' }} text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-red-500 transition-colors">
-                            <p class="text-gray-600 text-xs mt-1">Setelah jam ini → tidak bisa scan</p>
+                                   class="w-full bg-gray-800 border {{ $errors->has('attendance_close_time') ? 'border-red-500' : 'border-white/10' }} text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             @error('attendance_close_time') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
+                </div>
 
-                    {{-- Contoh pengaturan --}}
-                    <div class="mt-4 bg-gray-800 rounded-xl p-3">
-                        <p class="text-xs text-gray-400 font-medium mb-2">Contoh pengaturan umum:</p>
-                        <div class="grid grid-cols-3 gap-2 text-xs text-gray-500">
+                {{-- ── Pengaturan Pelanggaran & Peringatan ── --}}
+                <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
+                    <h2 class="text-sm font-semibold text-white mb-1 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                        </svg>
+                        Pelanggaran &amp; Peringatan
+                    </h2>
+                    <p class="text-gray-500 text-xs mb-4">
+                        Atur batas poin untuk setiap level peringatan. Poin berlaku selama siswa aktif (tidak reset per semester).
+                    </p>
+
+                    {{-- Batas poin peringatan --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">
+                                Batas Peringatan 1 <span class="text-red-400">*</span>
+                            </label>
+                            <input type="number" name="violation_warning1" min="1" max="999"
+                                   value="{{ old('violation_warning1', $school->violation_warning1 ?? 10) }}"
+                                   class="w-full bg-gray-800 border {{ $errors->has('violation_warning1') ? 'border-red-500' : 'border-amber-500/40' }} text-white rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-amber-500 transition-colors">
+                            <p class="text-xs text-amber-600 mt-1">poin · Peringatan 1</p>
+                            @error('violation_warning1') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">
+                                Batas Peringatan 2 <span class="text-red-400">*</span>
+                            </label>
+                            <input type="number" name="violation_warning2" min="1" max="999"
+                                   value="{{ old('violation_warning2', $school->violation_warning2 ?? 20) }}"
+                                   class="w-full bg-gray-800 border {{ $errors->has('violation_warning2') ? 'border-red-500' : 'border-orange-500/40' }} text-white rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-orange-500 transition-colors">
+                            <p class="text-xs text-orange-600 mt-1">poin · Peringatan 2</p>
+                            @error('violation_warning2') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">
+                                Batas Peringatan 3 <span class="text-red-400">*</span>
+                            </label>
+                            <input type="number" name="violation_warning3" min="1" max="999"
+                                   value="{{ old('violation_warning3', $school->violation_warning3 ?? 30) }}"
+                                   class="w-full bg-gray-800 border {{ $errors->has('violation_warning3') ? 'border-red-500' : 'border-red-500/40' }} text-white rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-red-500 transition-colors">
+                            <p class="text-xs text-red-600 mt-1">poin · Peringatan 3</p>
+                            @error('violation_warning3') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
+                    {{-- Batas alfa per semester --}}
+                    <div class="border-t border-white/5 pt-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <p class="text-gray-300 font-medium">Standar</p>
-                                <p>Buka: 06:30</p>
-                                <p>Batas: 07:15</p>
-                                <p>Tutup: 08:00</p>
+                                <label class="block text-xs font-medium text-gray-400 mb-1.5">
+                                    Batas Alfa per Semester
+                                </label>
+                                <input type="number" name="alfa_limit_per_semester" min="0" max="999"
+                                       value="{{ old('alfa_limit_per_semester', $school->alfa_limit_per_semester ?? 0) }}"
+                                       class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                <p class="text-gray-600 text-xs mt-1">
+                                    hari · Isi 0 untuk menonaktifkan batas
+                                </p>
+                                @error('alfa_limit_per_semester') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
-                            <div>
-                                <p class="text-gray-300 font-medium">Lebih ketat</p>
-                                <p>Buka: 06:00</p>
-                                <p>Batas: 07:00</p>
-                                <p>Tutup: 07:30</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-300 font-medium">Lebih longgar</p>
-                                <p>Buka: 07:00</p>
-                                <p>Batas: 07:30</p>
-                                <p>Tutup: 09:00</p>
+                            <div class="bg-gray-800 border border-white/10 rounded-xl p-3 text-xs text-gray-400">
+                                <p class="font-semibold text-white mb-1">Cara kerja alfa:</p>
+                                <p>Poin dari alfa berlaku selama siswa sekolah ({{ $school->school_program_years ?? 3 }} tahun), tidak reset per semester.</p>
+                                <p class="mt-1">Batas alfa per semester hanya untuk monitoring kesiswaan, tidak otomatis memblokir siswa.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                {{-- Info paket --}}
+                <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
+                    <h2 class="text-sm font-semibold text-white mb-3">Paket Aktif</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold
+                            {{ $school->package === 'enterprise' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
+                               ($school->package === 'pro' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                               'bg-gray-700 text-gray-400 border border-white/10') }}">
+                            {{ strtoupper($school->package) }}
+                        </span>
+                        @if($school->active_until)
+                            <span class="text-xs text-gray-500">
+                                Aktif hingga {{ $school->active_until->translatedFormat('d F Y') }}
+                            </span>
+                        @endif
+                    </div>
+                </div>
             </div>
 
-            {{-- ── Kolom Kanan: GPS ── --}}
+            {{-- Kolom Kanan: GPS --}}
             <div class="space-y-5">
-
-                {{-- GPS & Radius --}}
                 <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
-                    <h2 class="text-sm font-semibold text-white mb-1 flex items-center gap-2">
+                    <h2 class="text-sm font-semibold text-white mb-3 flex items-center gap-2">
                         <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
                         </svg>
                         Lokasi GPS Sekolah
                     </h2>
-                    <p class="text-gray-500 text-xs mb-4">
-                        Siswa harus berada dalam radius ini untuk bisa absen.
-                    </p>
 
-                    {{-- Status GPS saat ini --}}
                     @if($school->latitude && $school->longitude)
-                        <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2 mb-4">
-                            <svg class="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span class="text-emerald-400 text-xs font-medium">GPS sudah diatur</span>
+                        <div class="flex items-center gap-2 mb-3 text-xs text-emerald-400">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            GPS sudah diatur
                         </div>
                     @else
-                        <div class="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2 mb-4">
-                            <svg class="w-3.5 h-3.5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-                            </svg>
-                            <span class="text-red-400 text-xs font-medium">GPS belum diatur</span>
+                        <div class="flex items-center gap-2 mb-3 text-xs text-red-400">
+                            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+                            GPS belum diatur
                         </div>
                     @endif
 
@@ -259,7 +267,6 @@
                         </div>
                     </div>
 
-                    {{-- Tombol deteksi lokasi saat ini --}}
                     <button type="button" id="btn-detect-location"
                             class="w-full flex items-center justify-center gap-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 text-sm font-medium py-2.5 rounded-xl transition-colors mb-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -276,25 +283,6 @@
                         Atau isi manual dari Google Maps.
                     </p>
                 </div>
-
-                {{-- Info paket --}}
-                <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
-                    <h2 class="text-sm font-semibold text-white mb-3">Paket Aktif</h2>
-                    <div class="flex items-center gap-2">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold
-                            {{ $school->package === 'enterprise' ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' :
-                               ($school->package === 'pro' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
-                               'bg-gray-700 text-gray-400 border border-white/10') }}">
-                            {{ strtoupper($school->package) }}
-                        </span>
-                        @if($school->active_until)
-                            <span class="text-xs text-gray-500">
-                                Aktif hingga {{ $school->active_until->translatedFormat('d F Y') }}
-                            </span>
-                        @endif
-                    </div>
-                </div>
-
             </div>
         </div>
 
@@ -311,41 +299,35 @@
         </div>
     </form>
 
+    <script>
+    document.getElementById('btn-detect-location')?.addEventListener('click', function() {
+        var statusEl = document.getElementById('detect-status');
+        statusEl.textContent = 'Mendeteksi lokasi...';
+        this.disabled = true;
+
+        if (!navigator.geolocation) {
+            statusEl.textContent = 'Browser tidak mendukung GPS.';
+            this.disabled = false;
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            function(pos) {
+                document.getElementById('input-latitude').value  = pos.coords.latitude.toFixed(8);
+                document.getElementById('input-longitude').value = pos.coords.longitude.toFixed(8);
+                statusEl.textContent = 'Lokasi terdeteksi! Akurasi: \u00b1' + Math.round(pos.coords.accuracy) + 'm. Klik Simpan untuk menyimpan.';
+                statusEl.className   = 'text-xs text-center text-emerald-400';
+                document.getElementById('btn-detect-location').disabled = false;
+            },
+            function(err) {
+                var msgs = { 1: 'Izinkan akses lokasi di browser.', 2: 'GPS tidak tersedia.', 3: 'GPS timeout. Coba lagi.' };
+                statusEl.textContent = msgs[err.code] || 'Gagal deteksi lokasi.';
+                statusEl.className   = 'text-xs text-center text-red-400';
+                document.getElementById('btn-detect-location').disabled = false;
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        );
+    });
+    </script>
+
 </x-simans-layout>
-
-@push('scripts')
-<script>
-document.getElementById('btn-detect-location')?.addEventListener('click', function() {
-    const statusEl = document.getElementById('detect-status');
-    statusEl.textContent = 'Mendeteksi lokasi...';
-    this.disabled = true;
-
-    if (! navigator.geolocation) {
-        statusEl.textContent = 'Browser tidak mendukung GPS.';
-        this.disabled = false;
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-        function(pos) {
-            document.getElementById('input-latitude').value  = pos.coords.latitude.toFixed(8);
-            document.getElementById('input-longitude').value = pos.coords.longitude.toFixed(8);
-            statusEl.textContent = 'Lokasi terdeteksi! Akurasi: ±' + Math.round(pos.coords.accuracy) + 'm. Klik Simpan untuk menyimpan.';
-            statusEl.className   = 'text-xs text-center text-emerald-400';
-            document.getElementById('btn-detect-location').disabled = false;
-        },
-        function(err) {
-            const msgs = {
-                1: 'Izinkan akses lokasi di browser.',
-                2: 'GPS tidak tersedia.',
-                3: 'GPS timeout. Coba lagi.',
-            };
-            statusEl.textContent = msgs[err.code] || 'Gagal deteksi lokasi.';
-            statusEl.className   = 'text-xs text-center text-red-400';
-            document.getElementById('btn-detect-location').disabled = false;
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
-});
-</script>
-@endpush

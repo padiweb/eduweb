@@ -63,13 +63,19 @@ class User extends Authenticatable
         return $this->hasMany(AttendanceSession::class, 'teacher_id');
     }
 
+    // Relasi pelanggaran — dibutuhkan oleh ViolationController::index()
+    public function violations(): HasMany
+    {
+        return $this->hasMany(Violation::class, 'student_id');
+    }
+
     // ── Helpers ────────────────────────────────────────────────────────────
 
-    public function isSiswa(): bool    { return $this->role === 'siswa'; }
-    public function isGuru(): bool     { return $this->role === 'guru'; }
-    public function isAdmin(): bool    { return $this->role === 'admin'; }
-    public function isKesiswaan(): bool { return $this->role === 'kesiswaan'; }
-    public function isWaliKelas(): bool { return $this->role === 'wali_kelas'; }
+    public function isSiswa(): bool      { return $this->role === 'siswa'; }
+    public function isGuru(): bool       { return $this->role === 'guru'; }
+    public function isAdmin(): bool      { return $this->role === 'admin'; }
+    public function isKesiswaan(): bool  { return $this->role === 'kesiswaan'; }
+    public function isWaliKelas(): bool  { return $this->role === 'wali_kelas'; }
 
     public function canManageAttendance(): bool
     {
