@@ -63,7 +63,7 @@
                 <x-sidebar-link href="#" :active="false" icon="credit-card">
                     Status SPP
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="shield">
+                <x-sidebar-link href="{{ route('siswa.violations') }}" :active="request()->routeIs('siswa.violations')" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
             @endif
@@ -104,7 +104,7 @@
                 <x-sidebar-link href="{{ route('kesiswaan.dashboard') }}" :active="request()->routeIs('kesiswaan.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="shield">
+                <x-sidebar-link href="{{ route('kesiswaan.violations.index') }}" :active="request()->routeIs('kesiswaan.violations.*')" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="clipboard">

@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Violation extends Model
 {
-    // Tidak ada updated_at — violation adalah catatan permanen
     public $timestamps = false;
 
     protected $fillable = [
         'school_id', 'student_id', 'category_id', 'reported_by',
-        'incident_date', 'description', 'points', 'source',
-        'evidence_path', 'action_taken', 'is_archived',
+        'attendance_id', 'incident_date', 'description', 'points',
+        'source', 'evidence_path', 'action_taken', 'is_archived',
     ];
 
     protected $casts = [
@@ -21,6 +20,8 @@ class Violation extends Model
         'is_archived'   => 'boolean',
         'created_at'    => 'datetime',
     ];
+
+    // ── Relasi ─────────────────────────────────────────────────────────────
 
     public function school(): BelongsTo
     {
@@ -42,17 +43,47 @@ class Violation extends Model
         return $this->belongsTo(User::class, 'reported_by');
     }
 
+    public function attendance(): BelongsTo
+    {
+        return $this->belongsTo(Attendance::class);
+    }
+
+    // ── Scopes ─────────────────────────────────────────────────────────────
+
     public function scopeActive($query)
     {
         return $query->where('is_archived', false);
     }
 
+    public function scopeManual($query)
+    {
+        return $query->where('source', 'manual');
+    }
+
+    public function scopeAutomatic($query)
+    {
+        return $query->whereIn('source', [
+            'absen_terlambat', 'absen_alfa',
+            'tugas_terlambat', 'tugas_tidak_kumpul',
+        ]);
+    }
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+
     public function getSourceLabelAttribute(): string
     {
         return match ($this->source) {
-            'manual'           => 'Manual',
-            'auto_attendance'  => 'Otomatis (Absensi)',
-            default            => $this->source,
+            'manual'             => 'Manual',
+            'absen_terlambat'    => 'Absen Terlambat',
+            'absen_alfa'         => 'Alfa',
+            'tugas_terlambat'    => 'Tugas Terlambat',
+            'tugas_tidak_kumpul' => 'Tidak Kumpul Tugas',
+            default              => $this->source,
         };
+    }
+
+    public function isAutomatic(): bool
+    {
+        return $this->source !== 'manual';
     }
 }

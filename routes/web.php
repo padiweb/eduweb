@@ -53,8 +53,13 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     });
 
     // KESISWAAN
-    Route::middleware('role:kesiswaan,admin')->prefix('kesiswaan')->name('kesiswaan.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'kesiswaan'])->name('dashboard');
+    Route::prefix('pelanggaran')->name('violations.')->group(function () {
+        Route::get('/', [ViolationController::class, 'index'])->name('index');
+        Route::get('/{student}', [ViolationController::class, 'show'])->name('show');
+        Route::post('/', [ViolationController::class, 'store'])->name('store');
+        Route::patch('/{violation}/arsip', [ViolationController::class, 'archive'])->name('archive');
+        Route::get('/kategori', [ViolationController::class, 'categories'])->name('categories');
+        Route::post('/kategori', [ViolationController::class, 'storeCategory'])->name('categories.store');
     });
 
     // SISWA
@@ -63,6 +68,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/absensi', fn() => view('attendance.student.absensi'))->name('attendance.absensi');
         Route::post('/absensi/submit', [StudentScanController::class, 'submit'])->name('attendance.submit');
         Route::get('/absensi/riwayat', [StudentScanController::class, 'history'])->name('attendance.history');
+        Route::get('/pelanggaran', fn() => view('siswa.violations'))->name('violations');
     });
 });
 

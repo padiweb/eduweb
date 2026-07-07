@@ -170,8 +170,9 @@ class AttendanceService
                 'is_late_scan'         => $isLateScan,
             ]);
 
-            if ($isLateScan) {
-                $this->createLateViolation($attendance, $session);
+            if ($attendance->status === 'terlambat') {
+                app(\App\Services\ViolationService::class)
+                    ->createAttendanceViolation($attendance, 'absen_terlambat');
             }
 
             return $attendance;
@@ -191,6 +192,13 @@ class AttendanceService
         return DB::transaction(function () use (
             $session, $studentId, $status, $reason, $teacher, $permissionReason
         ) {
+            // Ambil status lama jika sudah ada
+            $existing = Attendance::where('session_id', $session->id)
+                ->where('student_id', $studentId)
+                ->first();
+
+            $oldStatus = $existing?->status;
+
             $attendance = Attendance::updateOrCreate(
                 ['session_id' => $session->id, 'student_id' => $studentId],
                 [
@@ -205,10 +213,17 @@ class AttendanceService
                 ]
             );
 
+            // Sync violation jika status berubah
+            if ($oldStatus !== $status) {
+                app(\App\Services\ViolationService::class)
+                    ->syncAttendanceViolation($attendance->fresh(), $status);
+            }
+
             $this->logActivity('attendance.manual_entry', $teacher, [
                 'session_id' => $session->id,
                 'student_id' => $studentId,
-                'status'     => $status,
+                'old_status' => $oldStatus,
+                'new_status' => $status,
                 'reason'     => $reason,
             ]);
 
