@@ -42,24 +42,37 @@
                             @php $sub = $a->submissions->first(); @endphp
                             <div class="flex items-center gap-3 px-5 py-3">
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm text-white truncate">{{ $a->title }}</p>
-                                    <p class="text-xs text-gray-500">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm text-white truncate">{{ $a->title }}</p>
+                                        @if(! $a->is_closed)
+                                            <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full flex-shrink-0">Aktif</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">
                                         @if($sub && $sub->submitted_at)
-                                            Dikumpulkan {{ $sub->submitted_at->translatedFormat('d M Y') }}
-                                            @if($sub->isLate()) · <span class="text-amber-400">Terlambat</span> @endif
+                                            Dikumpulkan {{ \Carbon\Carbon::parse($sub->submitted_at)->translatedFormat('d M Y') }}
+                                            @if($sub->isLate()) &middot; <span class="text-amber-400">Terlambat</span> @endif
+                                        @elseif($sub && $sub->isNotSubmitted())
+                                            <span class="text-red-400">Tidak dikumpulkan</span>
                                         @else
-                                            Tidak dikumpulkan
+                                            Belum dikumpulkan
                                         @endif
                                     </p>
+                                    {{-- Komentar guru --}}
+                                    @if($sub?->feedback)
+                                        <p class="text-xs text-blue-400 mt-0.5 italic">"{{ $sub->feedback }}"</p>
+                                    @endif
                                 </div>
                                 @if($sub && $sub->score !== null)
                                     <span class="text-base font-bold flex-shrink-0 {{ $sub->score >= 80 ? 'text-emerald-400' : ($sub->score >= 60 ? 'text-amber-400' : 'text-red-400') }}">
                                         {{ $sub->score }}
                                     </span>
-                                @elseif($sub)
+                                @elseif($sub && ! $sub->isNotSubmitted())
                                     <span class="text-xs text-gray-500 flex-shrink-0">Belum dinilai</span>
-                                @else
+                                @elseif($sub && $sub->isNotSubmitted())
                                     <span class="text-xs text-red-400 flex-shrink-0">Tidak kumpul</span>
+                                @else
+                                    <span class="text-xs text-gray-600 flex-shrink-0">-</span>
                                 @endif
                             </div>
                         @endforeach

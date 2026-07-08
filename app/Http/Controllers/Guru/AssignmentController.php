@@ -127,7 +127,7 @@ class AssignmentController extends Controller
 
         $validated = $request->validate([
             'student_id' => ['required', 'exists:users,id'],
-            'score'      => ['required', 'integer', 'min:0', 'max:' . $assignment->max_score],
+            'score'      => ['nullable', 'integer', 'min:0', 'max:' . $assignment->max_score],
             'feedback'   => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -135,17 +135,24 @@ class AssignmentController extends Controller
             ->where('student_id', $validated['student_id'])
             ->firstOrFail();
 
-        $this->service->grade(
-            $submission,
-            $validated['score'],
-            $validated['feedback'] ?? null,
-            auth()->user()
-        );
+        $updateData = [
+            'feedback'  => $validated['feedback'] ?? null,
+            'graded_by' => auth()->id(),
+            'graded_at' => now(),
+        ];
+
+        // Nilai hanya diupdate jika diisi
+        if (isset($validated['score']) && $validated['score'] !== null) {
+            $updateData['score']  = $validated['score'];
+            $updateData['status'] = 'graded';
+        }
+
+        $submission->update($updateData);
 
         return response()->json([
             'success'  => true,
-            'score'    => $validated['score'],
-            'feedback' => $validated['feedback'] ?? null,
+            'score'    => $submission->fresh()->score,
+            'feedback' => $submission->feedback,
         ]);
     }
 

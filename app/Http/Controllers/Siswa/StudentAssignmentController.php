@@ -160,14 +160,15 @@ class StudentAssignmentController extends Controller
             ]);
         }
 
+        // Ambil semua mapel yang ada tugasnya di kelas ini (tidak harus ditutup)
         $subjects = Subject::whereHas('assignments', fn($q) =>
-            $q->where('classroom_id', $classroom->id)->where('is_closed', true)
+            $q->where('classroom_id', $classroom->id)
         )->orderBy('name')->get();
 
         $subjectScores = $subjects->map(function ($subject) use ($student, $classroom) {
+            // Ambil semua tugas — baik yang sudah ditutup maupun yang masih aktif
             $assignments = Assignment::where('classroom_id', $classroom->id)
                 ->where('subject_id', $subject->id)
-                ->where('is_closed', true)
                 ->with(['submissions' => fn($q) => $q->where('student_id', $student->id)])
                 ->orderBy('created_at')
                 ->get();

@@ -17,9 +17,17 @@ Schedule::command('attendance:create-daily-sessions')
     ->runInBackground()
     ->appendOutputTo(storage_path('logs/scheduler.log'));
 
-// Tutup sesi + alfa siswa yang tidak absen jam 08:00
+// Tutup sesi expired setiap menit — cek jam tutup per sesi per sekolah
+// Command ini yang buat alfa otomatis + poin pelanggaran
+Schedule::command('attendance:close-expired-sessions')
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/scheduler.log'));
+
+// Backup: tutup semua sesi yang masih aktif jam 23:59 (safety net)
 Schedule::command('attendance:close-daily-sessions')
-    ->dailyAt('08:00')
+    ->dailyAt('23:59')
     ->weekdays()
     ->withoutOverlapping()
     ->runInBackground()

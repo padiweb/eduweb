@@ -68,15 +68,28 @@
             </div>
 
             {{-- Nilai & komentar guru --}}
-            @if($submission && $submission->score !== null)
-                <div class="bg-gray-900 border border-emerald-500/20 rounded-xl p-5">
-                    <p class="text-xs text-gray-500 mb-2">Nilaimu</p>
-                    <p class="text-4xl font-bold {{ $submission->score >= 80 ? 'text-emerald-400' : ($submission->score >= 60 ? 'text-amber-400' : 'text-red-400') }} mb-1">
-                        {{ $submission->score }}
-                        <span class="text-sm text-gray-500 font-normal">/ {{ $assignment->max_score }}</span>
-                    </p>
+            @if($submission && ($submission->score !== null || $submission->feedback))
+                <div class="bg-gray-900 border border-{{ $submission->score !== null ? 'emerald' : 'blue' }}-500/20 rounded-xl p-5 space-y-3">
+
+                    {{-- Nilai --}}
+                    @if($submission->score !== null)
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">Nilaimu</p>
+                            <p class="text-4xl font-bold {{ $submission->score >= 80 ? 'text-emerald-400' : ($submission->score >= 60 ? 'text-amber-400' : 'text-red-400') }}">
+                                {{ $submission->score }}
+                                <span class="text-sm text-gray-500 font-normal">/ {{ $assignment->max_score }}</span>
+                            </p>
+                        </div>
+                    @else
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">Nilai</p>
+                            <p class="text-sm text-gray-600 italic">Belum dinilai</p>
+                        </div>
+                    @endif
+
+                    {{-- Komentar guru --}}
                     @if($submission->feedback)
-                        <div class="border-t border-white/5 pt-3 mt-3">
+                        <div class="{{ $submission->score !== null ? 'border-t border-white/5 pt-3' : '' }}">
                             <p class="text-xs text-gray-500 mb-1">Komentar Guru</p>
                             <p class="text-sm text-gray-300 leading-relaxed">{{ $submission->feedback }}</p>
                         </div>

@@ -132,9 +132,13 @@
                                             Belum mengumpulkan
                                         @elseif($sub->isNotSubmitted())
                                             <span class="text-red-400">Tidak mengumpulkan tugas</span>
-                                        @else
+                                        @elseif($sub->submitted_at && $sub->submitted_at instanceof \Carbon\Carbon)
                                             Dikumpulkan {{ $sub->submitted_at->translatedFormat('d M Y H:i') }}
                                             @if($sub->isLate()) <span class="text-amber-400">&middot; Terlambat</span> @endif
+                                        @elseif($sub->submitted_at)
+                                            Dikumpulkan {{ \Carbon\Carbon::parse($sub->submitted_at)->translatedFormat('d M Y H:i') }}
+                                        @else
+                                            <span class="text-gray-600">Dikumpulkan</span>
                                         @endif
                                     </p>
                                 </div>
@@ -248,7 +252,11 @@
                 var res  = await fetch('/guru/tugas/'+asgId+'/nilai', {
                     method:'POST',
                     headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-                    body: JSON.stringify({student_id:studentId, score:parseInt(score), feedback:feedback}),
+                    body: JSON.stringify({
+                        student_id: studentId,
+                        score:      score !== '' && score !== null ? parseInt(score) : null,
+                        feedback:   feedback
+                    }),
                 });
                 return await res.json();
             } catch(e) { return {success:false}; }
@@ -262,12 +270,12 @@
                 var score    = input?.value;
                 var feedback = cmtInput?.value ?? '';
 
-                if (!score) { alert('Masukkan nilai terlebih dahulu.'); return; }
+                if (!score && score !== '0') { alert('Masukkan nilai terlebih dahulu.'); return; }
                 this.disabled=true; this.textContent='...';
 
                 var data = await saveGrade(sid, score, feedback);
                 if (data.success) {
-                    this.textContent='Tersimpan';
+                    this.textContent='Tersimpan ✓';
                     setTimeout(() => { this.textContent='Simpan'; this.disabled=false; }, 2000);
                 } else {
                     alert(data.message||'Gagal menyimpan.');
@@ -281,15 +289,16 @@
                 var sid      = this.dataset.studentId;
                 var input    = document.querySelector('.score-input[data-student-id="'+sid+'"]');
                 var cmtInput = document.querySelector('.comment-input[data-student-id="'+sid+'"]');
-                var score    = input?.value;
+                var score    = input?.value ?? '';
                 var feedback = cmtInput?.value ?? '';
 
-                if (!score) { alert('Isi nilai dulu sebelum mengirim komentar.'); return; }
+                if (!feedback.trim()) { alert('Tulis komentar terlebih dahulu.'); return; }
                 this.disabled=true; this.textContent='...';
 
-                var data = await saveGrade(sid, score, feedback);
+                // Kirim dengan score yang ada (atau null jika belum diisi)
+                var data = await saveGrade(sid, score || null, feedback);
                 if (data.success) {
-                    this.textContent='Terkirim';
+                    this.textContent='Terkirim ✓';
                     setTimeout(() => { this.textContent='Kirim'; this.disabled=false; }, 2000);
                 } else {
                     alert(data.message||'Gagal.'); this.disabled=false; this.textContent='Kirim';

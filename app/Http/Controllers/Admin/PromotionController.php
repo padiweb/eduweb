@@ -170,7 +170,14 @@ class PromotionController extends Controller
     private function promoteStudent(User $student, ?int $targetClassId, ?string $notes): void
     {
         if ($targetClassId) {
-            $student->classrooms()->attach($targetClassId);
+            // Cek apakah siswa sudah ada di kelas tujuan
+            $alreadyInClass = $student->classrooms()
+                ->where('classrooms.id', $targetClassId)
+                ->exists();
+
+            if (! $alreadyInClass) {
+                $student->classrooms()->attach($targetClassId);
+            }
         }
 
         $student->update([
