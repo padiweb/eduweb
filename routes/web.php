@@ -15,6 +15,8 @@ use App\Http\Controllers\Kesiswaan\ViolationController;
 use App\Http\Controllers\Guru\AssignmentController;
 use App\Http\Controllers\Siswa\StudentAssignmentController;
 use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\ScheduleController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -84,6 +86,22 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/promotions/process', [PromotionController::class, 'process'])->name('promotions.process');
         Route::post('/promotions/transfer/{student}', [PromotionController::class, 'transferStudent'])->name('promotions.transfer');
         Route::post('/promotions/status/{student}', [PromotionController::class, 'updateStatus'])->name('promotions.update-status');
+
+        
+        // Kelompok & Mata Pelajaran
+        Route::get('/subjects', [SubjectController::class, 'index'])->name('subjects.index');
+        Route::post('/subjects', [SubjectController::class, 'store'])->name('subjects.store');
+        Route::put('/subjects/{subject}', [SubjectController::class, 'update'])->name('subjects.update');
+        Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy'])->name('subjects.destroy');
+        Route::post('/subjects/groups', [SubjectController::class, 'storeGroup'])->name('subjects.groups.store');
+        Route::put('/subjects/groups/{group}', [SubjectController::class, 'updateGroup'])->name('subjects.groups.update');
+        Route::delete('/subjects/groups/{group}', [SubjectController::class, 'destroyGroup'])->name('subjects.groups.destroy');
+
+        // Jadwal — /by-teacher HARUS di atas /{schedule}
+        Route::get('/schedules/by-teacher', [ScheduleController::class, 'byTeacher'])->name('schedules.by-teacher');
+        Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
+        Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
+        Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
     });
 
     // ─────────────────────────────────────────────────────────────────────────

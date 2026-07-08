@@ -125,8 +125,11 @@
                 <x-sidebar-link href="#" :active="false" icon="school">
                     Data Kelas
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="book">
+                <x-sidebar-link href="{{ route('admin.subjects.index') }}" :active="request()->routeIs('admin.subjects.*')" icon="book">
                     Mata Pelajaran
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('admin.schedules.index') }}" :active="request()->routeIs('admin.schedules.*')" icon="calendar">
+                    Jadwal Mengajar
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.classrooms.index') }}" :active="request()->routeIs('admin.classrooms.*')" icon="school">
                     Manajemen Kelas

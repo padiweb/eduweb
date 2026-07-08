@@ -35,16 +35,32 @@
         </div>
     @endif
 
+    {{-- Filter tahun ajaran --}}
+    <div class="flex flex-wrap gap-2 mb-5">
+        <a href="{{ route('admin.classrooms.index') }}"
+           class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors {{ ! request('year') ? 'bg-emerald-500 text-white' : 'bg-gray-900 border border-white/10 text-gray-400 hover:text-white' }}">
+            Semua
+        </a>
+        @foreach($academicYears as $ay)
+            <a href="{{ route('admin.classrooms.index', ['year' => $ay->id]) }}"
+               class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2
+               {{ request('year') == $ay->id ? 'bg-emerald-500 text-white' : 'bg-gray-900 border border-white/10 text-gray-400 hover:text-white' }}">
+                {{ $ay->label }}
+                @if($ay->is_active)
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 inline-block"></span>
+                @endif
+            </a>
+        @endforeach
+    </div>
+
     @if($classrooms->isEmpty())
         <div class="bg-gray-900 border border-white/5 rounded-xl p-12 text-center">
             <svg class="w-12 h-12 text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"/>
             </svg>
-            <p class="text-gray-500 text-sm">Belum ada kelas.</p>
+            <p class="text-gray-500 text-sm">Belum ada kelas{{ request('year') ? ' untuk tahun ajaran ini' : '' }}.</p>
             @if(! $academicYears->count())
-                <p class="text-gray-600 text-xs mt-1">Buat <a href="{{ route('admin.academic-years.index') }}" class="text-emerald-400 hover:underline">tahun ajaran</a> dulu sebelum membuat kelas.</p>
-            @else
-                <p class="text-gray-600 text-xs mt-1">Klik tombol Buat Kelas untuk memulai.</p>
+                <p class="text-gray-600 text-xs mt-1">Buat <a href="{{ route('admin.academic-years.index') }}" class="text-emerald-400 hover:underline">tahun ajaran</a> dulu.</p>
             @endif
         </div>
     @else
@@ -56,6 +72,7 @@
                     @if($ay->is_active)
                         <span class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">Aktif</span>
                     @endif
+                    <span class="text-xs text-gray-600">{{ $kelasGroup->count() }} kelas</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($kelasGroup->sortBy('grade') as $classroom)
@@ -78,8 +95,7 @@
                                     <form method="POST" action="{{ route('admin.classrooms.destroy', $classroom->id) }}"
                                           onsubmit="return confirm('Hapus kelas {{ addslashes($classroom->name) }}?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit"
-                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-red-900/40 border border-white/10 hover:border-red-500/30 text-gray-400 hover:text-red-400 transition-colors">
+                                        <button class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-red-900/40 border border-white/10 hover:border-red-500/30 text-gray-400 hover:text-red-400 transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                             </svg>
@@ -88,12 +104,12 @@
                                 </div>
                             </div>
 
-                            <div class="space-y-1.5">
+                            <div class="space-y-1.5 mb-3">
                                 <div class="flex items-center gap-2">
                                     <svg class="w-3.5 h-3.5 text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
                                     </svg>
-                                    <span class="text-xs text-gray-400">
+                                    <span class="text-xs text-gray-400 truncate">
                                         {{ $classroom->homeroomTeacher?->name ?? 'Belum ada wali kelas' }}
                                     </span>
                                 </div>
@@ -106,7 +122,7 @@
                             </div>
 
                             <a href="{{ route('admin.classrooms.edit', $classroom->id) }}"
-                               class="mt-3 w-full flex items-center justify-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 py-2 rounded-xl transition-colors">
+                               class="w-full flex items-center justify-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 py-2 rounded-xl transition-colors">
                                 Kelola Siswa
                             </a>
                         </div>
@@ -143,7 +159,7 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1.5">Tingkat Kelas <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-400 mb-1.5">Tingkat <span class="text-red-400">*</span></label>
                         <select name="grade" required
                                 class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             @foreach(range(1, 13) as $g)
@@ -180,7 +196,7 @@
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" id="btn-cancel-modal"
-                            class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium py-2.5 rounded-xl border border-white/10 transition-colors">Batal</button>
+                            class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm py-2.5 rounded-xl border border-white/10 transition-colors">Batal</button>
                     <button type="submit"
                             class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">Buat Kelas</button>
                 </div>

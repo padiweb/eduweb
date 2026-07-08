@@ -12,15 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class ClassroomController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $school        = auth()->user()->school;
-        $activeYear    = AcademicYear::where('school_id', $school->id)->where('is_active', true)->first();
-        $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('name')->get();
+        $academicYears = AcademicYear::where('school_id', $school->id)
+            ->orderByDesc('name')->orderBy('semester')->get();
+        $activeYear    = $academicYears->firstWhere('is_active', true);
 
-        $classrooms = Classroom::where('school_id', $school->id)
-            ->with(['major', 'academicYear', 'homeroomTeacher', 'students'])
-            ->orderBy('grade')->orderBy('name')
+        // Filter per tahun ajaran jika dipilih
+        $query = Classroom::where('school_id', $school->id)
+            ->with(['major', 'academicYear', 'homeroomTeacher', 'students']);
+
+        if ($request->filled('year')) {
+            $query->where('academic_year_id', $request->year);
+        }
+
+        $classrooms = $query->orderBy('grade')->orderBy('name')
             ->get()
             ->groupBy('academic_year_id');
 

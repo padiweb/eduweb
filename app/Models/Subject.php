@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subject extends Model
 {
-    protected $fillable = ['school_id', 'major_id', 'name', 'code', 'category'];
+    protected $fillable = [
+        'school_id', 'major_id', 'subject_group_id', 'name', 'code',
+    ];
 
     public function school(): BelongsTo
     {
@@ -20,12 +22,16 @@ class Subject extends Model
         return $this->belongsTo(Major::class);
     }
 
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(SubjectGroup::class, 'subject_group_id');
+    }
+
     public function schedules(): HasMany
     {
         return $this->hasMany(Schedule::class);
     }
 
-    // Relasi yang dibutuhkan StudentAssignmentController::scores()
     public function assignments(): HasMany
     {
         return $this->hasMany(Assignment::class);
