@@ -84,28 +84,34 @@
                 @endif
             </div>
 
+            {{-- Stat cards --}}
+            @php
+                $notSubmittedCount = $submissions->where('status','not_submitted')->count();
+                $submittedCount    = $submissions->whereNotIn('status',['not_submitted'])->count();
+                $gradedCount       = $submissions->where('status','graded')->count();
+                $avg               = $submissions->whereNotNull('score')->avg('score');
+            @endphp
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-gray-900 border border-emerald-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-emerald-400">{{ $submissions->count() }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Sudah Kumpul</p>
+                    <p class="text-2xl font-bold text-emerald-400">{{ $submittedCount }}</p>
+                    <p class="text-xs text-gray-500 mt-1">Dikumpulkan</p>
                 </div>
-                <div class="bg-gray-900 border border-white/5 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-gray-400">{{ $students->count() - $submissions->count() }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Belum Kumpul</p>
+                <div class="bg-gray-900 border border-red-500/20 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-red-400">{{ $notSubmittedCount }}</p>
+                    <p class="text-xs text-gray-500 mt-1">Tidak Kumpul</p>
                 </div>
                 <div class="bg-gray-900 border border-blue-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-blue-400">{{ $submissions->where('status','graded')->count() }}</p>
+                    <p class="text-2xl font-bold text-blue-400">{{ $gradedCount }}</p>
                     <p class="text-xs text-gray-500 mt-1">Sudah Dinilai</p>
                 </div>
                 <div class="bg-gray-900 border border-amber-500/20 rounded-xl p-4 text-center">
-                    @php $avg = $submissions->whereNotNull('score')->avg('score'); @endphp
                     <p class="text-2xl font-bold text-amber-400">{{ $avg ? number_format($avg,1) : '-' }}</p>
                     <p class="text-xs text-gray-500 mt-1">Rata-rata</p>
                 </div>
             </div>
         </div>
 
-        {{-- Tabel siswa + nilai --}}
+        {{-- Tabel siswa --}}
         <div class="lg:col-span-2">
             <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-white/5">
@@ -114,30 +120,40 @@
                 <div class="divide-y divide-white/5">
                     @foreach($students as $student)
                         @php $sub = $submissions->get($student->id); @endphp
-                        <div class="px-5 py-4">
-                            <div class="flex items-center gap-3 mb-0">
+                        <div class="px-5 py-4 {{ $sub?->isNotSubmitted() ? 'bg-red-500/[0.03]' : '' }}">
+                            <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-300 flex-shrink-0">
                                     {{ substr($student->name, 0, 2) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-white truncate">{{ $student->name }}</p>
                                     <p class="text-xs text-gray-500">
-                                        @if($sub)
+                                        @if(! $sub)
+                                            Belum mengumpulkan
+                                        @elseif($sub->isNotSubmitted())
+                                            <span class="text-red-400">Tidak mengumpulkan tugas</span>
+                                        @else
                                             Dikumpulkan {{ $sub->submitted_at->translatedFormat('d M Y H:i') }}
                                             @if($sub->isLate()) <span class="text-amber-400">&middot; Terlambat</span> @endif
-                                        @else
-                                            Belum mengumpulkan
                                         @endif
                                     </p>
                                 </div>
 
-                                @if($sub)
-                                    {{-- Tombol lihat file/teks/link --}}
+                                {{-- Badge status --}}
+                                @if($sub?->isNotSubmitted())
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-red-500/10 text-red-400 border-red-500/20 flex-shrink-0">
+                                        Tidak Kumpul
+                                    </span>
+                                @elseif($sub)
+                                    {{-- Tombol lihat jawaban --}}
                                     @if($sub->file_path)
-                                        <a href="{{ route('guru.assignments.view-file', [$assignment->id, $sub->id]) }}" target="_blank"
-                                           class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 flex-shrink-0">
-                                            File
-                                        </a>
+                                        @php $subFiles = array_filter(explode(',', $sub->file_path)); @endphp
+                                        @foreach($subFiles as $fi => $fp)
+                                            <a href="{{ route('guru.assignments.view-file', [$assignment->id, $sub->id, 'index' => $fi]) }}" target="_blank"
+                                               class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 flex-shrink-0">
+                                                File {{ count($subFiles) > 1 ? $fi+1 : '' }}
+                                            </a>
+                                        @endforeach
                                     @elseif($sub->link_url)
                                         <a href="{{ $sub->link_url }}" target="_blank"
                                            class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 flex-shrink-0">
@@ -149,8 +165,10 @@
                                             Teks
                                         </button>
                                     @endif
+                                @endif
 
-                                    {{-- Input nilai --}}
+                                {{-- Input nilai — selalu tampil jika ada submission (termasuk not_submitted) --}}
+                                @if($sub)
                                     <input type="number"
                                            class="score-input w-16 bg-gray-800 border border-white/10 text-white rounded-lg px-2 py-1.5 text-sm text-center focus:outline-none focus:border-emerald-500 transition-colors flex-shrink-0"
                                            placeholder="Nilai"
@@ -162,18 +180,16 @@
                                             data-student-id="{{ $student->id }}">
                                         Simpan
                                     </button>
-                                @else
-                                    <span class="text-xs text-gray-600 flex-shrink-0">Belum kumpul</span>
                                 @endif
                             </div>
 
-                            {{-- Baris komentar guru --}}
+                            {{-- Komentar guru --}}
                             @if($sub)
                                 <div class="mt-2 ml-11">
                                     <div class="flex items-center gap-2">
                                         <input type="text"
                                                class="comment-input flex-1 bg-gray-800 border border-white/10 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors"
-                                               placeholder="Komentar / catatan revisi untuk siswa (opsional)..."
+                                               placeholder="{{ $sub->isNotSubmitted() ? 'Komentar untuk siswa yang tidak kumpul (opsional)...' : 'Komentar / catatan revisi (opsional)...' }}"
                                                value="{{ $sub->feedback ?? '' }}"
                                                data-student-id="{{ $student->id }}"
                                                data-assignment-id="{{ $assignment->id }}">
@@ -183,7 +199,7 @@
                                         </button>
                                     </div>
                                     @if($sub->feedback)
-                                        <p class="text-xs text-gray-600 mt-1">Komentar terakhir: {{ $sub->feedback }}</p>
+                                        <p class="text-xs text-gray-600 mt-1">{{ $sub->feedback }}</p>
                                     @endif
                                 </div>
                             @endif
@@ -225,59 +241,59 @@
             m.classList.add('hidden'); m.classList.remove('flex');
         });
 
-        // Simpan nilai
+        async function saveGrade(studentId, score, feedback) {
+            var input = document.querySelector('.score-input[data-student-id="'+studentId+'"]');
+            var asgId = input?.dataset.assignmentId;
+            try {
+                var res  = await fetch('/guru/tugas/'+asgId+'/nilai', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
+                    body: JSON.stringify({student_id:studentId, score:parseInt(score), feedback:feedback}),
+                });
+                return await res.json();
+            } catch(e) { return {success:false}; }
+        }
+
         document.querySelectorAll('.btn-save-score').forEach(function(btn) {
             btn.addEventListener('click', async function() {
-                var sid   = this.dataset.studentId;
-                var input = document.querySelector('.score-input[data-student-id="'+sid+'"]');
-                var asgId = input?.dataset.assignmentId;
-                var score = input?.value;
+                var sid      = this.dataset.studentId;
+                var input    = document.querySelector('.score-input[data-student-id="'+sid+'"]');
                 var cmtInput = document.querySelector('.comment-input[data-student-id="'+sid+'"]');
+                var score    = input?.value;
                 var feedback = cmtInput?.value ?? '';
 
                 if (!score) { alert('Masukkan nilai terlebih dahulu.'); return; }
                 this.disabled=true; this.textContent='...';
 
-                try {
-                    var res  = await fetch('/guru/tugas/'+asgId+'/nilai', {
-                        method:'POST',
-                        headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-                        body: JSON.stringify({student_id:sid, score:parseInt(score), feedback:feedback}),
-                    });
-                    var data = await res.json();
-                    if (data.success) {
-                        this.textContent = 'Tersimpan';
-                        setTimeout(() => { this.textContent='Simpan'; this.disabled=false; }, 2000);
-                    } else { alert(data.message||'Gagal.'); this.disabled=false; this.textContent='Simpan'; }
-                } catch(e) { alert('Koneksi gagal.'); this.disabled=false; this.textContent='Simpan'; }
+                var data = await saveGrade(sid, score, feedback);
+                if (data.success) {
+                    this.textContent='Tersimpan';
+                    setTimeout(() => { this.textContent='Simpan'; this.disabled=false; }, 2000);
+                } else {
+                    alert(data.message||'Gagal menyimpan.');
+                    this.disabled=false; this.textContent='Simpan';
+                }
             });
         });
 
-        // Simpan komentar saja (tanpa nilai)
         document.querySelectorAll('.btn-save-comment').forEach(function(btn) {
             btn.addEventListener('click', async function() {
                 var sid      = this.dataset.studentId;
+                var input    = document.querySelector('.score-input[data-student-id="'+sid+'"]');
                 var cmtInput = document.querySelector('.comment-input[data-student-id="'+sid+'"]');
-                var scoreInput = document.querySelector('.score-input[data-student-id="'+sid+'"]');
-                var asgId    = cmtInput?.dataset.assignmentId;
+                var score    = input?.value;
                 var feedback = cmtInput?.value ?? '';
-                var score    = scoreInput?.value;
 
                 if (!score) { alert('Isi nilai dulu sebelum mengirim komentar.'); return; }
                 this.disabled=true; this.textContent='...';
 
-                try {
-                    var res  = await fetch('/guru/tugas/'+asgId+'/nilai', {
-                        method:'POST',
-                        headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF},
-                        body: JSON.stringify({student_id:sid, score:parseInt(score), feedback:feedback}),
-                    });
-                    var data = await res.json();
-                    if (data.success) {
-                        this.textContent = 'Terkirim';
-                        setTimeout(() => { this.textContent='Kirim'; this.disabled=false; }, 2000);
-                    } else { alert(data.message||'Gagal.'); this.disabled=false; this.textContent='Kirim'; }
-                } catch(e) { alert('Koneksi gagal.'); this.disabled=false; this.textContent='Kirim'; }
+                var data = await saveGrade(sid, score, feedback);
+                if (data.success) {
+                    this.textContent='Terkirim';
+                    setTimeout(() => { this.textContent='Kirim'; this.disabled=false; }, 2000);
+                } else {
+                    alert(data.message||'Gagal.'); this.disabled=false; this.textContent='Kirim';
+                }
             });
         });
     })();

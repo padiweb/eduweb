@@ -149,16 +149,25 @@ class AssignmentController extends Controller
         ]);
     }
 
-    // Guru lihat file tugas siswa
-    public function viewSubmissionFile(Assignment $assignment, AssignmentSubmission $submission)
+    // Guru lihat file tugas siswa (support multi-file by index)
+    public function viewSubmissionFile(Request $request, Assignment $assignment, AssignmentSubmission $submission)
     {
         $this->authorizeAssignment($assignment);
 
-        if (! $submission->file_path || ! Storage::disk('public')->exists($submission->file_path)) {
-            abort(404, 'File tidak ditemukan.');
+        if (! $submission->file_path) abort(404, 'File tidak ditemukan.');
+
+        $files = array_filter(explode(',', $submission->file_path));
+        $index = (int) $request->get('index', 0);
+
+        if (! isset($files[$index])) abort(404, 'File tidak ditemukan.');
+
+        $path = trim($files[$index]);
+
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404, 'File tidak ditemukan di storage.');
         }
 
-        return response()->file(Storage::disk('public')->path($submission->file_path));
+        return response()->file(Storage::disk('public')->path($path));
     }
 
     public function scores(Request $request)

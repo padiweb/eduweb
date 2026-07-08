@@ -24,4 +24,10 @@ class Subject extends Model
     {
         return $this->hasMany(Schedule::class);
     }
+
+    // Relasi yang dibutuhkan StudentAssignmentController::scores()
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class);
+    }
 }

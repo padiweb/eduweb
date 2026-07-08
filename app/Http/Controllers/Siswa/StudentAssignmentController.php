@@ -23,9 +23,9 @@ class StudentAssignmentController extends Controller
 
         if (! $classroom) {
             return view('siswa.assignments.index', [
-                'activeAssignments'  => collect(),
-                'closedAssignments'  => collect(),
-                'classroom'          => null,
+                'activeAssignments' => collect(),
+                'closedAssignments' => collect(),
+                'classroom'         => null,
             ]);
         }
 
@@ -76,7 +76,8 @@ class StudentAssignmentController extends Controller
             $rules['content']  = ['nullable', 'string', 'max:10000'];
         }
         if (in_array($assignment->submission_type, ['file', 'any'])) {
-            $rules['file']     = ['nullable', 'file', 'max:51200']; // 50MB, semua jenis file
+            $rules['files']    = ['nullable', 'array', 'max:10']; // max 10 file
+            $rules['files.*']  = ['file', 'max:51200'];           // 50MB per file
         }
         if (in_array($assignment->submission_type, ['link', 'any'])) {
             $rules['link_url'] = ['nullable', 'url', 'max:500'];
@@ -84,16 +85,31 @@ class StudentAssignmentController extends Controller
 
         $validated = $request->validate($rules);
 
-        if (empty($validated['content']) && ! $request->hasFile('file') && empty($validated['link_url'])) {
+        // Cek minimal satu isian
+        $hasContent = ! empty($validated['content'])
+            || $request->hasFile('files')
+            || ! empty($validated['link_url']);
+
+        if (! $hasContent) {
             return back()->with('error', 'Isi minimal satu: teks, file, atau link.');
         }
 
+        // Upload semua file, simpan path dipisah koma
         $filePath = null;
-        if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store(
-                "assignments/{$assignment->school_id}/{$assignment->id}/{$student->id}",
-                'public'
-            );
+        if ($request->hasFile('files')) {
+            $paths = [];
+            foreach ($request->file('files') as $file) {
+                // Simpan dengan nama asli file (sanitize dulu)
+                $originalName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $file->getClientOriginalName());
+                $fileName     = time() . '_' . $originalName;
+                $file->storeAs(
+                    "assignments/{$assignment->school_id}/{$assignment->id}/{$student->id}",
+                    $fileName,
+                    'public'
+                );
+                $paths[] = "assignments/{$assignment->school_id}/{$assignment->id}/{$student->id}/{$fileName}";
+            }
+            $filePath = implode(',', $paths);
         }
 
         $this->service->submit($assignment, $student, [
@@ -105,8 +121,8 @@ class StudentAssignmentController extends Controller
         return back()->with('success', 'Tugas berhasil dikumpulkan.');
     }
 
-    // Siswa lihat file tugasnya sendiri
-    public function viewFile(Assignment $assignment)
+    // Siswa lihat salah satu file tugasnya (by index)
+    public function viewFile(Request $request, Assignment $assignment)
     {
         $student = auth()->user();
 
@@ -114,11 +130,20 @@ class StudentAssignmentController extends Controller
             ->where('student_id', $student->id)
             ->firstOrFail();
 
-        if (! $submission->file_path || ! Storage::disk('public')->exists($submission->file_path)) {
-            abort(404, 'File tidak ditemukan.');
+        if (! $submission->file_path) abort(404, 'File tidak ditemukan.');
+
+        $files = array_filter(explode(',', $submission->file_path));
+        $index = (int) $request->get('index', 0);
+
+        if (! isset($files[$index])) abort(404, 'File tidak ditemukan.');
+
+        $path = trim($files[$index]);
+
+        if (! Storage::disk('public')->exists($path)) {
+            abort(404, 'File tidak ditemukan di storage.');
         }
 
-        return response()->file(Storage::disk('public')->path($submission->file_path));
+        return response()->file(Storage::disk('public')->path($path));
     }
 
     public function scores()
@@ -135,7 +160,6 @@ class StudentAssignmentController extends Controller
             ]);
         }
 
-        // Ambil mapel yang ada tugasnya di kelas ini (TANPA relasi subjects di classroom)
         $subjects = Subject::whereHas('assignments', fn($q) =>
             $q->where('classroom_id', $classroom->id)->where('is_closed', true)
         )->orderBy('name')->get();

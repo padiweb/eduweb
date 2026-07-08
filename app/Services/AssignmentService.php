@@ -14,41 +14,33 @@ class AssignmentService
 {
     // ── Submit tugas siswa ─────────────────────────────────────────────────
 
-    public function submit(
-        Assignment $assignment,
-        User       $student,
-        array      $data
-    ): AssignmentSubmission {
+    public function submit(Assignment $assignment, User $student, array $data): AssignmentSubmission
+    {
         return DB::transaction(function () use ($assignment, $student, $data) {
-
             $isLate = $assignment->deadline && now()->isAfter($assignment->deadline);
+            $status = $isLate ? 'late' : 'submitted';
 
-            $submission = AssignmentSubmission::updateOrCreate(
-                [
-                    'assignment_id' => $assignment->id,
-                    'student_id'    => $student->id,
-                ],
+            $existing = AssignmentSubmission::where('assignment_id', $assignment->id)
+                ->where('student_id', $student->id)
+                ->first();
+
+            return AssignmentSubmission::updateOrCreate(
+                ['assignment_id' => $assignment->id, 'student_id' => $student->id],
                 [
                     'content'      => $data['content'] ?? null,
-                    'file_path'    => $data['file_path'] ?? null,
+                    'file_path'    => $data['file_path'] ?? ($existing?->file_path),
                     'link_url'     => $data['link_url'] ?? null,
-                    'status'       => $isLate ? 'late' : 'submitted',
+                    'status'       => $status,
                     'submitted_at' => now(),
                 ]
             );
-
-            return $submission;
         });
     }
 
     // ── Beri nilai ─────────────────────────────────────────────────────────
 
-    public function grade(
-        AssignmentSubmission $submission,
-        int                  $score,
-        ?string              $feedback,
-        User                 $teacher
-    ): AssignmentSubmission {
+    public function grade(AssignmentSubmission $submission, int $score, ?string $feedback, User $teacher): AssignmentSubmission
+    {
         $submission->update([
             'score'      => $score,
             'feedback'   => $feedback,
@@ -56,74 +48,42 @@ class AssignmentService
             'graded_at'  => now(),
             'graded_by'  => $teacher->id,
         ]);
-
         return $submission;
     }
 
-    // ── Tutup tugas (guru) — buat poin pelanggaran untuk yang belum kumpul ─
+    // ── Tutup tugas ────────────────────────────────────────────────────────
 
     public function closeAssignment(Assignment $assignment, User $teacher): int
     {
         return DB::transaction(function () use ($assignment, $teacher) {
 
-            $assignment->update([
-                'is_closed' => true,
-                'closed_at' => now(),
-            ]);
+            $assignment->update(['is_closed' => true, 'closed_at' => now()]);
 
-            // Ambil semua siswa di kelas
             $students = $assignment->classroom->students;
 
-            // Siswa yang sudah submit
-            $submittedIds = $assignment->submissions()
-                ->pluck('student_id')
-                ->toArray();
+            // ID siswa yang sudah punya submission
+            $existingIds = $assignment->submissions()->pluck('student_id')->toArray();
 
             // Siswa yang belum submit sama sekali
-            $notSubmitted = $students->whereNotIn('id', $submittedIds);
+            $notSubmitted = $students->whereNotIn('id', $existingIds);
 
-            $violationCount = 0;
-
+            $count = 0;
             foreach ($notSubmitted as $student) {
-                // Buat submission kosong dengan status tidak kumpul
-                $submission = AssignmentSubmission::create([
-                    'assignment_id' => $assignment->id,
-                    'student_id'    => $student->id,
-                    'status'        => 'submitted', // akan ditandai via violation
-                    'submitted_at'  => now(),
+                // Buat submission kosong dengan status not_submitted
+                AssignmentSubmission::create([
+                    'assignment_id'     => $assignment->id,
+                    'student_id'        => $student->id,
+                    'status'            => 'not_submitted',
+                    'submitted_at'      => null, // tidak ada tanggal submit
                     'violation_created' => false,
                 ]);
 
-                // Buat poin pelanggaran tidak kumpul tugas (2 poin)
-                $this->createAssignmentViolation(
-                    $assignment,
-                    $student,
-                    'tugas_tidak_kumpul'
-                );
-
-                $violationCount++;
+                $this->createViolation($assignment, $student);
+                $count++;
             }
 
-            return $violationCount;
+            return $count;
         });
-    }
-
-    // ── Hitung nilai akhir per mapel ───────────────────────────────────────
-
-    public function getAverageScore(int $studentId, int $subjectId, int $classroomId): ?float
-    {
-        $scores = AssignmentSubmission::whereHas('assignment', function ($q) use ($subjectId, $classroomId) {
-            $q->where('subject_id', $subjectId)
-              ->where('classroom_id', $classroomId)
-              ->where('is_closed', true);
-        })
-        ->where('student_id', $studentId)
-        ->whereNotNull('score')
-        ->pluck('score');
-
-        if ($scores->isEmpty()) return null;
-
-        return round($scores->avg(), 1);
     }
 
     // ── Rekap nilai per kelas per mapel ───────────────────────────────────
@@ -138,9 +98,7 @@ class AssignmentService
             ->get();
 
         $students = \App\Models\Classroom::find($classroomId)
-            ->students()
-            ->orderBy('name')
-            ->get();
+            ->students()->orderBy('name')->get();
 
         $result = [];
         foreach ($students as $student) {
@@ -148,52 +106,37 @@ class AssignmentService
             $total  = 0;
             $count  = 0;
 
-            foreach ($assignments as $assignment) {
-                $submission = $assignment->submissions
-                    ->firstWhere('student_id', $student->id);
-
-                $score = $submission?->score;
-                $scores[$assignment->id] = $score;
-
-                if ($score !== null) {
-                    $total += $score;
+            foreach ($assignments as $a) {
+                $sub = $a->submissions->firstWhere('student_id', $student->id);
+                // Simpan sebagai array agar view bisa bedakan score vs status
+                $scores[$a->id] = [
+                    'score'  => $sub?->score,
+                    'status' => $sub?->status,
+                ];
+                if ($sub?->score !== null) {
+                    $total += $sub->score;
                     $count++;
                 }
             }
 
             $result[] = [
-                'student'     => $student,
-                'scores'      => $scores,
-                'average'     => $count > 0 ? round($total / $count, 1) : null,
+                'student' => $student,
+                'scores'  => $scores,
+                'average' => $count > 0 ? round($total / $count, 1) : null,
             ];
         }
 
-        return [
-            'assignments' => $assignments,
-            'students'    => $result,
-        ];
+        return ['assignments' => $assignments, 'students' => $result];
     }
 
-    // ── Private: buat poin pelanggaran tugas ──────────────────────────────
+    // ── Private: buat poin pelanggaran ────────────────────────────────────
 
-    private function createAssignmentViolation(
-        Assignment $assignment,
-        User       $student,
-        string     $source
-    ): void {
+    private function createViolation(Assignment $assignment, User $student): void
+    {
         try {
-            $points = match ($source) {
-                'tugas_tidak_kumpul' => 2,
-                default              => 1,
-            };
-
-            $names = [
-                'tugas_tidak_kumpul' => 'Tidak Mengumpulkan Tugas',
-            ];
-
             $category = ViolationCategory::firstOrCreate(
-                ['school_id' => $assignment->school_id, 'name' => $names[$source]],
-                ['severity' => 'sedang', 'default_points' => $points]
+                ['school_id' => $assignment->school_id, 'name' => 'Tidak Mengumpulkan Tugas'],
+                ['severity' => 'sedang', 'default_points' => 2]
             );
 
             Violation::create([
@@ -205,10 +148,9 @@ class AssignmentService
                 'incident_date' => today(),
                 'description'   => 'Tidak mengumpulkan tugas: ' . $assignment->title .
                                    ' (' . $assignment->subject->name . ')',
-                'points'        => $points,
-                'source'        => $source,
+                'points'        => 2,
+                'source'        => 'tugas_tidak_kumpul',
             ]);
-
         } catch (\Throwable $e) {
             Log::warning('Gagal buat pelanggaran tugas: ' . $e->getMessage());
         }

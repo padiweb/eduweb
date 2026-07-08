@@ -151,8 +151,20 @@
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1.5">Deadline (opsional)</label>
-                    <input type="datetime-local" name="deadline"
-                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <input type="date" name="deadline_date" id="deadline_date"
+                                   class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            <p class="text-xs text-gray-600 mt-1">Tanggal (dd/mm/yyyy)</p>
+                        </div>
+                        <div>
+                            <input type="time" name="deadline_time" id="deadline_time"
+                                   value="23:59"
+                                   class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            <p class="text-xs text-gray-600 mt-1">Jam</p>
+                        </div>
+                    </div>
+                    <input type="hidden" name="deadline" id="deadline_combined">
                     <p class="text-xs text-gray-600 mt-1">Kosongkan jika tidak ada deadline.</p>
                 </div>
                 <div class="flex gap-3 pt-2">
@@ -174,6 +186,16 @@
         document.getElementById('btn-close-modal')?.addEventListener('click', close);
         document.getElementById('btn-cancel-modal')?.addEventListener('click', close);
         modal?.addEventListener('click', function(e) { if (e.target === modal) close(); });
+
+        // Gabungkan tanggal + jam ke hidden input deadline
+        function combineDeadline() {
+            var d = document.getElementById('deadline_date')?.value;
+            var t = document.getElementById('deadline_time')?.value || '23:59';
+            var combined = document.getElementById('deadline_combined');
+            if (combined) combined.value = d ? (d + ' ' + t + ':00') : '';
+        }
+        document.getElementById('deadline_date')?.addEventListener('change', combineDeadline);
+        document.getElementById('deadline_time')?.addEventListener('change', combineDeadline);
     })();
     </script>
 

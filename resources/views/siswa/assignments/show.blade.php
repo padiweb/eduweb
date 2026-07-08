@@ -71,7 +71,7 @@
             @if($submission && $submission->score !== null)
                 <div class="bg-gray-900 border border-emerald-500/20 rounded-xl p-5">
                     <p class="text-xs text-gray-500 mb-2">Nilaimu</p>
-                    <p class="text-4xl font-bold {{ $submission->score >= 80 ? 'text-emerald-400' : ($submission->score >= 60 ? 'text-amber-400' : 'text-red-400') }} mb-2">
+                    <p class="text-4xl font-bold {{ $submission->score >= 80 ? 'text-emerald-400' : ($submission->score >= 60 ? 'text-amber-400' : 'text-red-400') }} mb-1">
                         {{ $submission->score }}
                         <span class="text-sm text-gray-500 font-normal">/ {{ $assignment->max_score }}</span>
                     </p>
@@ -84,18 +84,36 @@
                 </div>
             @endif
 
-            {{-- Preview jawaban yang sudah dikumpulkan --}}
-            @if($submission)
+            {{-- Preview file yang sudah dikumpulkan --}}
+            @if($submission && ! $submission->isNotSubmitted() && $submission->hasContent())
                 <div class="bg-gray-900 border border-white/5 rounded-xl p-4">
                     <p class="text-xs text-gray-500 mb-2">Jawabanmu</p>
+
                     @if($submission->file_path)
-                        <a href="{{ route('siswa.assignments.view-file', $assignment->id) }}" target="_blank"
-                           class="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2">
-                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/>
-                            </svg>
-                            Lihat File yang Dikumpulkan
-                        </a>
+                        @php $files = array_values(array_filter(explode(',', $submission->file_path))); @endphp
+                        <div class="space-y-2">
+                            @foreach($files as $i => $fp)
+                                @php
+                                    $rawName  = basename(trim($fp));
+                                    // Hapus prefix timestamp jika ada (format: 1234567890_namafile.ext)
+                                    $dispName = preg_replace('/^\d+_/', '', $rawName);
+                                    // Potong nama jika terlalu panjang
+                                    $ext      = pathinfo($dispName, PATHINFO_EXTENSION);
+                                    $base     = pathinfo($dispName, PATHINFO_FILENAME);
+                                    $short    = mb_strlen($base) > 20 ? mb_substr($base, 0, 20) . '...' : $base;
+                                    $label    = $short . ($ext ? '.'.$ext : '');
+                                @endphp
+                                <a href="{{ route('siswa.assignments.view-file', ['assignment' => $assignment->id, 'index' => $i]) }}" target="_blank"
+                                   class="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2 min-w-0">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/>
+                                    </svg>
+                                    <span class="truncate">
+                                        {{ count($files) > 1 ? 'File '.($i+1).': ' : '' }}{{ $label }}
+                                    </span>
+                                </a>
+                            @endforeach
+                        </div>
                     @elseif($submission->link_url)
                         <a href="{{ $submission->link_url }}" target="_blank"
                            class="text-sm text-blue-400 hover:text-blue-300 transition-colors break-all">
@@ -118,6 +136,11 @@
                     <p class="text-gray-400 text-sm font-medium">Tugas sudah ditutup</p>
                     <p class="text-gray-600 text-xs mt-1">Tidak bisa mengumpulkan atau merevisi jawaban.</p>
                 </div>
+            @elseif($submission && $submission->isNotSubmitted())
+                <div class="bg-gray-900 border border-red-500/20 rounded-xl p-8 text-center">
+                    <p class="text-red-400 text-sm font-medium">Tidak Mengumpulkan Tugas</p>
+                    <p class="text-gray-500 text-xs mt-1">Tugas ini sudah ditutup dan kamu tidak mengumpulkan.</p>
+                </div>
             @else
                 <div class="bg-gray-900 border {{ $submission ? 'border-emerald-500/20' : 'border-white/5' }} rounded-xl p-5">
                     <h2 class="text-sm font-semibold text-white mb-1">
@@ -125,9 +148,9 @@
                     </h2>
                     @if($submission)
                         <p class="text-xs text-gray-500 mb-4">
-                            Sudah dikumpulkan {{ $submission->submitted_at->translatedFormat('d M Y H:i') }}
+                            Dikumpulkan {{ $submission->submitted_at->translatedFormat('d M Y H:i') }}
                             @if($submission->isLate()) <span class="text-amber-400">&middot; Terlambat</span> @endif
-                            &middot; Kamu bisa merevisi jawaban sebelum tugas ditutup.
+                            &middot; Kamu bisa merevisi sebelum tugas ditutup.
                         </p>
                     @else
                         <p class="text-xs text-gray-500 mb-4">Kumpulkan jawaban sebelum tugas ditutup.</p>
@@ -136,33 +159,56 @@
                     <form method="POST"
                           action="{{ route('siswa.assignments.submit', $assignment->id) }}"
                           enctype="multipart/form-data"
-                          class="space-y-4"
-                          id="form-submit">
+                          id="form-submit"
+                          class="space-y-4">
                         @csrf
 
+                        {{-- Teks --}}
                         @if(in_array($assignment->submission_type, ['text', 'any']))
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">
-                                    Jawaban Teks {{ $assignment->submission_type === 'text' ? '<span class="text-red-400">*</span>' : '' }}
-                                </label>
-                                <textarea name="content" rows="6"
+                                <label class="block text-xs text-gray-400 mb-1.5">Jawaban Teks</label>
+                                <textarea name="content" rows="5"
                                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
                                           placeholder="Tulis jawabanmu di sini...">{{ $submission?->content }}</textarea>
                             </div>
                         @endif
 
+                        {{-- Multi-file upload --}}
                         @if(in_array($assignment->submission_type, ['file', 'any']))
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Upload File</label>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="text-xs text-gray-400">Upload File</label>
+                                    <button type="button" id="btn-add-file"
+                                            class="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                        </svg>
+                                        Tambah File
+                                    </button>
+                                </div>
+
+                                <div id="file-inputs" class="space-y-2">
+                                    <div class="file-input-row flex items-center gap-2">
+                                        <input type="file" name="files[]"
+                                               class="flex-1 bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300">
+                                    </div>
+                                </div>
+
                                 @if($submission?->file_path)
-                                    <p class="text-xs text-gray-500 mb-1.5">Upload file baru untuk mengganti yang lama.</p>
+                                    @php $existingFiles = array_filter(explode(',', $submission->file_path)); @endphp
+                                    <div class="mt-2 space-y-1">
+                                        <p class="text-xs text-gray-500">File saat ini (upload baru untuk mengganti):</p>
+                                        @foreach($existingFiles as $i => $fp)
+                                            <p class="text-xs text-blue-400">{{ $i+1 }}. {{ basename($fp) }}</p>
+                                        @endforeach
+                                    </div>
                                 @endif
-                                <input type="file" name="file"
-                                       class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300">
-                                <p class="text-xs text-gray-600 mt-1">Semua jenis file. Maks 50MB.</p>
+
+                                <p class="text-xs text-gray-600 mt-1.5">Semua jenis file. Maks 50MB per file.</p>
                             </div>
                         @endif
 
+                        {{-- Link --}}
                         @if(in_array($assignment->submission_type, ['link', 'any']))
                             <div>
                                 <label class="block text-xs text-gray-400 mb-1.5">Link</label>
@@ -194,22 +240,40 @@
         </div>
     </div>
 
-    @if(! $assignment->is_closed)
+    @if(! $assignment->is_closed && ! ($submission && $submission->isNotSubmitted()))
     <script>
     (function() {
-        var form   = document.getElementById('form-submit');
-        var btn    = document.getElementById('btn-submit');
-        var prog   = document.getElementById('upload-progress');
-        var bar    = document.getElementById('progress-bar');
-        var pct    = document.getElementById('progress-pct');
-        var CSRF   = document.querySelector('meta[name="csrf-token"]').content;
+        // Tombol tambah file
+        document.getElementById('btn-add-file')?.addEventListener('click', function() {
+            var container = document.getElementById('file-inputs');
+            var row       = document.createElement('div');
+            row.className = 'file-input-row flex items-center gap-2';
+            row.innerHTML = '<input type="file" name="files[]" class="flex-1 bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-700 file:text-gray-300">'
+                + '<button type="button" class="btn-remove-file text-gray-600 hover:text-red-400 transition-colors flex-shrink-0">'
+                + '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
+                + '</button>';
+            container.appendChild(row);
+
+            row.querySelector('.btn-remove-file').addEventListener('click', function() {
+                container.removeChild(row);
+            });
+        });
+
+        // Upload dengan progress bar
+        var form = document.getElementById('form-submit');
+        var btn  = document.getElementById('btn-submit');
+        var prog = document.getElementById('upload-progress');
+        var bar  = document.getElementById('progress-bar');
+        var pct  = document.getElementById('progress-pct');
+        var CSRF = document.querySelector('meta[name="csrf-token"]').content;
 
         form?.addEventListener('submit', function(e) {
-            var fileInput = form.querySelector('input[type="file"]');
-            if (!fileInput || !fileInput.files.length) return; // tidak ada file, submit biasa
+            var fileInputs = form.querySelectorAll('input[type="file"]');
+            var hasFile    = Array.from(fileInputs).some(function(inp) { return inp.files.length > 0; });
+            if (!hasFile) return; // tidak ada file baru, submit biasa
 
             e.preventDefault();
-            btn.disabled = true;
+            btn.disabled    = true;
             btn.textContent = 'Mengupload...';
             prog.classList.remove('hidden');
 
@@ -225,10 +289,10 @@
             });
 
             xhr.addEventListener('load', function() {
-                if (xhr.status === 200 || xhr.status === 302) {
+                if (xhr.status < 400) {
                     window.location.reload();
                 } else {
-                    btn.disabled = false;
+                    btn.disabled    = false;
                     btn.textContent = '{{ $submission ? "Revisi Jawaban" : "Kumpulkan Tugas" }}';
                     prog.classList.add('hidden');
                     alert('Gagal mengupload. Coba lagi.');
@@ -236,7 +300,7 @@
             });
 
             xhr.addEventListener('error', function() {
-                btn.disabled = false;
+                btn.disabled    = false;
                 btn.textContent = '{{ $submission ? "Revisi Jawaban" : "Kumpulkan Tugas" }}';
                 prog.classList.add('hidden');
                 alert('Koneksi gagal.');

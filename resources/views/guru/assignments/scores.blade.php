@@ -12,7 +12,6 @@
         <p class="text-gray-400 text-sm mt-1">Rata-rata nilai tugas per siswa per mata pelajaran</p>
     </div>
 
-    {{-- Filter --}}
     <form method="GET" class="flex flex-wrap gap-3 mb-6">
         <select name="classroom_id"
                 class="bg-gray-900 border border-white/10 text-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
@@ -42,8 +41,8 @@
                         <tr class="border-b border-white/5">
                             <th class="px-5 py-3.5 text-left text-xs font-semibold text-gray-400 min-w-[180px]">Nama Siswa</th>
                             @foreach($data['assignments'] as $a)
-                                <th class="px-3 py-3.5 text-center text-xs font-semibold text-gray-400 min-w-[80px]">
-                                    <span class="truncate block max-w-[80px]" title="{{ $a->title }}">
+                                <th class="px-3 py-3.5 text-center text-xs font-semibold text-gray-400 min-w-[90px]">
+                                    <span class="block truncate max-w-[80px] mx-auto" title="{{ $a->title }}">
                                         {{ Str::limit($a->title, 15) }}
                                     </span>
                                 </th>
@@ -59,9 +58,15 @@
                                     <p class="text-xs text-gray-500">{{ $row['student']->nis }}</p>
                                 </td>
                                 @foreach($data['assignments'] as $a)
-                                    @php $score = $row['scores'][$a->id] ?? null; @endphp
+                                    @php
+                                        $cell   = $row['scores'][$a->id] ?? null;
+                                        $score  = is_array($cell) ? $cell['score'] : $cell;
+                                        $status = is_array($cell) ? $cell['status'] : null;
+                                    @endphp
                                     <td class="px-3 py-3 text-center">
-                                        @if($score !== null)
+                                        @if($status === 'not_submitted')
+                                            <span class="text-xs text-red-500" title="Tidak Dikumpulkan">TK</span>
+                                        @elseif($score !== null)
                                             <span class="font-semibold {{ $score >= 80 ? 'text-emerald-400' : ($score >= 70 ? 'text-blue-400' : ($score >= 60 ? 'text-amber-400' : 'text-red-400')) }}">
                                                 {{ $score }}
                                             </span>
@@ -84,6 +89,7 @@
                     </tbody>
                 </table>
             </div>
+            <p class="text-xs text-gray-600 mt-2">TK = Tidak Dikumpulkan (tidak dihitung dalam rata-rata)</p>
         @else
             <div class="bg-gray-900 border border-white/5 rounded-xl p-12 text-center">
                 <p class="text-gray-500 text-sm">Belum ada tugas yang ditutup untuk kelas dan mapel ini.</p>
