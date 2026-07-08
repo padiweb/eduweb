@@ -14,14 +14,25 @@
                 Tujuan: <span class="text-emerald-400 font-semibold">{{ $activeYear?->label ?? 'Belum ada tahun ajaran aktif' }}</span>
             </p>
         </div>
-        <button form="form-promosi" type="submit"
-                class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
-                onclick="return confirm('Proses promosi massal? Pastikan semua pilihan sudah benar.')">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            Proses Promosi
-        </button>
+        <div class="flex items-center gap-2">
+            {{-- Tombol set semua naik kelas --}}
+            <button type="button"
+                    onclick="setAllStudents('naik')"
+                    class="flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 px-4 py-2 rounded-xl transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
+                </svg>
+                Semua Naik Kelas
+            </button>
+            <button form="form-promosi" type="submit"
+                    class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+                    onclick="return confirm('Proses promosi massal? Pastikan semua pilihan sudah benar.')">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Proses Promosi
+            </button>
+        </div>
     </div>
 
     @if($classrooms->isEmpty())
@@ -29,6 +40,19 @@
             <p class="text-gray-500 text-sm">Tidak ada kelas aktif di tahun ajaran yang dipilih.</p>
         </div>
     @else
+        {{-- Tombol global --}}
+        <div class="flex items-center gap-3 mb-4 p-4 bg-gray-900 border border-white/5 rounded-xl">
+            <span class="text-xs text-gray-400 font-semibold">Set semua siswa:</span>
+            <button type="button" onclick="setAllStudents('naik')"
+                    class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                ⬆ Semua Naik Kelas
+            </button>
+            <button type="button" onclick="setAllStudents('lulus')"
+                    class="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                🎓 Semua Lulus
+            </button>
+        </div>
+
         <form id="form-promosi" method="POST" action="{{ route('admin.promotions.process') }}">
             @csrf
 
@@ -47,11 +71,20 @@
                             </p>
                         </div>
                         {{-- Tombol set semua naik kelas --}}
-                        <button type="button"
-                                onclick="setAllInClass('{{ $classroom->id }}', 'naik')"
-                                class="text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg transition-colors">
-                            Semua Naik Kelas
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button type="button"
+                                    onclick="setAllInClass('{{ $classroom->id }}', 'naik', {{ $classroom->grade }})"
+                                    class="text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                                ⬆ Semua Naik Kelas
+                            </button>
+                            @if($classroom->grade >= ($school->school_program_years * 2 / 2 + 9))
+                                <button type="button"
+                                        onclick="setAllInClass('{{ $classroom->id }}', 'lulus', {{ $classroom->grade }})"
+                                        class="text-xs text-blue-400 hover:text-blue-300 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                                    🎓 Semua Lulus
+                                </button>
+                            @endif
+                        </div>
                     </div>
 
                     {{-- Daftar siswa --}}
@@ -77,6 +110,7 @@
                                     <select name="promotions[{{ $idx }}][action]"
                                             class="action-select w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
                                             data-idx="{{ $idx }}"
+                                            data-classid="{{ $classroom->id }}"
                                             onchange="handleActionChange(this)">
                                         <option value="naik">⬆ Naik Kelas</option>
                                         <option value="tidak_naik">↩ Tidak Naik</option>
@@ -126,24 +160,58 @@
     @endif
 
     <script>
+    // Data kelas tujuan untuk auto-match berdasarkan grade
+    var targetClassrooms = @json($targetClassrooms->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'grade' => $c->grade])->values());
+
     function handleActionChange(select) {
-        var idx   = select.dataset.idx;
-        var wrap  = document.querySelector('.target-class-wrap-' + idx);
+        var idx    = select.dataset.idx;
+        var wrap   = document.querySelector('.target-class-wrap-' + idx);
         var action = select.value;
-        // Tampilkan kelas tujuan hanya untuk naik dan tidak naik
         if (wrap) {
             wrap.style.display = (action === 'naik' || action === 'tidak_naik') ? '' : 'none';
         }
     }
 
-    function setAllInClass(classId, action) {
-        var rows = document.querySelectorAll('[data-class="' + classId + '"]');
-        rows.forEach(function(row) {
-            var sel = row.querySelector('.action-select');
-            if (sel) {
-                sel.value = action;
-                handleActionChange(sel);
+    // Set semua siswa dalam satu kelas + auto-pilih kelas tujuan
+    function setAllInClass(classId, action, sourceGrade) {
+        var selects = document.querySelectorAll('.action-select[data-classid="' + classId + '"]');
+        selects.forEach(function(sel) {
+            sel.value = action;
+            handleActionChange(sel);
+
+            // Auto-pilih kelas tujuan dengan grade lebih tinggi
+            if ((action === 'naik' || action === 'tidak_naik') && sourceGrade) {
+                var idx     = sel.dataset.idx;
+                var wrap    = document.querySelector('.target-class-wrap-' + idx);
+                if (wrap) {
+                    var targetSel = wrap.querySelector('select');
+                    if (targetSel && !targetSel.value) {
+                        var targetGrade = action === 'naik' ? parseInt(sourceGrade) + 1 : parseInt(sourceGrade);
+                        // Cari kelas tujuan dengan grade yang cocok
+                        var matched = targetClassrooms.find(function(tc) { return tc.grade === targetGrade; });
+                        if (matched) targetSel.value = matched.id;
+                    }
+                }
             }
+        });
+
+        var count = selects.length;
+        // Tampilkan konfirmasi singkat
+        var btn = event.target;
+        var orig = btn.textContent;
+        btn.textContent = '✓ ' + count + ' siswa';
+        btn.className = btn.className.replace('emerald', 'blue');
+        setTimeout(function() {
+            btn.textContent = orig;
+            btn.className = btn.className.replace('blue', 'emerald');
+        }, 2000);
+    }
+
+    // Set SEMUA siswa di semua kelas
+    function setAllStudents(action) {
+        document.querySelectorAll('.action-select').forEach(function(sel) {
+            sel.value = action;
+            handleActionChange(sel);
         });
     }
 

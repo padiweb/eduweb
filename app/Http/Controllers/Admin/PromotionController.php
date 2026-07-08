@@ -59,7 +59,7 @@ class PromotionController extends Controller
             ->get();
 
         return view('admin.promotions.source', compact(
-            'classrooms', 'targetClassrooms', 'activeYear'
+            'classrooms', 'targetClassrooms', 'activeYear', 'school'
         ));
     }
 
