@@ -128,6 +128,9 @@
                 <x-sidebar-link href="#" :active="false" icon="book">
                     Mata Pelajaran
                 </x-sidebar-link>
+                <x-sidebar-link href="{{ route('admin.classrooms.index') }}" :active="request()->routeIs('admin.classrooms.*')" icon="school">
+                    Manajemen Kelas
+                </x-sidebar-link>
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Monitoring</p>
                 </div>
