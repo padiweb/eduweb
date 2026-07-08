@@ -17,6 +17,11 @@ class School extends Model
         'feature_payment_info', 'feature_cbt_integration',
         'package', 'active_until', 'is_active',
         'timezone',
+        // Pelanggaran & peringatan
+        'violation_warning1',
+        'violation_warning2',
+        'violation_warning3',
+        'alfa_limit_per_semester',
     ];
 
     protected $casts = [
@@ -32,6 +37,10 @@ class School extends Model
         'feature_prakerin'        => 'boolean',
         'feature_payment_info'    => 'boolean',
         'feature_cbt_integration' => 'boolean',
+        'violation_warning1'      => 'integer',
+        'violation_warning2'      => 'integer',
+        'violation_warning3'      => 'integer',
+        'alfa_limit_per_semester' => 'integer',
     ];
 
     // ── Relasi ─────────────────────────────────────────────────────────────
@@ -74,18 +83,11 @@ class School extends Model
         return (bool) ($this->{$column} ?? false);
     }
 
-    /**
-     * Total semester berdasarkan program sekolah.
-     * 3 tahun = 6 semester, 4 tahun = 8 semester.
-     */
     public function getTotalSemestersAttribute(): int
     {
         return $this->school_program_years * 2;
     }
 
-    /**
-     * Apakah sekarang dalam jam aktif absensi?
-     */
     public function isAttendanceOpen(): bool
     {
         $now = now()->format('H:i:s');

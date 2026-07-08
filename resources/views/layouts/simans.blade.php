@@ -44,15 +44,11 @@
                 <x-sidebar-link href="{{ route('siswa.siswa.dashboard') }}" :active="request()->routeIs('siswa.siswa.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                {{-- Absensi — mengarah ke halaman absensi langsung (GPS tanpa scan kamera) --}}
-                <x-sidebar-link href="{{ route('siswa.attendance.absensi') }}" :active="request()->routeIs('siswa.attendance.absensi') || request()->routeIs('siswa.attendance.*')" icon="qrcode">
+                <x-sidebar-link href="{{ route('siswa.attendance.absensi') }}" :active="request()->routeIs('siswa.attendance.*')" icon="qrcode">
                     Absensi
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="book">
-                    Tugas
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="chart-bar">
-                    Nilai
+                <x-sidebar-link href="{{ route('siswa.assignments.index') }}" :active="request()->routeIs('siswa.assignments.*')" icon="book">
+                    Tugas & Nilai
                 </x-sidebar-link>
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Informasi</p>
@@ -79,7 +75,7 @@
                 <x-sidebar-link href="{{ route('guru.attendance.index') }}" :active="request()->routeIs('guru.attendance.*')" icon="clipboard">
                     Absensi Siswa
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="book">
+                <x-sidebar-link href="{{ route('guru.assignments.index') }}" :active="request()->routeIs('guru.assignments.*')" icon="book">
                     Tugas & Nilai
                 </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="journal">
