@@ -7,6 +7,7 @@ use App\Http\Controllers\Attendance\StudentScanController;
 use App\Http\Controllers\Attendance\ClassQrController;
 use App\Http\Controllers\Admin\SchoolSettingController;
 use App\Http\Controllers\Admin\QrManagementController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Kesiswaan\ViolationController;
 use App\Http\Controllers\Guru\AssignmentController;
 use App\Http\Controllers\Siswa\StudentAssignmentController;
@@ -23,17 +24,39 @@ Route::middleware(['auth', 'school.active'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // ─────────────────────────────────────────────────────────────────────────
     // ADMIN
+    // ─────────────────────────────────────────────────────────────────────────
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+
         Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+
+        // Pengaturan Sekolah
         Route::get('/pengaturan', [SchoolSettingController::class, 'index'])->name('settings.school');
         Route::put('/pengaturan', [SchoolSettingController::class, 'update'])->name('settings.school.update');
         Route::post('/pengaturan/gps', [SchoolSettingController::class, 'updateGps'])->name('settings.school.gps');
+
+        // Kelola QR Kelas
         Route::get('/qr', [QrManagementController::class, 'index'])->name('qr.index');
         Route::post('/qr/{classroom}/refresh', [QrManagementController::class, 'refreshToken'])->name('qr.refresh');
+
+        // Manajemen User — /positions HARUS di atas /{user} agar tidak bentrok
+        Route::get('/users/positions', [UserManagementController::class, 'positions'])->name('users.positions');
+        Route::post('/users/positions', [UserManagementController::class, 'storePosition'])->name('users.positions.store');
+        Route::delete('/users/positions/{position}', [UserManagementController::class, 'destroyPosition'])->name('users.positions.destroy');
+
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+        Route::patch('/users/{user}/toggle', [UserManagementController::class, 'toggleActive'])->name('users.toggle');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
     });
 
+    // ─────────────────────────────────────────────────────────────────────────
     // GURU / WALI KELAS / KESISWAAN / ADMIN
+    // ─────────────────────────────────────────────────────────────────────────
     Route::middleware('role:guru,wali_kelas,kesiswaan,admin')->prefix('guru')->name('guru.')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'guru'])->name('dashboard');
@@ -51,7 +74,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::get('/kelas/{classroom}/cetak-qr', [ClassQrController::class, 'print'])->name('class.print-qr');
         });
 
-        // Tugas & Nilai
+        // Tugas & Nilai — /nilai HARUS di atas /{assignment}
         Route::prefix('tugas')->name('assignments.')->group(function () {
             Route::get('/', [AssignmentController::class, 'index'])->name('index');
             Route::post('/', [AssignmentController::class, 'store'])->name('store');
@@ -59,14 +82,17 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::get('/{assignment}', [AssignmentController::class, 'show'])->name('show');
             Route::patch('/{assignment}/tutup', [AssignmentController::class, 'close'])->name('close');
             Route::post('/{assignment}/nilai', [AssignmentController::class, 'grade'])->name('grade');
-            // Guru lihat file tugas siswa
             Route::get('/{assignment}/file/{submission}', [AssignmentController::class, 'viewSubmissionFile'])->name('view-file');
         });
     });
 
+    // ─────────────────────────────────────────────────────────────────────────
     // KESISWAAN
+    // ─────────────────────────────────────────────────────────────────────────
     Route::middleware('role:kesiswaan,admin')->prefix('kesiswaan')->name('kesiswaan.')->group(function () {
+
         Route::get('/dashboard', [DashboardController::class, 'kesiswaan'])->name('dashboard');
+
         Route::prefix('pelanggaran')->name('violations.')->group(function () {
             Route::get('/', [ViolationController::class, 'index'])->name('index');
             Route::post('/', [ViolationController::class, 'store'])->name('store');
@@ -77,8 +103,11 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         });
     });
 
+    // ─────────────────────────────────────────────────────────────────────────
     // SISWA
+    // ─────────────────────────────────────────────────────────────────────────
     Route::middleware('role:siswa')->prefix('siswa')->name('siswa.')->group(function () {
+
         Route::get('/dashboard', [DashboardController::class, 'siswa'])->name('siswa.dashboard');
 
         // Absensi
@@ -89,13 +118,12 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         // Pelanggaran
         Route::get('/pelanggaran', fn() => view('siswa.violations'))->name('violations');
 
-        // Tugas & Nilai
+        // Tugas & Nilai — /nilai HARUS di atas /{assignment}
         Route::prefix('tugas')->name('assignments.')->group(function () {
             Route::get('/', [StudentAssignmentController::class, 'index'])->name('index');
             Route::get('/nilai', [StudentAssignmentController::class, 'scores'])->name('scores');
             Route::get('/{assignment}', [StudentAssignmentController::class, 'show'])->name('show');
             Route::post('/{assignment}/kumpul', [StudentAssignmentController::class, 'submit'])->name('submit');
-            // Siswa lihat file tugasnya sendiri
             Route::get('/{assignment}/file', [StudentAssignmentController::class, 'viewFile'])->name('view-file');
         });
     });

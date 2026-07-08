@@ -6,25 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'school_id', 'name', 'email', 'username', 'password',
-        'nis', 'nip', 'role', 'avatar_path',
-        'last_login_at', 'last_login_ip',
+        'nis', 'nisn', 'nip', 'niy', 'phone', 'role',
+        'avatar_path', 'last_login_at', 'last_login_ip',
         'failed_attempts', 'locked_until', 'is_active',
     ];
 
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -53,29 +51,35 @@ class User extends Authenticatable
         return $this->hasMany(Attendance::class, 'student_id');
     }
 
-    public function teacherAttendances(): HasMany
-    {
-        return $this->hasMany(TeacherAttendance::class, 'teacher_id');
-    }
-
-    public function attendanceSessions(): HasMany
-    {
-        return $this->hasMany(AttendanceSession::class, 'teacher_id');
-    }
-
-    // Relasi pelanggaran — dibutuhkan oleh ViolationController::index()
     public function violations(): HasMany
     {
         return $this->hasMany(Violation::class, 'student_id');
     }
 
+    public function studentDetail(): HasOne
+    {
+        return $this->hasOne(StudentDetail::class);
+    }
+
+    public function teacherDetail(): HasOne
+    {
+        return $this->hasOne(TeacherDetail::class);
+    }
+
+    public function positions(): BelongsToMany
+    {
+        return $this->belongsToMany(Position::class, 'teacher_positions', 'teacher_id', 'position_id')
+                    ->withTimestamps();
+    }
+
     // ── Helpers ────────────────────────────────────────────────────────────
 
     public function isSiswa(): bool      { return $this->role === 'siswa'; }
-    public function isGuru(): bool       { return $this->role === 'guru'; }
+    public function isGuru(): bool       { return in_array($this->role, ['guru', 'wali_kelas']); }
     public function isAdmin(): bool      { return $this->role === 'admin'; }
     public function isKesiswaan(): bool  { return $this->role === 'kesiswaan'; }
-    public function isWaliKelas(): bool  { return $this->role === 'wali_kelas'; }
+    public function isBendahara(): bool  { return $this->role === 'bendahara'; }
+    public function isOrtu(): bool       { return $this->role === 'ortu'; }
 
     public function canManageAttendance(): bool
     {
@@ -90,14 +94,31 @@ class User extends Authenticatable
     public function getInitialsAttribute(): string
     {
         $words = explode(' ', $this->name);
-        return strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
+        return strtoupper(
+            substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : '')
+        );
     }
 
     public function getAvatarUrlAttribute(): string
     {
-        if ($this->avatar_path) {
-            return asset('storage/' . $this->avatar_path);
-        }
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=1D9E75&color=fff';
+        // Cek photo dari detail
+        $photo = $this->studentDetail?->photo_path ?? $this->teacherDetail?->photo_path;
+        if ($photo) return asset('storage/' . $photo);
+        if ($this->avatar_path) return asset('storage/' . $this->avatar_path);
+
+        $bg = match($this->role) {
+            'siswa'     => '1D9E75',
+            'guru'      => '3B82F6',
+            'admin'     => '8B5CF6',
+            'kesiswaan' => 'F59E0B',
+            default     => '6B7280',
+        };
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=' . $bg . '&color=fff';
+    }
+
+    // Identifier untuk login (username/nis/nisn/nip/niy)
+    public function getLoginIdentifierAttribute(): string
+    {
+        return $this->username ?? $this->nis ?? $this->nisn ?? $this->nip ?? $this->niy ?? '-';
     }
 }

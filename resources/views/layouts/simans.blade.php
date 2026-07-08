@@ -113,6 +113,9 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Manajemen</p>
                 </div>
+                <x-sidebar-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" icon="users">
+                    Manajemen User
+                </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
