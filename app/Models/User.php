@@ -20,16 +20,18 @@ class User extends Authenticatable
         'nis', 'nisn', 'nip', 'niy', 'phone', 'role',
         'avatar_path', 'last_login_at', 'last_login_ip',
         'failed_attempts', 'locked_until', 'is_active',
+        'student_status', 'status_changed_at', 'status_notes',
     ];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'last_login_at'     => 'datetime',
-        'locked_until'      => 'datetime',
-        'is_active'         => 'boolean',
-        'password'          => 'hashed',
+        'email_verified_at'  => 'datetime',
+        'last_login_at'      => 'datetime',
+        'locked_until'       => 'datetime',
+        'status_changed_at'  => 'date',
+        'is_active'          => 'boolean',
+        'password'           => 'hashed',
     ];
 
     // ── Relasi ─────────────────────────────────────────────────────────────
@@ -74,12 +76,12 @@ class User extends Authenticatable
 
     // ── Helpers ────────────────────────────────────────────────────────────
 
-    public function isSiswa(): bool      { return $this->role === 'siswa'; }
-    public function isGuru(): bool       { return in_array($this->role, ['guru', 'wali_kelas']); }
-    public function isAdmin(): bool      { return $this->role === 'admin'; }
-    public function isKesiswaan(): bool  { return $this->role === 'kesiswaan'; }
-    public function isBendahara(): bool  { return $this->role === 'bendahara'; }
-    public function isOrtu(): bool       { return $this->role === 'ortu'; }
+    public function isSiswa(): bool     { return $this->role === 'siswa'; }
+    public function isGuru(): bool      { return in_array($this->role, ['guru', 'wali_kelas']); }
+    public function isAdmin(): bool     { return $this->role === 'admin'; }
+    public function isKesiswaan(): bool { return $this->role === 'kesiswaan'; }
+    public function isAlumni(): bool    { return $this->student_status === 'alumni'; }
+    public function isAktif(): bool     { return $this->student_status === 'aktif'; }
 
     public function canManageAttendance(): bool
     {
@@ -101,7 +103,6 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): string
     {
-        // Cek photo dari detail
         $photo = $this->studentDetail?->photo_path ?? $this->teacherDetail?->photo_path;
         if ($photo) return asset('storage/' . $photo);
         if ($this->avatar_path) return asset('storage/' . $this->avatar_path);
@@ -116,9 +117,14 @@ class User extends Authenticatable
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=' . $bg . '&color=fff';
     }
 
-    // Identifier untuk login (username/nis/nisn/nip/niy)
-    public function getLoginIdentifierAttribute(): string
+    public function getStudentStatusLabelAttribute(): string
     {
-        return $this->username ?? $this->nis ?? $this->nisn ?? $this->nip ?? $this->niy ?? '-';
+        return match($this->student_status ?? 'aktif') {
+            'aktif'  => 'Aktif',
+            'alumni' => 'Alumni',
+            'keluar' => 'Keluar',
+            'pindah' => 'Pindah',
+            default  => 'Aktif',
+        };
     }
 }

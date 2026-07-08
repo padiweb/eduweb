@@ -8,9 +8,13 @@ use App\Http\Controllers\Attendance\ClassQrController;
 use App\Http\Controllers\Admin\SchoolSettingController;
 use App\Http\Controllers\Admin\QrManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\ClassroomController;
+use App\Http\Controllers\Admin\MajorController;
+use App\Http\Controllers\Admin\AcademicYearController;
 use App\Http\Controllers\Kesiswaan\ViolationController;
 use App\Http\Controllers\Guru\AssignmentController;
 use App\Http\Controllers\Siswa\StudentAssignmentController;
+use App\Http\Controllers\Admin\PromotionController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -40,11 +44,10 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/qr', [QrManagementController::class, 'index'])->name('qr.index');
         Route::post('/qr/{classroom}/refresh', [QrManagementController::class, 'refreshToken'])->name('qr.refresh');
 
-        // Manajemen User — /positions HARUS di atas /{user} agar tidak bentrok
+        // Manajemen User — /positions & /create HARUS di atas /{user}
         Route::get('/users/positions', [UserManagementController::class, 'positions'])->name('users.positions');
         Route::post('/users/positions', [UserManagementController::class, 'storePosition'])->name('users.positions.store');
         Route::delete('/users/positions/{position}', [UserManagementController::class, 'destroyPosition'])->name('users.positions.destroy');
-
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
         Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
@@ -52,6 +55,35 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
         Route::patch('/users/{user}/toggle', [UserManagementController::class, 'toggleActive'])->name('users.toggle');
         Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+
+        // Tahun Ajaran
+        Route::get('/academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
+        Route::post('/academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
+        Route::patch('/academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
+        Route::delete('/academic-years/{academicYear}', [AcademicYearController::class, 'destroy'])->name('academic-years.destroy');
+
+        // Jurusan
+        Route::get('/majors', [MajorController::class, 'index'])->name('majors.index');
+        Route::post('/majors', [MajorController::class, 'store'])->name('majors.store');
+        Route::put('/majors/{major}', [MajorController::class, 'update'])->name('majors.update');
+        Route::delete('/majors/{major}', [MajorController::class, 'destroy'])->name('majors.destroy');
+
+        // Kelas — /create & static routes HARUS di atas /{classroom}
+        Route::get('/classrooms', [ClassroomController::class, 'index'])->name('classrooms.index');
+        Route::post('/classrooms', [ClassroomController::class, 'store'])->name('classrooms.store');
+        Route::get('/classrooms/{classroom}/edit', [ClassroomController::class, 'edit'])->name('classrooms.edit');
+        Route::put('/classrooms/{classroom}', [ClassroomController::class, 'update'])->name('classrooms.update');
+        Route::delete('/classrooms/{classroom}', [ClassroomController::class, 'destroy'])->name('classrooms.destroy');
+        Route::post('/classrooms/{classroom}/siswa', [ClassroomController::class, 'assignStudent'])->name('classrooms.assign-student');
+        Route::delete('/classrooms/{classroom}/siswa/{student}', [ClassroomController::class, 'removeStudent'])->name('classrooms.remove-student');
+        Route::post('/classrooms/{classroom}/import', [ClassroomController::class, 'importStudents'])->name('classrooms.import');
+
+        // Promosi siswa
+        Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
+        Route::post('/promotions/load-source', [PromotionController::class, 'loadSource'])->name('promotions.load-source');
+        Route::post('/promotions/process', [PromotionController::class, 'process'])->name('promotions.process');
+        Route::post('/promotions/transfer/{student}', [PromotionController::class, 'transferStudent'])->name('promotions.transfer');
+        Route::post('/promotions/status/{student}', [PromotionController::class, 'updateStatus'])->name('promotions.update-status');
     });
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -93,6 +125,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'kesiswaan'])->name('dashboard');
 
+        // Pelanggaran — /kategori HARUS di atas /{student}
         Route::prefix('pelanggaran')->name('violations.')->group(function () {
             Route::get('/', [ViolationController::class, 'index'])->name('index');
             Route::post('/', [ViolationController::class, 'store'])->name('store');

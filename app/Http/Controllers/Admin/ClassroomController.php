@@ -14,23 +14,21 @@ class ClassroomController extends Controller
 {
     public function index()
     {
-        $school       = auth()->user()->school;
-        $activeYear   = AcademicYear::where('school_id', $school->id)->where('is_active', true)->first();
+        $school        = auth()->user()->school;
+        $activeYear    = AcademicYear::where('school_id', $school->id)->where('is_active', true)->first();
         $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('name')->get();
 
         $classrooms = Classroom::where('school_id', $school->id)
             ->with(['major', 'academicYear', 'homeroomTeacher', 'students'])
-            ->orderBy('grade')
-            ->orderBy('name')
+            ->orderBy('grade')->orderBy('name')
             ->get()
             ->groupBy('academic_year_id');
 
-        $majors  = Major::where('school_id', $school->id)->orderBy('name')->get();
+        $majors   = Major::where('school_id', $school->id)->orderBy('name')->get();
         $teachers = User::where('school_id', $school->id)
             ->whereIn('role', ['guru', 'wali_kelas'])
             ->where('is_active', true)
-            ->orderBy('name')
-            ->get();
+            ->orderBy('name')->get();
 
         return view('admin.classrooms.index', compact(
             'classrooms', 'academicYears', 'activeYear', 'majors', 'teachers'
@@ -42,14 +40,13 @@ class ClassroomController extends Controller
         $school = auth()->user()->school;
 
         $validated = $request->validate([
-            'academic_year_id'   => ['required', 'exists:academic_years,id'],
-            'major_id'           => ['nullable', 'exists:majors,id'],
-            'name'               => ['required', 'string', 'max:30'],
-            'grade'              => ['required', 'integer', 'min:1', 'max:13'],
-            'homeroom_teacher_id'=> ['nullable', 'exists:users,id'],
+            'academic_year_id'    => ['required', 'exists:academic_years,id'],
+            'major_id'            => ['nullable', 'exists:majors,id'],
+            'name'                => ['required', 'string', 'max:30'],
+            'grade'               => ['required', 'integer', 'min:1', 'max:13'],
+            'homeroom_teacher_id' => ['nullable', 'exists:users,id'],
         ]);
 
-        // Cek duplikat nama kelas dalam tahun ajaran yang sama
         $exists = Classroom::where('school_id', $school->id)
             ->where('academic_year_id', $validated['academic_year_id'])
             ->where('name', $validated['name'])
@@ -61,7 +58,6 @@ class ClassroomController extends Controller
 
         Classroom::create(array_merge($validated, ['school_id' => $school->id]));
 
-        // Jika guru wali kelas, update role
         if ($request->filled('homeroom_teacher_id')) {
             User::where('id', $request->homeroom_teacher_id)
                 ->where('role', 'guru')
@@ -84,11 +80,18 @@ class ClassroomController extends Controller
             ->where('is_active', true)
             ->orderBy('name')->get();
 
-        // Siswa yang belum ada di kelas manapun di tahun ajaran aktif, atau sudah di kelas ini
+        // Semua kelas aktif (untuk fitur pindah kelas)
+        $allActiveClassrooms = Classroom::where('school_id', $school->id)
+            ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
+            ->orderBy('grade')->orderBy('name')
+            ->get();
+
+        // Siswa yang tersedia untuk ditambah ke kelas ini
         $assignedIds = $classroom->students->pluck('id');
         $availableStudents = User::where('school_id', $school->id)
             ->where('role', 'siswa')
             ->where('is_active', true)
+            ->where('student_status', 'aktif')
             ->where(function ($q) use ($classroom, $assignedIds) {
                 $q->whereDoesntHave('classrooms', function ($q2) use ($classroom) {
                     $q2->whereHas('academicYear', fn($q3) => $q3->where('is_active', true));
@@ -99,7 +102,7 @@ class ClassroomController extends Controller
             ->get();
 
         return view('admin.classrooms.edit', compact(
-            'classroom', 'majors', 'teachers', 'availableStudents'
+            'classroom', 'majors', 'teachers', 'availableStudents', 'allActiveClassrooms'
         ));
     }
 
@@ -109,22 +112,20 @@ class ClassroomController extends Controller
         if ($classroom->school_id !== $school->id) abort(403);
 
         $validated = $request->validate([
-            'major_id'           => ['nullable', 'exists:majors,id'],
-            'name'               => ['required', 'string', 'max:30'],
-            'grade'              => ['required', 'integer', 'min:1', 'max:13'],
-            'homeroom_teacher_id'=> ['nullable', 'exists:users,id'],
+            'major_id'            => ['nullable', 'exists:majors,id'],
+            'name'                => ['required', 'string', 'max:30'],
+            'grade'               => ['required', 'integer', 'min:1', 'max:13'],
+            'homeroom_teacher_id' => ['nullable', 'exists:users,id'],
         ]);
 
         $oldTeacherId = $classroom->homeroom_teacher_id;
         $classroom->update($validated);
 
-        // Update role guru jika wali kelas berubah
         if ($request->filled('homeroom_teacher_id') && $request->homeroom_teacher_id != $oldTeacherId) {
             User::where('id', $request->homeroom_teacher_id)
                 ->where('role', 'guru')
                 ->update(['role' => 'wali_kelas']);
 
-            // Kembalikan role lama jika tidak pegang kelas lain
             if ($oldTeacherId) {
                 $stillWali = Classroom::where('homeroom_teacher_id', $oldTeacherId)->exists();
                 if (! $stillWali) {
@@ -150,8 +151,6 @@ class ClassroomController extends Controller
         return back()->with('success', 'Kelas berhasil dihapus.');
     }
 
-    // ── Assign siswa ke kelas ────────────────────────────────────────────
-
     public function assignStudent(Request $request, Classroom $classroom)
     {
         $school = auth()->user()->school;
@@ -161,7 +160,6 @@ class ClassroomController extends Controller
             'student_id' => ['required', 'exists:users,id'],
         ]);
 
-        // Cek apakah siswa sudah ada di kelas aktif lain
         $alreadyInClass = User::find($validated['student_id'])
             ->classrooms()
             ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
@@ -172,13 +170,11 @@ class ClassroomController extends Controller
             return back()->with('error', 'Siswa sudah ada di kelas lain pada tahun ajaran ini.');
         }
 
-        // Cek apakah sudah ada di kelas ini
         if ($classroom->students()->where('student_id', $validated['student_id'])->exists()) {
             return back()->with('error', 'Siswa sudah ada di kelas ini.');
         }
 
         $classroom->students()->attach($validated['student_id']);
-
         return back()->with('success', 'Siswa berhasil ditambahkan ke kelas.');
     }
 
@@ -188,11 +184,8 @@ class ClassroomController extends Controller
         if ($classroom->school_id !== $school->id) abort(403);
 
         $classroom->students()->detach($student->id);
-
         return back()->with('success', $student->name . ' berhasil dikeluarkan dari kelas.');
     }
-
-    // ── Import siswa via CSV ─────────────────────────────────────────────
 
     public function importStudents(Request $request, Classroom $classroom)
     {
@@ -210,7 +203,7 @@ class ClassroomController extends Controller
         $errors  = [];
 
         foreach ($lines as $i => $line) {
-            if ($i === 0 && stripos($line, 'nis') !== false) continue; // skip header
+            if ($i === 0 && stripos($line, 'nis') !== false) continue;
 
             $parts = str_getcsv($line);
             $nis   = trim($parts[0] ?? '');
@@ -220,8 +213,7 @@ class ClassroomController extends Controller
                 ->where('role', 'siswa')
                 ->where(function ($q) use ($nis) {
                     $q->where('nis', $nis)->orWhere('nisn', $nis);
-                })
-                ->first();
+                })->first();
 
             if (! $student) {
                 $errors[] = "NIS/NISN $nis tidak ditemukan.";
@@ -229,7 +221,6 @@ class ClassroomController extends Controller
                 continue;
             }
 
-            // Sudah ada di kelas ini
             if ($classroom->students()->where('student_id', $student->id)->exists()) {
                 $skipped++;
                 continue;

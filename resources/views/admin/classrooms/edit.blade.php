@@ -28,7 +28,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        {{-- Kolom kiri: Edit info kelas --}}
+        {{-- Kolom kiri --}}
         <div class="space-y-5">
 
             {{-- Edit info kelas --}}
@@ -56,9 +56,7 @@
                                 class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             <option value="">Tanpa Jurusan</option>
                             @foreach($majors as $m)
-                                <option value="{{ $m->id }}" {{ $classroom->major_id == $m->id ? 'selected' : '' }}>
-                                    {{ $m->name }}
-                                </option>
+                                <option value="{{ $m->id }}" {{ $classroom->major_id == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -68,9 +66,7 @@
                                 class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             <option value="">Belum ditentukan</option>
                             @foreach($teachers as $t)
-                                <option value="{{ $t->id }}" {{ $classroom->homeroom_teacher_id == $t->id ? 'selected' : '' }}>
-                                    {{ $t->name }}
-                                </option>
+                                <option value="{{ $t->id }}" {{ $classroom->homeroom_teacher_id == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -86,18 +82,13 @@
                 <h2 class="text-sm font-semibold text-white mb-4">Tambah Siswa</h2>
                 <form method="POST" action="{{ route('admin.classrooms.assign-student', $classroom->id) }}" class="space-y-3">
                     @csrf
-                    <div>
-                        <label class="block text-xs text-gray-400 mb-1.5">Pilih Siswa</label>
-                        <select name="student_id" required
-                                class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                            <option value="">Pilih siswa...</option>
-                            @foreach($availableStudents->whereNotIn('id', $classroom->students->pluck('id')) as $s)
-                                <option value="{{ $s->id }}">
-                                    {{ $s->name }} ({{ $s->nis ?? $s->nisn ?? '-' }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <select name="student_id" required
+                            class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        <option value="">Pilih siswa...</option>
+                        @foreach($availableStudents->whereNotIn('id', $classroom->students->pluck('id')) as $s)
+                            <option value="{{ $s->id }}">{{ $s->name }} ({{ $s->nis ?? $s->nisn ?? '-' }})</option>
+                        @endforeach
+                    </select>
                     <button type="submit"
                             class="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah ke Kelas
@@ -108,7 +99,7 @@
             {{-- Import CSV --}}
             <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
                 <h2 class="text-sm font-semibold text-white mb-1">Import CSV</h2>
-                <p class="text-xs text-gray-500 mb-3">Format: satu kolom NIS atau NISN per baris.</p>
+                <p class="text-xs text-gray-500 mb-3">Satu kolom NIS atau NISN per baris.</p>
                 <form method="POST" action="{{ route('admin.classrooms.import', $classroom->id) }}"
                       enctype="multipart/form-data" class="space-y-3">
                     @csrf
@@ -119,12 +110,6 @@
                         Upload & Import
                     </button>
                 </form>
-                <div class="mt-3 bg-gray-800 rounded-lg px-3 py-2">
-                    <p class="text-xs text-gray-500 font-mono">NIS (header opsional)</p>
-                    <p class="text-xs text-gray-400 font-mono">12345</p>
-                    <p class="text-xs text-gray-400 font-mono">12346</p>
-                    <p class="text-xs text-gray-400 font-mono">12347</p>
-                </div>
             </div>
         </div>
 
@@ -139,39 +124,107 @@
                 @if($classroom->students->count() > 0)
                     <div class="divide-y divide-white/5">
                         @foreach($classroom->students->sortBy('name') as $no => $student)
-                            <div class="flex items-center gap-3 px-5 py-3.5">
-                                <span class="text-xs text-gray-600 w-6 text-right flex-shrink-0">{{ $no + 1 }}</span>
-                                <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0" style="min-width:32px">
-                                    <img src="{{ $student->avatarUrl }}" alt="" class="w-full h-full object-cover">
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate">{{ $student->name }}</p>
-                                    <p class="text-xs text-gray-500">
-                                        NIS: {{ $student->nis ?? '-' }}
-                                        @if($student->nisn) &middot; NISN: {{ $student->nisn }} @endif
-                                        @if($student->studentDetail?->gender)
-                                            &middot; {{ $student->studentDetail->gender === 'L' ? 'L' : 'P' }}
-                                        @endif
-                                    </p>
-                                </div>
-                                <form method="POST"
-                                      action="{{ route('admin.classrooms.remove-student', [$classroom->id, $student->id]) }}"
-                                      onsubmit="return confirm('Keluarkan {{ addslashes($student->name) }} dari kelas ini?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit"
-                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-red-900/40 border border-white/10 hover:border-red-500/30 text-gray-400 hover:text-red-400 transition-colors flex-shrink-0">
+                            <div class="px-5 py-4" x-data="{ showActions: false }">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs text-gray-600 w-5 text-right flex-shrink-0">{{ $no + 1 }}</span>
+                                    <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0" style="min-width:32px">
+                                        <img src="{{ $student->avatarUrl }}" alt="" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-white truncate">{{ $student->name }}</p>
+                                        <p class="text-xs text-gray-500">
+                                            {{ $student->nis ?? '-' }}
+                                            @if($student->studentDetail?->gender) &middot; {{ $student->studentDetail->gender }} @endif
+                                        </p>
+                                    </div>
+
+                                    {{-- Status badge --}}
+                                    @php
+                                        $statusColors = [
+                                            'aktif'   => 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+                                            'alumni'  => 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+                                            'keluar'  => 'text-red-400 bg-red-500/10 border-red-500/20',
+                                            'pindah'  => 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+                                        ];
+                                        $statusLabels = ['aktif'=>'Aktif','alumni'=>'Alumni','keluar'=>'Keluar','pindah'=>'Pindah'];
+                                        $sc = $statusColors[$student->student_status ?? 'aktif'] ?? $statusColors['aktif'];
+                                        $sl = $statusLabels[$student->student_status ?? 'aktif'] ?? 'Aktif';
+                                    @endphp
+                                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full border {{ $sc }} flex-shrink-0">
+                                        {{ $sl }}
+                                    </span>
+
+                                    {{-- Toggle aksi --}}
+                                    <button type="button" @click="showActions = !showActions"
+                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
                                         </svg>
                                     </button>
-                                </form>
+
+                                    {{-- Hapus dari kelas --}}
+                                    <form method="POST"
+                                          action="{{ route('admin.classrooms.remove-student', [$classroom->id, $student->id]) }}"
+                                          onsubmit="return confirm('Keluarkan {{ addslashes($student->name) }} dari kelas ini?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit"
+                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-red-900/40 border border-white/10 hover:border-red-500/30 text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                                                title="Keluarkan dari kelas">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {{-- Panel aksi individual --}}
+                                <div x-show="showActions" x-cloak class="mt-3 ml-8 p-4 bg-gray-800 border border-white/10 rounded-xl space-y-3">
+
+                                    {{-- Pindah kelas --}}
+                                    <form method="POST" action="{{ route('admin.promotions.transfer', $student->id) }}"
+                                          class="flex items-center gap-2 flex-wrap">
+                                        @csrf
+                                        <input type="hidden" name="from_classroom_id" value="{{ $classroom->id }}">
+                                        <select name="to_classroom_id" required
+                                                class="flex-1 bg-gray-900 border border-white/10 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors min-w-0">
+                                            <option value="">Pindah ke kelas...</option>
+                                            @foreach($allActiveClassrooms->where('id', '!=', $classroom->id) as $ac)
+                                                <option value="{{ $ac->id }}">{{ $ac->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit"
+                                                class="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+                                            Pindah Kelas
+                                        </button>
+                                    </form>
+
+                                    {{-- Update status --}}
+                                    <form method="POST" action="{{ route('admin.promotions.update-status', $student->id) }}"
+                                          class="flex items-center gap-2 flex-wrap">
+                                        @csrf
+                                        <input type="hidden" name="classroom_id" value="{{ $classroom->id }}">
+                                        <select name="student_status" required
+                                                class="bg-gray-900 border border-white/10 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-amber-500 transition-colors">
+                                            <option value="aktif"  {{ ($student->student_status ?? 'aktif') === 'aktif'  ? 'selected' : '' }}>Aktif</option>
+                                            <option value="alumni" {{ ($student->student_status ?? 'aktif') === 'alumni' ? 'selected' : '' }}>Alumni / Lulus</option>
+                                            <option value="keluar" {{ ($student->student_status ?? 'aktif') === 'keluar' ? 'selected' : '' }}>Keluar / DO</option>
+                                            <option value="pindah" {{ ($student->student_status ?? 'aktif') === 'pindah' ? 'selected' : '' }}>Pindah Sekolah</option>
+                                        </select>
+                                        <input type="text" name="status_notes"
+                                               placeholder="Keterangan (opsional)"
+                                               class="flex-1 bg-gray-900 border border-white/10 text-white rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-amber-500 transition-colors min-w-0">
+                                        <button type="submit"
+                                                class="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+                                            Update Status
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         @endforeach
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
                         <p class="text-gray-500 text-sm">Belum ada siswa di kelas ini.</p>
-                        <p class="text-gray-600 text-xs mt-1">Tambahkan via form di sebelah kiri atau upload CSV.</p>
                     </div>
                 @endif
             </div>
