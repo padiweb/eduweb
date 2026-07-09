@@ -93,7 +93,7 @@
                 @csrf
                 <div>
                     <label class="block text-xs text-gray-400 mb-1.5">Kelas <span class="text-red-400">*</span></label>
-                    <select name="classroom_id" required
+                    <select name="classroom_id" id="select-classroom" required
                             class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                         <option value="">Pilih kelas...</option>
                         @foreach($classrooms as $c)
@@ -103,17 +103,54 @@
                 </div>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1.5">Mata Pelajaran <span class="text-red-400">*</span></label>
-                    <select name="subject_id" required
+                    <select name="subject_id" id="select-subject" required
                             class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                        <option value="">Pilih mapel...</option>
+                        <option value="">Pilih kelas dulu...</option>
                         @foreach($subjects as $s)
-                            <option value="{{ $s->id }}">{{ $s->name }}</option>
+                            <option value="{{ $s->id }}" data-subject-id="{{ $s->id }}">{{ $s->name }}</option>
                         @endforeach
                     </select>
                     @if($subjects->isEmpty())
                         <p class="text-xs text-amber-500 mt-1">Belum ada jadwal mengajar. Hubungi admin untuk mengatur jadwal.</p>
                     @endif
                 </div>
+
+                {{-- Data jadwal guru (mapel per kelas) untuk JS --}}
+                <script>
+                var scheduleMap = @json($scheduleMap);
+                var allSubjects = @json($subjects->map(fn($s) => ['id' => $s->id, 'name' => $s->name])->values());
+
+                document.getElementById('select-classroom').addEventListener('change', function() {
+                    var classroomId = parseInt(this.value);
+                    var subjectSel  = document.getElementById('select-subject');
+
+                    // Filter mapel yang diampu di kelas ini
+                    var validSubjectIds = scheduleMap
+                        .filter(function(s) { return s.classroom_id === classroomId; })
+                        .map(function(s) { return s.subject_id; });
+
+                    subjectSel.innerHTML = '';
+
+                    if (!classroomId || validSubjectIds.length === 0) {
+                        subjectSel.innerHTML = '<option value="">-- Pilih mapel --</option>';
+                        return;
+                    }
+
+                    var filtered = allSubjects.filter(function(s) {
+                        return validSubjectIds.includes(s.id);
+                    });
+
+                    filtered.forEach(function(s) {
+                        var opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.textContent = s.name;
+                        subjectSel.appendChild(opt);
+                    });
+
+                    // Auto-select jika hanya 1 mapel
+                    if (filtered.length === 1) subjectSel.value = filtered[0].id;
+                });
+                </script>
                 <div>
                     <label class="block text-xs text-gray-400 mb-1.5">Judul Tugas <span class="text-red-400">*</span></label>
                     <input type="text" name="title" required placeholder="cth: Tugas 1 - Persamaan Linear"

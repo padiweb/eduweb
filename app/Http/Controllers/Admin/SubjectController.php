@@ -52,7 +52,8 @@ class SubjectController extends Controller
 
         SubjectGroup::create(['school_id' => $school->id, ...$validated]);
 
-        return back()->with('success', 'Kelompok mapel berhasil ditambahkan.');
+        return redirect()->route('admin.subjects.index', ['tab' => 'groups'])
+            ->with('success', 'Kelompok mapel berhasil ditambahkan.');
     }
 
     public function updateGroup(Request $request, SubjectGroup $group)
@@ -70,7 +71,8 @@ class SubjectController extends Controller
         ]);
 
         $group->update($validated);
-        return back()->with('success', 'Kelompok mapel berhasil diperbarui.');
+        return redirect()->route('admin.subjects.index', ['tab' => 'groups'])
+            ->with('success', 'Kelompok mapel berhasil diperbarui.');
     }
 
     public function destroyGroup(SubjectGroup $group)
@@ -83,7 +85,8 @@ class SubjectController extends Controller
         }
 
         $group->delete();
-        return back()->with('success', 'Kelompok mapel berhasil dihapus.');
+        return redirect()->route('admin.subjects.index', ['tab' => 'groups'])
+            ->with('success', 'Kelompok mapel berhasil dihapus.');
     }
 
     // ── CRUD Mata Pelajaran ────────────────────────────────────────────────

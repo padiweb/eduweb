@@ -21,7 +21,6 @@ class ScheduleController extends Controller
 
         $classroomId = $request->get('classroom_id');
 
-        // Kelas aktif atau yang dipilih
         $classrooms = Classroom::where('school_id', $school->id)
             ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
             ->with('major')
@@ -29,7 +28,8 @@ class ScheduleController extends Controller
             ->get();
 
         $subjects = Subject::where('school_id', $school->id)
-            ->orderBy('category')->orderBy('name')->get();
+            ->with('group')
+            ->orderBy('name')->get();
 
         $teachers = User::where('school_id', $school->id)
             ->whereIn('role', ['guru', 'wali_kelas'])
@@ -37,7 +37,7 @@ class ScheduleController extends Controller
             ->orderBy('name')->get();
 
         // Jadwal per kelas yang dipilih
-        $schedules = collect();
+        $schedules         = collect();
         $selectedClassroom = null;
 
         if ($classroomId) {
@@ -51,9 +51,22 @@ class ScheduleController extends Controller
                 ->groupBy('day_of_week');
         }
 
+        // Peruntukan mapel: mapel → kelas mana saja yang punya jadwal mapel itu
+        $subjectMapping = Schedule::where('school_id', $school->id)
+            ->whereHas('classroom.academicYear', fn($q) => $q->where('is_active', true))
+            ->with(['subject.group', 'classroom.major'])
+            ->get()
+            ->groupBy('subject_id')
+            ->map(fn($rows) => [
+                'subject' => $rows->first()->subject,
+                'classes' => $rows->pluck('classroom')->unique('id')->values(),
+            ])
+            ->values()
+            ->sortBy(fn($item) => $item['subject']->name);
+
         return view('admin.schedules.index', compact(
             'classrooms', 'subjects', 'teachers', 'schedules',
-            'selectedClassroom', 'classroomId'
+            'selectedClassroom', 'classroomId', 'subjectMapping'
         ));
     }
 
@@ -88,6 +101,40 @@ class ScheduleController extends Controller
         Schedule::create(['school_id' => $school->id, ...$validated]);
 
         return back()->with('success', 'Jadwal berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, Schedule $schedule)
+    {
+        $school = auth()->user()->school;
+        if ($schedule->school_id !== $school->id) abort(403);
+
+        $validated = $request->validate([
+            'subject_id'  => ['required', 'exists:subjects,id'],
+            'teacher_id'  => ['required', 'exists:users,id'],
+            'day_of_week' => ['required', 'integer', 'min:1', 'max:6'],
+            'start_time'  => ['required', 'date_format:H:i'],
+            'end_time'    => ['required', 'date_format:H:i', 'after:start_time'],
+            'room'        => ['nullable', 'string', 'max:50'],
+        ]);
+
+        // Cek konflik kecuali jadwal ini sendiri
+        $conflict = Schedule::where('school_id', $school->id)
+            ->where('teacher_id', $validated['teacher_id'])
+            ->where('day_of_week', $validated['day_of_week'])
+            ->where('id', '!=', $schedule->id)
+            ->where(function ($q) use ($validated) {
+                $q->whereBetween('start_time', [$validated['start_time'], $validated['end_time']])
+                  ->orWhereBetween('end_time', [$validated['start_time'], $validated['end_time']]);
+            })->exists();
+
+        if ($conflict) {
+            return back()->with('error', 'Guru ini sudah punya jadwal di hari dan jam yang sama.');
+        }
+
+        $schedule->update($validated);
+
+        return redirect()->route('admin.schedules.index', ['classroom_id' => $schedule->classroom_id])
+            ->with('success', 'Jadwal berhasil diperbarui.');
     }
 
     public function destroy(Schedule $schedule)

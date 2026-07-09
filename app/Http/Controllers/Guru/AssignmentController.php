@@ -19,38 +19,41 @@ class AssignmentController extends Controller
     public function index()
     {
         $school = auth()->user()->school;
+        $teacher = auth()->user();
 
-        // Kelas aktif
-        $classrooms = Classroom::where('school_id', $school->id)
-            ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
+        // Jadwal guru ini — mapel + kelas yang diampu
+        $schedules = Schedule::where('teacher_id', $teacher->id)
+            ->where('school_id', $school->id)
+            ->whereHas('classroom.academicYear', fn($q) => $q->where('is_active', true))
+            ->with(['subject', 'classroom.major'])
+            ->get();
+
+        // Mapel yang diampu guru ini (dari jadwal aktif)
+        $subjectIds = $schedules->pluck('subject_id')->unique();
+        $subjects   = Subject::whereIn('id', $subjectIds)->orderBy('name')->get();
+
+        // Kelas yang diampu guru ini (dari jadwal aktif)
+        $classroomIds = $schedules->pluck('classroom_id')->unique();
+        $classrooms   = Classroom::whereIn('id', $classroomIds)
             ->with(['major', 'students'])
             ->orderBy('name')
             ->get();
 
-        // Mapel guru ini dari jadwal (yang sudah diatur admin)
-        $subjectIds = Schedule::where('teacher_id', auth()->id())
-            ->where('school_id', $school->id)
-            ->pluck('subject_id')
-            ->unique();
+        // Pasangan mapel-kelas untuk dropdown buat tugas
+        $scheduleMap = $schedules->map(fn($s) => [
+            'classroom_id' => $s->classroom_id,
+            'subject_id'   => $s->subject_id,
+        ])->unique(fn($s) => $s['classroom_id'].'-'.$s['subject_id'])->values();
 
-        $subjects = Subject::whereIn('id', $subjectIds)
-            ->orderBy('name')
-            ->get();
-
-        // Jika belum ada jadwal, ambil semua mapel sekolah sebagai fallback
-        if ($subjects->isEmpty()) {
-            $subjects = Subject::where('school_id', $school->id)
-                ->orderBy('name')
-                ->get();
-        }
-
-        $assignments = Assignment::where('teacher_id', auth()->id())
+        $assignments = Assignment::where('teacher_id', $teacher->id)
             ->with(['classroom', 'subject'])
             ->withCount('submissions')
             ->orderByDesc('created_at')
             ->paginate(15);
 
-        return view('guru.assignments.index', compact('classrooms', 'subjects', 'assignments'));
+        return view('guru.assignments.index', compact(
+            'classrooms', 'subjects', 'assignments', 'scheduleMap'
+        ));
     }
 
     public function show(Assignment $assignment)
