@@ -11,12 +11,14 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\ClassroomController;
 use App\Http\Controllers\Admin\MajorController;
 use App\Http\Controllers\Admin\AcademicYearController;
-use App\Http\Controllers\Kesiswaan\ViolationController;
-use App\Http\Controllers\Guru\AssignmentController;
-use App\Http\Controllers\Siswa\StudentAssignmentController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\TeacherAttendanceAdminController;
+use App\Http\Controllers\Kesiswaan\ViolationController;
+use App\Http\Controllers\Guru\AssignmentController;
+use App\Http\Controllers\Guru\TeacherAttendanceController;
+use App\Http\Controllers\Siswa\StudentAssignmentController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -70,7 +72,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::put('/majors/{major}', [MajorController::class, 'update'])->name('majors.update');
         Route::delete('/majors/{major}', [MajorController::class, 'destroy'])->name('majors.destroy');
 
-        // Kelas — /create & static routes HARUS di atas /{classroom}
+        // Kelas — static routes HARUS di atas /{classroom}
         Route::get('/classrooms', [ClassroomController::class, 'index'])->name('classrooms.index');
         Route::post('/classrooms', [ClassroomController::class, 'store'])->name('classrooms.store');
         Route::get('/classrooms/{classroom}/edit', [ClassroomController::class, 'edit'])->name('classrooms.edit');
@@ -87,22 +89,28 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/promotions/transfer/{student}', [PromotionController::class, 'transferStudent'])->name('promotions.transfer');
         Route::post('/promotions/status/{student}', [PromotionController::class, 'updateStatus'])->name('promotions.update-status');
 
-        
-        // Kelompok & Mata Pelajaran
+        // Kelompok & Mata Pelajaran — /groups HARUS di atas /{subject}
         Route::get('/subjects', [SubjectController::class, 'index'])->name('subjects.index');
-        Route::post('/subjects', [SubjectController::class, 'store'])->name('subjects.store');
-        Route::put('/subjects/{subject}', [SubjectController::class, 'update'])->name('subjects.update');
-        Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy'])->name('subjects.destroy');
         Route::post('/subjects/groups', [SubjectController::class, 'storeGroup'])->name('subjects.groups.store');
         Route::put('/subjects/groups/{group}', [SubjectController::class, 'updateGroup'])->name('subjects.groups.update');
         Route::delete('/subjects/groups/{group}', [SubjectController::class, 'destroyGroup'])->name('subjects.groups.destroy');
+        Route::post('/subjects', [SubjectController::class, 'store'])->name('subjects.store');
+        Route::put('/subjects/{subject}', [SubjectController::class, 'update'])->name('subjects.update');
+        Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy'])->name('subjects.destroy');
 
         // Jadwal — /by-teacher HARUS di atas /{schedule}
         Route::get('/schedules/by-teacher', [ScheduleController::class, 'byTeacher'])->name('schedules.by-teacher');
         Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
         Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
-        Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
         Route::put('/schedules/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update');
+        Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
+
+        // Absensi Guru — /rewards HARUS di atas /{id}
+        Route::get('/teacher-attendance', [TeacherAttendanceAdminController::class, 'index'])->name('teacher-attendance.index');
+        Route::post('/teacher-attendance/manual', [TeacherAttendanceAdminController::class, 'manualEntry'])->name('teacher-attendance.manual');
+        Route::get('/teacher-attendance/rewards', [TeacherAttendanceAdminController::class, 'rewards'])->name('teacher-attendance.rewards');
+        Route::post('/teacher-attendance/rewards/add', [TeacherAttendanceAdminController::class, 'addRewardPoint'])->name('teacher-attendance.add-reward');
+        Route::post('/teacher-attendance/refresh-qr', [TeacherAttendanceAdminController::class, 'refreshQr'])->name('teacher-attendance.refresh-qr');
     });
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -112,7 +120,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'guru'])->name('dashboard');
 
-        // Absensi
+        // Absensi Siswa (kelola sesi)
         Route::prefix('absensi')->name('attendance.')->group(function () {
             Route::get('/', [AttendanceController::class, 'index'])->name('index');
             Route::post('/buka', [AttendanceController::class, 'openSession'])->name('open');
@@ -123,6 +131,14 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::post('/sesi/{session}/roll-call', [AttendanceController::class, 'rollCall'])->name('roll-call');
             Route::patch('/sesi/{session}/tutup', [AttendanceController::class, 'close'])->name('close');
             Route::get('/kelas/{classroom}/cetak-qr', [ClassQrController::class, 'print'])->name('class.print-qr');
+        });
+
+        // Absensi Guru sendiri — /poin HARUS di atas /{id}
+        Route::prefix('absensi-saya')->name('teacher-attendance.')->group(function () {
+            Route::get('/', [TeacherAttendanceController::class, 'index'])->name('index');
+            Route::post('/scan', [TeacherAttendanceController::class, 'scan'])->name('scan');
+            Route::post('/status', [TeacherAttendanceController::class, 'submitStatus'])->name('submit-status');
+            Route::get('/poin', [TeacherAttendanceController::class, 'rewards'])->name('rewards');
         });
 
         // Tugas & Nilai — /nilai HARUS di atas /{assignment}

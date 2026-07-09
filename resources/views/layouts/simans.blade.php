@@ -87,7 +87,7 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kehadiran</p>
                 </div>
-                <x-sidebar-link href="#" :active="false" icon="camera">
+                <x-sidebar-link href="{{ route('guru.attendance.index') }}" icon="clock">
                     Absensi Saya
                 </x-sidebar-link>
             @endif
@@ -140,6 +140,9 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Monitoring</p>
                 </div>
+                <x-sidebar-link href="{{ route('admin.teacher-attendance.index') }}" icon="users">
+                    Absensi Guru
+                </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="clipboard">
                     Rekap Absensi
                 </x-sidebar-link>
