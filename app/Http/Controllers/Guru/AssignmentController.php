@@ -48,8 +48,11 @@ class AssignmentController extends Controller
         $assignments = Assignment::where('teacher_id', $teacher->id)
             ->with(['classroom', 'subject'])
             ->withCount('submissions')
+            ->orderBy('classroom_id')
+            ->orderBy('subject_id')
             ->orderByDesc('created_at')
-            ->paginate(15);
+            ->get()
+            ->groupBy(fn($a) => $a->classroom_id . '-' . $a->subject_id);
 
         return view('guru.assignments.index', compact(
             'classrooms', 'subjects', 'assignments', 'scheduleMap'
