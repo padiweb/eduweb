@@ -72,6 +72,7 @@ class TeacherAttendanceAdminController extends Controller
             ['session_id' => $session->id, 'teacher_id' => $validated['teacher_id']],
             [
                 'school_id'       => $school->id,
+                'attendance_date' => $session->session_date,
                 'status'          => $validated['status'],
                 'notes'           => $validated['notes'] ?? null,
                 'is_manual_entry' => true,
@@ -139,6 +140,23 @@ class TeacherAttendanceAdminController extends Controller
         ]);
 
         return back()->with('success', 'Poin reward berhasil ditambahkan.');
+    }
+
+    // ── Halaman QR untuk ditempel di kantor ──────────────────────────────
+
+    public function qr()
+    {
+        $school = auth()->user()->school;
+
+        // Generate token jika belum ada
+        if (! $school->teacher_qr_token) {
+            $school->update(['teacher_qr_token' => Str::random(32)]);
+        }
+
+        return view('admin.teacher-attendance.qr', [
+            'school' => $school,
+            'token'  => $school->teacher_qr_token,
+        ]);
     }
 
     // ── Generate/refresh QR token sekolah ────────────────────────────────

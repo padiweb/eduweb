@@ -38,6 +38,12 @@ class SchoolSettingController extends Controller
             'violation_warning2'       => ['required', 'integer', 'min:1', 'max:999'],
             'violation_warning3'       => ['required', 'integer', 'min:1', 'max:999'],
             'alfa_limit_per_semester'  => ['required', 'integer', 'min:0', 'max:999'],
+            // Jam absensi guru
+            'teacher_checkin_open'     => ['required', 'date_format:H:i'],
+            'teacher_checkin_late'     => ['required', 'date_format:H:i'],
+            'teacher_checkin_close'    => ['required', 'date_format:H:i'],
+            'teacher_checkout_open'    => ['required', 'date_format:H:i'],
+            'teacher_checkout_close'   => ['required', 'date_format:H:i'],
         ]);
 
         // Validasi urutan jam
@@ -70,6 +76,11 @@ class SchoolSettingController extends Controller
         $validated['school_start_time']     .= ':00';
         $validated['late_threshold_time']   .= ':00';
         $validated['attendance_close_time'] .= ':00';
+        $validated['teacher_checkin_open']  .= ':00';
+        $validated['teacher_checkin_late']  .= ':00';
+        $validated['teacher_checkin_close'] .= ':00';
+        $validated['teacher_checkout_open'] .= ':00';
+        $validated['teacher_checkout_close'].= ':00';
 
         $school->update($validated);
 

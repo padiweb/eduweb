@@ -286,6 +286,55 @@
             </div>
         </div>
 
+        {{-- Jam Absensi Guru --}}
+        <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
+            <h2 class="text-sm font-semibold text-white mb-1">Jam Absensi Guru</h2>
+            <p class="text-xs text-gray-500 mb-4">Sesi masuk dan pulang dibuat otomatis sesuai jam di bawah.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5">Buka Absen Masuk</label>
+                    <input type="time" name="teacher_checkin_open"
+                           value="{{ substr($school->teacher_checkin_open ?? '06:30', 0, 5) }}"
+                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5">Batas Terlambat Masuk</label>
+                    <input type="time" name="teacher_checkin_late"
+                           value="{{ substr($school->teacher_checkin_late ?? '07:15', 0, 5) }}"
+                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5">Tutup Absen Masuk</label>
+                    <input type="time" name="teacher_checkin_close"
+                           value="{{ substr($school->teacher_checkin_close ?? '08:00', 0, 5) }}"
+                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5">Buka Absen Pulang</label>
+                    <input type="time" name="teacher_checkout_open"
+                           value="{{ substr($school->teacher_checkout_open ?? '14:00', 0, 5) }}"
+                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-1.5">Tutup Absen Pulang</label>
+                    <input type="time" name="teacher_checkout_close"
+                           value="{{ substr($school->teacher_checkout_close ?? '16:00', 0, 5) }}"
+                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                </div>
+                <div class="flex items-end">
+                    <a href="{{ route('admin.teacher-attendance.qr') }}"
+                       target="_blank"
+                       class="w-full flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 text-sm px-4 py-2.5 rounded-xl transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/>
+                        </svg>
+                        Cetak QR Guru
+                    </a>
+                </div>
+            </div>
+        </div>
+
         {{-- Tombol simpan --}}
         <div class="mt-6 flex justify-end gap-3">
             <a href="{{ route('admin.dashboard') }}"
