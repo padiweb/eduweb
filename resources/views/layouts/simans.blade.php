@@ -78,7 +78,7 @@
                 <x-sidebar-link href="{{ route('guru.assignments.index') }}" :active="request()->routeIs('guru.assignments.*')" icon="book">
                     Tugas & Nilai
                 </x-sidebar-link>
-                <x-sidebar-link href="{{ route('guru.journal.index') }}" :active="request()->routeIs('guru.journal.*')" icon="book-open">
+                <x-sidebar-link href="{{ route('guru.journal.index') }}" :active="request()->routeIs('guru.journal.*')" icon="journal">
                     Jurnal Mengajar
                 </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="calendar">
@@ -87,7 +87,7 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kehadiran</p>
                 </div>
-                <x-sidebar-link href="{{ route('guru.attendance.index') }}" icon="clock">
+                <x-sidebar-link href="{{ route('guru.teacher-attendance.index') }}" :active="request()->routeIs('guru.teacher-attendance.*')" icon="clock">
                     Absensi Saya
                 </x-sidebar-link>
             @endif
