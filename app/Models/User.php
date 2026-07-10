@@ -79,7 +79,37 @@ class User extends Authenticatable
     public function isSiswa(): bool     { return $this->role === 'siswa'; }
     public function isGuru(): bool      { return in_array($this->role, ['guru', 'wali_kelas']); }
     public function isAdmin(): bool     { return $this->role === 'admin'; }
-    public function isKesiswaan(): bool { return $this->role === 'kesiswaan'; }
+    public function isKesiswaan(): bool    { return $this->role === 'kesiswaan'; }
+    public function isBendahara(): bool    { return $this->role === 'bendahara'; }
+    public function isKepalaSekolah(): bool { return $this->role === 'kepala_sekolah'; }
+
+    // Boleh akses modul keuangan (read)
+    public function canViewPayments(): bool
+    {
+        return in_array($this->role, ['bendahara', 'kepala_sekolah', 'admin']);
+    }
+
+    // Boleh input/ubah data keuangan
+    public function canManagePayments(): bool
+    {
+        return $this->role === 'bendahara';
+    }
+
+    // ── Payment Relations ──────────────────────────────────────────────────
+    public function paymentBills(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\PaymentBill::class, 'user_id');
+    }
+
+    public function paymentTransactions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\PaymentTransaction::class, 'user_id');
+    }
+
+    public function studentDiscounts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(\App\Models\StudentDiscount::class, 'user_id');
+    }
     public function isAlumni(): bool    { return $this->student_status === 'alumni'; }
     public function isAktif(): bool     { return $this->student_status === 'aktif'; }
 
@@ -108,11 +138,14 @@ class User extends Authenticatable
         if ($this->avatar_path) return asset('storage/' . $this->avatar_path);
 
         $bg = match($this->role) {
-            'siswa'     => '1D9E75',
-            'guru'      => '3B82F6',
-            'admin'     => '8B5CF6',
-            'kesiswaan' => 'F59E0B',
-            default     => '6B7280',
+            'siswa'          => '1D9E75',
+            'guru'           => '3B82F6',
+            'wali_kelas'     => '2563EB',
+            'admin'          => '8B5CF6',
+            'kesiswaan'      => 'F59E0B',
+            'bendahara'      => 'D97706',
+            'kepala_sekolah' => '991B1B',
+            default          => '6B7280',
         };
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=' . $bg . '&color=fff';
     }
