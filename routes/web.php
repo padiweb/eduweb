@@ -213,6 +213,21 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::get('/{assignment}/file', [StudentAssignmentController::class, 'viewFile'])->name('view-file');
         });
     });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // BENDAHARA
+    // ─────────────────────────────────────────────────────────────────────────
+    Route::middleware('role:bendahara,kepala_sekolah')->prefix('bendahara')->name('bendahara.')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'bendahara'])->name('dashboard');
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // KEPALA SEKOLAH
+    // ─────────────────────────────────────────────────────────────────────────
+    Route::middleware('role:kepala_sekolah')->prefix('kepala')->name('kepala.')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'kepala'])->name('dashboard');
+    });
+
 });
 
 require __DIR__.'/auth.php';

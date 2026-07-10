@@ -18,7 +18,9 @@ class DashboardController extends Controller
             'guru', 'wali_kelas'     => redirect()->route('guru.dashboard'),
             'kesiswaan'              => redirect()->route('kesiswaan.dashboard'),
             'siswa'                  => redirect()->route('siswa.siswa.dashboard'),
-            default                  => redirect()->route('login'),
+            'bendahara'              => redirect()->route('bendahara.dashboard'),
+            'kepala_sekolah'         => redirect()->route('kepala.dashboard'),
+            default                  => abort(403, 'Role tidak dikenali.'),
         };
     }
 
@@ -128,5 +130,52 @@ class DashboardController extends Controller
         return view('dashboard.siswa', compact(
             'todayAttendance', 'monthStats', 'rate', 'violationPoints'
         ));
+    }
+
+    public function bendahara()
+    {
+        $school = auth()->user()->school;
+
+        $stats = [
+            'tagihan_bulan_ini'   => \App\Models\PaymentBill::where('school_id', $school->id)
+                                        ->whereMonth('created_at', now()->month)->count(),
+            'lunas_bulan_ini'     => \App\Models\PaymentBill::where('school_id', $school->id)
+                                        ->where('status', 'paid')
+                                        ->whereMonth('updated_at', now()->month)->count(),
+            'menunggu_konfirmasi' => \App\Models\PaymentTransaction::where('school_id', $school->id)
+                                        ->where('status', 'pending')
+                                        ->where('channel', 'transfer')->count(),
+            'total_tunggakan'     => \App\Models\PaymentBill::where('school_id', $school->id)
+                                        ->whereIn('status', ['unpaid', 'partial'])->count(),
+        ];
+
+        $pendingTransfers = \App\Models\PaymentTransaction::where('school_id', $school->id)
+            ->where('status', 'pending')
+            ->where('channel', 'transfer')
+            ->with(['bill.student', 'bill.paymentType'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('dashboard.bendahara', compact('stats', 'pendingTransfers'));
+    }
+
+    public function kepala()
+    {
+        $school = auth()->user()->school;
+
+        $stats = [
+            'total_siswa'       => \App\Models\User::where('school_id', $school->id)
+                                        ->where('role', 'siswa')->where('is_active', true)->count(),
+            'tagihan_bulan_ini' => \App\Models\PaymentBill::where('school_id', $school->id)
+                                        ->whereMonth('created_at', now()->month)->count(),
+            'sudah_bayar'       => \App\Models\PaymentBill::where('school_id', $school->id)
+                                        ->where('status', 'paid')
+                                        ->whereMonth('updated_at', now()->month)->count(),
+            'tunggakan'         => \App\Models\PaymentBill::where('school_id', $school->id)
+                                        ->whereIn('status', ['unpaid', 'partial'])->count(),
+        ];
+
+        return view('dashboard.kepala', compact('stats'));
     }
 }
