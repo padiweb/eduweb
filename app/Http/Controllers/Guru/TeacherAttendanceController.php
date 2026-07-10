@@ -215,6 +215,196 @@ class TeacherAttendanceController extends Controller
         return view('guru.attendance.rewards', compact('points', 'summary'));
     }
 
+    // ── Scan dari kamera HP (URL publik) ──────────────────────────────────
+
+    public function scanFromUrl(string $token)
+    {
+        // Jika belum login, redirect ke login dulu
+        if (! auth()->check()) {
+            session()->put('url.intended', url()->current());
+            return redirect()->route('login')
+                ->with('info', 'Login terlebih dahulu untuk absensi.');
+        }
+
+        $teacher = auth()->user();
+        $school  = $teacher->school;
+
+        // Cari sesi aktif berdasarkan token langsung di tabel sesi
+        // (bukan compare dengan school->teacher_qr_token yang bisa berbeda)
+        $session = TeacherAttendanceSession::where('school_id', $school->id)
+            ->where('qr_token', $token)
+            ->where('session_date', today())
+            ->where('is_active', true)
+            ->orderBy('session_type')
+            ->first();
+
+        // Fallback: cek juga token di school (jika sesi pakai token lama)
+        if (! $session && $school->teacher_qr_token === $token) {
+            $session = TeacherAttendanceSession::where('school_id', $school->id)
+                ->where('session_date', today())
+                ->where('is_active', true)
+                ->where(function ($q) {
+                    $now = now()->format('H:i:s');
+                    $q->where('open_time', '<=', $now)
+                      ->where('close_time', '>=', $now);
+                })
+                ->orderBy('session_type')
+                ->first();
+        }
+
+        if (! $session) {
+            // Cek apakah token valid tapi sesi belum aktif jamnya
+            $sessionToday = TeacherAttendanceSession::where('school_id', $school->id)
+                ->where('session_date', today())
+                ->where('is_active', true)
+                ->orderBy('open_time')
+                ->get();
+
+            $now = now()->format('H:i:s');
+            $nextSession = $sessionToday->first(fn($s) => $s->open_time > $now);
+
+            $message = 'Tidak ada sesi absensi yang aktif saat ini.';
+            if ($nextSession) {
+                $message = 'Sesi absensi ' . $nextSession->session_type . ' belum dibuka. Buka pukul ' . substr($nextSession->open_time, 0, 5) . ' WIB.';
+            } elseif ($sessionToday->isNotEmpty()) {
+                $lastSession = $sessionToday->last();
+                if ($now > $lastSession->close_time) {
+                    $message = 'Sesi absensi hari ini sudah berakhir (tutup pukul ' . substr($lastSession->close_time, 0, 5) . ' WIB).';
+                }
+            }
+
+            return view('guru.attendance.scan-result', [
+                'success' => false,
+                'message' => $message,
+                'school'  => $school,
+            ]);
+        }
+
+        // Cek sudah absen di sesi ini
+        $existing = $session->attendances()
+            ->where('teacher_id', $teacher->id)
+            ->first();
+
+        if ($existing) {
+            return view('guru.attendance.scan-result', [
+                'success'    => false,
+                'message'    => 'Kamu sudah absen ' . ($session->session_type === 'masuk' ? 'masuk' : 'pulang') . ' hari ini.',
+                'attendance' => $existing,
+                'school'     => $school,
+            ]);
+        }
+
+        // Tampilkan halaman konfirmasi + GPS
+        return view('guru.attendance.scan-confirm', compact(
+            'session', 'school', 'token'
+        ));
+    }
+
+    // ── Proses absensi dari halaman scan-confirm ──────────────────────────
+
+    public function confirmScan(Request $request)
+    {
+        if (! auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        $teacher = auth()->user();
+        $school  = $teacher->school;
+
+        $validated = $request->validate([
+            'token'     => ['required', 'string'],
+            'latitude'  => ['nullable', 'numeric'],
+            'longitude' => ['nullable', 'numeric'],
+        ]);
+
+        // Validasi token — cari di sesi langsung, bukan di school
+        $session = \App\Models\TeacherAttendanceSession::where('school_id', $school->id)
+            ->where('qr_token', $validated['token'])
+            ->where('session_date', today())
+            ->where('is_active', true)
+            ->orderBy('session_type')
+            ->first();
+
+        // Fallback: cari sesi aktif jika token cocok dengan school
+        if (! $session && $school->teacher_qr_token === $validated['token']) {
+            $session = \App\Models\TeacherAttendanceSession::where('school_id', $school->id)
+                ->where('session_date', today())
+                ->where('is_active', true)
+                ->where(function ($q) {
+                    $now = now()->format('H:i:s');
+                    $q->where('open_time', '<=', $now)
+                      ->where('close_time', '>=', $now);
+                })
+                ->orderBy('session_type')
+                ->first();
+        }
+
+        if (! $session) {
+            return back()->with('error', 'Sesi absensi tidak ditemukan atau sudah tutup.');
+        }
+
+        if ($session->attendances()->where('teacher_id', $teacher->id)->exists()) {
+            return back()->with('error', 'Kamu sudah absen di sesi ini.');
+        }
+
+        // Hitung jarak GPS
+        $distanceMeters = null;
+        $isWithinRadius = true;
+
+        if ($validated['latitude'] && $validated['longitude'] && $school->latitude && $school->longitude) {
+            $distanceMeters = $this->calculateDistance(
+                $validated['latitude'], $validated['longitude'],
+                $school->latitude, $school->longitude
+            );
+            $isWithinRadius = $distanceMeters <= ($school->attendance_radius_meters ?? 200);
+
+            if (! $isWithinRadius) {
+                return back()->with('error', 'Kamu berada di luar area sekolah (' . round($distanceMeters) . 'm dari sekolah).');
+            }
+        }
+
+        $status = $session->session_type === 'pulang'
+            ? 'hadir'
+            : ($session->isLate() ? 'terlambat' : 'hadir');
+
+        $attendance = TeacherAttendance::create([
+            'school_id'        => $school->id,
+            'session_id'       => $session->id,
+            'teacher_id'       => $teacher->id,
+            'attendance_date'  => $session->session_date,
+            'status'           => $status,
+            'latitude'         => $validated['latitude'],
+            'longitude'        => $validated['longitude'],
+            'distance_meters'  => $distanceMeters,
+            'is_within_radius' => $isWithinRadius,
+            'is_manual_entry'  => false,
+            'scanned_at'       => now(),
+        ]);
+
+        // Reward poin
+        if ($session->session_type === 'masuk' && $status === 'hadir') {
+            TeacherRewardPoint::create([
+                'school_id'      => $school->id,
+                'teacher_id'     => $teacher->id,
+                'type'           => 'absen_tepat_waktu',
+                'points'         => 1,
+                'description'    => 'Absen masuk tepat waktu ' . today()->translatedFormat('d M Y'),
+                'point_date'     => today(),
+                'reference_id'   => $attendance->id,
+                'reference_type' => 'teacher_attendance',
+            ]);
+        }
+
+        return view('guru.attendance.scan-result', [
+            'success'    => true,
+            'message'    => $status === 'hadir' ? 'Absensi berhasil!' : 'Terlambat — absensi tercatat.',
+            'status'     => $status,
+            'session'    => $session,
+            'attendance' => $attendance,
+            'school'     => $school,
+        ]);
+    }
+
     // ── Halaman QR untuk scan (bisa dari HP guru) ─────────────────────────
 
     public function scanPage()

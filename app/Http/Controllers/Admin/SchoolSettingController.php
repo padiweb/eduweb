@@ -84,7 +84,7 @@ class SchoolSettingController extends Controller
 
         $school->update($validated);
 
-        // Update sesi yang sedang aktif hari ini dengan jam baru
+        // Update sesi siswa yang sedang aktif hari ini
         \App\Models\AttendanceSession::where('school_id', $school->id)
             ->whereDate('session_date', today())
             ->where('is_closed', false)
@@ -93,6 +93,9 @@ class SchoolSettingController extends Controller
                 'late_after' => $validated['late_threshold_time'],
                 'close_time' => $validated['attendance_close_time'],
             ]);
+
+        // Update ATAU buat sesi guru hari ini dengan jam baru
+        $this->syncTeacherSessions($school, $validated);
 
         // Set timezone langsung setelah disimpan
         config(['app.timezone' => $validated['timezone']]);
@@ -110,6 +113,35 @@ class SchoolSettingController extends Controller
         ]);
 
         return back()->with('success', 'Pengaturan sekolah berhasil disimpan.');
+    }
+
+    private function syncTeacherSessions($school, array $validated): void
+    {
+        $token = $school->fresh()->teacher_qr_token ?? \Illuminate\Support\Str::random(32);
+
+        // Sesi masuk — update jika sudah ada, buat jika belum
+        \App\Models\TeacherAttendanceSession::updateOrCreate(
+            ['school_id' => $school->id, 'session_date' => today(), 'session_type' => 'masuk'],
+            [
+                'open_time'  => $validated['teacher_checkin_open'],
+                'close_time' => $validated['teacher_checkin_close'],
+                'late_after' => $validated['teacher_checkin_late'],
+                'qr_token'   => $token,
+                'is_active'  => true,
+            ]
+        );
+
+        // Sesi pulang — update jika sudah ada, buat jika belum
+        \App\Models\TeacherAttendanceSession::updateOrCreate(
+            ['school_id' => $school->id, 'session_date' => today(), 'session_type' => 'pulang'],
+            [
+                'open_time'  => $validated['teacher_checkout_open'],
+                'close_time' => $validated['teacher_checkout_close'],
+                'late_after' => null,
+                'qr_token'   => $token,
+                'is_active'  => true,
+            ]
+        );
     }
 
     public function updateGps(Request $request)

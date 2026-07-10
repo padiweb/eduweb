@@ -29,6 +29,13 @@ Route::get('/absensi/scan', [StudentScanController::class, 'landing'])
 Route::get('/absensi/kelas/{slug}', [ClassQrController::class, 'scan'])
      ->name('attendance.class.scan');
 
+// Route publik absensi guru — dibuka saat scan QR dari kamera HP
+Route::get('/absensi-guru/{token}', [TeacherAttendanceController::class, 'scanFromUrl'])
+     ->name('teacher.attendance.scan-url');
+Route::post('/absensi-guru/confirm', [TeacherAttendanceController::class, 'confirmScan'])
+     ->middleware('auth')
+     ->name('teacher.attendance.confirm');
+
 Route::middleware(['auth', 'school.active'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

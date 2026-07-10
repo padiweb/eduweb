@@ -153,10 +153,13 @@ class TeacherAttendanceAdminController extends Controller
             $school->refresh();
         }
 
+        // QR berisi URL permanen — bisa di-scan dari kamera HP biasa
+        $permanentUrl = config('app.url') . '/absensi-guru/' . $school->teacher_qr_token;
+
         $qrImage = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
             ->size(220)
             ->errorCorrection('H')
-            ->generate($school->teacher_qr_token);
+            ->generate($permanentUrl);
 
         return view('admin.teacher-attendance.qr', [
             'school'   => $school,
@@ -168,8 +171,15 @@ class TeacherAttendanceAdminController extends Controller
 
     public function refreshQr()
     {
-        $school = auth()->user()->school;
-        $school->update(['teacher_qr_token' => Str::random(32)]);
+        $school   = auth()->user()->school;
+        $newToken = \Illuminate\Support\Str::random(32);
+
+        $school->update(['teacher_qr_token' => $newToken]);
+
+        // Update token di sesi hari ini juga
+        \App\Models\TeacherAttendanceSession::where('school_id', $school->id)
+            ->where('session_date', today())
+            ->update(['qr_token' => $newToken]);
 
         return back()->with('success', 'QR absensi guru berhasil diperbarui.');
     }
