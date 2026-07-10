@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\Admin\TeacherAttendanceAdminController;
 use App\Http\Controllers\Kesiswaan\ViolationController;
 use App\Http\Controllers\Guru\AssignmentController;
+use App\Http\Controllers\Guru\TeachingJournalController;
 use App\Http\Controllers\Guru\TeacherAttendanceController;
 use App\Http\Controllers\Siswa\StudentAssignmentController;
 
@@ -105,7 +106,8 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::put('/schedules/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update');
         Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
 
-        // Absensi Guru — /rewards HARUS di atas /{id}
+        // Absensi Guru — static routes HARUS di atas /{id}
+        Route::get('/teacher-attendance/qr', [TeacherAttendanceAdminController::class, 'qr'])->name('teacher-attendance.qr');
         Route::get('/teacher-attendance', [TeacherAttendanceAdminController::class, 'index'])->name('teacher-attendance.index');
         Route::post('/teacher-attendance/manual', [TeacherAttendanceAdminController::class, 'manualEntry'])->name('teacher-attendance.manual');
         Route::get('/teacher-attendance/rewards', [TeacherAttendanceAdminController::class, 'rewards'])->name('teacher-attendance.rewards');
@@ -150,6 +152,15 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::patch('/{assignment}/tutup', [AssignmentController::class, 'close'])->name('close');
             Route::post('/{assignment}/nilai', [AssignmentController::class, 'grade'])->name('grade');
             Route::get('/{assignment}/file/{submission}', [AssignmentController::class, 'viewSubmissionFile'])->name('view-file');
+        });
+
+        // Jurnal Mengajar — /isi & /riwayat HARUS di atas /{journal}
+        Route::prefix('jurnal')->name('journal.')->group(function () {
+            Route::get('/', [TeachingJournalController::class, 'index'])->name('index');
+            Route::get('/isi', [TeachingJournalController::class, 'create'])->name('create');
+            Route::post('/', [TeachingJournalController::class, 'store'])->name('store');
+            Route::get('/riwayat', [TeachingJournalController::class, 'history'])->name('history');
+            Route::get('/{journal}', [TeachingJournalController::class, 'show'])->name('show');
         });
     });
 

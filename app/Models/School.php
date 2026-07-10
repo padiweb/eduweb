@@ -22,6 +22,13 @@ class School extends Model
         'violation_warning2',
         'violation_warning3',
         'alfa_limit_per_semester',
+        // Jam absensi guru
+        'teacher_checkin_open',
+        'teacher_checkin_close',
+        'teacher_checkin_late',
+        'teacher_checkout_open',
+        'teacher_checkout_close',
+        'teacher_qr_token',
     ];
 
     protected $casts = [

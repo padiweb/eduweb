@@ -78,7 +78,7 @@
                 <x-sidebar-link href="{{ route('guru.assignments.index') }}" :active="request()->routeIs('guru.assignments.*')" icon="book">
                     Tugas & Nilai
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="journal">
+                <x-sidebar-link href="{{ route('guru.journal.index') }}" :active="request()->routeIs('guru.journal.*')" icon="book-open">
                     Jurnal Mengajar
                 </x-sidebar-link>
                 <x-sidebar-link href="#" :active="false" icon="calendar">

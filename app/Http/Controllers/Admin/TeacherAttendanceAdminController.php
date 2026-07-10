@@ -148,14 +148,19 @@ class TeacherAttendanceAdminController extends Controller
     {
         $school = auth()->user()->school;
 
-        // Generate token jika belum ada
         if (! $school->teacher_qr_token) {
             $school->update(['teacher_qr_token' => Str::random(32)]);
+            $school->refresh();
         }
 
+        $qrImage = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+            ->size(220)
+            ->errorCorrection('H')
+            ->generate($school->teacher_qr_token);
+
         return view('admin.teacher-attendance.qr', [
-            'school' => $school,
-            'token'  => $school->teacher_qr_token,
+            'school'   => $school,
+            'qrImage'  => $qrImage,
         ]);
     }
 
