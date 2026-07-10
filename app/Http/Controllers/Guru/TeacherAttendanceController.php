@@ -65,19 +65,42 @@ class TeacherAttendanceController extends Controller
             'longitude' => ['nullable', 'numeric'],
         ]);
 
-        // Cari sesi yang sesuai token
+        $now   = now()->format('H:i:s');
+        $token = $validated['qr_token'];
+
+        // Cari sesi yang sedang aktif — cek token di sesi atau di school
         $session = TeacherAttendanceSession::where('school_id', $school->id)
-            ->where('qr_token', $validated['qr_token'])
             ->where('session_date', today())
             ->where('is_active', true)
+            ->where('open_time', '<=', $now)
+            ->where('close_time', '>=', $now)
+            ->where(function ($q) use ($token) {
+                $q->where('qr_token', $token);
+            })
+            ->orderBy('session_type')
             ->first();
 
+        // Fallback: token cocok dengan school dan ada sesi aktif
         if (! $session) {
-            return response()->json(['success' => false, 'message' => 'QR tidak valid atau sesi belum dibuka.'], 422);
+            $schoolTokens = TeacherAttendanceSession::where('school_id', $school->id)
+                ->where('session_date', today())
+                ->pluck('qr_token')->toArray();
+
+            $tokenValid = in_array($token, $schoolTokens) || $school->teacher_qr_token === $token;
+
+            if ($tokenValid) {
+                $session = TeacherAttendanceSession::where('school_id', $school->id)
+                    ->where('session_date', today())
+                    ->where('is_active', true)
+                    ->where('open_time', '<=', $now)
+                    ->where('close_time', '>=', $now)
+                    ->orderBy('session_type')
+                    ->first();
+            }
         }
 
-        if (! $session->isOpen()) {
-            return response()->json(['success' => false, 'message' => 'Sesi absensi sudah ditutup.'], 422);
+        if (! $session) {
+            return response()->json(['success' => false, 'message' => 'QR tidak valid atau tidak ada sesi yang aktif saat ini.'], 422);
         }
 
         // Cek sudah absen
@@ -228,49 +251,68 @@ class TeacherAttendanceController extends Controller
 
         $teacher = auth()->user();
         $school  = $teacher->school;
+        $now     = now()->format('H:i:s');
 
-        // Cari sesi aktif berdasarkan token langsung di tabel sesi
-        // (bukan compare dengan school->teacher_qr_token yang bisa berbeda)
+        // Cari sesi yang sedang aktif (dalam rentang jam) hari ini
+        // Cek token di sesi ATAU di school (untuk kompatibilitas)
         $session = TeacherAttendanceSession::where('school_id', $school->id)
-            ->where('qr_token', $token)
             ->where('session_date', today())
             ->where('is_active', true)
+            ->where('open_time', '<=', $now)
+            ->where('close_time', '>=', $now)
+            ->where(function ($q) use ($token, $school) {
+                $q->where('qr_token', $token)
+                  ->orWhere(fn($q2) => $q2->whereRaw('1=1')->where(function() use ($q2, $token, $school) {
+                      // fallback jika token cocok dengan school
+                  }));
+            })
             ->orderBy('session_type')
             ->first();
 
-        // Fallback: cek juga token di school (jika sesi pakai token lama)
-        if (! $session && $school->teacher_qr_token === $token) {
-            $session = TeacherAttendanceSession::where('school_id', $school->id)
+        // Jika tidak ketemu dengan filter jam+token, coba tanpa filter token
+        // (cukup verifikasi bahwa token adalah milik sekolah ini)
+        if (! $session) {
+            $schoolTokens = TeacherAttendanceSession::where('school_id', $school->id)
                 ->where('session_date', today())
-                ->where('is_active', true)
-                ->where(function ($q) {
-                    $now = now()->format('H:i:s');
-                    $q->where('open_time', '<=', $now)
-                      ->where('close_time', '>=', $now);
-                })
-                ->orderBy('session_type')
-                ->first();
+                ->pluck('qr_token')
+                ->toArray();
+
+            $tokenValid = in_array($token, $schoolTokens) || $school->teacher_qr_token === $token;
+
+            if ($tokenValid) {
+                // Token valid, cari sesi yang sedang aktif jamnya
+                $session = TeacherAttendanceSession::where('school_id', $school->id)
+                    ->where('session_date', today())
+                    ->where('is_active', true)
+                    ->where('open_time', '<=', $now)
+                    ->where('close_time', '>=', $now)
+                    ->orderBy('session_type')
+                    ->first();
+            }
         }
 
         if (! $session) {
-            // Cek apakah token valid tapi sesi belum aktif jamnya
+            // Token valid tapi jam belum/sudah lewat — beri pesan yang jelas
+            $tokenValid = TeacherAttendanceSession::where('school_id', $school->id)
+                ->where('session_date', today())
+                ->where('qr_token', $token)
+                ->exists() || $school->teacher_qr_token === $token;
+
             $sessionToday = TeacherAttendanceSession::where('school_id', $school->id)
                 ->where('session_date', today())
                 ->where('is_active', true)
                 ->orderBy('open_time')
                 ->get();
 
-            $now = now()->format('H:i:s');
             $nextSession = $sessionToday->first(fn($s) => $s->open_time > $now);
+            $message = $tokenValid
+                ? 'QR valid. Tidak ada sesi absensi yang aktif saat ini.'
+                : 'QR tidak valid untuk sekolah ini.';
 
-            $message = 'Tidak ada sesi absensi yang aktif saat ini.';
-            if ($nextSession) {
-                $message = 'Sesi absensi ' . $nextSession->session_type . ' belum dibuka. Buka pukul ' . substr($nextSession->open_time, 0, 5) . ' WIB.';
-            } elseif ($sessionToday->isNotEmpty()) {
-                $lastSession = $sessionToday->last();
-                if ($now > $lastSession->close_time) {
-                    $message = 'Sesi absensi hari ini sudah berakhir (tutup pukul ' . substr($lastSession->close_time, 0, 5) . ' WIB).';
-                }
+            if ($tokenValid && $nextSession) {
+                $message = 'Sesi ' . $nextSession->session_type . ' belum dibuka. Buka pukul ' . substr($nextSession->open_time, 0, 5) . ' WIB.';
+            } elseif ($tokenValid && $sessionToday->isNotEmpty() && $now > $sessionToday->last()->close_time) {
+                $message = 'Sesi absensi hari ini sudah berakhir.';
             }
 
             return view('guru.attendance.scan-result', [

@@ -169,7 +169,7 @@ class TeacherAttendanceAdminController extends Controller
 
     // ── Generate/refresh QR token sekolah ────────────────────────────────
 
-    public function refreshQr()
+    public function refreshQr(Request $request)
     {
         $school   = auth()->user()->school;
         $newToken = \Illuminate\Support\Str::random(32);
@@ -180,6 +180,10 @@ class TeacherAttendanceAdminController extends Controller
         \App\Models\TeacherAttendanceSession::where('school_id', $school->id)
             ->where('session_date', today())
             ->update(['qr_token' => $newToken]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
 
         return back()->with('success', 'QR absensi guru berhasil diperbarui.');
     }

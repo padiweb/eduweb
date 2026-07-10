@@ -332,10 +332,20 @@
             });
             if (!code) return;
 
-            scannedToken = code.data;
+            var raw = code.data;
             stopCamera();
             scanArea.classList.add('hidden');
             document.querySelectorAll('.p-5').forEach(function(el) { el.style.display = ''; });
+
+            // Cek apakah QR berisi URL absensi guru
+            // Format: https://domain.com/absensi-guru/{token}
+            var tokenMatch = raw.match(/\/absensi-guru\/([a-zA-Z0-9]+)/);
+            if (tokenMatch) {
+                scannedToken = tokenMatch[1]; // ambil token dari URL
+            } else {
+                scannedToken = raw; // token mentah (fallback)
+            }
+
             gpsArea.classList.remove('hidden');
             btnAbsen.disabled = true;
             requestGPS();

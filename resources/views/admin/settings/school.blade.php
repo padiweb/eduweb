@@ -332,6 +332,18 @@
                         Cetak QR Guru
                     </a>
                 </div>
+
+                {{-- Refresh QR — pakai JS fetch agar tidak nested form --}}
+                <div class="sm:col-span-3 mt-2">
+                    <button type="button" id="btn-refresh-qr"
+                            class="flex items-center gap-2 text-sm text-amber-400 hover:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-xl transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                        </svg>
+                        Perbarui QR Guru
+                    </button>
+                    <p class="text-xs text-gray-600 mt-1">Perbarui QR jika QR lama hilang atau rusak. Cetak ulang QR setelah diperbarui.</p>
+                </div>
             </div>
         </div>
 
@@ -349,7 +361,18 @@
     </form>
 
     <script>
-    document.getElementById('btn-detect-location')?.addEventListener('click', function() {
+    document.getElementById('btn-refresh-qr')?.addEventListener('click', function() {
+        if (!confirm('QR lama tidak berlaku setelah diperbarui. Pastikan cetak QR baru setelah ini. Lanjutkan?')) return;
+        var btn = this;
+        btn.disabled = true;
+        btn.textContent = 'Memperbarui...';
+        fetch('{{ route("admin.teacher-attendance.refresh-qr") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+        })
+        .then(r => r.ok ? (btn.textContent = 'QR Diperbarui ✓', setTimeout(() => location.reload(), 1000)) : Promise.reject())
+        .catch(() => { btn.disabled = false; btn.textContent = 'Perbarui QR Guru'; alert('Gagal memperbarui QR.'); });
+    });
         var statusEl = document.getElementById('detect-status');
         statusEl.textContent = 'Mendeteksi lokasi...';
         this.disabled = true;

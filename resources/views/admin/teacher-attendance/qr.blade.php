@@ -106,19 +106,11 @@
         <p class="brand">Powered by <span>SiManS</span></p>
     </div>
 
-    <div class="no-print" style="position:fixed;bottom:20px;right:20px;display:flex;gap:8px">
+    <div class="no-print" style="position:fixed;bottom:20px;right:20px;">
         <button onclick="window.print()"
                 style="background:#1D9E75;color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer">
             Cetak QR
         </button>
-        <form method="POST" action="{{ route('admin.teacher-attendance.refresh-qr') }}">
-            @csrf
-            <button type="submit"
-                    style="background:#6b7280;color:#fff;border:none;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer"
-                    onclick="return confirm('QR lama tidak berlaku setelah di-refresh. Lanjutkan?')">
-                Refresh QR
-            </button>
-        </form>
     </div>
 </body>
 </html>
