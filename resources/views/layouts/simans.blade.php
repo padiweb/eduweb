@@ -51,14 +51,14 @@
                     Tugas & Nilai
                 </x-sidebar-link>
                 <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Keuangan</p>
+                </div>
+                <x-sidebar-link href="{{ route('siswa.payment.index') }}" :active="request()->routeIs('siswa.payment.*')" icon="credit-card">
+                    Status Pembayaran
+                </x-sidebar-link>
+                <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Informasi</p>
                 </div>
-                <x-sidebar-link href="#" :active="false" icon="bell">
-                    Pengumuman
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="credit-card">
-                    Status SPP
-                </x-sidebar-link>
                 <x-sidebar-link href="{{ route('siswa.violations') }}" :active="request()->routeIs('siswa.violations')" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
@@ -81,9 +81,6 @@
                 <x-sidebar-link href="{{ route('guru.journal.index') }}" :active="request()->routeIs('guru.journal.*')" icon="journal">
                     Jurnal Mengajar
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="calendar">
-                    Jadwal
-                </x-sidebar-link>
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kehadiran</p>
                 </div>
@@ -103,8 +100,52 @@
                 <x-sidebar-link href="{{ route('kesiswaan.violations.index') }}" :active="request()->routeIs('kesiswaan.violations.*')" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="clipboard">
-                    Rekap Absensi
+            @endif
+
+            {{-- ── BENDAHARA ── --}}
+            @if($role === 'bendahara')
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Pembayaran</p>
+                </div>
+                <x-sidebar-link href="{{ route('bendahara.dashboard') }}" :active="request()->routeIs('bendahara.dashboard')" icon="chart">
+                    Dashboard
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.bills.index') }}" :active="request()->routeIs('bendahara.bills.*')" icon="credit-card">
+                    Kelola Tagihan
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.transactions.index') }}" :active="request()->routeIs('bendahara.transactions.*')" icon="clipboard">
+                    Konfirmasi Transfer
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.payment-types.index') }}" :active="request()->routeIs('bendahara.payment-types.*')" icon="cog">
+                    Jenis & Tarif
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.discounts.index') }}" :active="request()->routeIs('bendahara.discounts.*')" icon="shield">
+                    Beasiswa
+                </x-sidebar-link>
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Laporan</p>
+                </div>
+                <x-sidebar-link href="{{ route('bendahara.bills.index', ['status' => 'unpaid']) }}" :active="false" icon="shield">
+                    Daftar Tunggakan
+                </x-sidebar-link>
+            @endif
+
+            {{-- ── KEPALA SEKOLAH ── --}}
+            @if($role === 'kepala_sekolah')
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Monitoring</p>
+                </div>
+                <x-sidebar-link href="{{ route('kepala.dashboard') }}" :active="request()->routeIs('kepala.dashboard')" icon="chart">
+                    Dashboard
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.bills.index') }}" :active="request()->routeIs('bendahara.bills.*')" icon="credit-card">
+                    Data Tagihan
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.transactions.index') }}" :active="request()->routeIs('bendahara.transactions.*')" icon="clipboard">
+                    Riwayat Transfer
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.bills.index', ['status' => 'unpaid']) }}" :active="false" icon="shield">
+                    Tunggakan
                 </x-sidebar-link>
             @endif
 
@@ -113,26 +154,20 @@
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Manajemen</p>
                 </div>
-                <x-sidebar-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" icon="users">
-                    Manajemen User
-                </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="users">
-                    Data Pengguna
+                <x-sidebar-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" icon="users">
+                    Manajemen User
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="school">
-                    Data Kelas
+                <x-sidebar-link href="{{ route('admin.classrooms.index') }}" :active="request()->routeIs('admin.classrooms.*')" icon="school">
+                    Manajemen Kelas
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.subjects.index') }}" :active="request()->routeIs('admin.subjects.*')" icon="book">
                     Mata Pelajaran
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.schedules.index') }}" :active="request()->routeIs('admin.schedules.*')" icon="calendar">
                     Jadwal Mengajar
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.classrooms.index') }}" :active="request()->routeIs('admin.classrooms.*')" icon="school">
-                    Manajemen Kelas
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.promotions.index') }}" :active="request()->routeIs('admin.promotions.*')" icon="arrow-up">
                     Promosi Siswa
@@ -143,27 +178,14 @@
                 <x-sidebar-link href="{{ route('admin.teacher-attendance.index') }}" icon="users">
                     Absensi Guru
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="clipboard">
-                    Rekap Absensi
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="shield">
-                    Pelanggaran
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="credit-card">
-                    Data SPP
-                </x-sidebar-link>
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
                 </div>
-                <x-sidebar-link href="{{ route('admin.settings.school') }}"
-                    :active="request()->routeIs('admin.settings.*')" icon="cog">
+                <x-sidebar-link href="{{ route('admin.settings.school') }}" :active="request()->routeIs('admin.settings.*')" icon="cog">
                     Pengaturan Sekolah
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.qr.index') }}" :active="request()->routeIs('admin.qr.*')" icon="qrcode">
                     Kelola QR Kelas
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="log">
-                    Audit Log
                 </x-sidebar-link>
             @endif
         </nav>
@@ -195,36 +217,20 @@
 
         {{-- Topbar --}}
         <header class="sticky top-0 z-40 h-14 bg-gray-900/95 backdrop-blur border-b border-white/5 flex items-center gap-4 px-4 lg:px-6">
-
-            {{-- Hamburger mobile --}}
             <button id="sidebar-toggle" class="lg:hidden text-gray-400 hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
                 </svg>
             </button>
-
-            {{-- Page title --}}
             <span class="text-sm font-semibold text-white">{{ $title ?? 'Dashboard' }}</span>
-
             <div class="flex-1"></div>
-
-            {{-- Tanggal --}}
             <span class="hidden sm:block text-xs text-gray-500 bg-gray-800 px-3 py-1.5 rounded-full border border-white/5">
                 {{ now()->translatedFormat('l, d F Y') }}
             </span>
-
-            {{-- Notifikasi --}}
-            <button class="relative text-gray-400 hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
-                </svg>
-                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-gray-900"></span>
-            </button>
         </header>
 
         {{-- Page Content --}}
         <main class="flex-1 p-4 lg:p-6">
-
             @if(session('success'))
                 <div class="mb-5 flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -233,16 +239,11 @@
                     {{ session('success') }}
                 </div>
             @endif
-
             @if(session('error'))
                 <div class="mb-5 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-                    </svg>
                     {{ session('error') }}
                 </div>
             @endif
-
             @if($errors->any())
                 <div class="mb-5 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
                     <ul class="space-y-1">
@@ -255,29 +256,19 @@
                     </ul>
                 </div>
             @endif
-
             {{ $slot }}
         </main>
     </div>
 </div>
 
-{{-- Sidebar overlay mobile --}}
 <div id="sidebar-overlay" class="fixed inset-0 z-40 bg-black/60 hidden lg:hidden"></div>
 
 <script>
     const sidebar   = document.getElementById('sidebar');
     const overlay   = document.getElementById('sidebar-overlay');
     const toggleBtn = document.getElementById('sidebar-toggle');
-
-    function openSidebar()  {
-        sidebar.classList.remove('-translate-x-full');
-        overlay.classList.remove('hidden');
-    }
-    function closeSidebar() {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-    }
-
+    function openSidebar()  { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
+    function closeSidebar() { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
     toggleBtn?.addEventListener('click', openSidebar);
     overlay?.addEventListener('click', closeSidebar);
 </script>

@@ -27,6 +27,15 @@ class QrManagementController extends Controller
             ->orderBy('name')
             ->get();
 
+        // Auto-generate slug untuk kelas yang belum punya
+        foreach ($classrooms as $classroom) {
+            if (empty($classroom->slug)) {
+                $slug = \Illuminate\Support\Str::slug($classroom->name . '-' . $classroom->id);
+                $classroom->update(['slug' => $slug]);
+                $classroom->slug = $slug;
+            }
+        }
+
         $todaySessions = AttendanceSession::where('school_id', $school->id)
             ->whereDate('session_date', today())
             ->get()

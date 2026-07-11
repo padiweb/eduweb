@@ -31,15 +31,9 @@ class PaymentBillController extends Controller
             ->with(['student', 'paymentType', 'academicYear'])
             ->orderByDesc('period_date');
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('type')) {
-            $query->where('payment_type_id', $request->type);
-        }
-        if ($request->filled('year')) {
-            $query->where('academic_year_id', $request->year);
-        }
+        if ($request->filled('status')) $query->where('status', $request->status);
+        if ($request->filled('type'))   $query->where('payment_type_id', $request->type);
+        if ($request->filled('year'))   $query->where('academic_year_id', $request->year);
         if ($request->filled('search')) {
             $query->whereHas('student', fn($q) =>
                 $q->where('name', 'like', "%{$request->search}%")
@@ -87,22 +81,16 @@ class PaymentBillController extends Controller
 
         $school = $this->school();
         $type   = PaymentType::findOrFail($data['payment_type_id']);
-
         if ($type->school_id !== $school->id) abort(403);
 
-        // Kumpulkan siswa
-        if ($data['scope'] === 'classroom') {
-            $classroom = Classroom::findOrFail($data['classroom_id']);
-            $students  = $classroom->students()->where('is_active', true)->get();
-        } else {
-            $students = User::whereIn('id', $data['student_ids'])->get();
-        }
+        $students = $data['scope'] === 'classroom'
+            ? Classroom::findOrFail($data['classroom_id'])->students()->where('is_active', true)->get()
+            : User::whereIn('id', $data['student_ids'])->get();
 
         $created = 0;
         $skipped = 0;
 
         foreach ($students as $student) {
-            // Cegah duplikat
             $exists = PaymentBill::where('user_id', $student->id)
                 ->where('payment_type_id', $type->id)
                 ->where('academic_year_id', $data['academic_year_id'])
@@ -111,11 +99,8 @@ class PaymentBillController extends Controller
 
             if ($exists) { $skipped++; continue; }
 
-            // Cari tarif
-            $rate       = $this->resolveRate($type->id, $data['academic_year_id'], $student, $school->id);
-            $baseAmount = $rate ? $rate->amount : 0;
-
-            // Cari diskon
+            $rate        = $this->resolveRate($type->id, $data['academic_year_id'], $student, $school->id);
+            $baseAmount  = $rate ? $rate->amount : 0;
             $discount    = $this->resolveDiscount($student->id, $type->id, $data['academic_year_id'], $data['period_date']);
             $discountAmt = $this->calcDiscount($baseAmount, $discount);
             $billed      = max(0, $baseAmount - $discountAmt);
@@ -132,12 +117,12 @@ class PaymentBillController extends Controller
                 'amount_discount'  => $discountAmt,
                 'amount_billed'    => $billed,
                 'amount_paid'      => 0,
+                'amount_remaining' => $billed,
                 'status'           => 'unpaid',
                 'due_date'         => $data['due_date'] ?? null,
                 'created_by'       => auth()->id(),
             ]);
 
-            // Buat cicilan
             if ($data['installment_type'] === 'installment' && $billed > 0) {
                 $count  = (int) $data['installment_count'];
                 $each   = intdiv($billed, $count);
@@ -178,15 +163,98 @@ class PaymentBillController extends Controller
     public function show(PaymentBill $bill)
     {
         $this->authorize($bill);
-
-        $bill->load([
-            'student', 'paymentType', 'academicYear',
-            'installments',
-            'transactions.confirmedBy',
-            'transactions.createdBy',
-        ]);
+        $bill->load(['student', 'paymentType', 'academicYear', 'installments',
+            'transactions.confirmedBy', 'transactions.createdBy']);
 
         return view('bendahara.bills.show', compact('bill'));
+    }
+
+    public function edit(PaymentBill $bill)
+    {
+        $this->authorize($bill);
+
+        if ($bill->transactions()->where('status', 'approved')->exists()) {
+            return redirect()->route('bendahara.bills.show', $bill)
+                ->withErrors(['edit' => 'Tagihan yang sudah ada pembayaran tidak dapat diedit.']);
+        }
+
+        $types         = PaymentType::where('school_id', $this->school()->id)->where('is_active', true)->get();
+        $academicYears = AcademicYear::where('school_id', $this->school()->id)->orderByDesc('is_active')->get();
+
+        return view('bendahara.bills.edit', compact('bill', 'types', 'academicYears'));
+    }
+
+    public function update(Request $request, PaymentBill $bill)
+    {
+        $this->authorize($bill);
+
+        if ($bill->transactions()->where('status', 'approved')->exists()) {
+            return back()->withErrors(['edit' => 'Tagihan yang sudah ada pembayaran tidak dapat diedit.']);
+        }
+
+        $data = $request->validate([
+            'period_label'    => 'required|string|max:50',
+            'period_date'     => 'required|date',
+            'due_date'        => 'nullable|date',
+            'amount_base'     => 'required|integer|min:0',
+            'amount_discount' => 'nullable|integer|min:0',
+        ]);
+
+        $base     = (int) $data['amount_base'];
+        $discount = (int) ($data['amount_discount'] ?? 0);
+        $billed   = max(0, $base - $discount);
+
+        $old = $bill->toArray();
+
+        $bill->update([
+            'period_label'     => $data['period_label'],
+            'period_date'      => $data['period_date'],
+            'due_date'         => $data['due_date'] ?? null,
+            'amount_base'      => $base,
+            'amount_discount'  => $discount,
+            'amount_billed'    => $billed,
+            'amount_remaining' => max(0, $billed - $bill->amount_paid),
+        ]);
+
+        PaymentAuditLog::create([
+            'school_id'   => $this->school()->id,
+            'user_id'     => auth()->id(),
+            'action'      => 'bill_updated',
+            'target_type' => 'PaymentBill',
+            'target_id'   => $bill->id,
+            'old_values'  => $old,
+            'new_values'  => $data,
+            'ip_address'  => $request->ip(),
+        ]);
+
+        return redirect()->route('bendahara.bills.show', $bill)
+            ->with('success', 'Tagihan berhasil diperbarui.');
+    }
+
+    public function destroy(Request $request, PaymentBill $bill)
+    {
+        $this->authorize($bill);
+
+        if ($bill->transactions()->where('status', 'approved')->exists()) {
+            return back()->withErrors(['delete' => 'Tagihan yang sudah ada pembayaran tidak dapat dihapus.']);
+        }
+
+        PaymentAuditLog::create([
+            'school_id'   => $this->school()->id,
+            'user_id'     => auth()->id(),
+            'action'      => 'bill_deleted',
+            'target_type' => 'PaymentBill',
+            'target_id'   => $bill->id,
+            'old_values'  => $bill->toArray(),
+            'ip_address'  => $request->ip(),
+        ]);
+
+        $bill->transactions()->where('status', 'pending')->delete();
+        $bill->installments()->delete();
+        $bill->delete();
+
+        return redirect()->route('bendahara.bills.index')
+            ->with('success', 'Tagihan berhasil dihapus.');
     }
 
     public function storeCash(Request $request, PaymentBill $bill)
@@ -194,9 +262,9 @@ class PaymentBillController extends Controller
         $this->authorize($bill);
 
         $request->validate([
-            'amount'          => 'required|integer|min:1',
-            'installment_id'  => 'nullable|exists:payment_installments,id',
-            'cashier_notes'   => 'nullable|string|max:255',
+            'amount'         => 'required|integer|min:1',
+            'installment_id' => 'nullable|exists:payment_installments,id',
+            'cashier_notes'  => 'nullable|string|max:255',
         ]);
 
         if (in_array($bill->status, ['paid', 'waived'])) {
@@ -254,7 +322,6 @@ class PaymentBillController extends Controller
     public function waive(Request $request, PaymentBill $bill)
     {
         $this->authorize($bill);
-
         $request->validate(['reason' => 'required|string|max:255']);
 
         if ($bill->status === 'paid') {
@@ -278,87 +345,7 @@ class PaymentBillController extends Controller
         return back()->with('success', 'Tagihan berhasil dibebaskan.');
     }
 
-    public function edit(PaymentBill $bill)
-    {
-        $this->authorize($bill);
-
-        if ($bill->amount_paid > 0) {
-            return redirect()->route('bendahara.bills.show', $bill)
-                ->withErrors(['edit' => 'Tagihan yang sudah ada pembayaran tidak dapat diedit.']);
-        }
-
-        $types         = PaymentType::where('school_id', $this->school()->id)->where('is_active', true)->get();
-        $academicYears = AcademicYear::where('school_id', $this->school()->id)->orderByDesc('is_active')->get();
-
-        return view('bendahara.bills.edit', compact('bill', 'types', 'academicYears'));
-    }
-
-    public function update(Request $request, PaymentBill $bill)
-    {
-        $this->authorize($bill);
-
-        if ($bill->amount_paid > 0) {
-            return back()->withErrors(['edit' => 'Tagihan yang sudah ada pembayaran tidak dapat diedit.']);
-        }
-
-        $data = $request->validate([
-            'period_label'    => 'required|string|max:50',
-            'period_date'     => 'required|date',
-            'due_date'        => 'nullable|date',
-            'amount_billed'   => 'required|integer|min:0',
-            'amount_discount' => 'nullable|integer|min:0',
-        ]);
-
-        $data['amount_discount'] = $data['amount_discount'] ?? 0;
-        $data['amount_billed']   = max(0, (int)$data['amount_billed'] - (int)$data['amount_discount']);
-
-        $old = $bill->toArray();
-        $bill->update($data);
-
-        PaymentAuditLog::create([
-            'school_id'   => $this->school()->id,
-            'user_id'     => auth()->id(),
-            'action'      => 'bill_updated',
-            'target_type' => 'PaymentBill',
-            'target_id'   => $bill->id,
-            'old_values'  => $old,
-            'new_values'  => $data,
-            'ip_address'  => $request->ip(),
-        ]);
-
-        return redirect()->route('bendahara.bills.show', $bill)
-            ->with('success', 'Tagihan berhasil diperbarui.');
-    }
-
-    public function destroy(Request $request, PaymentBill $bill)
-    {
-        $this->authorize($bill);
-
-        // Keamanan: tidak boleh hapus kalau sudah ada pembayaran approved
-        if ($bill->transactions()->where('status', 'approved')->exists()) {
-            return back()->withErrors(['delete' => 'Tagihan yang sudah ada pembayaran tidak dapat dihapus.']);
-        }
-
-        PaymentAuditLog::create([
-            'school_id'   => $this->school()->id,
-            'user_id'     => auth()->id(),
-            'action'      => 'bill_deleted',
-            'target_type' => 'PaymentBill',
-            'target_id'   => $bill->id,
-            'old_values'  => $bill->toArray(),
-            'ip_address'  => $request->ip(),
-        ]);
-
-        // Hapus installments dan transactions pending dulu
-        $bill->transactions()->where('status', 'pending')->delete();
-        $bill->installments()->delete();
-        $bill->delete();
-
-        return redirect()->route('bendahara.bills.index')
-            ->with('success', 'Tagihan berhasil dihapus.');
-    }
-
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     private function resolveRate(int $typeId, int $yearId, User $student, int $schoolId): ?PaymentRate
     {
@@ -379,10 +366,8 @@ class PaymentBillController extends Controller
                 ->where('major_id', $c['major_id'])
                 ->where('is_active', true)
                 ->first();
-
             if ($rate) return $rate;
         }
-
         return null;
     }
 

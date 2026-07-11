@@ -1,22 +1,16 @@
 <x-simans-layout title="Detail Tagihan">
 
     <div class="mb-6">
-        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-400 hover:text-white text-sm flex items-center gap-1 mb-3 w-fit">
+        <a href="{{ route('siswa.payment.index') }}" class="text-gray-400 hover:text-white text-sm flex items-center gap-1 mb-3 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
-            Kembali ke Daftar
+            Kembali
         </a>
         <div class="flex items-start justify-between">
             <div>
-                <div class="flex items-center gap-3">
-                    <h1 class="text-xl font-bold text-white">{{ $bill->paymentType->name }} — {{ $bill->period_label }}</h1>
-                    <a href="{{ route('bendahara.bills.edit', $bill) }}"
-                        class="text-xs bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 px-3 py-1 rounded-lg transition-colors">
-                        Edit
-                    </a>
-                </div>
-                <p class="text-gray-400 text-sm mt-0.5">{{ $bill->student->name }} · {{ $bill->student->nis ?? $bill->student->username }}</p>
+                <h1 class="text-xl font-bold text-white">{{ $bill->paymentType->name }}</h1>
+                <p class="text-gray-400 text-sm mt-0.5">{{ $bill->period_label }} · {{ $bill->academicYear->name ?? '' }}</p>
             </div>
             @php
                 $colors = ['unpaid'=>'red','partial'=>'amber','paid'=>'green','waived'=>'blue'];
@@ -29,19 +23,12 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
-    @endif
-    @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
-    @endif
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
         {{-- Kiri: detail --}}
         <div class="lg:col-span-2 space-y-4">
 
-            {{-- Rincian nominal --}}
+            {{-- Rincian --}}
             <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
                 <h2 class="text-sm font-semibold text-white mb-4">Rincian Tagihan</h2>
                 <div class="space-y-2 text-sm">
@@ -51,7 +38,7 @@
                     </div>
                     @if($bill->amount_discount > 0)
                     <div class="flex justify-between">
-                        <span class="text-gray-400">Diskon/beasiswa</span>
+                        <span class="text-gray-400">Keringanan/beasiswa</span>
                         <span class="text-green-400">- Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</span>
                     </div>
                     @endif
@@ -67,6 +54,14 @@
                     <div class="flex justify-between font-semibold">
                         <span class="text-red-400">Sisa</span>
                         <span class="text-red-400">Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</span>
+                    </div>
+                    @endif
+                    @if($bill->due_date)
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Jatuh tempo</span>
+                        <span class="{{ \Carbon\Carbon::parse($bill->due_date)->isPast() && $bill->status !== 'paid' ? 'text-red-400' : 'text-white' }}">
+                            {{ \Carbon\Carbon::parse($bill->due_date)->format('d F Y') }}
+                        </span>
                     </div>
                     @endif
                 </div>
@@ -119,19 +114,17 @@
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm font-medium text-white">Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
                                     <span class="text-xs text-gray-500">{{ $trx->channel === 'cash' ? 'Tunai' : 'Transfer' }}</span>
-                                    @if($trx->channel === 'transfer' && $trx->receipt_path)
-                                        <a href="{{ route('bendahara.transactions.receipt', $trx) }}" target="_blank"
-                                            class="text-xs text-blue-400 hover:text-blue-300">Lihat bukti</a>
-                                    @endif
                                 </div>
                                 <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $trx->created_at->format('d/m/Y H:i') }}
-                                    @if($trx->confirmedBy) · {{ $trx->confirmedBy->name }} @endif
-                                    @if($trx->rejection_reason) · <span class="text-red-400">{{ $trx->rejection_reason }}</span> @endif
+                                    @if($trx->confirmedBy) · Dikonfirmasi {{ $trx->confirmedBy->name }} @endif
+                                    @if($trx->rejection_reason)
+                                        · <span class="text-red-400">{{ $trx->rejection_reason }}</span>
+                                    @endif
                                 </p>
                             </div>
                             <span class="text-xs bg-{{ $tc }}-500/10 text-{{ $tc }}-400 border border-{{ $tc }}-500/20 px-2.5 py-0.5 rounded-full">
-                                {{ ['pending'=>'Menunggu','approved'=>'Diterima','rejected'=>'Ditolak'][$trx->status] ?? '-' }}
+                                {{ ['pending'=>'Menunggu konfirmasi','approved'=>'Diterima','rejected'=>'Ditolak'][$trx->status] ?? '-' }}
                             </span>
                         </div>
                         @endforeach
@@ -140,14 +133,43 @@
             </div>
         </div>
 
-        {{-- Kanan: Aksi --}}
+        {{-- Kanan: Upload bukti --}}
         <div class="space-y-4">
 
             @if(!in_array($bill->status, ['paid','waived']))
-            {{-- Input bayar tunai --}}
+
+            {{-- Info rekening sekolah --}}
+            @if($school->bank_name || $school->bank_account)
+            <div class="bg-gray-900 border border-amber-500/20 rounded-xl p-5">
+                <h2 class="text-sm font-semibold text-amber-400 mb-3">Rekening Pembayaran</h2>
+                <div class="space-y-2 text-sm">
+                    @if($school->bank_name)
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Bank</span>
+                        <span class="text-white font-medium">{{ $school->bank_name }}</span>
+                    </div>
+                    @endif
+                    @if($school->bank_account)
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">No. Rekening</span>
+                        <span class="text-white font-bold text-base">{{ $school->bank_account }}</span>
+                    </div>
+                    @endif
+                    @if($school->bank_account_name)
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Atas Nama</span>
+                        <span class="text-white">{{ $school->bank_account_name }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
+
+            {{-- Form upload --}}
+            @if($bill->transactions->where('status','pending')->isEmpty())
             <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
-                <h2 class="text-sm font-semibold text-white mb-4">Input Bayar Tunai</h2>
-                <form method="POST" action="{{ route('bendahara.bills.cash', $bill) }}">
+                <h2 class="text-sm font-semibold text-white mb-4">Upload Bukti Transfer</h2>
+                <form method="POST" action="{{ route('siswa.payment.upload', $bill) }}" enctype="multipart/form-data">
                     @csrf
                     <div class="space-y-3">
                         @if($bill->installments->isNotEmpty())
@@ -159,70 +181,73 @@
                                 @foreach($bill->installments->where('status','!=','paid') as $inst)
                                     <option value="{{ $inst->id }}">
                                         Cicilan ke-{{ $inst->installment_number }}
-                                        (Sisa Rp {{ number_format($inst->amount_due - $inst->amount_paid, 0, ',', '.') }})
+                                        (Rp {{ number_format($inst->amount_due - $inst->amount_paid, 0, ',', '.') }})
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                         @endif
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Jumlah (Rp) *</label>
+                            <label class="text-xs text-gray-400 mb-1 block">Jumlah Transfer (Rp) *</label>
                             <input type="number" name="amount" required min="1"
-                                max="{{ $bill->amount_remaining }}"
                                 placeholder="{{ $bill->amount_remaining }}"
                                 class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                             <p class="text-xs text-gray-500 mt-1">Sisa: Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Catatan</label>
-                            <input type="text" name="cashier_notes" placeholder="Opsional..."
+                            <label class="text-xs text-gray-400 mb-1 block">Nama Bank Pengirim *</label>
+                            <input type="text" name="bank_name" required placeholder="BCA, BRI, Mandiri, dll"
                                 class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                         </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Nama Pengirim *</label>
+                            <input type="text" name="sender_name" required placeholder="Nama sesuai rekening"
+                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Tanggal Transfer *</label>
+                            <input type="date" name="transfer_date" required
+                                max="{{ date('Y-m-d') }}"
+                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Bukti Transfer * (JPG/PNG/PDF, maks 2MB)</label>
+                            <input type="file" name="receipt" required accept=".jpg,.jpeg,.png,.pdf"
+                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none file:mr-3 file:text-xs file:bg-purple-600 file:text-white file:border-0 file:rounded file:px-2 file:py-1">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Catatan</label>
+                            <textarea name="notes" rows="2" placeholder="Opsional..."
+                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                        </div>
                         <button type="submit"
-                            class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
-                            Catat Pembayaran Tunai
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
+                            Kirim Bukti Transfer
                         </button>
                     </div>
                 </form>
             </div>
-
-            {{-- Bebaskan tagihan --}}
-            <div class="bg-gray-900 border border-white/5 rounded-xl p-5" x-data="{ open: false }">
-                <button @click="open = !open" class="text-sm text-red-400 hover:text-red-300 flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-                    </svg>
-                    Bebaskan Tagihan
-                </button>
-                <div x-show="open" x-cloak class="mt-3">
-                    <form method="POST" action="{{ route('bendahara.bills.waive', $bill) }}">
-                        @csrf @method('PATCH')
-                        <input type="text" name="reason" required placeholder="Alasan pembebasan (wajib)..."
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-red-500 focus:outline-none mb-2">
-                        <button type="submit" onclick="return confirm('Yakin bebaskan tagihan ini?')"
-                            class="w-full bg-red-600/20 hover:bg-red-600/40 border border-red-500/30 text-red-400 text-sm font-medium py-2 rounded-lg transition-colors">
-                            Konfirmasi Pembebasan
-                        </button>
-                    </form>
-                </div>
+            @else
+            <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5 text-center">
+                <svg class="w-8 h-8 text-amber-400 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-sm text-amber-400 font-medium">Menunggu konfirmasi</p>
+                <p class="text-xs text-gray-500 mt-1">Bukti transfer Anda sedang diperiksa oleh bendahara</p>
             </div>
             @endif
 
-            {{-- Info --}}
-            <div class="bg-gray-900 border border-white/5 rounded-xl p-5 text-sm space-y-2">
-                <div class="flex justify-between">
-                    <span class="text-gray-400">Jatuh tempo</span>
-                    <span class="text-white">{{ $bill->due_date ? \Carbon\Carbon::parse($bill->due_date)->format('d/m/Y') : '-' }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-400">Tahun ajaran</span>
-                    <span class="text-white">{{ $bill->academicYear->name ?? '-' }} Sem {{ $bill->academicYear->semester ?? '' }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-400">Dibuat</span>
-                    <span class="text-white">{{ $bill->created_at->format('d/m/Y H:i') }}</span>
-                </div>
+            @else
+            <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-5 text-center">
+                <svg class="w-8 h-8 text-green-400 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <p class="text-sm text-green-400 font-medium">
+                    {{ $bill->status === 'paid' ? 'Tagihan Lunas' : 'Tagihan Dibebaskan' }}
+                </p>
             </div>
+            @endif
+
         </div>
     </div>
 
