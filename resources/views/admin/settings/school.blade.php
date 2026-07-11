@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.settings.school.update') }}">
+    <form method="POST" action="{{ route('admin.settings.school.update') }}" enctype="multipart/form-data">
         @csrf @method('PUT')
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -30,6 +30,48 @@
                         </svg>
                         Informasi Sekolah
                     </h2>
+
+                    {{-- Upload Logo --}}
+                    <div class="mb-5 pb-5 border-b border-white/5">
+                        <label class="block text-xs font-medium text-gray-400 mb-3">Logo Sekolah</label>
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-xl bg-gray-800 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0" id="logo-preview-wrap">
+                                @if($school->logo_path)
+                                    <img src="{{ Storage::url($school->logo_path) }}" alt="Logo" id="logo-preview" style="width:64px;height:64px;object-fit:contain">
+                                @else
+                                    <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="logo-placeholder">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"/>
+                                    </svg>
+                                    <img src="" alt="" id="logo-preview" style="display:none;width:64px;height:64px;object-fit:contain">
+                                @endif
+                            </div>
+                            <div>
+                                <label for="logo-input" class="cursor-pointer inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 text-xs font-medium px-4 py-2 rounded-lg transition-colors">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                                    </svg>
+                                    Pilih Logo
+                                </label>
+                                <input type="file" name="logo" id="logo-input" accept="image/png,image/jpeg,image/webp" class="hidden"
+                                    onchange="
+                                        var f=this.files[0];
+                                        if(f){
+                                            var r=new FileReader();
+                                            r.onload=function(e){
+                                                var img=document.getElementById('logo-preview');
+                                                var ph=document.getElementById('logo-placeholder');
+                                                img.src=e.target.result;
+                                                img.style.display='block';
+                                                if(ph) ph.style.display='none';
+                                            };
+                                            r.readAsDataURL(f);
+                                        }
+                                    ">
+                                <p class="text-xs text-gray-600 mt-1.5">PNG, JPG, WebP · Maks 2MB</p>
+                                <p class="text-xs text-gray-600">Disarankan ukuran minimal 200×200px</p>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">

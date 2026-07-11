@@ -34,6 +34,7 @@ class SchoolSettingController extends Controller
             'school_program_years'     => ['required', 'in:3,4'],
             'timezone'                 => ['required', 'in:Asia/Jakarta,Asia/Makassar,Asia/Jayapura'],
             // Pelanggaran & peringatan
+            'logo'                     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'violation_warning1'       => ['required', 'integer', 'min:1', 'max:999'],
             'violation_warning2'       => ['required', 'integer', 'min:1', 'max:999'],
             'violation_warning3'       => ['required', 'integer', 'min:1', 'max:999'],
@@ -81,6 +82,16 @@ class SchoolSettingController extends Controller
         $validated['teacher_checkin_close'] .= ':00';
         $validated['teacher_checkout_open'] .= ':00';
         $validated['teacher_checkout_close'].= ':00';
+
+        // Handle upload logo sekolah
+        if ($request->hasFile('logo')) {
+            // Hapus logo lama jika ada
+            if ($school->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($school->logo_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($school->logo_path);
+            }
+            $path = $request->file('logo')->store('school-logos', 'public');
+            $validated['logo_path'] = $path;
+        }
 
         $school->update($validated);
 
@@ -152,6 +163,16 @@ class SchoolSettingController extends Controller
         ]);
 
         $school = auth()->user()->school;
+        // Handle upload logo sekolah
+        if ($request->hasFile('logo')) {
+            // Hapus logo lama jika ada
+            if ($school->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($school->logo_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($school->logo_path);
+            }
+            $path = $request->file('logo')->store('school-logos', 'public');
+            $validated['logo_path'] = $path;
+        }
+
         $school->update($validated);
 
         return response()->json([

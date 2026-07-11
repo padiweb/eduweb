@@ -94,7 +94,7 @@
 </head>
 <body>
     <div class="card">
-        <p class="school-name">{{ $classroom->academicYear->school->name ?? 'SiManS' }}</p>
+        <p class="school-name">{{ $classroom->academicYear->school->name ?? 'EduWeb' }}</p>
         <h1 class="class-name">{{ $classroom->name }}</h1>
         <p class="major-name">{{ $classroom->major->name }}</p>
 
@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <p class="brand">Powered by <span>SiManS</span></p>
+        <p class="brand">Powered by <span>EduWeb</span></p>
     </div>
 
     <div class="no-print" style="position:fixed;bottom:20px;right:20px">
