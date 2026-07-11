@@ -256,6 +256,35 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::patch('/transactions/{transaction}/approve', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'approve'])->name('transactions.approve');
         Route::patch('/transactions/{transaction}/reject', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'reject'])->name('transactions.reject');
         Route::get('/transactions/{transaction}/receipt', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'viewReceipt'])->name('transactions.receipt');
+
+        // ── KEUANGAN SEKOLAH ────────────────────────────────────────────────────
+        // Dashboard keuangan
+        Route::get('/finance', [\App\Http\Controllers\Bendahara\FinanceDashboardController::class, 'index'])->name('finance.index');
+
+        // Sumber dana — /incomes harus di atas /{fundSource}
+        Route::get('/fund-sources', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'index'])->name('fund-sources.index');
+        Route::post('/fund-sources', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'store'])->name('fund-sources.store');
+        Route::put('/fund-sources/{fundSource}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'update'])->name('fund-sources.update');
+        Route::get('/fund-sources/{fundSource}/incomes', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'incomes'])->name('fund-sources.incomes');
+        Route::post('/fund-sources/{fundSource}/incomes', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'storeIncome'])->name('fund-sources.incomes.store');
+        Route::delete('/fund-income/{income}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'destroyIncome'])->name('fund-sources.incomes.destroy');
+
+        // Kategori pengeluaran — /store HARUS di atas /{category}
+        Route::get('/expense-categories', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'categories'])->name('expenses.categories');
+        Route::post('/expense-categories', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'storeCategory'])->name('expenses.categories.store');
+        Route::put('/expense-categories/{category}', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'updateCategory'])->name('expenses.categories.update');
+
+        // Pengeluaran — /create, /pending HARUS di atas /{expense}
+        Route::get('/expenses', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'index'])->name('expenses.index');
+        Route::get('/expenses/create', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'create'])->name('expenses.create');
+        Route::post('/expenses', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'store'])->name('expenses.store');
+        Route::get('/expenses/pending', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'pendingApprovals'])->name('expenses.pending');
+        Route::get('/expenses/{expense}', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'show'])->name('expenses.show');
+        Route::patch('/expenses/{expense}/approve', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'approve'])->name('expenses.approve');
+        Route::patch('/expenses/{expense}/reject', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'reject'])->name('expenses.reject');
+
+        // Penggajian (placeholder, akan diisi fase 2)
+        Route::get('/payroll', fn() => view('bendahara.payroll.index'))->name('payroll.index');
     });
 
     // ─────────────────────────────────────────────────────────────────────────

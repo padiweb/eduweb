@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Dashboard' }} — SiManS</title>
+    <title>{{ $title ?? 'Dashboard' }} — EduWeb</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="h-full bg-gray-950 text-white antialiased">
@@ -57,14 +57,14 @@
                     Tugas & Nilai
                 </x-sidebar-link>
                 <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Keuangan</p>
+                </div>
+                <x-sidebar-link href="{{ route('siswa.payment.index') }}" :active="request()->routeIs('siswa.payment.*')" icon="credit-card">
+                    Status Pembayaran
+                </x-sidebar-link>
+                <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Informasi</p>
                 </div>
-                <x-sidebar-link href="#" :active="false" icon="bell">
-                    Pengumuman
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="credit-card">
-                    Status SPP
-                </x-sidebar-link>
                 <x-sidebar-link href="{{ route('siswa.violations') }}" :active="request()->routeIs('siswa.violations')" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
@@ -114,31 +114,95 @@
                 </x-sidebar-link>
             @endif
 
+            {{-- ── BENDAHARA ── --}}
+            @if($role === 'bendahara')
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Pembayaran Siswa</p>
+                </div>
+                <x-sidebar-link href="{{ route('bendahara.dashboard') }}" :active="request()->routeIs('bendahara.dashboard')" icon="chart">
+                    Dashboard
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.bills.index') }}" :active="request()->routeIs('bendahara.bills.*')" icon="credit-card">
+                    Kelola Tagihan
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.transactions.index') }}" :active="request()->routeIs('bendahara.transactions.*')" icon="clipboard">
+                    Konfirmasi Transfer
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.payment-types.index') }}" :active="request()->routeIs('bendahara.payment-types.*')" icon="cog">
+                    Jenis & Tarif
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.discounts.index') }}" :active="request()->routeIs('bendahara.discounts.*')" icon="shield">
+                    Beasiswa & Keringanan
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.bills.index', ['status' => 'unpaid']) }}" :active="false" icon="bell">
+                    Daftar Tunggakan
+                </x-sidebar-link>
+
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Keuangan Sekolah</p>
+                </div>
+                <x-sidebar-link href="{{ route('bendahara.finance.index') }}" :active="request()->routeIs('bendahara.finance.*')" icon="chart">
+                    Dashboard Keuangan
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.fund-sources.index') }}" :active="request()->routeIs('bendahara.fund-sources.*')" icon="credit-card">
+                    Sumber Dana
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.expenses.index') }}" :active="request()->routeIs('bendahara.expenses.*')" icon="arrow-down-right">
+                    Pengeluaran
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.payroll.index') }}" :active="request()->routeIs('bendahara.payroll.*')" icon="users">
+                    Penggajian
+                </x-sidebar-link>
+            @endif
+
+            {{-- ── KEPALA SEKOLAH ── --}}
+            @if($role === 'kepala_sekolah')
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Monitoring</p>
+                </div>
+                <x-sidebar-link href="{{ route('kepala.dashboard') }}" :active="request()->routeIs('kepala.dashboard')" icon="chart">
+                    Dashboard
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.bills.index') }}" :active="request()->routeIs('bendahara.bills.*')" icon="credit-card">
+                    Data Tagihan
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.bills.index', ['status' => 'unpaid']) }}" :active="false" icon="shield">
+                    Tunggakan
+                </x-sidebar-link>
+
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Keuangan</p>
+                </div>
+                <x-sidebar-link href="{{ route('bendahara.finance.index') }}" :active="request()->routeIs('bendahara.finance.*')" icon="chart">
+                    Dashboard Keuangan
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.expenses.pending') }}" :active="request()->routeIs('bendahara.expenses.pending')" icon="bell">
+                    Approval Pengeluaran
+                </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.expenses.index') }}" :active="false" icon="clipboard">
+                    Semua Pengeluaran
+                </x-sidebar-link>
+            @endif
+
             {{-- ── ADMIN ── --}}
             @if($role === 'admin')
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Manajemen</p>
                 </div>
-                <x-sidebar-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" icon="users">
-                    Manajemen User
-                </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')" icon="chart">
                     Dashboard
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="users">
-                    Data Pengguna
+                <x-sidebar-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" icon="users">
+                    Manajemen User
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="school">
-                    Data Kelas
+                <x-sidebar-link href="{{ route('admin.classrooms.index') }}" :active="request()->routeIs('admin.classrooms.*')" icon="school">
+                    Manajemen Kelas
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.subjects.index') }}" :active="request()->routeIs('admin.subjects.*')" icon="book">
                     Mata Pelajaran
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.schedules.index') }}" :active="request()->routeIs('admin.schedules.*')" icon="calendar">
                     Jadwal Mengajar
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.classrooms.index') }}" :active="request()->routeIs('admin.classrooms.*')" icon="school">
-                    Manajemen Kelas
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.promotions.index') }}" :active="request()->routeIs('admin.promotions.*')" icon="arrow-up">
                     Promosi Siswa
@@ -155,23 +219,17 @@
                 <x-sidebar-link href="#" :active="false" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="credit-card">
-                    Data SPP
-                </x-sidebar-link>
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
                 </div>
-                <x-sidebar-link href="{{ route('admin.settings.school') }}"
-                    :active="request()->routeIs('admin.settings.*')" icon="cog">
+                <x-sidebar-link href="{{ route('admin.settings.school') }}" :active="request()->routeIs('admin.settings.*')" icon="cog">
                     Pengaturan Sekolah
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('admin.qr.index') }}" :active="request()->routeIs('admin.qr.*')" icon="qrcode">
                     Kelola QR Kelas
                 </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="log">
-                    Audit Log
-                </x-sidebar-link>
             @endif
+
         </nav>
 
         {{-- User card --}}
