@@ -219,6 +219,29 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     // ─────────────────────────────────────────────────────────────────────────
     Route::middleware('role:bendahara,kepala_sekolah')->prefix('bendahara')->name('bendahara.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'bendahara'])->name('dashboard');
+        // Jenis & Tarif
+        Route::get('/payment-types', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'index'])->name('payment-types.index');
+        Route::post('/payment-types', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'store'])->name('payment-types.store');
+        Route::put('/payment-types/{paymentType}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'update'])->name('payment-types.update');
+        Route::patch('/payment-types/{paymentType}/toggle', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'toggleActive'])->name('payment-types.toggle');
+        Route::post('/payment-types/{paymentType}/rates', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'storeRate'])->name('payment-types.rates.store');
+        Route::delete('/payment-rates/{rate}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'destroyRate'])->name('payment-rates.destroy');
+        // Tagihan
+        Route::get('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'index'])->name('bills.index');
+        Route::get('/bills/create', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'create'])->name('bills.create');
+        Route::post('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'store'])->name('bills.store');
+        Route::get('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'show'])->name('bills.show');
+        Route::post('/bills/{bill}/cash', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'storeCash'])->name('bills.cash');
+        Route::patch('/bills/{bill}/waive', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'waive'])->name('bills.waive');
+        Route::get('/bills/{bill}/edit', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'edit'])->name('bills.edit');
+        Route::put('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'update'])->name('bills.update');
+        Route::delete('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'destroy'])->name('bills.destroy');
+
+        // Konfirmasi transfer
+        Route::get('/transactions', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'index'])->name('transactions.index');
+        Route::patch('/transactions/{transaction}/approve', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'approve'])->name('transactions.approve');
+        Route::patch('/transactions/{transaction}/reject', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'reject'])->name('transactions.reject');
+        Route::get('/transactions/{transaction}/receipt', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'viewReceipt'])->name('transactions.receipt');
     });
 
     // ─────────────────────────────────────────────────────────────────────────
