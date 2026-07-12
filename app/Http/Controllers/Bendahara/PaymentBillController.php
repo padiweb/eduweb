@@ -27,25 +27,62 @@ class PaymentBillController extends Controller
     {
         $school = $this->school();
 
-        $query = PaymentBill::where('school_id', $school->id)
-            ->with(['student', 'paymentType', 'academicYear'])
-            ->orderByDesc('period_date');
+        // Ambil siswa yang punya tagihan, urutkan dari yang paling baru ada tagihan baru
+        $studentQuery = User::where('school_id', $school->id)
+            ->where('role', 'siswa')
+            ->whereHas('paymentBills', fn($q) => $q->where('school_id', $school->id))
+            ->with(['classrooms' => fn($q) => $q->whereHas('academicYear', fn($q) => $q->where('is_active', true))->with('major')])
+            ->orderByDesc(
+                PaymentBill::select('created_at')
+                    ->whereColumn('user_id', 'users.id')
+                    ->where('school_id', $school->id)
+                    ->latest()
+                    ->limit(1)
+            );
 
-        if ($request->filled('status')) $query->where('status', $request->status);
-        if ($request->filled('type'))   $query->where('payment_type_id', $request->type);
-        if ($request->filled('year'))   $query->where('academic_year_id', $request->year);
         if ($request->filled('search')) {
-            $query->whereHas('student', fn($q) =>
+            $studentQuery->where(fn($q) =>
                 $q->where('name', 'like', "%{$request->search}%")
                   ->orWhere('nis', 'like', "%{$request->search}%")
             );
         }
 
-        $bills         = $query->paginate(25)->withQueryString();
+        // Filter per tahun ajaran
+        $yearId = $request->filled('year')
+            ? $request->year
+            : AcademicYear::where('school_id', $school->id)->where('is_active', true)->value('id');
+
+        if ($request->filled('status') || $request->filled('type') || $request->filled('year')) {
+            $studentQuery->whereHas('paymentBills', function($q) use ($school, $request, $yearId) {
+                $q->where('school_id', $school->id);
+                if ($request->filled('status')) $q->where('status', $request->status);
+                if ($request->filled('type'))   $q->where('payment_type_id', $request->type);
+                if ($yearId)                    $q->where('academic_year_id', $yearId);
+            });
+        }
+
+        $students      = $studentQuery->paginate(20)->withQueryString();
         $types         = PaymentType::where('school_id', $school->id)->where('is_active', true)->get();
         $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
 
-        return view('bendahara.bills.index', compact('bills', 'types', 'academicYears'));
+        // Ringkasan tagihan per siswa untuk ditampilkan di daftar
+        $studentIds    = $students->pluck('id');
+        $billSummaries = PaymentBill::where('school_id', $school->id)
+            ->whereIn('user_id', $studentIds)
+            ->when($yearId, fn($q) => $q->where('academic_year_id', $yearId))
+            ->selectRaw('user_id,
+                COUNT(*) as total_bills,
+                SUM(amount_billed) as total_billed,
+                SUM(amount_paid) as total_paid,
+                SUM(amount_billed - amount_paid) as total_remaining,
+                MAX(created_at) as last_bill_at')
+            ->groupBy('user_id')
+            ->get()
+            ->keyBy('user_id');
+
+        return view('bendahara.bills.index', compact(
+            'students', 'billSummaries', 'types', 'academicYears', 'yearId'
+        ));
     }
 
     public function create()
@@ -160,6 +197,42 @@ class PaymentBillController extends Controller
         return redirect()->route('bendahara.bills.index')->with('success', $msg);
     }
 
+    // Detail per siswa: tampilkan semua tagihan siswa tersebut
+    public function studentBills(Request $request, User $student)
+    {
+        $school = $this->school();
+        if ($student->school_id !== $school->id) abort(403);
+
+        $yearId = $request->filled('year')
+            ? $request->year
+            : AcademicYear::where('school_id', $school->id)->where('is_active', true)->value('id');
+
+        $bills = PaymentBill::where('school_id', $school->id)
+            ->where('user_id', $student->id)
+            ->when($yearId, fn($q) => $q->where('academic_year_id', $yearId))
+            ->with(['paymentType', 'academicYear', 'installments', 'transactions.confirmedBy'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
+
+        // Beasiswa aktif milik siswa ini
+        $discounts = StudentDiscount::where('user_id', $student->id)
+            ->where('valid_from', '<=', now()->toDateString())
+            ->where(fn($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()->toDateString()))
+            ->with('paymentType')
+            ->get();
+
+        $totalBilled    = $bills->sum('amount_billed');
+        $totalPaid      = $bills->sum('amount_paid');
+        $totalRemaining = $bills->sum(fn($b) => $b->amount_remaining);
+
+        return view('bendahara.bills.student', compact(
+            'student', 'bills', 'academicYears', 'yearId',
+            'discounts', 'totalBilled', 'totalPaid', 'totalRemaining'
+        ));
+    }
+
     public function show(PaymentBill $bill)
     {
         $this->authorize($bill);
@@ -262,49 +335,82 @@ class PaymentBillController extends Controller
         $this->authorize($bill);
 
         $request->validate([
-            'amount'         => 'required|integer|min:1',
-            'installment_id' => 'nullable|exists:payment_installments,id',
+            'pay_type'       => 'required|in:full,partial,scholarship',
+            'amount'         => 'required_if:pay_type,partial|nullable|integer|min:1',
+            'discount_id'    => 'required_if:pay_type,scholarship|nullable|exists:student_discounts,id',
             'cashier_notes'  => 'nullable|string|max:255',
         ]);
 
         if (in_array($bill->status, ['paid', 'waived'])) {
-            return back()->withErrors(['amount' => 'Tagihan ini sudah lunas atau dibebaskan.']);
-        }
-
-        $amount = (int) $request->amount;
-
-        if ($amount > $bill->amount_remaining) {
-            return back()->withErrors(['amount' => 'Jumlah melebihi sisa tagihan Rp ' . number_format($bill->amount_remaining, 0, ',', '.') . '.']);
+            return back()->withErrors(['pay_type' => 'Tagihan ini sudah lunas atau dibebaskan.']);
         }
 
         $school = $this->school();
 
+        // Tentukan nominal pembayaran
+        if ($request->pay_type === 'full') {
+            $amount  = $bill->amount_remaining;
+            $channel = 'cash';
+            $notes   = $request->cashier_notes;
+        } elseif ($request->pay_type === 'scholarship') {
+            // Bayar menggunakan beasiswa — tandai sebagai waived dengan beasiswa
+            $discount = StudentDiscount::find($request->discount_id);
+            if (!$discount) return back()->withErrors(['discount_id' => 'Beasiswa tidak ditemukan.']);
+            $amount  = $bill->amount_remaining;
+            $channel = 'scholarship';
+            $notes   = 'Beasiswa: ' . $discount->name;
+        } else {
+            $amount  = (int) $request->amount;
+            $channel = 'cash';
+            $notes   = $request->cashier_notes;
+        }
+
+        if ($amount <= 0) {
+            return back()->withErrors(['amount' => 'Nominal tidak valid.']);
+        }
+        if ($amount > $bill->amount_remaining) {
+            return back()->withErrors(['amount' => 'Jumlah melebihi sisa tagihan Rp ' . number_format($bill->amount_remaining, 0, ',', '.') . '.']);
+        }
+
         $trx = PaymentTransaction::create([
             'school_id'              => $school->id,
             'payment_bill_id'        => $bill->id,
-            'payment_installment_id' => $request->installment_id,
+            'payment_installment_id' => null,
             'user_id'                => $bill->user_id,
-            'reference_number'       => 'CASH-' . strtoupper(Str::random(10)),
+            'reference_number'       => strtoupper($channel[0]) . 'ASH-' . strtoupper(Str::random(9)),
             'amount'                 => $amount,
-            'channel'                => 'cash',
+            'channel'                => $channel,
             'status'                 => 'approved',
-            'cashier_notes'          => $request->cashier_notes,
+            'cashier_notes'          => $notes,
             'confirmed_by'           => auth()->id(),
             'confirmed_at'           => now(),
             'created_by'             => auth()->id(),
             'created_by_ip'          => $request->ip(),
         ]);
 
-        if ($request->installment_id) {
-            $inst = PaymentInstallment::find($request->installment_id);
-            if ($inst) {
-                $inst->amount_paid += $amount;
-                $inst->status = $inst->amount_paid >= $inst->amount_due ? 'paid' : 'partial';
-                $inst->save();
-            }
-        }
-
         $bill->recalculateStatus();
+
+        // Otomatis catat ke pemasukan kas siswa
+        $kasSource = \App\Models\FundSource::where('school_id', $school->id)
+            ->where('type', 'siswa')
+            ->where('is_active', true)
+            ->first();
+
+        if ($kasSource) {
+            $activeYear = AcademicYear::where('school_id', $school->id)->where('is_active', true)->first();
+            \App\Models\FundIncome::create([
+                'school_id'        => $school->id,
+                'fund_source_id'   => $kasSource->id,
+                'academic_year_id' => $activeYear?->id ?? $bill->academic_year_id,
+                'description'      => 'Pembayaran ' . $bill->paymentType->name . ' - ' . $bill->student->name,
+                'amount'           => $amount,
+                'income_date'      => now()->toDateString(),
+                'period_label'     => $bill->period_label,
+                'reference_number' => $trx->reference_number,
+                'notes'            => $channel === 'scholarship' ? $notes : null,
+                'created_by'       => auth()->id(),
+            ]);
+        }
 
         PaymentAuditLog::create([
             'school_id'   => $school->id,
@@ -312,11 +418,12 @@ class PaymentBillController extends Controller
             'action'      => 'cash_payment_recorded',
             'target_type' => 'PaymentTransaction',
             'target_id'   => $trx->id,
-            'new_values'  => ['amount' => $amount, 'channel' => 'cash'],
+            'new_values'  => ['amount' => $amount, 'channel' => $channel],
             'ip_address'  => $request->ip(),
         ]);
 
-        return back()->with('success', 'Pembayaran tunai Rp ' . number_format($amount, 0, ',', '.') . ' berhasil dicatat.');
+        $label = $request->pay_type === 'full' ? 'Tagihan lunas' : 'Cicilan Rp ' . number_format($amount, 0, ',', '.');
+        return back()->with('success', $label . ' berhasil dicatat.');
     }
 
     public function waive(Request $request, PaymentBill $bill)

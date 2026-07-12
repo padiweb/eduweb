@@ -1,9 +1,9 @@
-<x-simans-layout title="Daftar Tagihan">
+<x-simans-layout title="Kelola Tagihan">
 
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h1 class="text-xl font-bold text-white">Daftar Tagihan</h1>
-            <p class="text-gray-400 text-sm mt-0.5">Kelola semua tagihan pembayaran siswa</p>
+            <h1 class="text-xl font-bold text-white">Kelola Tagihan</h1>
+            <p class="text-gray-400 text-sm mt-0.5">Daftar siswa dengan tagihan aktif</p>
         </div>
         <a href="{{ route('bendahara.bills.create') }}"
             class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
@@ -14,111 +14,101 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
     {{-- Filter --}}
     <form method="GET" class="flex flex-wrap gap-3 mb-5">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / NIS siswa..."
-            class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 w-48 focus:border-purple-500 focus:outline-none">
-        <select name="type" class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-            <option value="">Semua jenis</option>
-            @foreach($types as $t)
-                <option value="{{ $t->id }}" {{ request('type') == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama / NIS..."
+            class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 w-44 focus:border-purple-500 focus:outline-none">
+        <select name="year" class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+            @foreach($academicYears as $y)
+                <option value="{{ $y->id }}" {{ $yearId == $y->id ? 'selected' : '' }}>
+                    {{ $y->name }} Sem {{ $y->semester }}{{ $y->is_active ? ' ✓' : '' }}
+                </option>
             @endforeach
         </select>
         <select name="status" class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
             <option value="">Semua status</option>
-            <option value="unpaid"  {{ request('status') == 'unpaid'  ? 'selected' : '' }}>Belum bayar</option>
-            <option value="partial" {{ request('status') == 'partial' ? 'selected' : '' }}>Cicilan</option>
-            <option value="paid"    {{ request('status') == 'paid'    ? 'selected' : '' }}>Lunas</option>
-            <option value="waived"  {{ request('status') == 'waived'  ? 'selected' : '' }}>Dibebaskan</option>
-        </select>
-        <select name="year" class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-            <option value="">Semua tahun</option>
-            @foreach($academicYears as $y)
-                <option value="{{ $y->id }}" {{ request('year') == $y->id ? 'selected' : '' }}>
-                    {{ $y->name }} Sem {{ $y->semester }}
-                </option>
-            @endforeach
+            <option value="unpaid"  {{ request('status')=='unpaid'  ? 'selected':'' }}>Ada tunggakan</option>
+            <option value="paid"    {{ request('status')=='paid'    ? 'selected':'' }}>Semua lunas</option>
         </select>
         <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white text-sm px-4 py-2 rounded-lg">Filter</button>
-        @if(request()->hasAny(['search','type','status','year']))
-            <a href="{{ route('bendahara.bills.index') }}" class="text-gray-400 hover:text-white text-sm px-3 py-2 rounded-lg">Reset</a>
+        @if(request()->hasAny(['search','status','type']))
+            <a href="{{ route('bendahara.bills.index') }}" class="text-gray-400 hover:text-white text-sm px-3 py-2">Reset</a>
         @endif
     </form>
 
     <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
-        @if($bills->isEmpty())
+        @if($students->isEmpty())
             <div class="px-5 py-12 text-center">
-                <p class="text-gray-500">Belum ada tagihan yang sesuai filter.</p>
+                <p class="text-gray-500">Belum ada siswa dengan tagihan.</p>
             </div>
         @else
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="border-b border-white/5">
-                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Siswa</th>
-                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Jenis</th>
-                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Periode</th>
-                            <th class="text-right text-xs text-gray-500 font-medium px-4 py-3">Tagihan</th>
-                            <th class="text-right text-xs text-gray-500 font-medium px-4 py-3">Terbayar</th>
-                            <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Status</th>
-                            <th class="px-4 py-3"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5">
-                        @foreach($bills as $bill)
-                        @php
-                            $colors = ['unpaid'=>'red','partial'=>'amber','paid'=>'green','waived'=>'blue'];
-                            $labels = ['unpaid'=>'Belum bayar','partial'=>'Cicilan','paid'=>'Lunas','waived'=>'Dibebaskan'];
-                            $c = $colors[$bill->status] ?? 'gray';
-                        @endphp
-                        <tr class="hover:bg-white/2 transition-colors">
-                            <td class="px-4 py-3">
-                                <p class="text-white font-medium">{{ $bill->student->name ?? '-' }}</p>
-                                <p class="text-xs text-gray-500">{{ $bill->student->nis ?? $bill->student->username ?? '-' }}</p>
-                            </td>
-                            <td class="px-4 py-3 text-gray-300">{{ $bill->paymentType->name ?? '-' }}</td>
-                            <td class="px-4 py-3">
-                                <p class="text-gray-300">{{ $bill->period_label }}</p>
-                                @if($bill->due_date)
-                                    <p class="text-xs {{ \Carbon\Carbon::parse($bill->due_date)->isPast() && $bill->status !== 'paid' ? 'text-red-400' : 'text-gray-500' }}">
-                                        JT {{ \Carbon\Carbon::parse($bill->due_date)->format('d/m/Y') }}
-                                    </p>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <p class="text-white font-medium">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</p>
-                                @if($bill->amount_discount > 0)
-                                    <p class="text-xs text-green-400">-Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <p class="text-green-400">Rp {{ number_format($bill->amount_paid, 0, ',', '.') }}</p>
-                                @if($bill->amount_remaining > 0 && $bill->status !== 'waived')
-                                    <p class="text-xs text-red-400">Sisa Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-center">
-                                <span class="text-xs bg-{{ $c }}-500/10 text-{{ $c }}-400 border border-{{ $c }}-500/20 px-2.5 py-0.5 rounded-full">
-                                    {{ $labels[$bill->status] ?? $bill->status }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <a href="{{ route('bendahara.bills.show', $bill) }}"
-                                    class="text-xs text-purple-400 hover:text-purple-300 transition-colors">Detail</a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="divide-y divide-white/5">
+                @foreach($students as $student)
+                @php
+                    $summary   = $billSummaries[$student->id] ?? null;
+                    $remaining = $summary ? (int) $summary->total_remaining : 0;
+                    $paid      = $summary ? (int) $summary->total_paid : 0;
+                    $total     = $summary ? (int) $summary->total_billed : 0;
+                    $classroom = $student->classrooms->first();
+                @endphp
+                <div class="px-5 py-4 flex items-center gap-4 hover:bg-white/2 transition-colors">
+                    {{-- Avatar --}}
+                    <div class="w-10 h-10 rounded-full bg-purple-900/50 border border-purple-500/20 flex items-center justify-center text-sm font-bold text-purple-300 flex-shrink-0">
+                        {{ strtoupper(substr($student->name, 0, 1)) }}
+                    </div>
+
+                    {{-- Info siswa --}}
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white">{{ $student->name }}</p>
+                        <p class="text-xs text-gray-500 mt-0.5">
+                            {{ $student->nis ?? '-' }}
+                            @if($classroom)
+                                · {{ $classroom->name }}{{ $classroom->major ? ' - ' . $classroom->major->name : '' }}
+                            @endif
+                        </p>
+                    </div>
+
+                    {{-- Ringkasan keuangan --}}
+                    @if($summary)
+                    <div class="hidden sm:flex items-center gap-6 text-right shrink-0">
+                        <div>
+                            <p class="text-xs text-gray-600 mb-0.5">Total tagihan</p>
+                            <p class="text-sm text-gray-300">Rp {{ number_format($total, 0, ',', '.') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600 mb-0.5">Sudah bayar</p>
+                            <p class="text-sm text-green-400">Rp {{ number_format($paid, 0, ',', '.') }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600 mb-0.5">Sisa</p>
+                            <p class="text-sm font-semibold {{ $remaining > 0 ? 'text-red-400' : 'text-gray-400' }}">
+                                {{ $remaining > 0 ? 'Rp ' . number_format($remaining, 0, ',', '.') : 'Lunas' }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-600 mb-0.5">Tagihan</p>
+                            <p class="text-sm text-gray-400">{{ $summary->total_bills }}x</p>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- Status badge + link --}}
+                    <div class="flex items-center gap-3 shrink-0">
+                        @if($remaining > 0)
+                            <span class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2.5 py-1 rounded-full hidden sm:block">Tunggakan</span>
+                        @elseif($summary)
+                            <span class="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-1 rounded-full hidden sm:block">Lunas</span>
+                        @endif
+                        <a href="{{ route('bendahara.bills.student', $student) }}?year={{ $yearId }}"
+                            class="text-xs bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
+                            Detail →
+                        </a>
+                    </div>
+                </div>
+                @endforeach
             </div>
-            <div class="px-4 py-3 border-t border-white/5">
-                {{ $bills->links() }}
+            <div class="px-4 py-3 border-t border-white/5 text-xs text-gray-500">
+                {{ $students->total() }} siswa · {{ $students->links() }}
             </div>
         @endif
     </div>
