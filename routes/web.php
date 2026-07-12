@@ -265,6 +265,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/fund-sources', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'index'])->name('fund-sources.index');
         Route::post('/fund-sources', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'store'])->name('fund-sources.store');
         Route::put('/fund-sources/{fundSource}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'update'])->name('fund-sources.update');
+        Route::patch('/fund-sources/{fundSource}/toggle', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'toggleActive'])->name('fund-sources.toggle');
         Route::get('/fund-sources/{fundSource}/incomes', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'incomes'])->name('fund-sources.incomes');
         Route::post('/fund-sources/{fundSource}/incomes', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'storeIncome'])->name('fund-sources.incomes.store');
         Route::delete('/fund-income/{income}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'destroyIncome'])->name('fund-sources.incomes.destroy');

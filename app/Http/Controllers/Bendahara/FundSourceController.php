@@ -7,7 +7,6 @@ use App\Models\AcademicYear;
 use App\Models\FundIncome;
 use App\Models\FundSource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class FundSourceController extends Controller
 {
@@ -15,7 +14,7 @@ class FundSourceController extends Controller
 
     public function index()
     {
-        $school = $this->school();
+        $school  = $this->school();
         $sources = FundSource::forSchool($school->id)
             ->withCount(['incomes', 'expenses'])
             ->orderBy('type')->orderBy('name')
@@ -33,7 +32,7 @@ class FundSourceController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
-        $school = $this->school();
+        $school            = $this->school();
         $data['school_id'] = $school->id;
         $data['is_active'] = true;
 
@@ -51,12 +50,22 @@ class FundSourceController extends Controller
             'code'        => 'nullable|string|max:20',
             'type'        => 'required|in:siswa,bos,bosda,other',
             'description' => 'nullable|string|max:500',
-            'is_active'   => 'boolean',
         ]);
 
         $fundSource->update($data);
 
         return back()->with('success', 'Sumber dana berhasil diperbarui.');
+    }
+
+    // Nonaktifkan/aktifkan sumber dana — tidak bisa dihapus agar history tetap ada
+    public function toggleActive(Request $request, FundSource $fundSource)
+    {
+        $this->authorize($fundSource);
+
+        $fundSource->update(['is_active' => ! $fundSource->is_active]);
+        $label = $fundSource->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+        return back()->with('success', "Sumber dana \"{$fundSource->name}\" {$label}.");
     }
 
     // ── Pemasukan Dana ────────────────────────────────────────────────────────
@@ -66,9 +75,11 @@ class FundSourceController extends Controller
         $this->authorize($fundSource);
         $school = $this->school();
 
-        $fundSource->load(['incomes' => fn($q) => $q->with(['academicYear', 'createdBy'])->orderByDesc('income_date')]);
-        $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
-
+        $fundSource->load(['incomes' => fn($q) =>
+            $q->with(['academicYear', 'createdBy'])->orderByDesc('income_date')
+        ]);
+        $academicYears = AcademicYear::where('school_id', $school->id)
+            ->orderByDesc('is_active')->get();
         $totalIncome = $fundSource->incomes->sum('amount');
 
         return view('bendahara.fund-sources.incomes', compact('fundSource', 'academicYears', 'totalIncome'));
@@ -79,14 +90,14 @@ class FundSourceController extends Controller
         $this->authorize($fundSource);
 
         $data = $request->validate([
-            'academic_year_id'  => 'required|exists:academic_years,id',
-            'description'       => 'required|string|max:255',
-            'amount'            => 'required|integer|min:1',
-            'income_date'       => 'required|date',
-            'period_label'      => 'nullable|string|max:50',
-            'reference_number'  => 'nullable|string|max:50',
-            'notes'             => 'nullable|string|max:500',
-            'attachment'        => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'description'      => 'required|string|max:255',
+            'amount'           => 'required|integer|min:1',
+            'income_date'      => 'required|date',
+            'period_label'     => 'nullable|string|max:50',
+            'reference_number' => 'nullable|string|max:50',
+            'notes'            => 'nullable|string|max:500',
+            'attachment'       => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $school = $this->school();
@@ -113,6 +124,26 @@ class FundSourceController extends Controller
         return back()->with('success', 'Pemasukan dana berhasil dicatat.');
     }
 
+    // Edit pemasukan
+    public function updateIncome(Request $request, FundIncome $income)
+    {
+        if ($income->school_id !== $this->school()->id) abort(403);
+
+        $data = $request->validate([
+            'description'      => 'required|string|max:255',
+            'amount'           => 'required|integer|min:1',
+            'income_date'      => 'required|date',
+            'period_label'     => 'nullable|string|max:50',
+            'reference_number' => 'nullable|string|max:50',
+            'notes'            => 'nullable|string|max:500',
+        ]);
+
+        $income->update($data);
+
+        return back()->with('success', 'Data pemasukan berhasil diperbarui.');
+    }
+
+    // Hapus pemasukan
     public function destroyIncome(FundIncome $income)
     {
         if ($income->school_id !== $this->school()->id) abort(403);
