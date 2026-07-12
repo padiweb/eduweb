@@ -171,6 +171,25 @@ class PaymentTypeController extends Controller
         return back()->with('success', 'Tarif berhasil ditambahkan.');
     }
 
+    public function updateRate(Request $request, PaymentRate $rate)
+    {
+        $this->authorize($rate->paymentType);
+        $request->validate(['amount' => 'required|integer|min:0']);
+        $old = $rate->amount;
+        $rate->update(['amount' => (int) $request->amount]);
+        PaymentAuditLog::create([
+            'school_id'   => $this->school()->id,
+            'user_id'     => auth()->id(),
+            'action'      => 'payment_rate_updated',
+            'target_type' => 'PaymentRate',
+            'target_id'   => $rate->id,
+            'old_values'  => ['amount' => $old],
+            'new_values'  => ['amount' => $rate->amount],
+            'ip_address'  => $request->ip(),
+        ]);
+        return back()->with('success', 'Nominal tarif berhasil diperbarui.');
+    }
+
     public function destroyRate(Request $request, PaymentRate $rate)
     {
         $this->authorize($rate->paymentType);

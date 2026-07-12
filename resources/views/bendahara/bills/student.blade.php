@@ -1,26 +1,21 @@
-<x-simans-layout title="Tagihan — {{ $student->name }}">
+<x-simans-layout title="Tagihan Siswa">
 
     <div class="mb-6">
-        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-400 hover:text-white text-sm flex items-center gap-1 mb-3 w-fit">
+        <a href="{{ route('bendahara.bills.index') }}?year={{ $yearId }}"
+            class="text-gray-400 hover:text-white text-sm flex items-center gap-1 mb-4 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
-            Kembali
+            Kembali ke Daftar
         </a>
-
         <div class="flex items-start justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-purple-900/50 border border-purple-500/20 flex items-center justify-center text-lg font-bold text-purple-300 flex-shrink-0">
-                    {{ strtoupper(substr($student->name, 0, 1)) }}
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold text-white">{{ $student->name }}</h1>
-                    <p class="text-gray-400 text-sm mt-0.5">{{ $student->nis ?? '-' }}</p>
-                </div>
+            <div>
+                <h1 class="text-xl font-bold text-white">{{ $student->name }}</h1>
+                <p class="text-gray-400 text-sm mt-0.5">{{ $student->nis ?? '-' }}</p>
             </div>
             <a href="{{ route('bendahara.bills.create') }}"
                 class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 border border-white/10 px-3 py-2 rounded-lg transition-colors">
-                + Tagihan Baru
+                Buat Tagihan Baru
             </a>
         </div>
     </div>
@@ -33,36 +28,36 @@
     @endif
 
     {{-- Ringkasan --}}
-    <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="bg-gray-900 border border-white/5 rounded-xl px-4 py-3 text-center">
+    <div class="grid grid-cols-3 gap-4 mb-5">
+        <div class="bg-gray-900 border border-white/5 rounded-xl px-4 py-3">
             <p class="text-xs text-gray-500 mb-1">Total Tagihan</p>
             <p class="text-base font-bold text-white">Rp {{ number_format($totalBilled, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-gray-900 border border-white/5 rounded-xl px-4 py-3 text-center">
+        <div class="bg-gray-900 border border-white/5 rounded-xl px-4 py-3">
             <p class="text-xs text-gray-500 mb-1">Sudah Dibayar</p>
             <p class="text-base font-bold text-green-400">Rp {{ number_format($totalPaid, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-gray-900 border {{ $totalRemaining > 0 ? 'border-red-500/20' : 'border-white/5' }} rounded-xl px-4 py-3 text-center">
+        <div class="bg-gray-900 border {{ $totalRemaining > 0 ? 'border-red-500/20' : 'border-white/5' }} rounded-xl px-4 py-3">
             <p class="text-xs text-gray-500 mb-1">Sisa Tagihan</p>
-            <p class="text-base font-bold {{ $totalRemaining > 0 ? 'text-red-400' : 'text-gray-400' }}">
-                {{ $totalRemaining > 0 ? 'Rp ' . number_format($totalRemaining, 0, ',', '.') : 'Lunas' }}
+            <p class="text-base font-bold {{ $totalRemaining > 0 ? 'text-red-400' : 'text-gray-500' }}">
+                {{ $totalRemaining > 0 ? 'Rp ' . number_format($totalRemaining, 0, ',', '.') : 'Lunas semua' }}
             </p>
         </div>
     </div>
 
     {{-- Filter tahun --}}
-    <form method="GET" class="flex gap-3 mb-5">
+    <form method="GET" class="mb-5">
         <select name="year" onchange="this.form.submit()"
             class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
             @foreach($academicYears as $y)
                 <option value="{{ $y->id }}" {{ $yearId == $y->id ? 'selected' : '' }}>
-                    {{ $y->name }} Sem {{ $y->semester }}{{ $y->is_active ? ' ✓' : '' }}
+                    {{ $y->name }} Sem {{ $y->semester }}{{ $y->is_active ? ' (Aktif)' : '' }}
                 </option>
             @endforeach
         </select>
     </form>
 
-    {{-- Daftar tagihan siswa --}}
+    {{-- Daftar tagihan --}}
     @if($bills->isEmpty())
         <div class="bg-gray-900 border border-white/5 rounded-xl px-5 py-12 text-center">
             <p class="text-gray-500">Belum ada tagihan untuk tahun ajaran ini.</p>
@@ -72,19 +67,17 @@
             @foreach($bills as $bill)
             @php
                 $remaining = $bill->amount_remaining;
-                $colors = ['unpaid'=>'red','partial'=>'amber','paid'=>'green','waived'=>'blue'];
-                $labels = ['unpaid'=>'Belum bayar','partial'=>'Cicilan','paid'=>'Lunas','waived'=>'Dibebaskan'];
-                $c = $colors[$bill->status] ?? 'gray';
+                $cl = ['unpaid'=>'red','partial'=>'amber','paid'=>'green','waived'=>'blue'][$bill->status] ?? 'gray';
+                $lb = ['unpaid'=>'Belum bayar','partial'=>'Cicilan','paid'=>'Lunas','waived'=>'Dibebaskan'][$bill->status] ?? '-';
             @endphp
-
             <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
-                {{-- Header tagihan --}}
-                <div class="px-5 py-4 flex items-center justify-between border-b border-white/5">
+                {{-- Header --}}
+                <div class="px-5 py-4 flex items-center justify-between">
                     <div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                             <p class="text-sm font-semibold text-white">{{ $bill->paymentType->name }}</p>
-                            <span class="text-xs bg-{{ $c }}-500/10 text-{{ $c }}-400 border border-{{ $c }}-500/20 px-2 py-0.5 rounded-full">
-                                {{ $labels[$bill->status] }}
+                            <span class="text-xs bg-{{ $cl }}-500/10 text-{{ $cl }}-400 border border-{{ $cl }}-500/20 px-2 py-0.5 rounded-full">
+                                {{ $lb }}
                             </span>
                         </div>
                         <p class="text-xs text-gray-500 mt-0.5">{{ $bill->period_label }}</p>
@@ -93,20 +86,21 @@
                         <p class="text-sm font-bold text-white">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</p>
                         @if($remaining > 0 && $bill->status !== 'waived')
                             <p class="text-xs text-red-400">Sisa Rp {{ number_format($remaining, 0, ',', '.') }}</p>
-                        @elseif($bill->amount_paid > 0)
-                            <p class="text-xs text-green-400">Dibayar Rp {{ number_format($bill->amount_paid, 0, ',', '.') }}</p>
+                        @endif
+                        @if($bill->amount_discount > 0)
+                            <p class="text-xs text-blue-400">Disc Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
                         @endif
                     </div>
                 </div>
 
-                {{-- Riwayat transaksi --}}
-                @if($bill->transactions->where('status','approved')->isNotEmpty())
-                <div class="px-5 py-2 border-b border-white/5">
-                    @foreach($bill->transactions->where('status','approved') as $trx)
-                    <div class="flex items-center justify-between py-1.5 text-xs">
+                {{-- Riwayat --}}
+                @if($bill->transactions->isNotEmpty())
+                <div class="border-t border-white/5 px-5 py-2 space-y-0.5">
+                    @foreach($bill->transactions as $trx)
+                    <div class="flex items-center justify-between text-xs py-1">
                         <span class="text-gray-500">
-                            {{ $trx->created_at->format('d/m/Y H:i') }} ·
-                            {{ $trx->channel === 'scholarship' ? 'Beasiswa' : ($trx->channel === 'cash' ? 'Tunai' : 'Transfer') }}
+                            {{ $trx->created_at->format('d/m/Y H:i') }}
+                            · {{ $trx->channel === 'scholarship' ? 'Beasiswa' : 'Tunai' }}
                             @if($trx->cashier_notes) · {{ $trx->cashier_notes }} @endif
                         </span>
                         <span class="text-green-400 font-medium">+ Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
@@ -117,27 +111,23 @@
 
                 {{-- Aksi --}}
                 @if(!in_array($bill->status, ['paid','waived']))
-                <div class="px-5 py-3 flex items-center gap-2">
-                    {{-- Tombol Bayar --}}
-                    <button
-                        onclick="openBayar({{ $bill->id }}, {{ $remaining }}, '{{ addslashes($bill->paymentType->name) }} - {{ addslashes($bill->period_label) }}')"
-                        class="text-xs bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-lg transition-colors">
-                        💰 Bayar
+                <div class="border-t border-white/5 px-5 py-3 flex items-center gap-3">
+                    <button type="button"
+                        onclick="bukaModalBayar('{{ route('bendahara.bills.cash', $bill) }}', {{ $remaining }}, '{{ addslashes($bill->paymentType->name) }}')"
+                        class="text-sm bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-1.5 rounded-lg transition-colors">
+                        Bayar
                     </button>
                     <a href="{{ route('bendahara.bills.edit', $bill) }}"
-                        class="text-xs text-gray-500 hover:text-white px-3 py-1.5 rounded-lg border border-white/5 hover:border-white/20 transition-colors">
-                        Edit
-                    </a>
+                        class="text-sm text-gray-500 hover:text-white transition-colors">Edit</a>
                     <form method="POST" action="{{ route('bendahara.bills.destroy', $bill) }}"
                         onsubmit="return confirm('Hapus tagihan ini?')" class="ml-auto">
                         @csrf @method('DELETE')
-                        <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors">Hapus</button>
+                        <button type="submit" class="text-xs text-gray-700 hover:text-red-400 transition-colors">Hapus</button>
                     </form>
                 </div>
                 @else
-                <div class="px-5 py-2.5 flex items-center justify-between">
-                    <span class="text-xs text-{{ $c }}-400">{{ $labels[$bill->status] }}</span>
-                    <a href="{{ route('bendahara.bills.edit', $bill) }}" class="text-xs text-gray-600 hover:text-white">Edit</a>
+                <div class="border-t border-white/5 px-5 py-2.5 flex justify-end">
+                    <a href="{{ route('bendahara.bills.edit', $bill) }}" class="text-xs text-gray-600 hover:text-white transition-colors">Edit</a>
                 </div>
                 @endif
             </div>
@@ -145,132 +135,149 @@
         </div>
     @endif
 
-    {{-- MODAL: Bayar --}}
-    <div id="modal-bayar" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-        x-data="{
-            payType: 'full',
-            billId: 0,
-            remaining: 0,
-            label: '',
-            discountId: ''
-        }" x-init="
-            window.openBayar = (id, rem, lbl) => {
-                $data.billId    = id;
-                $data.remaining = rem;
-                $data.label     = lbl;
-                $data.payType   = 'full';
-                $data.discountId = '';
-                document.getElementById('modal-bayar').classList.remove('hidden');
-            }
-        ">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6">
+    {{-- MODAL BAYAR — pakai JS vanilla, bukan Alpine x-init agar tidak auto-muncul --}}
+    <div id="modal-bayar" style="display:none" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-sm p-6">
+
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-white font-semibold">Catat Pembayaran</h3>
-                <button onclick="document.getElementById('modal-bayar').classList.add('hidden')"
-                    class="text-gray-500 hover:text-white">
+                <div>
+                    <h3 class="text-sm font-semibold text-white">Catat Pembayaran</h3>
+                    <p id="modal-nama" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <button type="button" onclick="tutupModal()"
+                    class="text-gray-600 hover:text-white transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
 
-            <p class="text-sm text-gray-400 mb-1" x-text="label"></p>
-            <p class="text-lg font-bold text-white mb-4">
-                Sisa: Rp <span x-text="remaining.toLocaleString('id-ID')"></span>
-            </p>
+            <p class="text-xs text-gray-500 mb-0.5">Sisa tagihan</p>
+            <p id="modal-sisa" class="text-lg font-bold text-white mb-4"></p>
 
-            {{-- Form bayar --}}
-            <template x-for="bill in [billId]" :key="bill">
-                <div>
-                    <form :action="'/bendahara/bills/' + billId + '/cash'" method="POST">
-                        @csrf
+            {{-- Tab pilihan --}}
+            <div class="flex gap-2 mb-4" id="tab-wrap">
+                <button type="button" onclick="gantiTab('full')" id="tab-full"
+                    class="flex-1 text-xs font-medium py-2 rounded-lg border bg-gray-700 border-white/30 text-white transition-colors">
+                    Lunas
+                </button>
+                <button type="button" onclick="gantiTab('partial')" id="tab-partial"
+                    class="flex-1 text-xs font-medium py-2 rounded-lg border bg-gray-900 border-white/10 text-gray-400 hover:text-white transition-colors">
+                    Cicilan
+                </button>
+                @if($discounts->isNotEmpty())
+                <button type="button" onclick="gantiTab('scholarship')" id="tab-scholarship"
+                    class="flex-1 text-xs font-medium py-2 rounded-lg border bg-gray-900 border-white/10 text-gray-400 hover:text-white transition-colors">
+                    Beasiswa
+                </button>
+                @endif
+            </div>
 
-                        {{-- Pilihan tipe bayar --}}
-                        <div class="grid grid-cols-3 gap-2 mb-4">
-                            <button type="button" @click="payType = 'full'"
-                                :class="payType === 'full' ? 'bg-green-600 text-white border-green-500' : 'bg-gray-800 text-gray-400 border-white/10'"
-                                class="text-xs font-medium py-2 rounded-lg border transition-colors">
-                                ✓ Lunas
-                            </button>
-                            <button type="button" @click="payType = 'partial'"
-                                :class="payType === 'partial' ? 'bg-purple-600 text-white border-purple-500' : 'bg-gray-800 text-gray-400 border-white/10'"
-                                class="text-xs font-medium py-2 rounded-lg border transition-colors">
-                                💵 Cicil
-                            </button>
-                            @if($discounts->isNotEmpty())
-                            <button type="button" @click="payType = 'scholarship'"
-                                :class="payType === 'scholarship' ? 'bg-blue-600 text-white border-blue-500' : 'bg-gray-800 text-gray-400 border-white/10'"
-                                class="text-xs font-medium py-2 rounded-lg border transition-colors">
-                                🎓 Beasiswa
-                            </button>
-                            @endif
-                        </div>
+            {{-- Form — action diisi oleh JS --}}
+            <form id="form-bayar" method="POST" action="">
+                @csrf
+                <input type="hidden" name="pay_type" id="input-pay-type" value="full">
 
-                        <input type="hidden" name="pay_type" :value="payType">
-
-                        {{-- Lunas: langsung konfirmasi --}}
-                        <div x-show="payType === 'full'" class="bg-green-500/10 border border-green-500/20 rounded-xl p-4 mb-4">
-                            <p class="text-sm text-green-400 text-center">
-                                Akan mencatat pembayaran lunas<br>
-                                <strong>Rp <span x-text="remaining.toLocaleString('id-ID')"></span></strong>
-                            </p>
-                        </div>
-
-                        {{-- Cicil: input nominal --}}
-                        <div x-show="payType === 'partial'" class="mb-4">
-                            <label class="text-xs text-gray-400 mb-1 block">Nominal Cicilan (Rp) *</label>
-                            <input type="number" name="amount" min="1" :max="remaining"
-                                placeholder="Masukkan nominal yang dibayar"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                            <p class="text-xs text-gray-500 mt-1">
-                                Sisa setelah cicilan ini akan tetap tercatat sebagai tunggakan
-                            </p>
-                        </div>
-
-                        {{-- Beasiswa --}}
-                        <div x-show="payType === 'scholarship'" class="mb-4">
-                            <label class="text-xs text-gray-400 mb-1 block">Pilih Beasiswa *</label>
-                            <select name="discount_id" x-model="discountId"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                                <option value="">-- Pilih beasiswa --</option>
-                                @foreach($discounts as $disc)
-                                    <option value="{{ $disc->id }}">
-                                        {{ $disc->name }}
-                                        ({{ $disc->discount_type === 'percent' ? $disc->discount_value . '%' : 'Rp ' . number_format($disc->discount_value, 0, ',', '.') }})
-                                    </option>
-                                @endforeach
-                            </select>
-                            <p class="text-xs text-gray-500 mt-1">
-                                Pembayaran menggunakan beasiswa akan melunasi sisa tagihan
-                            </p>
-                        </div>
-
-                        {{-- Catatan --}}
-                        <div class="mb-4">
-                            <label class="text-xs text-gray-400 mb-1 block">Catatan (opsional)</label>
-                            <input type="text" name="cashier_notes" placeholder="Catatan pembayaran..."
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                        </div>
-
-                        <button type="submit"
-                            class="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-colors"
-                            :class="{
-                                'bg-green-600 hover:bg-green-700': payType === 'full',
-                                'bg-purple-600 hover:bg-purple-700': payType === 'partial',
-                                'bg-blue-600 hover:bg-blue-700': payType === 'scholarship'
-                            }">
-                            <span x-text="payType === 'full' ? 'Konfirmasi Lunas' : payType === 'scholarship' ? 'Catat via Beasiswa' : 'Catat Cicilan'"></span>
-                        </button>
-                    </form>
+                {{-- Panel lunas --}}
+                <div id="panel-full" class="mb-4 bg-gray-800 rounded-xl p-3 text-center">
+                    <p class="text-xs text-gray-400">Mencatat pelunasan penuh</p>
+                    <p id="panel-sisa-full" class="text-sm font-bold text-white mt-1"></p>
                 </div>
-            </template>
+
+                {{-- Panel cicilan --}}
+                <div id="panel-partial" class="mb-4 hidden">
+                    <label class="text-xs text-gray-400 mb-1 block">Nominal yang dibayar (Rp)</label>
+                    <input type="number" name="amount" id="input-amount" min="1"
+                        placeholder="Masukkan nominal"
+                        class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2.5 focus:border-purple-500 focus:outline-none">
+                    <p class="text-xs text-gray-600 mt-1">Sisa akan tetap tercatat sebagai tunggakan</p>
+                </div>
+
+                {{-- Panel beasiswa --}}
+                @if($discounts->isNotEmpty())
+                <div id="panel-scholarship" class="mb-4 hidden">
+                    <label class="text-xs text-gray-400 mb-1 block">Pilih beasiswa</label>
+                    <select name="discount_id"
+                        class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2.5 focus:border-purple-500 focus:outline-none">
+                        <option value="">-- Pilih --</option>
+                        @foreach($discounts as $disc)
+                            <option value="{{ $disc->id }}">
+                                {{ $disc->name }}
+                                ({{ $disc->discount_type === 'percent'
+                                    ? $disc->discount_value . '%'
+                                    : 'Rp ' . number_format($disc->discount_value, 0, ',', '.') }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+
+                <div class="mb-4">
+                    <label class="text-xs text-gray-400 mb-1 block">Catatan (opsional)</label>
+                    <input type="text" name="cashier_notes" placeholder="Catatan pembayaran..."
+                        class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                </div>
+
+                <button type="submit" id="btn-submit"
+                    class="w-full bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
+                    Konfirmasi Lunas
+                </button>
+            </form>
         </div>
     </div>
 
+    @push('scripts')
     <script>
+    var activeTab = 'full';
+
+    function bukaModalBayar(actionUrl, sisa, nama) {
+        document.getElementById('form-bayar').action    = actionUrl;
+        document.getElementById('modal-nama').textContent   = nama;
+        document.getElementById('modal-sisa').textContent   = 'Rp ' + sisa.toLocaleString('id-ID');
+        document.getElementById('panel-sisa-full').textContent = 'Rp ' + sisa.toLocaleString('id-ID');
+        document.getElementById('input-amount').max        = sisa;
+        gantiTab('full');
+        document.getElementById('modal-bayar').style.display = 'flex';
+    }
+
+    function tutupModal() {
+        document.getElementById('modal-bayar').style.display = 'none';
+        document.getElementById('form-bayar').reset();
+    }
+
+    function gantiTab(tab) {
+        activeTab = tab;
+        // Reset semua tab
+        ['full','partial','scholarship'].forEach(function(t) {
+            var btn = document.getElementById('tab-' + t);
+            var panel = document.getElementById('panel-' + t);
+            if (btn) {
+                btn.className = btn.className
+                    .replace('bg-gray-700 border-white/30 text-white','')
+                    .replace('bg-gray-900 border-white/10 text-gray-400','')
+                    .trim();
+            }
+            if (panel) panel.classList.add('hidden');
+        });
+        // Aktifkan tab yang dipilih
+        var activeBtn = document.getElementById('tab-' + tab);
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-gray-900','border-white/10','text-gray-400');
+            activeBtn.classList.add('bg-gray-700','border-white/30','text-white');
+        }
+        var activePanel = document.getElementById('panel-' + tab);
+        if (activePanel) activePanel.classList.remove('hidden');
+        // Update hidden input dan teks tombol
+        document.getElementById('input-pay-type').value = tab;
+        var labels = {full:'Konfirmasi Lunas', partial:'Catat Cicilan', scholarship:'Bayar dengan Beasiswa'};
+        document.getElementById('btn-submit').textContent = labels[tab] || 'Simpan';
+    }
+
+    // Tutup modal jika klik backdrop
     document.getElementById('modal-bayar').addEventListener('click', function(e) {
-        if (e.target === this) this.classList.add('hidden');
+        if (e.target === this) tutupModal();
     });
     </script>
+    @endpush
 
 </x-simans-layout>

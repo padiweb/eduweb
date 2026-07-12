@@ -225,7 +225,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     // BENDAHARA
     // ─────────────────────────────────────────────────────────────────────────
     Route::middleware('role:bendahara,kepala_sekolah')->prefix('bendahara')->name('bendahara.')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'bendahara'])->name('dashboard');z
+        Route::get('/dashboard', [DashboardController::class, 'bendahara'])->name('dashboard');
 
         // Jenis & Tarif
         Route::get('/payment-types', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'index'])->name('payment-types.index');
@@ -233,23 +233,19 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::put('/payment-types/{paymentType}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'update'])->name('payment-types.update');
         Route::patch('/payment-types/{paymentType}/toggle', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'toggleActive'])->name('payment-types.toggle');
         Route::post('/payment-types/{paymentType}/rates', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'storeRate'])->name('payment-types.rates.store');
-        Route::delete('/payment-rates/{rate}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'destroyRate'])->name('payment-rates.destroy');
         Route::put('/payment-rates/{rate}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'updateRate'])->name('payment-rates.update');
+        Route::delete('/payment-rates/{rate}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'destroyRate'])->name('payment-rates.destroy');
         // Beasiswa — /search HARUS di atas /{discount}
         Route::get('/discounts', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'index'])->name('discounts.index');
         Route::get('/discounts/search', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'searchStudent'])->name('discounts.search');
         Route::post('/discounts', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'store'])->name('discounts.store');
         Route::delete('/discounts/{discount}', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'destroy'])->name('discounts.destroy');
 
-        // Tagihan — /create & /index HARUS di atas /{bill}
-        Route::post('/bills/check-rate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'checkRate'])->name('bills.check-rate');
-        Route::get('/bill-rate-overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'overrides'])->name('bills.overrides');
-        Route::post('/bill-rate-overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'storeOverride'])->name('bills.overrides.store');
-        Route::delete('/bill-rate-overrides/{override}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'destroyOverride'])->name('bills.overrides.destroy');
+        // Tagihan — static routes HARUS di atas /{bill}
         Route::get('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'index'])->name('bills.index');
-        Route::get('/bills/student/{student}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'studentBills'])->name('bills.student');
         Route::get('/bills/create', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'create'])->name('bills.create');
         Route::post('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'store'])->name('bills.store');
+        Route::get('/bills/student/{student}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'studentBills'])->name('bills.student');
         Route::get('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'show'])->name('bills.show');
         Route::get('/bills/{bill}/edit', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'edit'])->name('bills.edit');
         Route::put('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'update'])->name('bills.update');
@@ -274,6 +270,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::patch('/fund-sources/{fundSource}/toggle', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'toggleActive'])->name('fund-sources.toggle');
         Route::get('/fund-sources/{fundSource}/incomes', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'incomes'])->name('fund-sources.incomes');
         Route::post('/fund-sources/{fundSource}/incomes', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'storeIncome'])->name('fund-sources.incomes.store');
+        Route::put('/fund-income/{income}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'updateIncome'])->name('fund-sources.incomes.update');
         Route::delete('/fund-income/{income}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'destroyIncome'])->name('fund-sources.incomes.destroy');
 
         // Kategori pengeluaran — /store HARUS di atas /{category}
