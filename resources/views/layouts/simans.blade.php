@@ -147,6 +147,9 @@
                 <x-sidebar-link href="{{ route('bendahara.fund-sources.index') }}" :active="request()->routeIs('bendahara.fund-sources.*')" icon="credit-card">
                     Sumber Dana
                 </x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.expenses.categories') }}" :active="request()->routeIs('bendahara.expenses.categories')" icon="tag">
+                    Kategori Pengeluaran
+                </x-sidebar-link>
                 <x-sidebar-link href="{{ route('bendahara.expenses.index') }}" :active="request()->routeIs('bendahara.expenses.*')" icon="arrow-down-right">
                     Pengeluaran
                 </x-sidebar-link>

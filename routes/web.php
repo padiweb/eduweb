@@ -283,6 +283,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/expenses/{expense}', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'show'])->name('expenses.show');
         Route::patch('/expenses/{expense}/approve', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'approve'])->name('expenses.approve');
         Route::patch('/expenses/{expense}/reject', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'reject'])->name('expenses.reject');
+        Route::delete('/expenses/{expense}', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'destroy'])->name('expenses.destroy');
 
         // Penggajian (placeholder, akan diisi fase 2)
         Route::get('/payroll', fn() => view('bendahara.payroll.index'))->name('payroll.index');

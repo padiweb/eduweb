@@ -37,7 +37,7 @@
 
     {{-- Tab role --}}
     <div class="flex flex-wrap gap-1 mb-5 bg-gray-900 border border-white/5 rounded-xl p-1 w-fit">
-        @foreach(['siswa'=>'Siswa','guru'=>'Guru','wali_kelas'=>'Wali Kelas','kesiswaan'=>'Kesiswaan','admin'=>'Admin','bendahara'=>'Bendahara'] as $role => $label)
+        @foreach(['siswa'=>'Siswa','guru'=>'Guru','wali_kelas'=>'Wali Kelas','kesiswaan'=>'Kesiswaan','admin'=>'Admin','bendahara'=>'Bendahara','kepala_sekolah'=>'Kepala Sekolah'] as $role => $label)
             <a href="{{ route('admin.users.index', ['tab' => $role]) }}"
                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $tab === $role ? 'bg-emerald-500 text-white' : 'text-gray-400 hover:text-white' }}">
                 {{ $label }}

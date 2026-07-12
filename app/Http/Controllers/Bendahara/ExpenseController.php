@@ -188,6 +188,20 @@ class ExpenseController extends Controller
         return view('bendahara.expenses.show', compact('expense'));
     }
 
+    public function destroy(Request $request, Expense $expense)
+    {
+        $this->authorize($expense);
+
+        if ($expense->status === 'approved') {
+            return back()->withErrors(['delete' => 'Pengeluaran yang sudah disetujui tidak dapat dihapus.']);
+        }
+
+        $expense->forceDelete();
+
+        return redirect()->route('bendahara.expenses.index')
+            ->with('success', 'Pengeluaran berhasil dihapus.');
+    }
+
     // ── Approval (Kepala Sekolah) ─────────────────────────────────────────────
 
     public function pendingApprovals()
