@@ -12,6 +12,7 @@ use App\Models\PaymentRate;
 use App\Models\PaymentTransaction;
 use App\Models\PaymentType;
 use App\Models\StudentDiscount;
+use App\Models\StudentRateOverride;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -434,6 +435,89 @@ class PaymentBillController extends Controller
         ]);
 
         return back()->with('success', 'Tagihan berhasil dibebaskan.');
+    }
+
+    // ── Tambahan ──────────────────────────────────────────────────────────────
+
+    public function checkRate(Request $request)
+    {
+        $school  = $this->school();
+        $typeId  = (int) $request->payment_type_id;
+        $yearId  = (int) $request->academic_year_id;
+        $scope   = $request->scope;
+        $results = [];
+
+        $students = $scope === 'classroom'
+            ? Classroom::findOrFail($request->classroom_id)->students()->where('is_active', true)->get()
+            : User::whereIn('id', $request->student_ids ?? [])->get();
+
+        foreach ($students as $student) {
+            $override = StudentRateOverride::where('school_id', $school->id)
+                ->where('user_id', $student->id)
+                ->where('payment_type_id', $typeId)
+                ->where('academic_year_id', $yearId)
+                ->first();
+
+            if ($override) {
+                $results[] = ['id'=>$student->id,'name'=>$student->name,'amount'=>$override->amount,'source'=>'override'];
+                continue;
+            }
+
+            $rate = $this->resolveRate($typeId, $yearId, $student, $school->id);
+            $results[] = ['id'=>$student->id,'name'=>$student->name,
+                'amount'=>$rate?->amount ?? 0,'source'=>$rate ? 'rate' : 'none'];
+        }
+
+        return response()->json([
+            'results' => $results,
+            'no_rate' => collect($results)->where('source','none')->count(),
+        ]);
+    }
+
+    public function overrides(Request $request)
+    {
+        $school        = $this->school();
+        $overrides     = StudentRateOverride::where('school_id', $school->id)
+            ->with(['student','paymentType','academicYear','createdBy'])
+            ->orderByDesc('created_at')->paginate(25)->withQueryString();
+        $types         = PaymentType::where('school_id', $school->id)->where('is_active', true)->get();
+        $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
+        return view('bendahara.payment-types.overrides', compact('overrides','types','academicYears'));
+    }
+
+    public function storeOverride(Request $request)
+    {
+        $data = $request->validate([
+            'user_id'          => 'required|exists:users,id',
+            'payment_type_id'  => 'required|exists:payment_types,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'amount'           => 'required|integer|min:0',
+            'reason'           => 'nullable|string|max:255',
+        ]);
+        $school = $this->school();
+        StudentRateOverride::updateOrCreate(
+            ['school_id'=>$school->id,'user_id'=>$data['user_id'],
+             'payment_type_id'=>$data['payment_type_id'],'academic_year_id'=>$data['academic_year_id']],
+            ['amount'=>$data['amount'],'reason'=>$data['reason']??null,'created_by'=>auth()->id()]
+        );
+        return back()->with('success','Override tarif berhasil disimpan.');
+    }
+
+    public function destroyOverride(StudentRateOverride $override)
+    {
+        if ($override->school_id !== $this->school()->id) abort(403);
+        $override->delete();
+        return back()->with('success','Override tarif berhasil dihapus.');
+    }
+
+    // Kwitansi pembayaran — cetak termal
+    public function receipt(PaymentBill $bill)
+    {
+        $this->authorize($bill);
+        $bill->load(['student','paymentType','academicYear',
+            'transactions' => fn($q) => $q->where('status','approved')->latest()]);
+        $school = $this->school();
+        return view('bendahara.bills.receipt', compact('bill','school'));
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────

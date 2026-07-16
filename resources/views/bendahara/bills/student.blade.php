@@ -110,7 +110,7 @@
                 @endif
 
                 {{-- Aksi --}}
-                @if(!in_array($bill->status, ['paid','waived']))
+                @if($remaining > 0)
                 <div class="border-t border-white/5 px-5 py-3 flex items-center gap-3">
                     <button type="button"
                         onclick="bukaModalBayar('{{ route('bendahara.bills.cash', $bill) }}', {{ $remaining }}, '{{ addslashes($bill->paymentType->name) }}')"
@@ -126,7 +126,9 @@
                     </form>
                 </div>
                 @else
-                <div class="border-t border-white/5 px-5 py-2.5 flex justify-end">
+                <div class="border-t border-white/5 px-5 py-2.5 flex items-center justify-between">
+                    <a href="{{ route('bendahara.bills.receipt', $bill) }}" target="_blank"
+                        class="text-xs text-gray-500 hover:text-white transition-colors">Cetak Kwitansi</a>
                     <a href="{{ route('bendahara.bills.edit', $bill) }}" class="text-xs text-gray-600 hover:text-white transition-colors">Edit</a>
                 </div>
                 @endif

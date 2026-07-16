@@ -245,7 +245,12 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'index'])->name('bills.index');
         Route::get('/bills/create', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'create'])->name('bills.create');
         Route::post('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'store'])->name('bills.store');
+        Route::post('/bills/check-rate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'checkRate'])->name('bills.check-rate');
         Route::get('/bills/student/{student}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'studentBills'])->name('bills.student');
+        Route::get('/bills/overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'overrides'])->name('bills.overrides');
+        Route::post('/bills/overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'storeOverride'])->name('bills.overrides.store');
+        Route::delete('/bills/overrides/{override}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'destroyOverride'])->name('bills.overrides.destroy');
+        Route::get('/bills/{bill}/receipt', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'receipt'])->name('bills.receipt');
         Route::get('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'show'])->name('bills.show');
         Route::get('/bills/{bill}/edit', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'edit'])->name('bills.edit');
         Route::put('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'update'])->name('bills.update');
