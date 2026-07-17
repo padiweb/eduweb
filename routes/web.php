@@ -237,6 +237,16 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::delete('/payment-rates/{rate}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'destroyRate'])->name('payment-rates.destroy');
         // Beasiswa — /search HARUS di atas /{discount}
         Route::get('/discounts', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'index'])->name('discounts.index');
+        Route::get('/discount-programs', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'index'])->name('discount-programs.index');
+        Route::post('/discount-programs', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'store'])->name('discount-programs.store');
+        Route::put('/discount-programs/{program}', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'update'])->name('discount-programs.update');
+        Route::patch('/discount-programs/{program}/toggle', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'toggle'])->name('discount-programs.toggle');
+        Route::post('/discount-programs/{program}/apply', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'apply'])->name('discount-programs.apply');
+        Route::get('/discount-programs/{program}/members', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'members'])->name('discount-programs.members');
+        Route::post('/discount-programs/{program}/members', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'addMembers'])->name('discount-programs.members.add');
+        Route::get('/discount-programs/{program}/search', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'searchStudents'])->name('discount-programs.search');
+        Route::patch('/discount-program-members/{member}', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'updateMember'])->name('discount-programs.member.update');
+        Route::delete('/discount-program-members/{member}', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'removeMember'])->name('discount-programs.member.remove');
         Route::get('/discounts/search', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'searchStudent'])->name('discounts.search');
         Route::post('/discounts', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'store'])->name('discounts.store');
         Route::delete('/discounts/{discount}', [\App\Http\Controllers\Bendahara\StudentDiscountController::class, 'destroy'])->name('discounts.destroy');

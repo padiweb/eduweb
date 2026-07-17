@@ -25,7 +25,6 @@ return new class extends Migration
         Schema::table('subjects', function (Blueprint $table) {
             $table->foreignId('subject_group_id')
                 ->nullable()
-                ->after('major_id')
                 ->constrained('subject_groups')
                 ->nullOnDelete();
 
@@ -38,7 +37,7 @@ return new class extends Migration
     {
         Schema::table('subjects', function (Blueprint $table) {
             $table->dropConstrainedForeignId('subject_group_id');
-            $table->enum('category', ['A', 'B', 'C1', 'C2', 'C3'])->after('code')->default('A');
+            $table->enum('category', ['A', 'B', 'C1', 'C2', 'C3'])->default('A');
         });
 
         Schema::dropIfExists('subject_groups');

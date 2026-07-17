@@ -194,7 +194,8 @@ class PaymentTypeController extends Controller
     {
         $this->authorize($rate->paymentType);
 
-        if ($rate->bills()->count() > 0) {
+        // Boleh hapus jika belum ada tagihan ATAU amount = 0 (belum diisi)
+        if ($rate->bills()->count() > 0 && $rate->amount > 0) {
             return back()->withErrors(['rate' => 'Tarif tidak dapat dihapus karena sudah digunakan pada tagihan.']);
         }
 

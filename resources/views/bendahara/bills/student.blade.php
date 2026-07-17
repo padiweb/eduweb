@@ -103,7 +103,15 @@
                             · {{ $trx->channel === 'scholarship' ? 'Beasiswa' : 'Tunai' }}
                             @if($trx->cashier_notes) · {{ $trx->cashier_notes }} @endif
                         </span>
-                        <span class="text-green-400 font-medium">+ Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-green-400 font-medium">+ Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
+                            <a href="{{ route('bendahara.transactions.receipt', $trx) }}" target="_blank"
+                                class="text-gray-600 hover:text-white transition-colors" title="Cetak struk pembayaran ini">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                     @endforeach
                 </div>
@@ -220,10 +228,20 @@
                         class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                 </div>
 
-                <button type="submit" id="btn-submit"
-                    class="w-full bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
-                    Konfirmasi Lunas
-                </button>
+                <div class="flex gap-2">
+                    <button type="submit" id="btn-submit"
+                        class="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
+                        Konfirmasi Lunas
+                    </button>
+                    <button type="submit" name="print_receipt" value="1"
+                        id="btn-submit-print"
+                        title="Catat dan langsung cetak struk"
+                        class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-2.5 rounded-lg transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/>
+                        </svg>
+                    </button>
+                </div>
             </form>
         </div>
     </div>

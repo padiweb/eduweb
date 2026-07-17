@@ -10,12 +10,10 @@ return new class extends Migration
     {
         Schema::table('schools', function (Blueprint $table) {
             $table->time('attendance_close_time')
-                  ->default('08:00:00')
-                  ->after('late_threshold_time');
+                  ->default('08:00:00');
 
             $table->tinyInteger('school_program_years')
-                  ->default(3)
-                  ->after('attendance_close_time');
+                  ->default(3);
         });
     }
 

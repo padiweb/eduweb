@@ -8,9 +8,9 @@ use App\Models\ClassroomStudent;
 use App\Models\Major;
 use App\Models\School;
 use App\Models\Subject;
+use App\Models\SubjectGroup;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class AcademicStructureSeeder extends Seeder
 {
@@ -21,10 +21,10 @@ class AcademicStructureSeeder extends Seeder
         // ── Tahun Ajaran ───────────────────────────────────────────────────
         $academicYear = AcademicYear::create([
             'school_id'  => $school->id,
-            'name'       => '2024/2025',
-            'semester'   => 2,
-            'start_date' => '2025-01-06',
-            'end_date'   => '2025-06-20',
+            'name'       => '2025/2026',
+            'semester'   => 1,
+            'start_date' => '2025-07-14',
+            'end_date'   => '2025-12-20',
             'is_active'  => true,
         ]);
 
@@ -41,7 +41,26 @@ class AcademicStructureSeeder extends Seeder
             'code'      => 'RPL',
         ]);
 
-        // ── Kelas — dengan slug untuk URL QR permanen ─────────────────────
+        // ── Kelompok Mata Pelajaran (pengganti category enum) ──────────────
+        $groupA = SubjectGroup::create([
+            'school_id' => $school->id,
+            'name'      => 'Kelompok A (Umum)',
+            'code'      => 'A',
+        ]);
+
+        $groupB = SubjectGroup::create([
+            'school_id' => $school->id,
+            'name'      => 'Kelompok B (Umum)',
+            'code'      => 'B',
+        ]);
+
+        $groupC3 = SubjectGroup::create([
+            'school_id' => $school->id,
+            'name'      => 'Kelompok C3 (Kejuruan)',
+            'code'      => 'C3',
+        ]);
+
+        // ── Kelas ──────────────────────────────────────────────────────────
         $guruWali = User::where('role', 'wali_kelas')->first();
         $guru     = User::where('role', 'guru')->first();
 
@@ -50,9 +69,9 @@ class AcademicStructureSeeder extends Seeder
             'major_id'            => $tkj->id,
             'academic_year_id'    => $academicYear->id,
             'name'                => 'XI TKJ 1',
-            'slug'                => 'xi-tkj-1',   // dipakai di URL QR permanen
+            'slug'                => 'xi-tkj-1',
             'grade'               => 11,
-            'homeroom_teacher_id' => $guruWali->id,
+            'homeroom_teacher_id' => $guruWali?->id,
         ]);
 
         $kelas11RPL1 = Classroom::create([
@@ -62,11 +81,12 @@ class AcademicStructureSeeder extends Seeder
             'name'                => 'XI RPL 1',
             'slug'                => 'xi-rpl-1',
             'grade'               => 11,
-            'homeroom_teacher_id' => $guru->id,
+            'homeroom_teacher_id' => $guru?->id,
         ]);
 
         // ── Daftarkan siswa ke kelas XI TKJ 1 ─────────────────────────────
-        $students = User::where('role', 'siswa')->get();
+        $students = User::where('school_id', $school->id)
+            ->where('role', 'siswa')->get();
 
         foreach ($students as $index => $student) {
             ClassroomStudent::create([
@@ -76,25 +96,25 @@ class AcademicStructureSeeder extends Seeder
             ]);
         }
 
-        // ── Mata Pelajaran ─────────────────────────────────────────────────
+        // ── Mata Pelajaran (pakai subject_group_id, bukan category) ────────
         $subjects = [
-            ['name' => 'Matematika',                   'code' => 'MTK',  'category' => 'A',  'major_id' => null],
-            ['name' => 'Bahasa Indonesia',             'code' => 'BIND', 'category' => 'A',  'major_id' => null],
-            ['name' => 'Bahasa Inggris',               'code' => 'BING', 'category' => 'B',  'major_id' => null],
-            ['name' => 'Pendidikan Pancasila',         'code' => 'PPK',  'category' => 'A',  'major_id' => null],
-            ['name' => 'Administrasi Sistem Jaringan', 'code' => 'ASJ',  'category' => 'C3', 'major_id' => $tkj->id],
-            ['name' => 'Teknologi WAN',                'code' => 'WAN',  'category' => 'C3', 'major_id' => $tkj->id],
-            ['name' => 'Pemrograman Web',              'code' => 'PWB',  'category' => 'C3', 'major_id' => $rpl->id],
-            ['name' => 'Basis Data',                   'code' => 'BDT',  'category' => 'C3', 'major_id' => $rpl->id],
+            ['name' => 'Matematika',                   'code' => 'MTK',  'group' => $groupA,  'major_id' => null],
+            ['name' => 'Bahasa Indonesia',             'code' => 'BIND', 'group' => $groupA,  'major_id' => null],
+            ['name' => 'Bahasa Inggris',               'code' => 'BING', 'group' => $groupB,  'major_id' => null],
+            ['name' => 'Pendidikan Pancasila',         'code' => 'PPK',  'group' => $groupA,  'major_id' => null],
+            ['name' => 'Administrasi Sistem Jaringan', 'code' => 'ASJ',  'group' => $groupC3, 'major_id' => $tkj->id],
+            ['name' => 'Teknologi WAN',                'code' => 'WAN',  'group' => $groupC3, 'major_id' => $tkj->id],
+            ['name' => 'Pemrograman Web',              'code' => 'PWB',  'group' => $groupC3, 'major_id' => $rpl->id],
+            ['name' => 'Basis Data',                   'code' => 'BDT',  'group' => $groupC3, 'major_id' => $rpl->id],
         ];
 
         foreach ($subjects as $subject) {
             Subject::create([
-                'school_id' => $school->id,
-                'major_id'  => $subject['major_id'],
-                'name'      => $subject['name'],
-                'code'      => $subject['code'],
-                'category'  => $subject['category'],
+                'school_id'        => $school->id,
+                'major_id'         => $subject['major_id'],
+                'subject_group_id' => $subject['group']->id,
+                'name'             => $subject['name'],
+                'code'             => $subject['code'],
             ]);
         }
     }

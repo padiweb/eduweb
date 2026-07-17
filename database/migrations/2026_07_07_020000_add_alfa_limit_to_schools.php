@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('schools', function (Blueprint $table) {
             // Batas alfa per semester — 0 = tidak ada batas
             $table->tinyInteger('alfa_limit_per_semester')->default(0)
-                  ->after('violation_warning3');
+                  ;
         });
     }
 

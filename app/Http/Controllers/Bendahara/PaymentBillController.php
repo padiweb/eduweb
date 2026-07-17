@@ -198,6 +198,65 @@ class PaymentBillController extends Controller
         return view('bendahara.bills.show', compact('bill'));
     }
 
+    // Daftar tunggakan — siswa yang masih punya sisa tagihan
+    public function tunggakan(Request $request)
+    {
+        $school = $this->school();
+
+        $yearId = $request->filled('year')
+            ? (int) $request->year
+            : AcademicYear::where('school_id', $school->id)->where('is_active', true)->value('id');
+
+        // Ambil data siswa yang masih punya tunggakan
+        $query = User::where('school_id', $school->id)
+            ->where('role', 'siswa')
+            ->whereHas('paymentBills', fn($q) =>
+                $q->where('school_id', $school->id)
+                  ->when($yearId, fn($q) => $q->where('academic_year_id', $yearId))
+                  ->whereRaw('amount_billed > amount_paid')
+                  ->where('status', '!=', 'waived')
+            )
+            ->with(['classrooms' => fn($q) =>
+                $q->whereHas('academicYear', fn($q) => $q->where('is_active', true))->with('major')
+            ])
+            ->orderBy('name');
+
+        if ($request->filled('search')) {
+            $query->where(fn($q) =>
+                $q->where('name', 'like', "%{$request->search}%")
+                  ->orWhere('nis', 'like', "%{$request->search}%")
+            );
+        }
+
+        $students      = $query->paginate(25)->withQueryString();
+        $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
+
+        // Ringkasan tunggakan per siswa
+        $studentIds    = $students->pluck('id');
+        $summaries     = PaymentBill::where('school_id', $school->id)
+            ->whereIn('user_id', $studentIds)
+            ->when($yearId, fn($q) => $q->where('academic_year_id', $yearId))
+            ->whereRaw('amount_billed > amount_paid')
+            ->where('status', '!=', 'waived')
+            ->selectRaw('user_id,
+                COUNT(*) as jumlah_tagihan,
+                SUM(amount_billed - amount_paid) as total_tunggakan')
+            ->groupBy('user_id')
+            ->get()
+            ->keyBy('user_id');
+
+        // Total seluruh tunggakan (semua siswa, tidak hanya yang di halaman ini)
+        $grandTotal    = PaymentBill::where('school_id', $school->id)
+            ->when($yearId, fn($q) => $q->where('academic_year_id', $yearId))
+            ->whereRaw('amount_billed > amount_paid')
+            ->where('status', '!=', 'waived')
+            ->sum(\DB::raw('amount_billed - amount_paid'));
+
+        return view('bendahara.bills.tunggakan', compact(
+            'students', 'summaries', 'academicYears', 'yearId', 'grandTotal'
+        ));
+    }
+
     public function studentBills(Request $request, User $student)
     {
         $school = $this->school();
@@ -348,9 +407,22 @@ class PaymentBillController extends Controller
             $amount = $bill->amount_remaining;
         } elseif ($request->pay_type === 'scholarship') {
             $discount = StudentDiscount::findOrFail($request->discount_id);
-            $amount   = $bill->amount_remaining;
             $channel  = 'scholarship';
             $notes    = 'Beasiswa: ' . $discount->name;
+
+            // Hitung nominal beasiswa berdasarkan jenis: persen atau nominal tetap
+            if ($discount->discount_type === 'percent') {
+                // Hitung dari amount_billed (bukan remaining) — beasiswa berlaku atas tagihan penuh
+                $discountAmount = (int) round($bill->amount_billed * $discount->discount_value / 100);
+                $amount = min($discountAmount, $bill->amount_remaining);
+            } else {
+                // Nominal tetap
+                $amount = min($discount->discount_value, $bill->amount_remaining);
+            }
+
+            if ($amount <= 0) {
+                return back()->withErrors(['discount_id' => 'Nilai beasiswa tidak valid atau tagihan sudah lunas.']);
+            }
         } else {
             $amount = (int) $request->amount;
             if ($amount <= 0 || $amount > $bill->amount_remaining) {
@@ -511,6 +583,23 @@ class PaymentBillController extends Controller
     }
 
     // Kwitansi pembayaran — cetak termal
+    // Struk per transaksi — bisa dicetak tiap cicilan
+    public function transactionReceipt(\App\Models\PaymentTransaction $transaction)
+    {
+        $bill   = $transaction->bill;
+        $school = $this->school();
+        if ($bill->school_id !== $school->id) abort(403);
+
+        $bill->load([
+            'student', 'paymentType', 'academicYear',
+            'transactions' => fn($q) => $q->where('status','approved')->orderBy('created_at'),
+        ]);
+
+        $paymentNumber = $bill->transactions->search(fn($t) => $t->id === $transaction->id) + 1;
+
+        return view('bendahara.bills.transaction-receipt', compact('transaction','bill','school','paymentNumber'));
+    }
+
     public function receipt(PaymentBill $bill)
     {
         $this->authorize($bill);

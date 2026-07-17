@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->unique(['school_id', 'session_date', 'session_type']);
+            $table->unique(['school_id', 'session_date', 'session_type'], 'tas_school_date_type_unique');
         });
 
         // Record absensi guru
@@ -50,7 +50,7 @@ return new class extends Migration
             $table->timestamp('scanned_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['session_id', 'teacher_id']);
+            $table->unique(['session_id', 'teacher_id'], 'ta_session_teacher_unique');
         });
 
         // Reward points guru

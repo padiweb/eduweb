@@ -15,11 +15,11 @@ return new class extends Migration
                 'alumni',   // sudah lulus
                 'keluar',   // keluar/DO di tengah jalan
                 'pindah',   // pindah ke sekolah lain
-            ])->default('aktif')->after('is_active');
+            ])->default('aktif');
 
             // Tanggal dan keterangan perubahan status
-            $table->date('status_changed_at')->nullable()->after('student_status');
-            $table->string('status_notes', 255)->nullable()->after('status_changed_at');
+            $table->date('status_changed_at')->nullable();
+            $table->string('status_notes', 255)->nullable();
         });
     }
 

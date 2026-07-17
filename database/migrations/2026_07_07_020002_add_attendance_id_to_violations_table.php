@@ -12,7 +12,6 @@ return new class extends Migration
             // Link pelanggaran ke absensi — untuk auto-rollback saat status diubah
             $table->foreignId('attendance_id')
                   ->nullable()
-                  ->after('reported_by')
                   ->constrained('attendances')
                   ->nullOnDelete();
 
