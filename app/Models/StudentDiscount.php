@@ -9,8 +9,9 @@ class StudentDiscount extends Model
 {
     protected $fillable = [
         'school_id', 'user_id', 'payment_type_id', 'academic_year_id',
-        'name', 'discount_type', 'discount_value',
+        'name', 'discount_type', 'discount_value', 'scholarship_type',
         'valid_from', 'valid_until', 'notes', 'created_by',
+        'discount_program_id',
     ];
 
     protected $casts = [

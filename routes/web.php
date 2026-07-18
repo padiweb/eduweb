@@ -232,6 +232,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/payment-types', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'store'])->name('payment-types.store');
         Route::put('/payment-types/{paymentType}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'update'])->name('payment-types.update');
         Route::patch('/payment-types/{paymentType}/toggle', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'toggleActive'])->name('payment-types.toggle');
+        Route::delete('/payment-types/{paymentType}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'destroy'])->name('payment-types.destroy');
         Route::post('/payment-types/{paymentType}/rates', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'storeRate'])->name('payment-types.rates.store');
         Route::put('/payment-rates/{rate}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'updateRate'])->name('payment-rates.update');
         Route::delete('/payment-rates/{rate}', [\App\Http\Controllers\Bendahara\PaymentTypeController::class, 'destroyRate'])->name('payment-rates.destroy');
@@ -241,6 +242,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/discount-programs', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'store'])->name('discount-programs.store');
         Route::put('/discount-programs/{program}', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'update'])->name('discount-programs.update');
         Route::patch('/discount-programs/{program}/toggle', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'toggle'])->name('discount-programs.toggle');
+        Route::delete('/discount-programs/{program}', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'destroy'])->name('discount-programs.destroy');
         Route::post('/discount-programs/{program}/apply', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'apply'])->name('discount-programs.apply');
         Route::get('/discount-programs/{program}/members', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'members'])->name('discount-programs.members');
         Route::post('/discount-programs/{program}/members', [\App\Http\Controllers\Bendahara\DiscountProgramController::class, 'addMembers'])->name('discount-programs.members.add');
@@ -257,6 +259,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'store'])->name('bills.store');
         Route::post('/bills/check-rate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'checkRate'])->name('bills.check-rate');
         Route::get('/bills/student/{student}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'studentBills'])->name('bills.student');
+        Route::get('/tunggakan', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'tunggakan'])->name('bills.tunggakan');
         Route::get('/bills/overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'overrides'])->name('bills.overrides');
         Route::post('/bills/overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'storeOverride'])->name('bills.overrides.store');
         Route::delete('/bills/overrides/{override}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'destroyOverride'])->name('bills.overrides.destroy');

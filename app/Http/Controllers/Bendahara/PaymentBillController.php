@@ -407,22 +407,24 @@ class PaymentBillController extends Controller
             $amount = $bill->amount_remaining;
         } elseif ($request->pay_type === 'scholarship') {
             $discount = StudentDiscount::findOrFail($request->discount_id);
-            $channel  = 'scholarship';
             $notes    = 'Beasiswa: ' . $discount->name;
 
-            // Hitung nominal beasiswa berdasarkan jenis: persen atau nominal tetap
+            // Hitung nominal beasiswa — cap di amount_remaining (tidak boleh lebih dari tagihan)
             if ($discount->discount_type === 'percent') {
-                // Hitung dari amount_billed (bukan remaining) — beasiswa berlaku atas tagihan penuh
                 $discountAmount = (int) round($bill->amount_billed * $discount->discount_value / 100);
-                $amount = min($discountAmount, $bill->amount_remaining);
             } else {
-                // Nominal tetap
-                $amount = min($discount->discount_value, $bill->amount_remaining);
+                $discountAmount = (int) $discount->discount_value;
             }
+            $amount = min($discountAmount, $bill->amount_remaining);
 
             if ($amount <= 0) {
                 return back()->withErrors(['discount_id' => 'Nilai beasiswa tidak valid atau tagihan sudah lunas.']);
             }
+
+            // Dua jenis beasiswa:
+            // 'scholarship_cash'   = dana uang (PIP dll) → MASUK pemasukan kas siswa
+            // 'scholarship_waiver' = potongan tagihan    → TIDAK masuk pemasukan
+            $channel = $discount->scholarship_type === 'cash' ? 'scholarship_cash' : 'scholarship_waiver';
         } else {
             $amount = (int) $request->amount;
             if ($amount <= 0 || $amount > $bill->amount_remaining) {
@@ -449,23 +451,29 @@ class PaymentBillController extends Controller
 
         $bill->recalculateStatus();
 
-        // Otomatis catat ke kas siswa jika ada FundSource type=siswa
-        $kasSource = \App\Models\FundSource::where('school_id', $school->id)
-            ->where('type', 'siswa')->where('is_active', true)->first();
-        if ($kasSource) {
-            $activeYear = AcademicYear::where('school_id', $school->id)->where('is_active', true)->first();
-            \App\Models\FundIncome::create([
-                'school_id'        => $school->id,
-                'fund_source_id'   => $kasSource->id,
-                'academic_year_id' => $activeYear?->id ?? $bill->academic_year_id,
-                'description'      => 'Bayar ' . $bill->paymentType->name . ' - ' . $bill->student->name,
-                'amount'           => $amount,
-                'income_date'      => now()->toDateString(),
-                'period_label'     => $bill->period_label,
-                'reference_number' => $trx->reference_number,
-                'notes'            => $channel === 'scholarship' ? $notes : null,
-                'created_by'       => auth()->id(),
-            ]);
+        // Catat ke kas siswa:
+        // cash / scholarship_cash → MASUK pemasukan (uang benar-benar diterima)
+        // scholarship_waiver      → TIDAK masuk (hanya potongan, bukan uang masuk)
+        $shouldRecordIncome = in_array($channel, ['cash', 'scholarship_cash']);
+
+        if ($shouldRecordIncome) {
+            $kasSource = \App\Models\FundSource::where('school_id', $school->id)
+                ->where('type', 'siswa')->where('is_active', true)->first();
+            if ($kasSource) {
+                $activeYear = AcademicYear::where('school_id', $school->id)->where('is_active', true)->first();
+                \App\Models\FundIncome::create([
+                    'school_id'        => $school->id,
+                    'fund_source_id'   => $kasSource->id,
+                    'academic_year_id' => $activeYear?->id ?? $bill->academic_year_id,
+                    'description'      => 'Bayar ' . $bill->paymentType->name . ' - ' . $bill->student->name,
+                    'amount'           => $amount,
+                    'income_date'      => now()->toDateString(),
+                    'period_label'     => $bill->period_label,
+                    'reference_number' => $trx->reference_number,
+                    'notes'            => str_contains($channel, 'scholarship') ? $notes : null,
+                    'created_by'       => auth()->id(),
+                ]);
+            }
         }
 
         PaymentAuditLog::create([
@@ -479,6 +487,13 @@ class PaymentBillController extends Controller
         ]);
 
         $label = $request->pay_type === 'full' ? 'Tagihan lunas' : 'Cicilan Rp ' . number_format($amount, 0, ',', '.');
+
+        if ($request->filled('print_receipt')) {
+            // Redirect ke struk transaksi (tab baru ditangani JS di halaman sebelumnya)
+            return redirect()->route('bendahara.transactions.receipt', $trx)
+                ->with('success', $label . ' berhasil dicatat.');
+        }
+
         return redirect()->route('bendahara.bills.student', [$bill->user_id, 'year' => $bill->academic_year_id])
             ->with('success', $label . ' berhasil dicatat.');
     }

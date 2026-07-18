@@ -149,25 +149,26 @@
                 <h2 class="text-sm font-semibold text-white mb-4">Input Bayar Tunai</h2>
                 <form method="POST" action="{{ route('bendahara.bills.cash', $bill) }}">
                     @csrf
+                    {{-- pay_type wajib di storeCash --}}
+                    <input type="hidden" name="pay_type" id="show-pay-type" value="partial">
                     <div class="space-y-3">
-                        @if($bill->installments->isNotEmpty())
-                        <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Untuk cicilan</label>
-                            <select name="installment_id"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                                <option value="">Tanpa cicilan</option>
-                                @foreach($bill->installments->where('status','!=','paid') as $inst)
-                                    <option value="{{ $inst->id }}">
-                                        Cicilan ke-{{ $inst->installment_number }}
-                                        (Sisa Rp {{ number_format($inst->amount_due - $inst->amount_paid, 0, ',', '.') }})
-                                    </option>
-                                @endforeach
-                            </select>
+                        {{-- Pilihan: Lunas atau Cicilan --}}
+                        <div class="flex gap-2">
+                            <button type="button" id="btn-partial"
+                                onclick="setPayType('partial')"
+                                class="flex-1 text-xs font-medium py-2 rounded-lg border bg-gray-700 border-white/30 text-white transition-colors">
+                                Cicilan
+                            </button>
+                            <button type="button" id="btn-full"
+                                onclick="setPayType('full')"
+                                class="flex-1 text-xs font-medium py-2 rounded-lg border bg-gray-900 border-white/10 text-gray-400 hover:text-white transition-colors">
+                                Lunas (Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }})
+                            </button>
                         </div>
-                        @endif
-                        <div>
+                        {{-- Input nominal — hanya tampil saat cicilan --}}
+                        <div id="show-amount-wrap">
                             <label class="text-xs text-gray-400 mb-1 block">Jumlah (Rp) *</label>
-                            <input type="number" name="amount" required min="1"
+                            <input type="number" name="amount" id="show-amount" min="1"
                                 max="{{ $bill->amount_remaining }}"
                                 placeholder="{{ $bill->amount_remaining }}"
                                 class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
@@ -180,10 +181,30 @@
                         </div>
                         <button type="submit"
                             class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
-                            Catat Pembayaran Tunai
+                            Catat Pembayaran
                         </button>
                     </div>
                 </form>
+                <script>
+                function setPayType(type) {
+                    document.getElementById('show-pay-type').value = type;
+                    var amountWrap  = document.getElementById('show-amount-wrap');
+                    var amountInput = document.getElementById('show-amount');
+                    var btnPartial  = document.getElementById('btn-partial');
+                    var btnFull     = document.getElementById('btn-full');
+                    if (type === 'full') {
+                        amountWrap.style.display = 'none';
+                        amountInput.removeAttribute('required');
+                        btnFull.className    = btnFull.className.replace('bg-gray-900 border-white/10 text-gray-400','').trim() + ' bg-gray-700 border-white/30 text-white';
+                        btnPartial.className = btnPartial.className.replace('bg-gray-700 border-white/30 text-white','').trim() + ' bg-gray-900 border-white/10 text-gray-400';
+                    } else {
+                        amountWrap.style.display = 'block';
+                        amountInput.setAttribute('required','required');
+                        btnPartial.className = btnPartial.className.replace('bg-gray-900 border-white/10 text-gray-400','').trim() + ' bg-gray-700 border-white/30 text-white';
+                        btnFull.className    = btnFull.className.replace('bg-gray-700 border-white/30 text-white','').trim() + ' bg-gray-900 border-white/10 text-gray-400';
+                    }
+                }
+                </script>
             </div>
 
             {{-- Bebaskan tagihan --}}

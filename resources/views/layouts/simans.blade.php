@@ -134,7 +134,7 @@
                 <x-sidebar-link href="{{ route('bendahara.discount-programs.index') }}" :active="request()->routeIs('bendahara.discount-programs.*')" icon="shield">
                     Beasiswa & Keringanan
                 </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.bills.index', ['status' => 'unpaid']) }}" :active="false" icon="bell">
+                <x-sidebar-link href="{{ route('bendahara.bills.tunggakan') }}" :active="request()->routeIs('bendahara.bills.tunggakan')" icon="bell">
                     Daftar Tunggakan
                 </x-sidebar-link>
 

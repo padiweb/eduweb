@@ -105,6 +105,21 @@ class PaymentTypeController extends Controller
         return back()->with('success', 'Jenis pembayaran berhasil diperbarui.');
     }
 
+    public function destroy(Request $request, PaymentType $paymentType)
+    {
+        $this->authorize($paymentType);
+
+        if ($paymentType->bills()->count() > 0) {
+            return back()->withErrors(['delete' => 'Jenis pembayaran tidak dapat dihapus karena sudah ada tagihan yang menggunakannya.']);
+        }
+
+        // Hapus tarif yang terhubung
+        $paymentType->rates()->delete();
+        $paymentType->delete();
+
+        return back()->with('success', 'Jenis pembayaran berhasil dihapus.');
+    }
+
     public function toggleActive(Request $request, PaymentType $paymentType)
     {
         $this->authorize($paymentType);

@@ -56,6 +56,21 @@ class DiscountProgramController extends Controller
         ));
     }
 
+    public function destroy(DiscountProgram $program)
+    {
+        if ($program->school_id !== $this->school()->id) abort(403);
+
+        if ($program->members()->count() > 0) {
+            return back()->withErrors(['delete' => 'Program yang sudah memiliki siswa tidak dapat dihapus. Hapus siswa dari program terlebih dahulu, atau nonaktifkan program.']);
+        }
+
+        // Hapus juga StudentDiscount yang terhubung
+        StudentDiscount::where('discount_program_id', $program->id)->delete();
+        $program->delete();
+
+        return back()->with('success', 'Program beasiswa berhasil dihapus.');
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -65,6 +80,7 @@ class DiscountProgramController extends Controller
             'payment_type_id'  => 'nullable|exists:payment_types,id',
             'discount_type'    => 'required|in:percent,fixed',
             'default_value'    => 'required|integer|min:0',
+            'scholarship_type' => 'required|in:cash,waiver',
             'valid_from'       => 'required|date',
             'valid_until'      => 'nullable|date|after_or_equal:valid_from',
             'description'      => 'nullable|string|max:255',
@@ -82,11 +98,12 @@ class DiscountProgramController extends Controller
     {
         if ($program->school_id !== $this->school()->id) abort(403);
         $data = $request->validate([
-            'name'          => 'required|string|max:100',
-            'code'          => 'nullable|string|max:30',
-            'default_value' => 'required|integer|min:0',
-            'valid_until'   => 'nullable|date',
-            'description'   => 'nullable|string|max:255',
+            'name'             => 'required|string|max:100',
+            'code'             => 'nullable|string|max:30',
+            'default_value'    => 'required|integer|min:0',
+            'scholarship_type' => 'sometimes|in:cash,waiver',
+            'valid_until'      => 'nullable|date',
+            'description'      => 'nullable|string|max:255',
         ]);
         $program->update($data);
         return back()->with('success', 'Program diperbarui.');
@@ -182,12 +199,13 @@ class DiscountProgramController extends Controller
             }
 
             $fillData = [
-                'discount_type'  => $program->discount_type,
-                'discount_value' => $value,
-                'valid_from'     => $program->valid_from,
-                'valid_until'    => $program->valid_until,
-                'notes'          => $member->notes,
-                'created_by'     => auth()->id(),
+                'discount_type'    => $program->discount_type,
+                'discount_value'   => $value,
+                'scholarship_type' => $program->scholarship_type ?? 'cash',
+                'valid_from'       => $program->valid_from,
+                'valid_until'      => $program->valid_until,
+                'notes'            => $member->notes,
+                'created_by'       => auth()->id(),
             ];
 
             // Tambah discount_program_id jika kolom sudah ada
