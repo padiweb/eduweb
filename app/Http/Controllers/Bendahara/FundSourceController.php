@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\FundIncome;
 use App\Models\FundSource;
+use App\Models\KasSetoran;
+use App\Models\PaymentTransaction;
 use Illuminate\Http\Request;
 
 class FundSourceController extends Controller
@@ -69,6 +71,119 @@ class FundSourceController extends Controller
     }
 
     // ── Pemasukan Dana ────────────────────────────────────────────────────────
+
+    // ── Setoran Kas ──────────────────────────────────────────────────────────
+
+    public function setoranIndex(Request $request)
+    {
+        $school = $this->school();
+
+        $yearId = $request->filled('year')
+            ? (int) $request->year
+            : AcademicYear::where('school_id', $school->id)->where('is_active', true)->value('id');
+
+        $setorans = KasSetoran::where('school_id', $school->id)
+            ->when($yearId, fn($q) => $q->where('academic_year_id', $yearId))
+            ->with(['fundSource', 'createdBy'])
+            ->orderByDesc('tanggal_setoran')
+            ->paginate(20)->withQueryString();
+
+        // Total SEMUA penerimaan tunai yang sudah dikonfirmasi
+        $totalTunaiDiterima = PaymentTransaction::where('school_id', $school->id)
+            ->whereIn('channel', ['cash', 'scholarship_cash'])
+            ->where('status', 'approved')
+            ->sum('amount');
+
+        // Total SEMUA transfer yang sudah dikonfirmasi
+        $totalTransferDiterima = PaymentTransaction::where('school_id', $school->id)
+            ->where('channel', 'transfer')
+            ->where('status', 'approved')
+            ->sum('amount');
+
+        // Total yang sudah pernah disetor ke bank
+        $totalSudahDisetor = KasSetoran::where('school_id', $school->id)
+            ->where('status', 'setor')
+            ->sum('total_setoran');
+
+        // Saldo kas yang BELUM disetor = total diterima - sudah disetor
+        $totalDiterima   = $totalTunaiDiterima + $totalTransferDiterima;
+        $sisaBelumSetor  = max(0, $totalDiterima - $totalSudahDisetor);
+
+        // Rincian hari ini (untuk referensi saja)
+        $today = now()->toDateString();
+        $tunaiHariIni    = PaymentTransaction::where('school_id', $school->id)
+            ->whereIn('channel', ['cash', 'scholarship_cash'])
+            ->where('status', 'approved')
+            ->whereDate('confirmed_at', $today)->sum('amount');
+        $transferHariIni = PaymentTransaction::where('school_id', $school->id)
+            ->where('channel', 'transfer')->where('status', 'approved')
+            ->whereDate('confirmed_at', $today)->sum('amount');
+
+        $fundSources   = FundSource::where('school_id', $school->id)->where('is_active', true)->get();
+        $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
+
+        return view('bendahara.fund-sources.setoran', compact(
+            'setorans', 'totalTunaiDiterima', 'totalTransferDiterima',
+            'totalSudahDisetor', 'sisaBelumSetor', 'totalDiterima',
+            'tunaiHariIni', 'transferHariIni',
+            'fundSources', 'academicYears', 'yearId'
+        ));
+    }
+
+    public function setoranStore(Request $request)
+    {
+        $data = $request->validate([
+            'fund_source_id'   => 'required|exists:fund_sources,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'tanggal_setoran'  => 'required|date',
+            'total_tunai'      => 'required|integer|min:0',
+            'total_transfer'   => 'required|integer|min:0',
+            'total_setoran'    => 'required|integer|min:1',
+            'keterangan'       => 'nullable|string|max:255',
+            'no_referensi'     => 'nullable|string|max:50',
+        ]);
+
+        $school = $this->school();
+        $data['school_id']  = $school->id;
+        $data['created_by'] = auth()->id();
+        $data['status']     = 'draft';
+
+        KasSetoran::create($data);
+
+        return back()->with('success', 'Setoran kas Rp ' . number_format($data['total_setoran'],0,',','.') . ' berhasil dicatat.');
+    }
+
+    public function setoranConfirm(KasSetoran $setoran)
+    {
+        if ($setoran->school_id !== $this->school()->id) abort(403);
+        if ($setoran->status === 'setor') return back()->withErrors(['setoran' => 'Sudah disetor.']);
+
+        $setoran->update(['status' => 'setor', 'disetor_at' => now()]);
+
+        // Catat ke FundIncome sumber dana tujuan
+        FundIncome::create([
+            'school_id'        => $this->school()->id,
+            'fund_source_id'   => $setoran->fund_source_id,
+            'academic_year_id' => $setoran->academic_year_id,
+            'description'      => 'Setoran kas ' . $setoran->tanggal_setoran->format('d/m/Y'),
+            'amount'           => $setoran->total_setoran,
+            'income_date'      => $setoran->tanggal_setoran->toDateString(),
+            'period_label'     => $setoran->tanggal_setoran->format('F Y'),
+            'reference_number' => $setoran->no_referensi,
+            'notes'            => $setoran->keterangan,
+            'created_by'       => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Setoran dikonfirmasi dan masuk ke pemasukan resmi.');
+    }
+
+    public function setoranDestroy(KasSetoran $setoran)
+    {
+        if ($setoran->school_id !== $this->school()->id) abort(403);
+        if ($setoran->status === 'setor') return back()->withErrors(['setoran' => 'Setoran sudah dikonfirmasi, tidak dapat dihapus.']);
+        $setoran->delete();
+        return back()->with('success', 'Draft setoran dihapus.');
+    }
 
     public function incomes(FundSource $fundSource)
     {

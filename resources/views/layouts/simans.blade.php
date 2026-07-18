@@ -145,7 +145,9 @@
                     Dashboard Keuangan
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('bendahara.fund-sources.index') }}" :active="request()->routeIs('bendahara.fund-sources.*')" icon="credit-card">
-                    Sumber Dana
+                    Sumber Dana</x-sidebar-link>
+                <x-sidebar-link href="{{ route('bendahara.setoran.index') }}" :active="request()->routeIs('bendahara.setoran.*')" icon="building-bank">
+                    Setoran Kas
                 </x-sidebar-link>
                 <x-sidebar-link href="{{ route('bendahara.expenses.categories') }}" :active="request()->routeIs('bendahara.expenses.categories')" icon="tag">
                     Kategori Pengeluaran

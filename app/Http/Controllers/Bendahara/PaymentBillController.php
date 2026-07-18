@@ -77,6 +77,76 @@ class PaymentBillController extends Controller
         ));
     }
 
+    // Generate SPP otomatis untuk semua siswa aktif — 1 klik
+    public function generateSpp(Request $request)
+    {
+        $data = $request->validate([
+            'payment_type_id'  => 'required|exists:payment_types,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'period_label'     => 'required|string|max:50',
+            'period_date'      => 'required|date',
+            'due_date'         => 'nullable|date',
+        ]);
+
+        $school = $this->school();
+        $type   = PaymentType::findOrFail($data['payment_type_id']);
+        $year   = AcademicYear::findOrFail($data['academic_year_id']);
+
+        // Ambil semua siswa aktif di sekolah ini
+        $students = User::where('school_id', $school->id)
+            ->where('role', 'siswa')
+            ->where('is_active', true)
+            ->get();
+
+        $created  = 0;
+        $skipped  = 0;
+
+        foreach ($students as $student) {
+            // Skip jika tagihan periode ini sudah ada
+            $exists = PaymentBill::where('school_id', $school->id)
+                ->where('user_id', $student->id)
+                ->where('payment_type_id', $type->id)
+                ->where('academic_year_id', $year->id)
+                ->where('period_label', $data['period_label'])
+                ->exists();
+
+            if ($exists) { $skipped++; continue; }
+
+            // Resolusi tarif
+            $resolved   = $this->resolveBaseAmount($type->id, $year->id, $student, $school->id);
+            $baseAmount = $resolved['amount'];
+            $rate       = $resolved['rate'];
+
+            $discount    = $this->resolveDiscount($student->id, $type->id, $year->id, $data['period_date']);
+            $discountAmt = $this->calcDiscount($baseAmount, $discount);
+            $billed      = max(0, $baseAmount - $discountAmt);
+
+            PaymentBill::create([
+                'school_id'        => $school->id,
+                'user_id'          => $student->id,
+                'payment_type_id'  => $type->id,
+                'academic_year_id' => $year->id,
+                'payment_rate_id'  => $rate?->id,
+                'period_label'     => $data['period_label'],
+                'period_date'      => $data['period_date'],
+                'due_date'         => $data['due_date'] ?? null,
+                'amount_base'      => $baseAmount,
+                'amount_discount'  => $discountAmt,
+                'amount_billed'    => $billed,
+                'amount_paid'      => 0,
+                'status'           => 'unpaid',
+                'installment_type' => 'full',
+                'created_by'       => auth()->id(),
+            ]);
+            $created++;
+        }
+
+        $msg = "SPP berhasil di-generate: $created siswa.";
+        if ($skipped > 0) $msg .= " $skipped siswa dilewati (sudah ada tagihan).";
+
+        return back()->with('success', $msg);
+    }
+
     public function create()
     {
         $school = $this->school();
@@ -279,12 +349,48 @@ class PaymentBillController extends Controller
 
         $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
 
-        $discounts = StudentDiscount::where('user_id', $student->id)
+        // Beasiswa yang masih bisa dipakai:
+        // - Belum expired
+        // - Untuk beasiswa WAIVER (potongan): hanya tampil jika ada tagihan yang belum lunas yang sesuai
+        // - Untuk beasiswa CASH (dana): bisa dipakai selama ada tagihan yang belum lunas
+        $allDiscounts = StudentDiscount::where('user_id', $student->id)
             ->where('school_id', $school->id)
             ->where('valid_from', '<=', now()->toDateString())
             ->where(fn($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()->toDateString()))
             ->with('paymentType')
             ->get();
+
+        // Cek beasiswa yang sudah pernah dipakai di tagihan siswa ini
+        $usedDiscountIds = PaymentTransaction::whereIn('payment_bill_id', $bills->pluck('id'))
+            ->where('status', 'approved')
+            ->whereIn('channel', ['scholarship_waiver', 'scholarship_cash', 'scholarship'])
+            ->pluck('cashier_notes')
+            ->map(fn($n) => str_replace('Beasiswa: ', '', $n ?? ''))
+            ->toArray();
+
+        // Filter: beasiswa waiver hanya tampil jika belum pernah dipakai di tagihan ini
+        // Beasiswa cash bisa dipakai berulang selama nominalnya lebih besar dari tagihan
+        $discounts = $allDiscounts->filter(function($disc) use ($usedDiscountIds, $bills) {
+            $scholarshipType = $disc->scholarship_type ?? 'cash';
+
+            if ($scholarshipType === 'waiver') {
+                // Potongan: cek apakah sudah pernah dipakai untuk tagihan yang sama jenisnya
+                // Sudah terpakai jika nama beasiswa ini ada di riwayat transaksi
+                $alreadyUsed = in_array($disc->name, $usedDiscountIds);
+                if ($alreadyUsed) return false;
+
+                // Juga tidak tampil jika tidak ada tagihan yang belum lunas untuk jenis ini
+                $hasUnpaidBill = $bills->filter(function($bill) use ($disc) {
+                    if ($bill->amount_remaining <= 0) return false;
+                    if ($disc->payment_type_id && $bill->payment_type_id !== $disc->payment_type_id) return false;
+                    return true;
+                })->isNotEmpty();
+                return $hasUnpaidBill;
+            }
+
+            // Cash: tampil selama ada tagihan yang belum lunas
+            return $bills->where('amount_remaining', '>', 0)->isNotEmpty();
+        })->values();
 
         $totalBilled    = $bills->sum('amount_billed');
         $totalPaid      = $bills->sum('amount_paid');

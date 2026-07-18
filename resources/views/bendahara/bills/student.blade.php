@@ -211,12 +211,17 @@
                         class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2.5 focus:border-purple-500 focus:outline-none">
                         <option value="">-- Pilih --</option>
                         @foreach($discounts as $disc)
-                            <option value="{{ $disc->id }}">
-                                {{ $disc->name }}
-                                ({{ $disc->discount_type === 'percent'
-                                    ? $disc->discount_value . '%'
-                                    : 'Rp ' . number_format($disc->discount_value, 0, ',', '.') }})
-                                — {{ ($disc->scholarship_type ?? 'cash') === 'cash' ? 'Dana/Uang' : 'Potongan' }}
+                        @php
+                            $stype = $disc->scholarship_type ?? 'cash';
+                            $label = $stype === 'waiver' ? 'Potongan tagihan' : 'Dana/Uang masuk kas';
+                            if ($disc->discount_type === 'percent') {
+                                $nilaiLabel = $disc->discount_value . '% off';
+                            } else {
+                                $nilaiLabel = 'Rp ' . number_format($disc->discount_value, 0, ',', '.');
+                            }
+                        @endphp
+                            <option value="{{ $disc->id }}" data-type="{{ $stype }}">
+                                {{ $disc->name }} — {{ $nilaiLabel }} ({{ $label }})
                             </option>
                         @endforeach
                     </select>

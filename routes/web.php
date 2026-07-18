@@ -259,6 +259,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'store'])->name('bills.store');
         Route::post('/bills/check-rate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'checkRate'])->name('bills.check-rate');
         Route::get('/bills/student/{student}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'studentBills'])->name('bills.student');
+        Route::post('/bills/generate-spp', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'generateSpp'])->name('bills.generate-spp');
         Route::get('/tunggakan', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'tunggakan'])->name('bills.tunggakan');
         Route::get('/bills/overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'overrides'])->name('bills.overrides');
         Route::post('/bills/overrides', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'storeOverride'])->name('bills.overrides.store');
@@ -290,6 +291,10 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/fund-sources/{fundSource}/incomes', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'storeIncome'])->name('fund-sources.incomes.store');
         Route::put('/fund-income/{income}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'updateIncome'])->name('fund-sources.incomes.update');
         Route::delete('/fund-income/{income}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'destroyIncome'])->name('fund-sources.incomes.destroy');
+        Route::get('/setoran-kas', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'setoranIndex'])->name('setoran.index');
+        Route::post('/setoran-kas', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'setoranStore'])->name('setoran.store');
+        Route::patch('/setoran-kas/{setoran}/confirm', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'setoranConfirm'])->name('setoran.confirm');
+        Route::delete('/setoran-kas/{setoran}', [\App\Http\Controllers\Bendahara\FundSourceController::class, 'setoranDestroy'])->name('setoran.destroy');
 
         // Kategori pengeluaran — /store HARUS di atas /{category}
         Route::get('/expense-categories', [\App\Http\Controllers\Bendahara\ExpenseController::class, 'categories'])->name('expenses.categories');
