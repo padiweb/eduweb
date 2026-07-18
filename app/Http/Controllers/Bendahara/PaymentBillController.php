@@ -758,11 +758,15 @@ class PaymentBillController extends Controller
 
     private function resolveDiscount(int $userId, int $typeId, int $yearId, string $date): ?StudentDiscount
     {
+        // Hanya ambil beasiswa WAIVER (potongan tagihan) untuk dikurangkan dari amount_billed
+        // Beasiswa CASH (dana) tidak memotong tagihan — dibayarkan saat transaksi berlangsung
         return StudentDiscount::where('user_id', $userId)
             ->where('academic_year_id', $yearId)
             ->where(fn($q) => $q->whereNull('payment_type_id')->orWhere('payment_type_id', $typeId))
             ->where('valid_from', '<=', $date)
             ->where(fn($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', $date))
+            ->where(fn($q) => $q->where('scholarship_type', 'waiver')
+                                ->orWhereNull('scholarship_type')) // data lama tanpa scholarship_type tetap ikut
             ->orderByDesc('discount_value')
             ->first();
     }

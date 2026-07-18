@@ -43,13 +43,16 @@
         <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
             <div class="px-5 py-4 flex items-center gap-4">
                 {{-- Badge kode --}}
-                <div class="w-12 h-12 rounded-xl flex-shrink-0 flex flex-col items-center justify-center
-                    {{ $program->is_active ? 'bg-purple-500/10 border border-purple-500/20' : 'bg-gray-800 border border-white/5' }}">
-                    <span class="text-xs font-bold {{ $program->is_active ? 'text-purple-400' : 'text-gray-600' }}">
-                        {{ $program->code ?? substr($program->name, 0, 3) }}
+                @php $stype = $program->scholarship_type ?? 'cash'; @endphp
+                <div class="w-14 h-14 rounded-xl flex-shrink-0 flex flex-col items-center justify-center gap-0.5
+                    {{ $stype === 'waiver'
+                        ? 'bg-purple-500/10 border border-purple-500/20'
+                        : 'bg-blue-500/10 border border-blue-500/20' }}">
+                    <span class="text-xs font-bold {{ $stype === 'waiver' ? 'text-purple-400' : 'text-blue-400' }}">
+                        {{ $program->code ?? strtoupper(substr($program->name, 0, 3)) }}
                     </span>
-                    <span class="text-xs {{ ($program->scholarship_type ?? 'cash') === 'cash' ? 'text-blue-400' : 'text-purple-400' }}">
-                        {{ ($program->scholarship_type ?? 'cash') === 'cash' ? 'Dana' : 'Potong' }}
+                    <span class="text-xs {{ $stype === 'waiver' ? 'text-purple-300' : 'text-blue-300' }}">
+                        {{ $stype === 'waiver' ? 'Potong' : 'Dana' }}
                     </span>
                 </div>
 
@@ -84,6 +87,12 @@
                             Rp {{ number_format($program->default_value, 0, ',', '.') }} default
                         @endif
                         · <span class="text-purple-400">{{ $memberCount }} siswa</span>
+                        ·
+                        @if(($program->scholarship_type ?? 'cash') === 'waiver')
+                            <span class="text-purple-400 font-medium">Potongan tagihan</span>
+                        @else
+                            <span class="text-blue-400 font-medium">Dana masuk kas</span>
+                        @endif
                     </p>
                     @if($program->description)
                         <p class="text-xs text-gray-600 mt-0.5">{{ $program->description }}</p>

@@ -10,7 +10,7 @@ class DiscountProgram extends Model
 {
     protected $fillable = [
         'school_id', 'academic_year_id', 'payment_type_id',
-        'name', 'code', 'discount_type', 'default_value',
+        'name', 'code', 'discount_type', 'default_value', 'scholarship_type',
         'valid_from', 'valid_until', 'description', 'is_active', 'created_by',
     ];
 

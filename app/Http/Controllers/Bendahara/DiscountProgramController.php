@@ -9,6 +9,7 @@ use App\Models\DiscountProgramMember;
 use App\Models\PaymentType;
 use App\Models\School;
 use App\Models\StudentDiscount;
+use App\Models\PaymentBill;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -217,7 +218,48 @@ class DiscountProgramController extends Controller
             $applied++;
         }
 
-        return back()->with('success', "Beasiswa diterapkan ke $applied siswa.");
+        // Jika beasiswa WAIVER: update tagihan yang sudah ada untuk siswa ini
+        $billsUpdated = 0;
+        if (($program->scholarship_type ?? 'cash') === 'waiver') {
+            foreach ($program->members as $member) {
+                $value = $member->override_value ?? $program->default_value;
+
+                // Cari tagihan siswa yang belum lunas di tahun ajaran ini
+                $bills = PaymentBill::where('school_id', $this->school()->id)
+                    ->where('user_id', $member->user_id)
+                    ->where('academic_year_id', $program->academic_year_id)
+                    ->where('status', '!=', 'paid')
+                    ->when($program->payment_type_id, fn($q) => $q->where('payment_type_id', $program->payment_type_id))
+                    ->where('amount_paid', 0) // Hanya update yang belum ada pembayaran sama sekali
+                    ->get();
+
+                foreach ($bills as $bill) {
+                    // Hitung potongan
+                    if ($program->discount_type === 'percent') {
+                        $discountAmt = (int) round($bill->amount_base * $value / 100);
+                    } else {
+                        $discountAmt = min((int) $value, $bill->amount_base);
+                    }
+
+                    $newBilled = max(0, $bill->amount_base - $discountAmt);
+
+                    // Update tagihan
+                    $bill->update([
+                        'amount_discount' => $discountAmt,
+                        'amount_billed'   => $newBilled,
+                        'status'          => $newBilled <= 0 ? 'waived' : $bill->status,
+                    ]);
+                    $billsUpdated++;
+                }
+            }
+        }
+
+        $msg = "Beasiswa diterapkan ke $applied siswa.";
+        if ($billsUpdated > 0) {
+            $msg .= " $billsUpdated tagihan diperbarui otomatis.";
+        }
+
+        return back()->with('success', $msg);
     }
 
     public function searchStudents(Request $request, DiscountProgram $program)

@@ -207,24 +207,40 @@
                 @if($discounts->isNotEmpty())
                 <div id="panel-scholarship" class="mb-4 hidden">
                     <label class="text-xs text-gray-400 mb-1 block">Pilih beasiswa</label>
-                    <select name="discount_id"
+                    <select name="discount_id" id="select-discount"
+                        onchange="onDiscountChange(this)"
                         class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2.5 focus:border-purple-500 focus:outline-none">
                         <option value="">-- Pilih --</option>
                         @foreach($discounts as $disc)
                         @php
                             $stype = $disc->scholarship_type ?? 'cash';
-                            $label = $stype === 'waiver' ? 'Potongan tagihan' : 'Dana/Uang masuk kas';
-                            if ($disc->discount_type === 'percent') {
-                                $nilaiLabel = $disc->discount_value . '% off';
-                            } else {
-                                $nilaiLabel = 'Rp ' . number_format($disc->discount_value, 0, ',', '.');
-                            }
+                            $nilaiLabel = $disc->discount_type === 'percent'
+                                ? $disc->discount_value . '%'
+                                : 'Rp ' . number_format($disc->discount_value, 0, ',', '.');
                         @endphp
-                            <option value="{{ $disc->id }}" data-type="{{ $stype }}">
-                                {{ $disc->name }} — {{ $nilaiLabel }} ({{ $label }})
+                            <option value="{{ $disc->id }}"
+                                data-type="{{ $stype }}"
+                                data-dtype="{{ $disc->discount_type }}"
+                                data-value="{{ $disc->discount_value }}">
+                                {{ $disc->name }} ({{ $nilaiLabel }}) — {{ $stype === 'cash' ? 'Dana masuk kas' : 'Potongan tagihan' }}
                             </option>
                         @endforeach
                     </select>
+                    {{-- Info setelah pilih beasiswa --}}
+                    <div id="info-discount" class="mt-2 hidden">
+                        <div id="info-waiver" class="hidden bg-purple-500/10 border border-purple-500/20 rounded-lg px-3 py-2 text-xs">
+                            <p class="text-purple-400">Tagihan otomatis dipotong sebesar:</p>
+                            <p class="text-white font-semibold text-sm mt-0.5" id="info-waiver-nominal"></p>
+                            <p class="text-purple-400/60 mt-0.5">Potongan ini tidak masuk pemasukan kas</p>
+                        </div>
+                        <div id="info-cash" class="hidden">
+                            <label class="text-xs text-gray-400 mb-1 mt-2 block">Nominal yang dicairkan (Rp)</label>
+                            <input type="number" name="discount_amount" id="input-discount-amount"
+                                min="1" placeholder="Nominal beasiswa yang dibayarkan"
+                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2.5 focus:border-purple-500 focus:outline-none">
+                            <p class="text-xs text-gray-600 mt-1" id="info-cash-hint">Bisa lebih kecil dari nilai beasiswa jika tagihan lebih kecil</p>
+                        </div>
+                    </div>
                 </div>
                 @endif
 
@@ -258,6 +274,7 @@
     var activeTab = 'full';
 
     function bukaModalBayar(actionUrl, sisa, nama) {
+        window._currentSisa = sisa;
         document.getElementById('form-bayar').action    = actionUrl;
         document.getElementById('modal-nama').textContent   = nama;
         document.getElementById('modal-sisa').textContent   = 'Rp ' + sisa.toLocaleString('id-ID');
@@ -267,9 +284,61 @@
         document.getElementById('modal-bayar').style.display = 'flex';
     }
 
+    // Saat pilih beasiswa - tampilkan info sesuai tipe
+    function onDiscountChange(sel) {
+        var opt      = sel.options[sel.selectedIndex];
+        var infoDiv  = document.getElementById('info-discount');
+        var waiver   = document.getElementById('info-waiver');
+        var cash     = document.getElementById('info-cash');
+        var nomLabel = document.getElementById('info-waiver-nominal');
+        var hint     = document.getElementById('info-cash-hint');
+        var amtInput = document.getElementById('input-discount-amount');
+
+        if (!opt.value) {
+            infoDiv.classList.add('hidden');
+            waiver.classList.add('hidden');
+            cash.classList.add('hidden');
+            return;
+        }
+
+        var stype  = opt.dataset.type;
+        var dtype  = opt.dataset.dtype;
+        var val    = parseFloat(opt.dataset.value) || 0;
+        var sisa   = window._currentSisa || 0;
+
+        infoDiv.classList.remove('hidden');
+
+        if (stype === 'waiver') {
+            waiver.classList.remove('hidden');
+            cash.classList.add('hidden');
+            // Hitung potongan
+            var potongan = dtype === 'percent'
+                ? Math.round(sisa * val / 100)
+                : Math.min(val, sisa);
+            potongan = Math.min(potongan, sisa);
+            nomLabel.textContent = 'Rp ' + potongan.toLocaleString('id-ID');
+        } else {
+            waiver.classList.add('hidden');
+            cash.classList.remove('hidden');
+            // Set nilai default dan max
+            var defaultVal = dtype === 'percent'
+                ? Math.round(sisa * val / 100)
+                : val;
+            amtInput.value = Math.min(defaultVal, sisa);
+            amtInput.max   = sisa;
+            hint.textContent = 'Maks Rp ' + sisa.toLocaleString('id-ID') + ' (sisa tagihan). Nilai beasiswa: ' +
+                (dtype === 'percent' ? val + '%' : 'Rp ' + val.toLocaleString('id-ID'));
+        }
+    }
+
     function tutupModal() {
         document.getElementById('modal-bayar').style.display = 'none';
         document.getElementById('form-bayar').reset();
+        document.getElementById('info-discount').classList.add('hidden');
+        var w = document.getElementById('info-waiver');
+        var ca = document.getElementById('info-cash');
+        if(w) w.classList.add('hidden');
+        if(ca) ca.classList.add('hidden');
     }
 
     function gantiTab(tab) {
