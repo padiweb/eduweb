@@ -60,23 +60,20 @@
     <div class="row"><span class="lbl">Jenis</span><span class="val">{{ $bill->paymentType->name }}</span></div>
     <div class="row"><span class="lbl">Periode</span><span class="val">{{ $bill->period_label }}</span></div>
     <div class="row"><span class="lbl">Th. Ajaran</span><span class="val">{{ $bill->academicYear->name }} S{{ $bill->academicYear->semester }}</span></div>
-    @if($bill->amount_discount > 0)
-    <div class="row" style="color:#6366f1">
-        <span class="lbl">Tarif asli</span>
-        <span>Rp {{ number_format($bill->amount_base, 0, ',', '.') }}</span>
-    </div>
-    <div class="row" style="color:#6366f1">
-        <span class="lbl">Beasiswa potong</span>
-        <span>- Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</span>
-    </div>
-    @endif
 
     <div class="line"></div>
 
     {{-- Pembayaran ini --}}
     <div class="row">
         <span class="lbl">Cara bayar</span>
-        <span class="val">{{ $transaction->channel === 'scholarship' ? 'Beasiswa' : 'Tunai' }}</span>
+        @php
+            $cl = match($transaction->channel) {
+                'cash'=>'Tunai','transfer'=>'Transfer',
+                'scholarship_cash'=>'Beasiswa Dana','scholarship_waiver'=>'Beasiswa Potong',
+                default=>'Beasiswa'
+            };
+        @endphp
+        <span class="val">{{ $cl }}</span>
     </div>
     @if($transaction->cashier_notes)
     <div class="row"><span class="lbl">Catatan</span><span class="val">{{ $transaction->cashier_notes }}</span></div>
@@ -90,16 +87,6 @@
     <div class="line"></div>
 
     {{-- Ringkasan tagihan --}}
-    @if($bill->amount_discount > 0)
-    <div class="row" style="font-size:10px;color:#888">
-        <span class="lbl">Tarif asli</span>
-        <span>Rp {{ number_format($bill->amount_base, 0, ',', '.') }}</span>
-    </div>
-    <div class="row" style="font-size:10px;color:#6366f1">
-        <span class="lbl">Diskon beasiswa</span>
-        <span>- Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</span>
-    </div>
-    @endif
     <div class="row"><span class="lbl">Total tagihan</span><span>Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</span></div>
     <div class="row"><span class="lbl">Sudah dibayar</span><span>Rp {{ number_format($bill->amount_paid, 0, ',', '.') }}</span></div>
     @if($bill->amount_remaining > 0)

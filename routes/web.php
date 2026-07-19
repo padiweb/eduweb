@@ -276,7 +276,8 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/transactions', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'index'])->name('transactions.index');
         Route::patch('/transactions/{transaction}/approve', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'approve'])->name('transactions.approve');
         Route::patch('/transactions/{transaction}/reject', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'reject'])->name('transactions.reject');
-        Route::get('/transactions/{transaction}/receipt', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'transactionReceipt'])->name('transactions.receipt');
+        Route::get('/transactions/{transaction}/receipt', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'viewReceipt'])->name('transactions.receipt');
+        Route::get('/transactions/{transaction}/struk', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'transactionReceipt'])->name('transactions.struk');
 
         // ── KEUANGAN SEKOLAH ────────────────────────────────────────────────────
         // Dashboard keuangan

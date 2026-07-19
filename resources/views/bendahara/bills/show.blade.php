@@ -118,7 +118,15 @@
                             <div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm font-medium text-white">Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
-                                    <span class="text-xs text-gray-500">{{ $trx->channel === 'cash' ? 'Tunai' : 'Transfer' }}</span>
+                                    @php
+                                        $cl = match($trx->channel) {
+                                            'cash'=>'Tunai','transfer'=>'Transfer',
+                                            'scholarship_cash'=>'Beasiswa Dana',
+                                            'scholarship_waiver'=>'Beasiswa Potong',
+                                            default=>'Beasiswa'
+                                        };
+                                    @endphp
+                                    <span class="text-xs text-gray-500">{{ $cl }}</span>
                                     @if($trx->channel === 'transfer' && $trx->receipt_path)
                                         <a href="{{ route('bendahara.transactions.receipt', $trx) }}" target="_blank"
                                             class="text-xs text-blue-400 hover:text-blue-300">Lihat bukti</a>

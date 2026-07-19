@@ -113,24 +113,23 @@ class PaymentTransactionController extends Controller
             abort(404, 'Tidak ada bukti transfer.');
         }
 
-        // Coba via disk 'private' dulu (cara yang benar)
+        // Serve file bukti transfer dari storage private
         if (Storage::disk('private')->exists($transaction->receipt_path)) {
-            $fullPath = Storage::disk('private')->path($transaction->receipt_path);
-            return response()->file($fullPath);
+            return Storage::disk('private')->response($transaction->receipt_path);
         }
 
-        // Fallback: coba tanpa prefix (path lama mungkin sudah include 'payment-receipts/...')
-        $fallbackPaths = [
+        // Fallback untuk path lama
+        $paths = [
             storage_path('app/private/' . $transaction->receipt_path),
             storage_path('app/' . $transaction->receipt_path),
         ];
-        foreach ($fallbackPaths as $path) {
+        foreach ($paths as $path) {
             if (file_exists($path)) {
                 return response()->file($path);
             }
         }
 
-        abort(404, 'File bukti transfer tidak ditemukan di server. Path: ' . $transaction->receipt_path);
+        abort(404, 'File bukti transfer tidak ditemukan. Path: ' . $transaction->receipt_path);
     }
 
     private function authorize(PaymentTransaction $transaction)
