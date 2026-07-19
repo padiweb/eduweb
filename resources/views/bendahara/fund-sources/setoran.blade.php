@@ -24,19 +24,46 @@
 
     {{-- Ringkasan kas --}}
     <div class="grid grid-cols-2 gap-4 mb-4">
-        {{-- Kiri: total kas masuk --}}
+        {{-- Kiri: total kas masuk dengan sisa per jenis --}}
         <div class="bg-gray-900 border border-white/5 rounded-xl p-4">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-3">Total Kas Diterima</p>
-            <div class="space-y-2">
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-400">Tunai dari siswa</span>
-                    <span class="text-white">Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
+            <div class="space-y-2.5">
+                {{-- Tunai --}}
+                <div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Tunai dari siswa</span>
+                        <span class="text-white">Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-0.5">
+                        <span class="text-gray-600">Sudah disetor</span>
+                        <span class="text-gray-500">- Rp {{ number_format($sudahSetorTunai, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-0.5">
+                        <span class="{{ $sisaTunai > 0 ? 'text-amber-400' : 'text-green-400' }}">Sisa belum disetor</span>
+                        <span class="{{ $sisaTunai > 0 ? 'text-amber-400 font-semibold' : 'text-green-400' }}">
+                            Rp {{ number_format($sisaTunai, 0, ',', '.') }}
+                        </span>
+                    </div>
                 </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-gray-400">Transfer dikonfirmasi</span>
-                    <span class="text-white">Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
+                <div class="border-t border-white/5"></div>
+                {{-- Transfer --}}
+                <div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-400">Transfer dikonfirmasi</span>
+                        <span class="text-white">Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-0.5">
+                        <span class="text-gray-600">Sudah disetor</span>
+                        <span class="text-gray-500">- Rp {{ number_format($sudahSetorTransfer, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-0.5">
+                        <span class="{{ $sisaTransfer > 0 ? 'text-amber-400' : 'text-green-400' }}">Sisa belum disetor</span>
+                        <span class="{{ $sisaTransfer > 0 ? 'text-amber-400 font-semibold' : 'text-green-400' }}">
+                            Rp {{ number_format($sisaTransfer, 0, ',', '.') }}
+                        </span>
+                    </div>
                 </div>
-                <div class="border-t border-white/5 pt-2 flex justify-between text-sm font-semibold">
+                <div class="border-t border-white/5 pt-1 flex justify-between text-sm font-semibold">
                     <span class="text-white">Total diterima</span>
                     <span class="text-green-400">Rp {{ number_format($totalDiterima, 0, ',', '.') }}</span>
                 </div>
@@ -57,9 +84,16 @@
                         Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}
                     </p>
                     @if($sisaBelumSetor <= 0)
-                        <p class="text-xs text-green-400 mt-1">Semua kas sudah disetor</p>
+                        <p class="text-xs text-green-400 mt-1">✓ Semua kas sudah disetor</p>
                     @else
-                        <p class="text-xs text-amber-400/70 mt-1">Perlu disetor ke rekening sekolah</p>
+                        <div class="mt-2 space-y-1">
+                            @if($sisaTunai > 0)
+                            <p class="text-xs text-amber-400/80">· Tunai belum disetor: Rp {{ number_format($sisaTunai, 0, ',', '.') }}</p>
+                            @endif
+                            @if($sisaTransfer > 0)
+                            <p class="text-xs text-amber-400/80">· Transfer belum disetor: Rp {{ number_format($sisaTransfer, 0, ',', '.') }}</p>
+                            @endif
+                        </div>
                     @endif
                 </div>
             </div>
@@ -209,28 +243,48 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Kas Tunai (Rp)</label>
-                            <input type="number" name="total_tunai" min="0"
-                                value="{{ $tunaiHariIni }}"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
-                                oninput="hitungTotal()">
+                            <label class="text-xs text-gray-400 mb-1 block">
+                                Kas Tunai (Rp)
+                                <span class="text-gray-600">· diterima: Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
+                            </label>
+                            <input type="text" name="total_tunai" id="input-tunai"
+                                value="{{ number_format($tunaiHariIni, 0, ',', '.') }}"
+                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none transition-colors"
+                                oninput="formatRibuan(this); cekKolom(this, {{ $totalTunaiDiterima }}, 'err-tunai'); hitungTotal()"
+                                placeholder="0">
+                            <p id="err-tunai" class="text-xs text-amber-400 mt-1 hidden">
+                                ⚠ Melebihi total tunai diterima (Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }})
+                            </p>
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Transfer (Rp)</label>
-                            <input type="number" name="total_transfer" min="0"
-                                value="{{ $transferHariIni }}"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none"
-                                oninput="hitungTotal()">
+                            <label class="text-xs text-gray-400 mb-1 block">
+                                Transfer (Rp)
+                                <span class="text-gray-600">· dikonfirmasi: Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
+                            </label>
+                            <input type="text" name="total_transfer" id="input-transfer"
+                                value="{{ number_format($transferHariIni, 0, ',', '.') }}"
+                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none transition-colors"
+                                oninput="formatRibuan(this); cekKolom(this, {{ $totalTransferDiterima }}, 'err-transfer'); hitungTotal()"
+                                placeholder="0">
+                            <p id="err-transfer" class="text-xs text-amber-400 mt-1 hidden">
+                                ⚠ Melebihi total transfer dikonfirmasi (Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }})
+                            </p>
                         </div>
                     </div>
                     <div>
                         <label class="text-xs text-gray-400 mb-1 block">Total yang Disetor (Rp) *</label>
-                        <input type="number" name="total_setoran" id="total-setoran" required
-                            min="1" max="{{ $sisaBelumSetor }}"
-                            value="{{ min($tunaiHariIni + $transferHariIni, $sisaBelumSetor) }}"
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                        <p class="text-xs text-gray-600 mt-1">
-                            Maks: Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }} (saldo belum disetor)
+                        <input type="text" name="total_setoran" id="total-setoran" required
+                            value="{{ number_format($sisaBelumSetor, 0, ',', '.') }}"
+                            oninput="formatRibuan(this); cekSaldo(this)"
+                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none transition-colors"
+                            placeholder="0">
+                        <div id="info-saldo" class="mt-1">
+                            <p class="text-xs text-gray-600">
+                                Maks: <strong class="text-white">Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}</strong> (saldo belum disetor)
+                            </p>
+                        </div>
+                        <p id="error-saldo" class="text-xs text-red-400 mt-1 hidden">
+                            ⚠ Melebihi saldo! Maks Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}
                         </p>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
@@ -249,7 +303,7 @@
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-setoran').style.display='none'"
                         class="flex-1 bg-gray-800 text-gray-300 text-sm py-2 rounded-lg">Batal</button>
-                    <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium py-2 rounded-lg">
+                    <button type="submit" id="btn-simpan-setoran" class="flex-1 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium py-2 rounded-lg">
                         Simpan Draft
                     </button>
                 </div>
@@ -262,12 +316,78 @@
         if (e.target === this) this.style.display = 'none';
     });
     var maxSetor = {{ $sisaBelumSetor }};
-    function hitungTotal() {
-        var tunai    = parseInt(document.querySelector('[name=total_tunai]').value) || 0;
-        var transfer = parseInt(document.querySelector('[name=total_transfer]').value) || 0;
-        var total    = Math.min(tunai + transfer, maxSetor);
-        document.getElementById('total-setoran').value = total;
+
+    // Konversi string ribuan (1.000.000) ke integer
+    function parseRibuan(val) {
+        return parseInt((val || '0').replace(/\./g, '')) || 0;
     }
+
+    // Format angka ke string ribuan: 1000000 -> 1.000.000
+    function toRibuan(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    // Auto-format input saat mengetik
+    function formatRibuan(input) {
+        var pos    = input.selectionStart;
+        var oldLen = input.value.length;
+        var raw    = parseRibuan(input.value);
+        if (isNaN(raw) || raw < 0) raw = 0;
+        input.value = raw > 0 ? toRibuan(raw) : '';
+        // Pertahankan posisi cursor
+        var newLen = input.value.length;
+        input.setSelectionRange(pos + (newLen - oldLen), pos + (newLen - oldLen));
+    }
+
+    function cekKolom(input, maxVal, errId) {
+        var val   = parseRibuan(input.value);
+        var errEl = document.getElementById(errId);
+        if (val > maxVal) {
+            errEl.classList.remove('hidden');
+            input.classList.add('border-amber-500');
+            input.classList.remove('border-white/10');
+        } else {
+            errEl.classList.add('hidden');
+            input.classList.remove('border-amber-500');
+            input.classList.add('border-white/10');
+        }
+    }
+
+    function cekSaldo(input) {
+        var val       = parseRibuan(input.value);
+        var errEl     = document.getElementById('error-saldo');
+        var btnSubmit = document.getElementById('btn-simpan-setoran');
+        var inputEl   = document.getElementById('total-setoran');
+
+        if (val > maxSetor) {
+            errEl.classList.remove('hidden');
+            inputEl.classList.add('border-red-500');
+            inputEl.classList.remove('border-white/10');
+            if (btnSubmit) btnSubmit.disabled = true;
+        } else {
+            errEl.classList.add('hidden');
+            inputEl.classList.remove('border-red-500');
+            inputEl.classList.add('border-white/10');
+            if (btnSubmit) btnSubmit.disabled = false;
+        }
+    }
+
+    function hitungTotal() {
+        var tunai    = parseRibuan(document.querySelector('[name=total_tunai]').value);
+        var transfer = parseRibuan(document.querySelector('[name=total_transfer]').value);
+        var total    = Math.min(tunai + transfer, maxSetor);
+        var el       = document.getElementById('total-setoran');
+        el.value     = total > 0 ? toRibuan(total) : '';
+        cekSaldo(el);
+    }
+
+    // Konversi semua input format ribuan ke integer sebelum submit
+    document.querySelector('form').addEventListener('submit', function() {
+        ['total_tunai','total_transfer','total_setoran'].forEach(function(name) {
+            var el = document.querySelector('[name=' + name + ']');
+            if (el) el.value = parseRibuan(el.value);
+        });
+    });
     </script>
 
 </x-simans-layout>

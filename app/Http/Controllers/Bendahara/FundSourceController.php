@@ -88,28 +88,34 @@ class FundSourceController extends Controller
             ->orderByDesc('tanggal_setoran')
             ->paginate(20)->withQueryString();
 
-        // Total SEMUA penerimaan tunai yang sudah dikonfirmasi
+        // Total penerimaan tunai & transfer yang sudah dikonfirmasi
         $totalTunaiDiterima = PaymentTransaction::where('school_id', $school->id)
             ->whereIn('channel', ['cash', 'scholarship_cash'])
             ->where('status', 'approved')
             ->sum('amount');
 
-        // Total SEMUA transfer yang sudah dikonfirmasi
         $totalTransferDiterima = PaymentTransaction::where('school_id', $school->id)
             ->where('channel', 'transfer')
             ->where('status', 'approved')
             ->sum('amount');
 
-        // Total yang sudah pernah disetor ke bank
-        $totalSudahDisetor = KasSetoran::where('school_id', $school->id)
+        // Sudah disetor ke bank — per jenis (tunai & transfer)
+        $setoranDone = KasSetoran::where('school_id', $school->id)
             ->where('status', 'setor')
-            ->sum('total_setoran');
+            ->selectRaw('SUM(total_tunai) as tunai, SUM(total_transfer) as transfer, SUM(total_setoran) as total')
+            ->first();
 
-        // Saldo kas yang BELUM disetor = total diterima - sudah disetor
-        $totalDiterima   = $totalTunaiDiterima + $totalTransferDiterima;
-        $sisaBelumSetor  = max(0, $totalDiterima - $totalSudahDisetor);
+        $sudahSetorTunai     = (int) ($setoranDone->tunai    ?? 0);
+        $sudahSetorTransfer  = (int) ($setoranDone->transfer ?? 0);
+        $totalSudahDisetor   = (int) ($setoranDone->total    ?? 0);
 
-        // Rincian hari ini (untuk referensi saja)
+        // Saldo belum disetor per jenis
+        $sisaTunai     = max(0, $totalTunaiDiterima    - $sudahSetorTunai);
+        $sisaTransfer  = max(0, $totalTransferDiterima - $sudahSetorTransfer);
+        $totalDiterima = $totalTunaiDiterima + $totalTransferDiterima;
+        $sisaBelumSetor = max(0, $totalDiterima - $totalSudahDisetor);
+
+        // Rincian hari ini
         $today = now()->toDateString();
         $tunaiHariIni    = PaymentTransaction::where('school_id', $school->id)
             ->whereIn('channel', ['cash', 'scholarship_cash'])
@@ -124,7 +130,8 @@ class FundSourceController extends Controller
 
         return view('bendahara.fund-sources.setoran', compact(
             'setorans', 'totalTunaiDiterima', 'totalTransferDiterima',
-            'totalSudahDisetor', 'sisaBelumSetor', 'totalDiterima',
+            'sudahSetorTunai', 'sudahSetorTransfer', 'totalSudahDisetor',
+            'sisaTunai', 'sisaTransfer', 'sisaBelumSetor', 'totalDiterima',
             'tunaiHariIni', 'transferHariIni',
             'fundSources', 'academicYears', 'yearId'
         ));
@@ -142,6 +149,23 @@ class FundSourceController extends Controller
             'keterangan'       => 'nullable|string|max:255',
             'no_referensi'     => 'nullable|string|max:50',
         ]);
+
+        // Validasi: total_setoran tidak boleh melebihi saldo belum disetor
+        $school = $this->school();
+        $totalDiterima = PaymentTransaction::where('school_id', $school->id)
+            ->whereIn('channel', ['cash', 'transfer', 'scholarship_cash'])
+            ->where('status', 'approved')
+            ->sum('amount');
+        $totalSudahDisetor = KasSetoran::where('school_id', $school->id)
+            ->where('status', 'setor')
+            ->sum('total_setoran');
+        $sisaBelumSetor = max(0, $totalDiterima - $totalSudahDisetor);
+
+        if ($data['total_setoran'] > $sisaBelumSetor) {
+            return back()
+                ->withErrors(['total_setoran' => 'Jumlah setoran (Rp ' . number_format($data['total_setoran'],0,',','.') . ') melebihi saldo yang tersedia (Rp ' . number_format($sisaBelumSetor,0,',','.') . ').'])
+                ->withInput();
+        }
 
         $school = $this->school();
         $data['school_id']  = $school->id;
