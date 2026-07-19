@@ -601,6 +601,64 @@ class PaymentBillController extends Controller
         return back()->with('success', 'Tagihan berhasil dibebaskan.');
     }
 
+    // Pembebasan sebagian — bendahara bebaskan sisa tagihan yang tidak mampu dibayar
+    public function waivePartial(Request $request, PaymentBill $bill)
+    {
+        $this->authorize($bill);
+
+        $request->validate([
+            'waive_amount' => 'required|integer|min:1',
+            'reason'       => 'required|string|max:255',
+        ]);
+
+        if (in_array($bill->status, ['paid', 'waived'])) {
+            return back()->withErrors(['waive_amount' => 'Tagihan sudah lunas atau sudah dibebaskan.']);
+        }
+
+        $waiveAmount = (int) $request->waive_amount;
+        $remaining   = $bill->amount_remaining;
+
+        if ($waiveAmount > $remaining) {
+            return back()->withErrors(['waive_amount' => 'Jumlah pembebasan tidak boleh melebihi sisa tagihan (Rp ' . number_format($remaining, 0, ',', '.') . ').']);
+        }
+
+        // Kurangi amount_billed dengan jumlah yang dibebaskan
+        $newBilled  = $bill->amount_billed - $waiveAmount;
+        $newStatus  = $newBilled <= $bill->amount_paid ? 'paid' : $bill->status;
+
+        // Jika dibebaskan semua sisa → status waived
+        if ($waiveAmount >= $remaining) {
+            $newStatus = 'waived';
+        }
+
+        $bill->update([
+            'amount_billed'   => $newBilled,
+            'amount_discount' => $bill->amount_discount + $waiveAmount,
+            'status'          => $newStatus,
+        ]);
+
+        // Catat ke audit log
+        PaymentAuditLog::create([
+            'school_id'   => $this->school()->id,
+            'user_id'     => auth()->id(),
+            'action'      => 'bill_waive_partial',
+            'target_type' => 'PaymentBill',
+            'target_id'   => $bill->id,
+            'old_values'  => ['amount_billed' => $bill->amount_billed + $waiveAmount],
+            'new_values'  => [
+                'amount_billed'   => $newBilled,
+                'waive_amount'    => $waiveAmount,
+                'reason'          => $request->reason,
+            ],
+            'ip_address'  => $request->ip(),
+        ]);
+
+        $msg = 'Keringanan Rp ' . number_format($waiveAmount, 0, ',', '.') . ' berhasil diberikan.';
+        if ($newStatus === 'waived') $msg .= ' Tagihan lunas dibebaskan.';
+
+        return back()->with('success', $msg);
+    }
+
     // ── Tambahan ──────────────────────────────────────────────────────────────
 
     public function checkRate(Request $request)

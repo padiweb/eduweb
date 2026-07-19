@@ -271,6 +271,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::delete('/bills/{bill}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'destroy'])->name('bills.destroy');
         Route::post('/bills/{bill}/cash', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'storeCash'])->name('bills.cash');
         Route::patch('/bills/{bill}/waive', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'waive'])->name('bills.waive');
+        Route::patch('/bills/{bill}/waive-partial', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'waivePartial'])->name('bills.waive-partial');
 
         // Transaksi — /index HARUS di atas /{transaction}
         Route::get('/transactions', [\App\Http\Controllers\Bendahara\PaymentTransactionController::class, 'index'])->name('transactions.index');

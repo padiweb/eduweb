@@ -134,6 +134,11 @@
                         class="text-sm bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-1.5 rounded-lg transition-colors">
                         Bayar
                     </button>
+                    <button type="button"
+                        onclick="bukaModalKeringanan({{ $bill->id }}, {{ $remaining }}, '{{ addslashes($bill->paymentType->name) }}')"
+                        class="text-xs bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-lg transition-colors">
+                        Keringanan
+                    </button>
                     <a href="{{ route('bendahara.bills.edit', $bill) }}"
                         class="text-sm text-gray-500 hover:text-white transition-colors">Edit</a>
                     <form method="POST" action="{{ route('bendahara.bills.destroy', $bill) }}"
@@ -394,5 +399,108 @@
     });
     </script>
     @endpush
+
+{{-- MODAL Keringanan / Pembebasan Sebagian --}}
+<div id="modal-keringanan" style="display:none" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+    <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-sm p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="text-white font-semibold">Keringanan Tagihan</h3>
+                <p class="text-xs text-gray-500 mt-0.5" id="ket-keringanan-nama"></p>
+            </div>
+            <button onclick="document.getElementById('modal-keringanan').style.display='none'"
+                class="text-gray-600 hover:text-white">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Info sisa tagihan --}}
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-4">
+            <p class="text-xs text-amber-400 mb-1">Sisa tagihan yang belum dibayar</p>
+            <p class="text-xl font-bold text-white" id="sisa-keringanan"></p>
+            <p class="text-xs text-amber-400/70 mt-1">Jumlah keringanan tidak boleh melebihi sisa ini</p>
+        </div>
+
+        <form id="form-keringanan" method="POST" action="">
+            @csrf @method('PATCH')
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Jumlah yang dibebaskan (Rp) *</label>
+                    <input type="number" name="waive_amount" id="input-waive-amount"
+                        min="1" required
+                        class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-amber-500 focus:outline-none"
+                        placeholder="Contoh: 100000"
+                        oninput="cekWaiveAmount(this)">
+                    <p class="text-xs text-gray-500 mt-1">
+                        Kosongkan tagihan: <button type="button" id="btn-waive-all"
+                            onclick="isiWaiveAll()"
+                            class="text-amber-400 hover:text-amber-300 underline">Bebaskan semua sisa</button>
+                    </p>
+                    <p id="err-waive" class="text-xs text-red-400 mt-1 hidden"></p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 mb-1 block">Alasan / Keterangan *</label>
+                    <textarea name="reason" rows="2" required
+                        placeholder="Contoh: Keringanan karena kondisi ekonomi keluarga..."
+                        class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-amber-500 focus:outline-none resize-none"></textarea>
+                    <p class="text-xs text-gray-600 mt-1">Alasan wajib diisi untuk keperluan audit keuangan</p>
+                </div>
+                <div class="bg-blue-500/5 border border-blue-500/15 rounded-lg px-3 py-2 text-xs text-blue-300">
+                    Jumlah yang dibebaskan <strong>tidak akan masuk ke pemasukan kas sekolah</strong>.
+                    Sisa tagihan akan berkurang sesuai jumlah keringanan.
+                </div>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button type="button"
+                    onclick="document.getElementById('modal-keringanan').style.display='none'"
+                    class="flex-1 bg-gray-800 text-gray-300 text-sm py-2 rounded-lg">Batal</button>
+                <button type="submit" id="btn-submit-keringanan"
+                    class="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium py-2 rounded-lg">
+                    Berikan Keringanan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+var _sisaKeringanan = 0;
+
+function bukaModalKeringanan(billId, sisa, nama) {
+    _sisaKeringanan = sisa;
+    document.getElementById('form-keringanan').action = '/bendahara/bills/' + billId + '/waive-partial';
+    document.getElementById('ket-keringanan-nama').textContent = nama;
+    document.getElementById('sisa-keringanan').textContent = 'Rp ' + sisa.toLocaleString('id-ID');
+    document.getElementById('input-waive-amount').value = '';
+    document.getElementById('input-waive-amount').max = sisa;
+    document.getElementById('err-waive').classList.add('hidden');
+    document.getElementById('modal-keringanan').style.display = 'flex';
+}
+
+function cekWaiveAmount(input) {
+    var val   = parseInt(input.value) || 0;
+    var errEl = document.getElementById('err-waive');
+    var btn   = document.getElementById('btn-submit-keringanan');
+    if (val > _sisaKeringanan) {
+        errEl.textContent = '⚠ Melebihi sisa tagihan (Rp ' + _sisaKeringanan.toLocaleString('id-ID') + ')';
+        errEl.classList.remove('hidden');
+        input.value = _sisaKeringanan;
+        btn.disabled = false;
+    } else {
+        errEl.classList.add('hidden');
+        btn.disabled = false;
+    }
+}
+
+function isiWaiveAll() {
+    document.getElementById('input-waive-amount').value = _sisaKeringanan;
+}
+
+document.getElementById('modal-keringanan').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+});
+</script>
 
 </x-simans-layout>
