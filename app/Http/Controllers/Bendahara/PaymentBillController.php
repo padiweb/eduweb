@@ -349,48 +349,19 @@ class PaymentBillController extends Controller
 
         $academicYears = AcademicYear::where('school_id', $school->id)->orderByDesc('is_active')->get();
 
-        // Beasiswa yang masih bisa dipakai:
-        // - Belum expired
-        // - Untuk beasiswa WAIVER (potongan): hanya tampil jika ada tagihan yang belum lunas yang sesuai
-        // - Untuk beasiswa CASH (dana): bisa dipakai selama ada tagihan yang belum lunas
-        $allDiscounts = StudentDiscount::where('user_id', $student->id)
+        // Dropdown beasiswa di modal bayar HANYA untuk beasiswa CASH (dana)
+        // Beasiswa WAIVER (potongan) sudah otomatis dikurangkan dari amount_billed saat tagihan dibuat
+        // sehingga tidak perlu muncul di sini
+        $discounts = StudentDiscount::where('user_id', $student->id)
             ->where('school_id', $school->id)
             ->where('valid_from', '<=', now()->toDateString())
             ->where(fn($q) => $q->whereNull('valid_until')->orWhere('valid_until', '>=', now()->toDateString()))
+            ->where(fn($q) => $q->where('scholarship_type', 'cash')
+                                ->orWhereNull('scholarship_type')) // data lama tanpa tipe = cash
             ->with('paymentType')
-            ->get();
-
-        // Cek beasiswa yang sudah pernah dipakai di tagihan siswa ini
-        $usedDiscountIds = PaymentTransaction::whereIn('payment_bill_id', $bills->pluck('id'))
-            ->where('status', 'approved')
-            ->whereIn('channel', ['scholarship_waiver', 'scholarship_cash', 'scholarship'])
-            ->pluck('cashier_notes')
-            ->map(fn($n) => str_replace('Beasiswa: ', '', $n ?? ''))
-            ->toArray();
-
-        // Filter: beasiswa waiver hanya tampil jika belum pernah dipakai di tagihan ini
-        // Beasiswa cash bisa dipakai berulang selama nominalnya lebih besar dari tagihan
-        $discounts = $allDiscounts->filter(function($disc) use ($usedDiscountIds, $bills) {
-            $scholarshipType = $disc->scholarship_type ?? 'cash';
-
-            if ($scholarshipType === 'waiver') {
-                // Potongan: cek apakah sudah pernah dipakai untuk tagihan yang sama jenisnya
-                // Sudah terpakai jika nama beasiswa ini ada di riwayat transaksi
-                $alreadyUsed = in_array($disc->name, $usedDiscountIds);
-                if ($alreadyUsed) return false;
-
-                // Juga tidak tampil jika tidak ada tagihan yang belum lunas untuk jenis ini
-                $hasUnpaidBill = $bills->filter(function($bill) use ($disc) {
-                    if ($bill->amount_remaining <= 0) return false;
-                    if ($disc->payment_type_id && $bill->payment_type_id !== $disc->payment_type_id) return false;
-                    return true;
-                })->isNotEmpty();
-                return $hasUnpaidBill;
-            }
-
-            // Cash: tampil selama ada tagihan yang belum lunas
-            return $bills->where('amount_remaining', '>', 0)->isNotEmpty();
-        })->values();
+            ->get()
+            ->filter(fn($d) => $bills->where('amount_remaining', '>', 0)->isNotEmpty())
+            ->values();
 
         $totalBilled    = $bills->sum('amount_billed');
         $totalPaid      = $bills->sum('amount_paid');

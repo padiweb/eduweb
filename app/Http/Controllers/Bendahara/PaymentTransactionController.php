@@ -7,6 +7,7 @@ use App\Models\PaymentAuditLog;
 use App\Models\PaymentInstallment;
 use App\Models\PaymentTransaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentTransactionController extends Controller
 {
@@ -108,9 +109,28 @@ class PaymentTransactionController extends Controller
         if (!$isOwner && !$isFinance) abort(403);
         $this->authorize($transaction);
 
-        if (!$transaction->receipt_path) abort(404);
+        if (!$transaction->receipt_path) {
+            abort(404, 'Tidak ada bukti transfer.');
+        }
 
-        return response()->file(storage_path('app/private/' . $transaction->receipt_path));
+        // Coba via disk 'private' dulu (cara yang benar)
+        if (Storage::disk('private')->exists($transaction->receipt_path)) {
+            $fullPath = Storage::disk('private')->path($transaction->receipt_path);
+            return response()->file($fullPath);
+        }
+
+        // Fallback: coba tanpa prefix (path lama mungkin sudah include 'payment-receipts/...')
+        $fallbackPaths = [
+            storage_path('app/private/' . $transaction->receipt_path),
+            storage_path('app/' . $transaction->receipt_path),
+        ];
+        foreach ($fallbackPaths as $path) {
+            if (file_exists($path)) {
+                return response()->file($path);
+            }
+        }
+
+        abort(404, 'File bukti transfer tidak ditemukan di server. Path: ' . $transaction->receipt_path);
     }
 
     private function authorize(PaymentTransaction $transaction)
