@@ -194,7 +194,7 @@
 
     {{-- MODAL Catat Setoran --}}
     <div id="modal-setoran" style="display:none" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6">
+        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-white font-semibold">Catat Setoran Kas</h3>
                 <button onclick="document.getElementById('modal-setoran').style.display='none'" class="text-gray-600 hover:text-white">

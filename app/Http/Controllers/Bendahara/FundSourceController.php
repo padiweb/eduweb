@@ -99,21 +99,24 @@ class FundSourceController extends Controller
             ->where('status', 'approved')
             ->sum('amount');
 
-        // Sudah disetor ke bank — per jenis (tunai & transfer)
+        // Hitung sudah disetor per jenis dari kolom total_tunai & total_transfer
         $setoranDone = KasSetoran::where('school_id', $school->id)
             ->where('status', 'setor')
             ->selectRaw('SUM(total_tunai) as tunai, SUM(total_transfer) as transfer, SUM(total_setoran) as total')
             ->first();
 
-        $sudahSetorTunai     = (int) ($setoranDone->tunai    ?? 0);
-        $sudahSetorTransfer  = (int) ($setoranDone->transfer ?? 0);
-        $totalSudahDisetor   = (int) ($setoranDone->total    ?? 0);
+        $sudahSetorTunai    = (int) ($setoranDone->tunai    ?? 0);
+        $sudahSetorTransfer = (int) ($setoranDone->transfer ?? 0);
+        $totalSudahDisetor  = (int) ($setoranDone->total    ?? 0);
+        $totalDiterima      = $totalTunaiDiterima + $totalTransferDiterima;
 
-        // Saldo belum disetor per jenis
-        $sisaTunai     = max(0, $totalTunaiDiterima    - $sudahSetorTunai);
-        $sisaTransfer  = max(0, $totalTransferDiterima - $sudahSetorTransfer);
-        $totalDiterima = $totalTunaiDiterima + $totalTransferDiterima;
-        $sisaBelumSetor = max(0, $totalDiterima - $totalSudahDisetor);
+        // Sisa per jenis = diterima - sudah disetor per jenis
+        $sisaTunai    = max(0, $totalTunaiDiterima    - $sudahSetorTunai);
+        $sisaTransfer = max(0, $totalTransferDiterima - $sudahSetorTransfer);
+
+        // Saldo belum disetor = sisa tunai + sisa transfer
+        // (bukan totalDiterima - totalSudahDisetor, karena total_setoran bisa berbeda dari tunai+transfer)
+        $sisaBelumSetor = $sisaTunai + $sisaTransfer;
 
         // Rincian hari ini
         $today = now()->toDateString();
