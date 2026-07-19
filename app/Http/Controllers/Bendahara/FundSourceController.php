@@ -142,6 +142,13 @@ class FundSourceController extends Controller
 
     public function setoranStore(Request $request)
     {
+        // Strip titik ribuan sebelum validasi
+        $request->merge([
+            'total_tunai'    => (int) str_replace('.', '', $request->total_tunai    ?? '0'),
+            'total_transfer' => (int) str_replace('.', '', $request->total_transfer ?? '0'),
+            'total_setoran'  => (int) str_replace('.', '', $request->total_setoran  ?? '0'),
+        ]);
+
         $data = $request->validate([
             'fund_source_id'   => 'required|exists:fund_sources,id',
             'academic_year_id' => 'required|exists:academic_years,id',
@@ -155,14 +162,25 @@ class FundSourceController extends Controller
 
         // Validasi: total_setoran tidak boleh melebihi saldo belum disetor
         $school = $this->school();
-        $totalDiterima = PaymentTransaction::where('school_id', $school->id)
-            ->whereIn('channel', ['cash', 'transfer', 'scholarship_cash'])
-            ->where('status', 'approved')
-            ->sum('amount');
-        $totalSudahDisetor = KasSetoran::where('school_id', $school->id)
+
+        // Hitung sisa per jenis — sama dengan logika di setoranIndex
+        $totalTunaiDiterima = PaymentTransaction::where('school_id', $school->id)
+            ->whereIn('channel', ['cash', 'scholarship_cash'])
+            ->where('status', 'approved')->sum('amount');
+        $totalTransferDiterima = PaymentTransaction::where('school_id', $school->id)
+            ->where('channel', 'transfer')
+            ->where('status', 'approved')->sum('amount');
+
+        $setoranDone = KasSetoran::where('school_id', $school->id)
             ->where('status', 'setor')
-            ->sum('total_setoran');
-        $sisaBelumSetor = max(0, $totalDiterima - $totalSudahDisetor);
+            ->selectRaw('SUM(total_tunai) as tunai, SUM(total_transfer) as transfer')
+            ->first();
+
+        $sudahSetorTunai    = (int) ($setoranDone->tunai    ?? 0);
+        $sudahSetorTransfer = (int) ($setoranDone->transfer ?? 0);
+        $sisaTunai          = max(0, $totalTunaiDiterima    - $sudahSetorTunai);
+        $sisaTransfer       = max(0, $totalTransferDiterima - $sudahSetorTransfer);
+        $sisaBelumSetor     = $sisaTunai + $sisaTransfer;
 
         if ($data['total_setoran'] > $sisaBelumSetor) {
             return back()

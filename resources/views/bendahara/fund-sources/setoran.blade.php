@@ -242,41 +242,74 @@
                         </select>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
+                        {{-- Kas Tunai --}}
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">
-                                Kas Tunai (Rp)
-                                <span class="text-gray-600">· diterima: Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
-                            </label>
+                            <label class="text-xs text-gray-400 mb-1 block">Kas Tunai (Rp)</label>
+                            <div class="text-xs mb-1.5 space-y-0.5">
+                                <div class="flex justify-between text-gray-500">
+                                    <span>Diterima</span>
+                                    <span>Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between text-gray-600">
+                                    <span>Sudah disetor</span>
+                                    <span>- Rp {{ number_format($sudahSetorTunai, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between font-semibold {{ $sisaTunai > 0 ? 'text-amber-400' : 'text-green-400' }}">
+                                    <span>Sisa</span>
+                                    <span>Rp {{ number_format($sisaTunai, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
                             <input type="text" name="total_tunai" id="input-tunai"
-                                value="{{ number_format($tunaiHariIni, 0, ',', '.') }}"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none transition-colors"
-                                oninput="formatRibuan(this); cekKolom(this, {{ $totalTunaiDiterima }}, 'err-tunai'); hitungTotal()"
+                                value="{{ $sisaTunai > 0 ? number_format($sisaTunai, 0, ',', '.') : '0' }}"
+                                @if($sisaTunai <= 0) readonly @endif
+                                class="w-full bg-gray-800 border border-white/10 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTunai <= 0 ? 'text-gray-600 cursor-not-allowed opacity-50' : 'text-white focus:border-purple-500' }}"
+                                oninput="inputKas(this, maxTunai, 'err-tunai')"
                                 placeholder="0">
-                            <p id="err-tunai" class="text-xs text-amber-400 mt-1 hidden">
-                                ⚠ Melebihi total tunai diterima (Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }})
+                            <p id="err-tunai" class="text-xs text-red-400 mt-1 hidden">
+                                ⚠ Maks Rp {{ number_format($sisaTunai, 0, ',', '.') }}
                             </p>
+                            @if($sisaTunai <= 0)
+                                <p class="text-xs text-green-400 mt-1">✓ Sudah disetor semua</p>
+                            @endif
                         </div>
+
+                        {{-- Transfer --}}
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">
-                                Transfer (Rp)
-                                <span class="text-gray-600">· dikonfirmasi: Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
-                            </label>
+                            <label class="text-xs text-gray-400 mb-1 block">Transfer (Rp)</label>
+                            <div class="text-xs mb-1.5 space-y-0.5">
+                                <div class="flex justify-between text-gray-500">
+                                    <span>Dikonfirmasi</span>
+                                    <span>Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between text-gray-600">
+                                    <span>Sudah disetor</span>
+                                    <span>- Rp {{ number_format($sudahSetorTransfer, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="flex justify-between font-semibold {{ $sisaTransfer > 0 ? 'text-amber-400' : 'text-green-400' }}">
+                                    <span>Sisa</span>
+                                    <span>Rp {{ number_format($sisaTransfer, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
                             <input type="text" name="total_transfer" id="input-transfer"
-                                value="{{ number_format($transferHariIni, 0, ',', '.') }}"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none transition-colors"
-                                oninput="formatRibuan(this); cekKolom(this, {{ $totalTransferDiterima }}, 'err-transfer'); hitungTotal()"
+                                value="{{ $sisaTransfer > 0 ? number_format($sisaTransfer, 0, ',', '.') : '0' }}"
+                                @if($sisaTransfer <= 0) readonly @endif
+                                class="w-full bg-gray-800 border border-white/10 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTransfer <= 0 ? 'text-gray-600 cursor-not-allowed opacity-50' : 'text-white focus:border-purple-500' }}"
+                                oninput="inputKas(this, maxTransfer, 'err-transfer')"
                                 placeholder="0">
-                            <p id="err-transfer" class="text-xs text-amber-400 mt-1 hidden">
-                                ⚠ Melebihi total transfer dikonfirmasi (Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }})
+                            <p id="err-transfer" class="text-xs text-red-400 mt-1 hidden">
+                                ⚠ Maks Rp {{ number_format($sisaTransfer, 0, ',', '.') }}
                             </p>
+                            @if($sisaTransfer <= 0)
+                                <p class="text-xs text-green-400 mt-1">✓ Sudah disetor semua</p>
+                            @endif
                         </div>
                     </div>
                     <div>
                         <label class="text-xs text-gray-400 mb-1 block">Total yang Disetor (Rp) *</label>
                         <input type="text" name="total_setoran" id="total-setoran" required
                             value="{{ number_format($sisaBelumSetor, 0, ',', '.') }}"
-                            oninput="formatRibuan(this); cekSaldo(this)"
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none transition-colors"
+                            readonly
+                            class="w-full bg-gray-800 border border-white/5 text-white text-sm rounded-lg px-3 py-2 cursor-not-allowed"
                             placeholder="0">
                         <div id="info-saldo" class="mt-1">
                             <p class="text-xs text-gray-600">
@@ -315,77 +348,58 @@
     document.getElementById('modal-setoran').addEventListener('click', function(e) {
         if (e.target === this) this.style.display = 'none';
     });
-    var maxSetor = {{ $sisaBelumSetor }};
 
-    // Konversi string ribuan (1.000.000) ke integer
-    function parseRibuan(val) {
-        return parseInt((val || '0').replace(/\./g, '')) || 0;
-    }
+    var maxSetor    = {{ $sisaBelumSetor }};
+    var maxTunai    = {{ $sisaTunai }};
+    var maxTransfer = {{ $sisaTransfer }};
 
-    // Format angka ke string ribuan: 1000000 -> 1.000.000
     function toRibuan(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return parseInt(num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
 
-    // Auto-format input saat mengetik
-    function formatRibuan(input) {
-        var pos    = input.selectionStart;
-        var oldLen = input.value.length;
-        var raw    = parseRibuan(input.value);
-        if (isNaN(raw) || raw < 0) raw = 0;
-        input.value = raw > 0 ? toRibuan(raw) : '';
-        // Pertahankan posisi cursor
-        var newLen = input.value.length;
-        input.setSelectionRange(pos + (newLen - oldLen), pos + (newLen - oldLen));
+    function dariRibuan(str) {
+        return parseInt((str || '0').replace(/\./g, '')) || 0;
     }
 
-    function cekKolom(input, maxVal, errId) {
-        var val   = parseRibuan(input.value);
-        var errEl = document.getElementById(errId);
+    // Input tunai/transfer: format + cap + hitung total otomatis
+    function inputKas(input, maxVal, errId) {
+        var raw    = input.value.replace(/[^0-9]/g, '');
+        var val    = parseInt(raw) || 0;
+        var errEl  = document.getElementById(errId);
+        var capped = false;
+
         if (val > maxVal) {
-            errEl.classList.remove('hidden');
-            input.classList.add('border-amber-500');
-            input.classList.remove('border-white/10');
-        } else {
-            errEl.classList.add('hidden');
-            input.classList.remove('border-amber-500');
-            input.classList.add('border-white/10');
+            val    = maxVal;
+            capped = true;
         }
-    }
 
-    function cekSaldo(input) {
-        var val       = parseRibuan(input.value);
-        var errEl     = document.getElementById('error-saldo');
-        var btnSubmit = document.getElementById('btn-simpan-setoran');
-        var inputEl   = document.getElementById('total-setoran');
+        input.value = toRibuan(val);
 
-        if (val > maxSetor) {
-            errEl.classList.remove('hidden');
-            inputEl.classList.add('border-red-500');
-            inputEl.classList.remove('border-white/10');
-            if (btnSubmit) btnSubmit.disabled = true;
-        } else {
-            errEl.classList.add('hidden');
-            inputEl.classList.remove('border-red-500');
-            inputEl.classList.add('border-white/10');
-            if (btnSubmit) btnSubmit.disabled = false;
+        if (errEl) {
+            if (capped) {
+                errEl.classList.remove('hidden');
+                input.style.borderColor = '#ef4444';
+                setTimeout(function() {
+                    errEl.classList.add('hidden');
+                    input.style.borderColor = '';
+                }, 2500);
+            } else {
+                errEl.classList.add('hidden');
+                input.style.borderColor = '';
+            }
         }
+
+        // Hitung total otomatis
+        var tunai    = Math.min(dariRibuan(document.querySelector('[name=total_tunai]').value), maxTunai);
+        var transfer = Math.min(dariRibuan(document.querySelector('[name=total_transfer]').value), maxTransfer);
+        document.getElementById('total-setoran').value = toRibuan(tunai + transfer);
     }
 
-    function hitungTotal() {
-        var tunai    = parseRibuan(document.querySelector('[name=total_tunai]').value);
-        var transfer = parseRibuan(document.querySelector('[name=total_transfer]').value);
-        var total    = Math.min(tunai + transfer, maxSetor);
-        var el       = document.getElementById('total-setoran');
-        el.value     = total > 0 ? toRibuan(total) : '';
-        cekSaldo(el);
-    }
-
-    // Konversi semua input format ribuan ke integer sebelum submit
+    // Sebelum submit: strip titik ribuan
     document.querySelector('form').addEventListener('submit', function() {
         ['total_tunai','total_transfer','total_setoran'].forEach(function(name) {
             var el = document.querySelector('[name=' + name + ']');
-            if (el) el.value = parseRibuan(el.value);
+            if (el) el.value = dariRibuan(el.value);
         });
     });
     </script>
