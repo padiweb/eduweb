@@ -88,7 +88,12 @@
                             <p class="text-xs text-red-400">Sisa Rp {{ number_format($remaining, 0, ',', '.') }}</p>
                         @endif
                         @if($bill->amount_discount > 0)
-                            <p class="text-xs text-blue-400">Disc Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
+                            <p class="text-xs text-blue-400">
+                                Beasiswa potong: Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}
+                                @if($bill->amount_base > 0 && $bill->amount_base !== $bill->amount_billed)
+                                    (dari Rp {{ number_format($bill->amount_base, 0, ',', '.') }})
+                                @endif
+                            </p>
                         @endif
                     </div>
                 </div>

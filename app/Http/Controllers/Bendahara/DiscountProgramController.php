@@ -102,12 +102,21 @@ class DiscountProgramController extends Controller
             'name'             => 'required|string|max:100',
             'code'             => 'nullable|string|max:30',
             'default_value'    => 'required|integer|min:0',
-            'scholarship_type' => 'sometimes|in:cash,waiver',
+            'scholarship_type' => 'required|in:cash,waiver',
             'valid_until'      => 'nullable|date',
             'description'      => 'nullable|string|max:255',
         ]);
         $program->update($data);
-        return back()->with('success', 'Program diperbarui.');
+
+        // Jika waiver, langsung update tagihan yang sudah ada
+        $updated = 0;
+        if ($data['scholarship_type'] === 'waiver') {
+            $updated = $this->updateBillsForWaiver($program);
+        }
+
+        $msg = 'Program diperbarui.';
+        if ($updated > 0) $msg .= " $updated tagihan diperbarui.";
+        return back()->with('success', $msg);
     }
 
     public function toggle(DiscountProgram $program)
@@ -180,9 +189,12 @@ class DiscountProgramController extends Controller
     {
         if ($program->school_id !== $this->school()->id) abort(403);
 
+        // Refresh dari DB untuk pastikan data terbaru (bukan cache)
+        $program->refresh();
         $program->load('members');
-        $applied    = 0;
-        $hasColumn  = Schema::hasColumn('student_discounts', 'discount_program_id');
+
+        $applied   = 0;
+        $hasColumn = Schema::hasColumn('student_discounts', 'discount_program_id');
 
         foreach ($program->members as $member) {
             $value = $member->override_value ?? $program->default_value;
@@ -194,12 +206,14 @@ class DiscountProgramController extends Controller
                 'name'             => $program->name,
             ];
 
-            // Tambah payment_type_id ke unique key jika ada
             if ($program->payment_type_id) {
                 $uniqueKey['payment_type_id'] = $program->payment_type_id;
             }
+            if ($hasColumn) {
+                $uniqueKey['discount_program_id'] = $program->id;
+            }
 
-            $fillData = [
+            StudentDiscount::updateOrCreate($uniqueKey, [
                 'discount_type'    => $program->discount_type,
                 'discount_value'   => $value,
                 'scholarship_type' => $program->scholarship_type ?? 'cash',
@@ -207,59 +221,66 @@ class DiscountProgramController extends Controller
                 'valid_until'      => $program->valid_until,
                 'notes'            => $member->notes,
                 'created_by'       => auth()->id(),
-            ];
-
-            // Tambah discount_program_id jika kolom sudah ada
-            if ($hasColumn) {
-                $uniqueKey['discount_program_id'] = $program->id;
-            }
-
-            StudentDiscount::updateOrCreate($uniqueKey, $fillData);
+            ]);
             $applied++;
         }
 
-        // Jika beasiswa WAIVER: update tagihan yang sudah ada untuk siswa ini
+        // Jika WAIVER: update tagihan yang sudah ada
         $billsUpdated = 0;
         if (($program->scholarship_type ?? 'cash') === 'waiver') {
-            foreach ($program->members as $member) {
-                $value = $member->override_value ?? $program->default_value;
-
-                // Cari tagihan siswa yang belum lunas di tahun ajaran ini
-                $bills = PaymentBill::where('school_id', $this->school()->id)
-                    ->where('user_id', $member->user_id)
-                    ->where('academic_year_id', $program->academic_year_id)
-                    ->where('status', '!=', 'paid')
-                    ->when($program->payment_type_id, fn($q) => $q->where('payment_type_id', $program->payment_type_id))
-                    ->where('amount_paid', 0) // Hanya update yang belum ada pembayaran sama sekali
-                    ->get();
-
-                foreach ($bills as $bill) {
-                    // Hitung potongan
-                    if ($program->discount_type === 'percent') {
-                        $discountAmt = (int) round($bill->amount_base * $value / 100);
-                    } else {
-                        $discountAmt = min((int) $value, $bill->amount_base);
-                    }
-
-                    $newBilled = max(0, $bill->amount_base - $discountAmt);
-
-                    // Update tagihan
-                    $bill->update([
-                        'amount_discount' => $discountAmt,
-                        'amount_billed'   => $newBilled,
-                        'status'          => $newBilled <= 0 ? 'waived' : $bill->status,
-                    ]);
-                    $billsUpdated++;
-                }
-            }
+            $billsUpdated = $this->updateBillsForWaiver($program);
         }
 
         $msg = "Beasiswa diterapkan ke $applied siswa.";
-        if ($billsUpdated > 0) {
-            $msg .= " $billsUpdated tagihan diperbarui otomatis.";
-        }
+        if ($billsUpdated > 0) $msg .= " $billsUpdated tagihan diperbarui.";
 
         return back()->with('success', $msg);
+    }
+
+    private function updateBillsForWaiver(DiscountProgram $program): int
+    {
+        $program->load('members');
+        $updated = 0;
+
+        foreach ($program->members as $member) {
+            $value = $member->override_value ?? $program->default_value;
+
+            // Cari SEMUA tagihan siswa yang belum ada pembayaran
+            $bills = PaymentBill::where('school_id', $program->school_id)
+                ->where('user_id', $member->user_id)
+                ->where('academic_year_id', $program->academic_year_id)
+                ->whereIn('status', ['unpaid', 'partial'])
+                ->where('amount_paid', 0)
+                ->when($program->payment_type_id,
+                    fn($q) => $q->where('payment_type_id', $program->payment_type_id))
+                ->get();
+
+            foreach ($bills as $bill) {
+                // Gunakan amount_billed sebagai base jika amount_base = 0
+                $base = ($bill->amount_base > 0) ? $bill->amount_base : $bill->amount_billed;
+
+                if ($base <= 0) continue; // skip tagihan kosong
+
+                // Hitung potongan
+                if ($program->discount_type === 'percent') {
+                    $discountAmt = (int) round($base * $value / 100);
+                } else {
+                    $discountAmt = min((int) $value, $base);
+                }
+
+                $newBilled = max(0, $base - $discountAmt);
+
+                $bill->update([
+                    'amount_base'     => $base,          // pastikan base terisi
+                    'amount_discount' => $discountAmt,
+                    'amount_billed'   => $newBilled,
+                    'status'          => $newBilled <= 0 ? 'waived' : 'unpaid',
+                ]);
+                $updated++;
+            }
+        }
+
+        return $updated;
     }
 
     public function searchStudents(Request $request, DiscountProgram $program)
