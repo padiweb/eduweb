@@ -13,6 +13,16 @@ class LocationController extends Controller
 {
     private function school() { return Auth::user()->school; }
 
+    /** Bersihkan field jam — ubah string kosong jadi null */
+    private function cleanTimeFields(Request $request): void
+    {
+        foreach (['checkin_time', 'checkout_time', 'checkin_late_after'] as $field) {
+            if ($request->input($field) === '' || $request->input($field) === null) {
+                $request->merge([$field => null]);
+            }
+        }
+    }
+
     public function index(Request $request)
     {
         $school    = $this->school();
@@ -38,8 +48,10 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
+        $this->cleanTimeFields($request);
         $school = $this->school();
-        $data   = $request->validate([
+
+        $data = $request->validate([
             'period_id'              => 'required|exists:prakerin_periods,id',
             'name'                   => 'required|string|max:150',
             'address'                => 'nullable|string',
@@ -48,9 +60,9 @@ class LocationController extends Controller
             'radius_meters'          => 'required|integer|min:50|max:2000',
             'field_supervisor_name'  => 'nullable|string|max:100',
             'field_supervisor_phone' => 'nullable|string|max:20',
-            'checkin_time'           => 'nullable|date_format:H:i',
-            'checkout_time'          => 'nullable|date_format:H:i',
-            'checkin_late_after'     => 'nullable|date_format:H:i',
+            'checkin_time'           => 'nullable|string|max:5',
+            'checkout_time'          => 'nullable|string|max:5',
+            'checkin_late_after'     => 'nullable|string|max:5',
             'teacher_ids'            => 'nullable|array',
             'teacher_ids.*'          => 'exists:users,id',
         ]);
@@ -70,6 +82,8 @@ class LocationController extends Controller
 
     public function update(Request $request, PrakerinLocation $location)
     {
+        $this->cleanTimeFields($request);
+
         $data = $request->validate([
             'name'                   => 'required|string|max:150',
             'address'                => 'nullable|string',
@@ -78,9 +92,9 @@ class LocationController extends Controller
             'radius_meters'          => 'required|integer|min:50|max:2000',
             'field_supervisor_name'  => 'nullable|string|max:100',
             'field_supervisor_phone' => 'nullable|string|max:20',
-            'checkin_time'           => 'nullable|date_format:H:i',
-            'checkout_time'          => 'nullable|date_format:H:i',
-            'checkin_late_after'     => 'nullable|date_format:H:i',
+            'checkin_time'           => 'nullable|string|max:5',
+            'checkout_time'          => 'nullable|string|max:5',
+            'checkin_late_after'     => 'nullable|string|max:5',
             'teacher_ids'            => 'nullable|array',
             'teacher_ids.*'          => 'exists:users,id',
             'is_active'              => 'boolean',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Prakerin;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\PrakerinPeriod;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,11 +16,17 @@ class PeriodController extends Controller
     public function index()
     {
         $school  = $this->school();
-        $periods = PrakerinPeriod::with('academicYear')
+        $periods = PrakerinPeriod::with(['academicYear', 'coordinators'])
             ->where('school_id', $school->id)
             ->orderByDesc('start_date')
             ->get();
-        return view('admin.prakerin.periods.index', compact('periods'));
+
+        // Semua guru yang bisa jadi koordinator
+        $teachers = User::where('school_id', $school->id)
+            ->whereIn('role', ['guru', 'wali_kelas', 'admin', 'kesiswaan'])
+            ->orderBy('name')->get();
+
+        return view('admin.prakerin.periods.index', compact('periods', 'teachers'));
     }
 
     public function store(Request $request)
@@ -31,24 +38,42 @@ class PeriodController extends Controller
             'start_date'       => 'required|date',
             'end_date'         => 'required|date|after_or_equal:start_date',
             'description'      => 'nullable|string',
+            'coordinator_ids'  => 'nullable|array',
+            'coordinator_ids.*'=> 'exists:users,id',
         ]);
+
+        $coordinatorIds = $data['coordinator_ids'] ?? [];
+        unset($data['coordinator_ids']);
         $data['school_id'] = $school->id;
         $data['is_active']  = true;
-        PrakerinPeriod::create($data);
+
+        $period = PrakerinPeriod::create($data);
+        if ($coordinatorIds) {
+            $period->coordinators()->sync($coordinatorIds);
+        }
+
         return back()->with('success', 'Periode prakerin berhasil dibuat.');
     }
 
     public function update(Request $request, PrakerinPeriod $period)
     {
         $data = $request->validate([
-            'name'        => 'required|string|max:100',
-            'start_date'  => 'required|date',
-            'end_date'    => 'required|date|after_or_equal:start_date',
-            'description' => 'nullable|string',
-            'is_active'   => 'boolean',
+            'name'             => 'required|string|max:100',
+            'start_date'       => 'required|date',
+            'end_date'         => 'required|date|after_or_equal:start_date',
+            'description'      => 'nullable|string',
+            'is_active'        => 'boolean',
+            'coordinator_ids'  => 'nullable|array',
+            'coordinator_ids.*'=> 'exists:users,id',
         ]);
+
+        $coordinatorIds = $data['coordinator_ids'] ?? [];
+        unset($data['coordinator_ids']);
         $data['is_active'] = $request->boolean('is_active');
+
         $period->update($data);
+        $period->coordinators()->sync($coordinatorIds);
+
         return back()->with('success', 'Periode diperbarui.');
     }
 
@@ -59,5 +84,16 @@ class PeriodController extends Controller
         }
         $period->delete();
         return back()->with('success', 'Periode dihapus.');
+    }
+
+    /** Sync koordinator tanpa reload halaman (dari form koordinator di card periode) */
+    public function syncCoordinators(Request $request, PrakerinPeriod $period)
+    {
+        $request->validate([
+            'coordinator_ids'   => 'nullable|array',
+            'coordinator_ids.*' => 'exists:users,id',
+        ]);
+        $period->coordinators()->sync($request->coordinator_ids ?? []);
+        return back()->with('success', 'Koordinator prakerin diperbarui.');
     }
 }

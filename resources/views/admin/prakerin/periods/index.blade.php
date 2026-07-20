@@ -88,10 +88,27 @@
                                 <span class="text-xs text-gray-500">
                                     <span class="text-white font-medium">{{ $period->placements()->count() }}</span> Siswa
                                 </span>
+                                <span class="text-xs text-gray-500">
+                                    <span class="text-white font-medium">{{ $period->coordinators->count() }}</span> Koordinator
+                                </span>
                             </div>
+                            {{-- Koordinator badges --}}
+                            @if ($period->coordinators->count() > 0)
+                                <div class="flex flex-wrap gap-1 mt-2">
+                                    @foreach ($period->coordinators as $coord)
+                                        <span class="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs rounded-lg">
+                                            {{ $coord->name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <button onclick="openEdit({{ $period->id }}, '{{ addslashes($period->name) }}', '{{ $period->start_date->format('Y-m-d') }}', '{{ $period->end_date->format('Y-m-d') }}', '{{ addslashes($period->description ?? '') }}', {{ $period->is_active ? 'true' : 'false' }})"
+                            <button onclick="openKoordinator({{ $period->id }}, {{ json_encode($period->coordinators->pluck('id')) }})"
+                                    class="px-3 py-1.5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 text-blue-400 text-xs rounded-lg transition-colors">
+                                Koordinator
+                            </button>
+                            <button onclick="openEdit({{ $period->id }}, '{{ addslashes($period->name) }}', '{{ $period->start_date->format('Y-m-d') }}', '{{ $period->end_date->format('Y-m-d') }}', '{{ addslashes($period->description ?? '') }}', {{ $period->is_active ? 'true' : 'false' }}, {{ json_encode($period->coordinators->pluck('id')) }})"
                                     class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 text-xs rounded-lg transition-colors">
                                 Edit
                             </button>
@@ -147,6 +164,19 @@
                     <textarea name="description" rows="2" placeholder="Catatan atau keterangan periode"
                               class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none placeholder-gray-600"></textarea>
                 </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2">Koordinator Prakerin (bisa lebih dari 1)</label>
+                    <div class="space-y-1 max-h-36 overflow-y-auto pr-1">
+                        @foreach ($teachers as $t)
+                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+                                <input type="checkbox" name="coordinator_ids[]" value="{{ $t->id }}"
+                                       class="w-4 h-4 rounded accent-blue-500">
+                                <span class="text-sm text-gray-300">{{ $t->name }}</span>
+                                <span class="text-xs text-gray-600">{{ ucfirst(str_replace('_', ' ', $t->role)) }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-tambah').classList.add('hidden')"
                             class="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 text-sm rounded-xl transition-colors">
@@ -190,6 +220,19 @@
                     <input type="checkbox" id="edit-active" name="is_active" value="1" class="w-4 h-4 rounded accent-emerald-500">
                     <span class="text-sm text-gray-300">Aktif</span>
                 </label>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2">Koordinator Prakerin</label>
+                    <div id="edit-coordinators" class="space-y-1 max-h-36 overflow-y-auto pr-1">
+                        @foreach ($teachers as $t)
+                            <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-white/5">
+                                <input type="checkbox" name="coordinator_ids[]" value="{{ $t->id }}"
+                                       class="edit-coord-cb w-4 h-4 rounded accent-blue-500">
+                                <span class="text-sm text-gray-300">{{ $t->name }}</span>
+                                <span class="text-xs text-gray-600">{{ ucfirst(str_replace('_', ' ', $t->role)) }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
                             class="flex-1 py-2.5 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 text-sm rounded-xl transition-colors">
@@ -203,18 +246,63 @@
         </div>
     </div>
 
+    {{-- Modal Koordinator (quick sync tanpa edit periode) --}}
+    <div id="modal-koordinator" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
+        <div class="bg-gray-950 border border-white/10 rounded-2xl p-6 w-full max-w-sm">
+            <h2 class="text-white font-semibold mb-1">Koordinator Prakerin</h2>
+            <p class="text-gray-500 text-xs mb-4">Centang guru yang bertugas sebagai koordinator di periode ini</p>
+            <form id="form-koordinator" method="POST" class="space-y-2">
+                @csrf
+                <div class="space-y-1 max-h-64 overflow-y-auto pr-1">
+                    @foreach ($teachers as $t)
+                        <label class="flex items-center gap-2 cursor-pointer p-2.5 rounded-xl hover:bg-white/5 transition-colors">
+                            <input type="checkbox" name="coordinator_ids[]" value="{{ $t->id }}"
+                                   class="koordinator-cb w-4 h-4 rounded accent-blue-500">
+                            <div>
+                                <span class="text-sm text-gray-200">{{ $t->name }}</span>
+                                <span class="ml-1 text-xs text-gray-600">{{ ucfirst(str_replace('_', ' ', $t->role)) }}</span>
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+                <div class="flex gap-3 pt-3 border-t border-white/5">
+                    <button type="button" onclick="document.getElementById('modal-koordinator').classList.add('hidden')"
+                            class="flex-1 py-2.5 bg-gray-800 border border-white/10 text-gray-300 text-sm rounded-xl">
+                        Batal
+                    </button>
+                    <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-colors">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        function openEdit(id, name, start, end, desc, active) {
+        function openEdit(id, name, start, end, desc, active, coordIds) {
             document.getElementById('form-edit').action = '/admin/prakerin/periods/' + id;
             document.getElementById('edit-name').value  = name;
             document.getElementById('edit-start').value = start;
             document.getElementById('edit-end').value   = end;
             document.getElementById('edit-desc').value  = desc;
             document.getElementById('edit-active').checked = active;
+            // Set koordinator checkboxes
+            document.querySelectorAll('.edit-coord-cb').forEach(cb => {
+                cb.checked = (coordIds || []).includes(parseInt(cb.value));
+            });
             document.getElementById('modal-edit').classList.remove('hidden');
         }
-        // Tutup modal klik luar
-        ['modal-tambah','modal-edit'].forEach(id => {
+
+        function openKoordinator(periodId, coordIds) {
+            document.getElementById('form-koordinator').action =
+                '/admin/prakerin/periods/' + periodId + '/coordinators';
+            document.querySelectorAll('.koordinator-cb').forEach(cb => {
+                cb.checked = (coordIds || []).includes(parseInt(cb.value));
+            });
+            document.getElementById('modal-koordinator').classList.remove('hidden');
+        }
+
+        ['modal-tambah','modal-edit','modal-koordinator'].forEach(id => {
             document.getElementById(id).addEventListener('click', function(e) {
                 if (e.target === this) this.classList.add('hidden');
             });

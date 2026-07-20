@@ -19,6 +19,7 @@ use App\Http\Controllers\Kesiswaan\ViolationController;
 use App\Http\Controllers\Guru\AssignmentController;
 use App\Http\Controllers\Guru\TeachingJournalController;
 use App\Http\Controllers\Guru\TeacherAttendanceController;
+use App\Http\Controllers\Guru\PrakerinController as GuruPrakerinController;
 use App\Http\Controllers\Siswa\StudentAssignmentController;
 use App\Http\Controllers\Siswa\PrakerinController as SiswaPrakerinController;
 use App\Http\Controllers\Admin\Prakerin\PeriodController as PrakerinPeriodController;
@@ -59,6 +60,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::post('/periods', [PrakerinPeriodController::class, 'store'])->name('periods.store');
             Route::put('/periods/{period}', [PrakerinPeriodController::class, 'update'])->name('periods.update');
             Route::delete('/periods/{period}', [PrakerinPeriodController::class, 'destroy'])->name('periods.destroy');
+            Route::post('/periods/{period}/coordinators', [PrakerinPeriodController::class, 'syncCoordinators'])->name('periods.coordinators');
             // Lokasi DU/DI
             Route::get('/locations', [PrakerinLocationController::class, 'index'])->name('locations.index');
             Route::post('/locations', [PrakerinLocationController::class, 'store'])->name('locations.store');
@@ -159,10 +161,28 @@ Route::middleware(['auth', 'school.active'])->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'guru'])->name('dashboard');
 
-        // Rekap prakerin (lihat saja)
+        // Rekap prakerin (lihat saja - semua guru)
         Route::get('/prakerin/recap/absensi', [PrakerinRecapController::class, 'absensi'])->name('prakerin.recap.absensi');
         Route::get('/prakerin/recap/jurnal', [PrakerinRecapController::class, 'jurnal'])->name('prakerin.recap.jurnal');
         Route::post('/prakerin/journals/{journal}/note', [PrakerinPlacementController::class, 'addNote'])->name('prakerin.journal.note');
+
+        // Prakerin koordinator (guru yang ditunjuk) — kelola DU/DI & penempatan
+        Route::prefix('prakerin')->name('prakerin.')->group(function () {
+            Route::get('/', [GuruPrakerinController::class, 'index'])->name('index');
+            // DU/DI — static routes HARUS di atas {location}
+            Route::get('/locations', [GuruPrakerinController::class, 'locationIndex'])->name('locations');
+            Route::post('/locations', [GuruPrakerinController::class, 'locationStore'])->name('locations.store');
+            Route::put('/locations/{location}', [GuruPrakerinController::class, 'locationUpdate'])->name('locations.update');
+            // Penempatan — static routes HARUS di atas {placement}
+            Route::get('/placements', [GuruPrakerinController::class, 'placementIndex'])->name('placements');
+            Route::post('/placements', [GuruPrakerinController::class, 'placementStore'])->name('placements.store');
+            Route::get('/placements/{placement}', [GuruPrakerinController::class, 'placementShow'])->name('placements.show');
+            Route::delete('/placements/{placement}', [GuruPrakerinController::class, 'placementDestroy'])->name('placements.destroy');
+            // Rekap koordinator (lihat lokasi yang dibimbing)
+            Route::get('/recap/absensi', [GuruPrakerinController::class, 'recapAbsensi'])->name('recap.absensi');
+            Route::get('/recap/jurnal', [GuruPrakerinController::class, 'recapJurnal'])->name('recap.jurnal');
+            Route::post('/journals/{journal}/note', [GuruPrakerinController::class, 'addNote'])->name('journal.note');
+        });
 
         // Absensi Siswa (kelola sesi)
         Route::prefix('absensi')->name('attendance.')->group(function () {

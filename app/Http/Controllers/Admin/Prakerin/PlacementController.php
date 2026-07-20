@@ -40,8 +40,16 @@ class PlacementController extends Controller
 
         $activePeriod = $periods->find($periodId);
 
+        // Siswa yang sudah ditempatkan di periode ini
+        $placedStudents = $periodId
+            ? PrakerinPlacement::with('location')
+                ->where('period_id', $periodId)
+                ->where('is_active', true)
+                ->get()->keyBy('student_id')
+            : collect();
+
         return view('admin.prakerin.placements.index', compact(
-            'placements', 'periods', 'periodId', 'locations', 'students', 'activePeriod'
+            'placements', 'periods', 'periodId', 'locations', 'students', 'activePeriod', 'placedStudents'
         ));
     }
 
@@ -56,9 +64,22 @@ class PlacementController extends Controller
             'end_date'    => 'nullable|date|after_or_equal:start_date',
             'notes'       => 'nullable|string',
         ]);
+
+        // Cek siswa sudah ditempatkan di periode ini
+        $existing = PrakerinPlacement::with('location')
+            ->where('period_id', $data['period_id'])
+            ->where('student_id', $data['student_id'])
+            ->where('is_active', true)
+            ->first();
+
+        if ($existing) {
+            $lokasiNama = $existing->location->name ?? 'DU/DI lain';
+            return back()->withInput()
+                ->with('error', "Siswa ini sudah ditempatkan di {$lokasiNama}. Nonaktifkan penempatan lama terlebih dahulu jika ingin memindahkan.");
+        }
+
         $data['school_id'] = $school->id;
         $data['is_active']  = true;
-
         PrakerinPlacement::create($data);
         return back()->with('success', 'Siswa berhasil ditempatkan.');
     }

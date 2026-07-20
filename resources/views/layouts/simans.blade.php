@@ -104,6 +104,14 @@
                 <x-sidebar-link href="{{ route('guru.teacher-attendance.index') }}" :active="request()->routeIs('guru.teacher-attendance.*')" icon="clock">
                     Absensi Saya
                 </x-sidebar-link>
+                @if(auth()->user()?->school?->feature_prakerin && \App\Models\PrakerinLocation::whereHas('supervisors', fn($q) => $q->where('teacher_id', auth()->id()))->exists())
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Prakerin</p>
+                </div>
+                <x-sidebar-link href="{{ route('guru.prakerin.index') }}" :active="request()->routeIs('guru.prakerin.*')" icon="building">
+                    Koordinator Prakerin
+                </x-sidebar-link>
+                @endif
             @endif
 
             {{-- ── KESISWAAN ── --}}
