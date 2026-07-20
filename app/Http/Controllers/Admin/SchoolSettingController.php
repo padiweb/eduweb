@@ -38,7 +38,10 @@ class SchoolSettingController extends Controller
             'violation_warning1'       => ['required', 'integer', 'min:1', 'max:999'],
             'violation_warning2'       => ['required', 'integer', 'min:1', 'max:999'],
             'violation_warning3'       => ['required', 'integer', 'min:1', 'max:999'],
-            'alfa_limit_per_semester'  => ['required', 'integer', 'min:0', 'max:999'],
+            'alfa_limit_per_semester'       => ['required', 'integer', 'min:0', 'max:999'],
+            'prakerin_points_no_checkin'    => ['nullable', 'integer', 'min:0', 'max:99'],
+            'prakerin_points_no_checkout'   => ['nullable', 'integer', 'min:0', 'max:99'],
+            'prakerin_points_no_journal'    => ['nullable', 'integer', 'min:0', 'max:99'],
             // Jam absensi guru
             'teacher_checkin_open'     => ['required', 'date_format:H:i'],
             'teacher_checkin_late'     => ['required', 'date_format:H:i'],

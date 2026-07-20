@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\PrakerinPlacement;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -148,6 +149,11 @@ class User extends Authenticatable
             default          => '6B7280',
         };
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=' . $bg . '&color=fff';
+    }
+
+    public function prakerinPlacements(): HasMany
+    {
+        return $this->hasMany(PrakerinPlacement::class, 'student_id');
     }
 
     public function getStudentStatusLabelAttribute(): string

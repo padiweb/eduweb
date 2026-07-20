@@ -32,3 +32,11 @@ Schedule::command('attendance:close-daily-sessions')
     ->withoutOverlapping()
     ->runInBackground()
     ->appendOutputTo(storage_path('logs/scheduler.log'));
+
+// Cek pelanggaran prakerin (tidak absen / tidak isi jurnal)
+// Dijalankan 00:05 untuk mengecek data kemarin
+Schedule::command('prakerin:check-violations')
+    ->dailyAt('00:05')
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/scheduler.log'));

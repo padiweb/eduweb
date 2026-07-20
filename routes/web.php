@@ -20,6 +20,11 @@ use App\Http\Controllers\Guru\AssignmentController;
 use App\Http\Controllers\Guru\TeachingJournalController;
 use App\Http\Controllers\Guru\TeacherAttendanceController;
 use App\Http\Controllers\Siswa\StudentAssignmentController;
+use App\Http\Controllers\Siswa\PrakerinController as SiswaPrakerinController;
+use App\Http\Controllers\Admin\Prakerin\PeriodController as PrakerinPeriodController;
+use App\Http\Controllers\Admin\Prakerin\LocationController as PrakerinLocationController;
+use App\Http\Controllers\Admin\Prakerin\PlacementController as PrakerinPlacementController;
+use App\Http\Controllers\Admin\Prakerin\RecapController as PrakerinRecapController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -46,6 +51,30 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
+
+        // ── Prakerin Admin (menu terpisah) ──────────────────────────────
+        Route::prefix('prakerin')->name('prakerin.')->group(function () {
+            // Periode
+            Route::get('/periods', [PrakerinPeriodController::class, 'index'])->name('periods.index');
+            Route::post('/periods', [PrakerinPeriodController::class, 'store'])->name('periods.store');
+            Route::put('/periods/{period}', [PrakerinPeriodController::class, 'update'])->name('periods.update');
+            Route::delete('/periods/{period}', [PrakerinPeriodController::class, 'destroy'])->name('periods.destroy');
+            // Lokasi DU/DI
+            Route::get('/locations', [PrakerinLocationController::class, 'index'])->name('locations.index');
+            Route::post('/locations', [PrakerinLocationController::class, 'store'])->name('locations.store');
+            Route::put('/locations/{location}', [PrakerinLocationController::class, 'update'])->name('locations.update');
+            Route::delete('/locations/{location}', [PrakerinLocationController::class, 'destroy'])->name('locations.destroy');
+            // Penempatan — static routes HARUS di atas {placement}
+            Route::get('/placements', [PrakerinPlacementController::class, 'index'])->name('placements.index');
+            Route::post('/placements', [PrakerinPlacementController::class, 'store'])->name('placements.store');
+            Route::get('/placements/{placement}', [PrakerinPlacementController::class, 'show'])->name('placements.show');
+            Route::put('/placements/{placement}', [PrakerinPlacementController::class, 'update'])->name('placements.update');
+            Route::delete('/placements/{placement}', [PrakerinPlacementController::class, 'destroy'])->name('placements.destroy');
+            Route::post('/journals/{journal}/note', [PrakerinPlacementController::class, 'addNote'])->name('placements.journal.note');
+            // Rekap (admin + guru + kepala sekolah)
+            Route::get('/recap/absensi', [PrakerinRecapController::class, 'absensi'])->name('recap.absensi');
+            Route::get('/recap/jurnal', [PrakerinRecapController::class, 'jurnal'])->name('recap.jurnal');
+        });
 
         // Pengaturan Sekolah
         Route::get('/pengaturan', [SchoolSettingController::class, 'index'])->name('settings.school');
@@ -129,6 +158,11 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     Route::middleware('role:guru,wali_kelas,kesiswaan,admin')->prefix('guru')->name('guru.')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'guru'])->name('dashboard');
+
+        // Rekap prakerin (lihat saja)
+        Route::get('/prakerin/recap/absensi', [PrakerinRecapController::class, 'absensi'])->name('prakerin.recap.absensi');
+        Route::get('/prakerin/recap/jurnal', [PrakerinRecapController::class, 'jurnal'])->name('prakerin.recap.jurnal');
+        Route::post('/prakerin/journals/{journal}/note', [PrakerinPlacementController::class, 'addNote'])->name('prakerin.journal.note');
 
         // Absensi Siswa (kelola sesi)
         Route::prefix('absensi')->name('attendance.')->group(function () {
@@ -218,6 +252,16 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/payment/{bill}', [\App\Http\Controllers\Siswa\PaymentController::class, 'show'])->name('payment.show');
         Route::post('/payment/{bill}/upload', [\App\Http\Controllers\Siswa\PaymentController::class, 'uploadReceipt'])->name('payment.upload');
 
+        // Prakerin siswa
+        Route::prefix('prakerin')->name('prakerin.')->group(function () {
+            Route::get('/', [SiswaPrakerinController::class, 'index'])->name('index');
+            Route::get('/absen/{type}', [SiswaPrakerinController::class, 'absenPage'])->name('absen');
+            Route::post('/absen', [SiswaPrakerinController::class, 'absenStore'])->name('absen.store');
+            Route::get('/jurnal', [SiswaPrakerinController::class, 'jurnalPage'])->name('jurnal');
+            Route::post('/jurnal', [SiswaPrakerinController::class, 'jurnalStore'])->name('jurnal.store');
+            Route::get('/jurnal/riwayat', [SiswaPrakerinController::class, 'jurnalHistory'])->name('jurnal.history');
+            Route::delete('/jurnal/foto/{photo}', [SiswaPrakerinController::class, 'deletePhoto'])->name('jurnal.photo.delete');
+        });
 
     });
 

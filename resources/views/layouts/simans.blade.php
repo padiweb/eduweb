@@ -68,6 +68,14 @@
                 <x-sidebar-link href="{{ route('siswa.violations') }}" :active="request()->routeIs('siswa.violations')" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
+                @if(auth()->user()?->school?->feature_prakerin)
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Prakerin</p>
+                </div>
+                <x-sidebar-link href="{{ route('siswa.prakerin.index') }}" :active="request()->routeIs('siswa.prakerin.*')" icon="building">
+                    Absen & Jurnal
+                </x-sidebar-link>
+                @endif
             @endif
 
             {{-- ── GURU / WALI KELAS ── --}}
@@ -224,6 +232,17 @@
                 <x-sidebar-link href="#" :active="false" icon="shield">
                     Pelanggaran
                 </x-sidebar-link>
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
+                </div>
+                @if(auth()->user()?->school?->feature_prakerin)
+                <div class="pt-4 pb-1 px-3">
+                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Prakerin</p>
+                </div>
+                <x-sidebar-link href="{{ route('admin.prakerin.periods.index') }}" :active="request()->routeIs('admin.prakerin.*')" icon="building">
+                    Manajemen Prakerin
+                </x-sidebar-link>
+                @endif
                 <div class="pt-4 pb-1 px-3">
                     <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
                 </div>

@@ -239,7 +239,42 @@
                     </div>
                 </div>
 
-                {{-- Info paket --}}
+                {{-- Poin Pelanggaran Prakerin --}}
+                @if($school->feature_prakerin)
+                <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
+                    <h2 class="text-sm font-semibold text-white mb-1">Poin Pelanggaran Prakerin</h2>
+                    <p class="text-gray-500 text-xs mb-4">Poin otomatis diberikan tiap hari jika siswa tidak absen/tidak isi jurnal</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Tidak Absen Masuk</label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" name="prakerin_points_no_checkin" min="0" max="99"
+                                       value="{{ old('prakerin_points_no_checkin', $school->prakerin_points_no_checkin ?? 2) }}"
+                                       class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                <span class="text-gray-500 text-sm whitespace-nowrap">poin</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Tidak Absen Pulang</label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" name="prakerin_points_no_checkout" min="0" max="99"
+                                       value="{{ old('prakerin_points_no_checkout', $school->prakerin_points_no_checkout ?? 1) }}"
+                                       class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                <span class="text-gray-500 text-sm whitespace-nowrap">poin</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1.5">Tidak Isi Jurnal</label>
+                            <div class="flex items-center gap-2">
+                                <input type="number" name="prakerin_points_no_journal" min="0" max="99"
+                                       value="{{ old('prakerin_points_no_journal', $school->prakerin_points_no_journal ?? 1) }}"
+                                       class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                <span class="text-gray-500 text-sm whitespace-nowrap">poin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
                     <h2 class="text-sm font-semibold text-white mb-3">Paket Aktif</h2>
                     <div class="flex items-center gap-2">

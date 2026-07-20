@@ -29,6 +29,9 @@ class School extends Model
         'teacher_checkout_open',
         'teacher_checkout_close',
         'teacher_qr_token',
+        'prakerin_points_no_checkin',
+        'prakerin_points_no_checkout',
+        'prakerin_points_no_journal',
     ];
 
     protected $casts = [
@@ -47,7 +50,10 @@ class School extends Model
         'violation_warning1'      => 'integer',
         'violation_warning2'      => 'integer',
         'violation_warning3'      => 'integer',
-        'alfa_limit_per_semester' => 'integer',
+        'alfa_limit_per_semester'        => 'integer',
+        'prakerin_points_no_checkin'     => 'integer',
+        'prakerin_points_no_checkout'    => 'integer',
+        'prakerin_points_no_journal'     => 'integer',
     ];
 
     // ── Relasi ─────────────────────────────────────────────────────────────

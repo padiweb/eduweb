@@ -193,4 +193,76 @@ class ViolationService
             default           => 'Pelanggaran otomatis: ' . $source,
         };
     }
+
+    // ── Prakerin Violations ───────────────────────────────────────────────
+
+    /**
+     * Buat violation pelanggaran prakerin.
+     * $source: 'prakerin_no_checkin' | 'prakerin_no_checkout' | 'prakerin_no_journal'
+     */
+    public function createPrakerinViolation(
+        \App\Models\PrakerinPlacement $placement,
+        string $source,
+        string $date
+    ): ?Violation {
+        try {
+            $school   = $placement->student->school;
+            $points   = $this->getPrakerinPoints($school, $source);
+            $category = $this->getOrCreatePrakerinCategory($school->id, $source);
+            if (! $category) return null;
+
+            $exists = Violation::where('student_id', $placement->student_id)
+                ->where('source', $source)
+                ->where('incident_date', $date)
+                ->exists();
+            if ($exists) return null;
+
+            $tanggal  = \Carbon\Carbon::parse($date)->translatedFormat('l, d F Y');
+            $lokasi   = $placement->location->name ?? '';
+
+            $desc = match ($source) {
+                'prakerin_no_checkin'  => "Tidak absen masuk prakerin pada {$tanggal} di {$lokasi}",
+                'prakerin_no_checkout' => "Tidak absen pulang prakerin pada {$tanggal} di {$lokasi}",
+                'prakerin_no_journal'  => "Tidak mengisi jurnal harian prakerin pada {$tanggal}",
+                default                => "Pelanggaran prakerin: {$source}",
+            };
+
+            return Violation::create([
+                'school_id'     => $school->id,
+                'student_id'    => $placement->student_id,
+                'category_id'   => $category->id,
+                'reported_by'   => 1,
+                'incident_date' => $date,
+                'description'   => $desc,
+                'points'        => $points,
+                'source'        => $source,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('PrakerinViolation error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    private function getPrakerinPoints(\App\Models\School $school, string $source): int
+    {
+        return match ($source) {
+            'prakerin_no_checkin'  => $school->prakerin_points_no_checkin  ?? 2,
+            'prakerin_no_checkout' => $school->prakerin_points_no_checkout ?? 1,
+            'prakerin_no_journal'  => $school->prakerin_points_no_journal  ?? 1,
+            default                => 1,
+        };
+    }
+
+    private function getOrCreatePrakerinCategory(int $schoolId, string $source): ?ViolationCategory
+    {
+        $names = [
+            'prakerin_no_checkin'  => 'Tidak Absen Masuk Prakerin',
+            'prakerin_no_checkout' => 'Tidak Absen Pulang Prakerin',
+            'prakerin_no_journal'  => 'Tidak Mengisi Jurnal Prakerin',
+        ];
+        return ViolationCategory::firstOrCreate(
+            ['school_id' => $schoolId, 'name' => $names[$source] ?? $source],
+            ['severity' => 'ringan', 'default_points' => 1]
+        );
+    }
 }
