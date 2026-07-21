@@ -49,11 +49,14 @@ class RecapController extends Controller
                 ->where('type', 'check_in')->get();
 
             $stats[$p->id] = [
-                'total_days'  => $totalDays,
-                'hadir'       => $checkins->whereIn('status', ['hadir', 'terlambat'])->count(),
-                'terlambat'   => $checkins->where('status', 'terlambat')->count(),
-                'alfa'        => $totalDays - $checkins->whereIn('status', ['hadir', 'terlambat', 'izin', 'sakit'])->count(),
-                'jurnal'      => PrakerinJournal::where('placement_id', $p->id)->where('status', 'submitted')->count(),
+                'total_days' => $totalDays,
+                'hadir'      => $checkins->whereIn('status', ['hadir', 'terlambat'])->count(),
+                'terlambat'  => $checkins->where('status', 'terlambat')->count(),
+                'izin'       => $checkins->where('status', 'izin')->count(),
+                'sakit'      => $checkins->where('status', 'sakit')->count(),
+                'libur'      => $checkins->where('status', 'libur')->count(),
+                'alfa'       => max(0, $totalDays - $checkins->whereIn('status', ['hadir', 'terlambat', 'izin', 'sakit', 'libur'])->count()),
+                'jurnal'     => PrakerinJournal::where('placement_id', $p->id)->where('status', 'submitted')->count(),
             ];
         }
 
