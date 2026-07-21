@@ -335,25 +335,78 @@ class PrakerinController extends Controller
             $myLocIds     = $this->myLocationIds($period->id);
             $allLocations = PrakerinLocation::where('period_id', $period->id)
                 ->where('school_id', $this->school()->id)->orderBy('name')->get();
+        }
 
-            $filterLocIds = $locId ? collect([$locId]) : $myLocIds;
-            $placements   = PrakerinPlacement::with([
-                    'student',
-                    'location',
-                    'journals.photos',
-                    'attendances',
-                    'absences' => fn($q) => $q->where('status', 'approved'),
-                ])
+        // Jika DU/DI dipilih, tampilkan daftar siswa dengan progress
+        if ($period && $locId) {
+            $placements = PrakerinPlacement::with(['student', 'location', 'journals'])
                 ->where('school_id', $this->school()->id)
                 ->where('period_id', $period->id)
-                ->whereIn('location_id', $filterLocIds)
+                ->where('location_id', $locId)
                 ->where('is_active', true)
-                ->get();
+                ->get()
+                ->map(function($p) use ($period) {
+                    $start          = $p->start_date ?? $period->start_date;
+                    $end            = min($p->end_date ?? $period->end_date, today());
+                    $totalDays      = $start && $end ? $start->diffInDays($end) + 1 : 0;
+                    $filled         = $p->journals->count();
+                    $p->total_days  = $totalDays;
+                    $p->filled_days = $filled;
+                    $p->empty_days  = max(0, $totalDays - $filled);
+                    return $p;
+                });
         }
 
         return view('guru.prakerin.recap-jurnal', compact(
             'periods', 'period', 'periodId', 'locId', 'placements'
         ) + ['locations' => $allLocations]);
+    }
+
+    /** Detail jurnal per siswa — semua hari */
+    public function recapJurnalDetail(PrakerinPlacement $placement)
+    {
+        $myLocIds = $this->myLocationIds($placement->period_id);
+        abort_unless($myLocIds->contains($placement->location_id), 403);
+
+        $placement->load(['student', 'location', 'period', 'journals.photos', 'absences']);
+
+        $period = $placement->period;
+        $start  = $placement->start_date ?? $period->start_date;
+        $end    = $placement->end_date   ?? $period->end_date;
+
+        // Gunakan koleksi yang diindeks tanpa fn() agar relasi photos tetap ter-load
+        $jurnalByDate = collect();
+        foreach ($placement->journals as $j) {
+            $jurnalByDate[$j->journal_date->format('Y-m-d')] = $j;
+        }
+
+        $absenceByDate = collect();
+        foreach ($placement->absences->where('status', 'approved') as $a) {
+            $absenceByDate[$a->absence_date->format('Y-m-d')] = $a;
+        }
+        $attendanceByDate = PrakerinAttendance::where('placement_id', $placement->id)
+            ->where('type', 'check_in')->whereIn('status', ['hadir', 'terlambat'])
+            ->get()->keyBy(fn($a) => $a->attendance_date->format('Y-m-d'));
+
+        $days    = [];
+        $current = $start->copy();
+        while ($current->lte($end)) {
+            $key = $current->format('Y-m-d');
+            $days[$key] = [
+                'date'       => $current->copy(),
+                'journal'    => $jurnalByDate->get($key),
+                'absence'    => $absenceByDate->get($key),
+                'attendance' => $attendanceByDate->get($key),
+            ];
+            $current->addDay();
+        }
+
+        $filled = $jurnalByDate->count();
+        $total  = $start->diffInDays(min($end, today())) + 1;
+
+        return view('guru.prakerin.recap-jurnal-detail', compact(
+            'placement', 'days', 'filled', 'total'
+        ));
     }
 
     public function addNote(PrakerinJournal $journal, Request $request)

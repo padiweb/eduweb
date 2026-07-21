@@ -183,6 +183,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             // Rekap koordinator (lihat lokasi yang dibimbing)
             Route::get('/recap/absensi', [GuruPrakerinController::class, 'recapAbsensi'])->name('recap.absensi');
             Route::get('/recap/jurnal', [GuruPrakerinController::class, 'recapJurnal'])->name('recap.jurnal');
+            Route::get('/recap/jurnal/{placement}', [GuruPrakerinController::class, 'recapJurnalDetail'])->name('recap.jurnal.detail');
             Route::post('/journals/{journal}/note', [GuruPrakerinController::class, 'addNote'])->name('journal.note');
             // Rekap ketidakhadiran siswa (lihat saja)
             Route::get('/izin', [GuruPrakerinController::class, 'izinIndex'])->name('izin');

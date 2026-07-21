@@ -5,7 +5,9 @@
             Kembali
         </a>
         <h1 class="text-xl font-bold text-white">Jurnal Harian</h1>
-        <p class="text-gray-400 text-sm mt-0.5">{{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }} · {{ $placement->location->name }}</p>
+        <p class="text-gray-400 text-sm mt-0.5">
+            {{ \Carbon\Carbon::parse($date)->translatedFormat('l, d F Y') }} &middot; {{ $placement->location->name }}
+        </p>
     </div>
 
     @if (session('success'))
@@ -17,7 +19,17 @@
         </div>
     @endif
 
-    @if ($journal)
+    @if ($isLate)
+        <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15 flex items-start gap-2">
+            <svg class="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div>
+                <p class="text-amber-300 text-xs font-semibold">Mengisi jurnal hari yang sudah lewat</p>
+                <p class="text-amber-400/70 text-xs mt-0.5">Poin pelanggaran yang sudah diterima tidak dapat dikurangi, namun jurnal tetap bisa disimpan.</p>
+            </div>
+        </div>
+    @elseif ($journal)
         <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15 flex items-center gap-2">
             <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             <p class="text-amber-300 text-xs">Jurnal sudah diisi pukul {{ $journal->submitted_at?->format('H:i') ?? $journal->updated_at->format('H:i') }}. Anda bisa memperbarui isinya.</p>
@@ -31,8 +43,11 @@
 
     <form action="{{ route('siswa.prakerin.jurnal.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
+        {{-- Kirim tanggal jurnal --}}
+        <input type="hidden" name="journal_date" value="{{ $date }}">
+
         <div class="mb-4">
-            <label class="block text-sm text-gray-300 font-medium mb-2">Laporan Kegiatan Hari Ini <span class="text-red-400">*</span></label>
+            <label class="block text-sm text-gray-300 font-medium mb-2">Laporan Kegiatan <span class="text-red-400">*</span></label>
             <textarea name="content" rows="8" required minlength="50"
                       placeholder="Tuliskan kegiatan yang kamu lakukan hari ini di {{ $placement->location->name }}. Minimal 50 karakter."
                       class="w-full bg-gray-900 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder-gray-600 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 resize-none">{{ old('content', $journal?->content) }}</textarea>

@@ -13,9 +13,17 @@
             <div class="flex items-center justify-between mb-3">
                 <div>
                     <p class="text-white text-sm font-semibold">{{ $journal->journal_date->translatedFormat('l, d F Y') }}</p>
-                    <p class="text-gray-500 text-xs mt-0.5">Dikirim {{ $journal->submitted_at->format('H:i') }}</p>
+                    <p class="text-gray-500 text-xs mt-0.5">Dikirim {{ $journal->submitted_at?->format('H:i') ?? $journal->updated_at->format('H:i') }}</p>
                 </div>
-                <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">Terkirim</span>
+                <div class="flex items-center gap-2">
+                    @if ($journal->journal_date->gte(today()->subDays(7)))
+                        <a href="{{ route('siswa.prakerin.jurnal', ['date' => $journal->journal_date->format('Y-m-d')]) }}"
+                           class="px-2.5 py-1 bg-amber-600/20 border border-amber-500/20 text-amber-400 text-xs rounded-lg hover:bg-amber-600/40 transition-colors">
+                            Edit
+                        </a>
+                    @endif
+                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">Terkirim</span>
+                </div>
             </div>
             <p class="text-gray-300 text-sm leading-relaxed mb-3">{{ Str::limit($journal->content, 200) }}</p>
             @if ($journal->photos->count() > 0)

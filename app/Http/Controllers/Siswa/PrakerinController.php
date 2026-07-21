@@ -182,7 +182,7 @@ class PrakerinController extends Controller
 
     // ── Jurnal ────────────────────────────────────────────────────────────
 
-    public function jurnalPage()
+    public function jurnalPage(Request $request)
     {
         $user      = Auth::user();
         $placement = $this->activePlacement($user->id);
@@ -190,28 +190,47 @@ class PrakerinController extends Controller
             return redirect()->route('siswa.prakerin.index')
                 ->with('error', 'Tidak ada penempatan prakerin aktif.');
         }
-        $today   = today()->format('Y-m-d');
+
+        // Support isi jurnal hari lalu (maks 7 hari ke belakang)
+        $date       = $request->get('date', today()->format('Y-m-d'));
+        $dateCarbon = \Carbon\Carbon::parse($date);
+        // Validasi range
+        if ($dateCarbon->gt(today()) || $dateCarbon->lt(today()->subDays(7))) {
+            $dateCarbon = today();
+        }
+        $date   = $dateCarbon->format('Y-m-d');
+        $isLate = $dateCarbon->lt(today());
+
         $journal = PrakerinJournal::with('photos')
-            ->where('placement_id', $placement->id)->where('journal_date', $today)->first();
-        return view('siswa.prakerin.jurnal', compact('placement', 'journal', 'today'));
+            ->where('placement_id', $placement->id)
+            ->where('journal_date', $date)->first();
+
+        return view('siswa.prakerin.jurnal', compact('placement', 'journal', 'date', 'isLate'));
     }
 
     public function jurnalStore(Request $request)
     {
         $user = Auth::user();
         $request->validate([
-            'content'  => 'required|string|min:50',
-            'photos'   => 'nullable|array|max:5',
-            'photos.*' => 'nullable|image|max:5120',
-            'captions' => 'nullable|array',
+            'content'      => 'required|string|min:50',
+            'journal_date' => 'required|date',
+            'photos'       => 'nullable|array|max:5',
+            'photos.*'     => 'nullable|image|max:5120',
+            'captions'     => 'nullable|array',
         ]);
 
         $placement = $this->activePlacement($user->id);
         if (! $placement) return back()->with('error', 'Tidak ada penempatan aktif.');
 
-        $today   = today()->format('Y-m-d');
+        $dateCarbon = \Carbon\Carbon::parse($request->journal_date);
+        if ($dateCarbon->gt(today()) || $dateCarbon->lt(today()->subDays(7))) {
+            return back()->with('error', 'Tanggal jurnal tidak valid.');
+        }
+        $dateStr = $dateCarbon->format('Y-m-d');
+        $isLate  = $dateCarbon->lt(today());
+
         $journal = PrakerinJournal::updateOrCreate(
-            ['placement_id' => $placement->id, 'journal_date' => $today],
+            ['placement_id' => $placement->id, 'journal_date' => $dateStr],
             ['student_id' => $user->id, 'content' => $request->content,
              'status' => 'submitted', 'submitted_at' => now()]
         );
@@ -230,7 +249,9 @@ class PrakerinController extends Controller
         }
 
         return redirect()->route('siswa.prakerin.index')
-            ->with('success', 'Jurnal harian berhasil disimpan.');
+            ->with('success', $isLate
+                ? 'Jurnal tanggal ' . \Carbon\Carbon::parse($dateStr)->translatedFormat('d M Y') . ' berhasil disimpan. Poin pelanggaran tidak dapat dikurangi.'
+                : 'Jurnal harian berhasil disimpan.');
     }
 
     public function deletePhoto(PrakerinJournalPhoto $photo)
