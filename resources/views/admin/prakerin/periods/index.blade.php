@@ -2,7 +2,7 @@
 
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-white">Manajemen Prakerin</h1>
+            <h1 class="text-2xl font-bold text-white">Manajemen Prakerinn</h1>
             <p class="text-gray-400 text-sm mt-1">Kelola periode, DU/DI, dan penempatan siswa</p>
         </div>
         <button onclick="document.getElementById('modal-tambah').classList.remove('hidden')"
