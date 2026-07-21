@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\PrakerinAbsence;
 use App\Models\PrakerinAttendance;
 use App\Models\PrakerinJournal;
 use App\Models\PrakerinJournalPhoto;
@@ -249,4 +250,64 @@ class PrakerinController extends Controller
         $a    = sin($dphi/2)**2 + cos($phi1)*cos($phi2)*sin($dlam/2)**2;
         return $R * 2 * atan2(sqrt($a), sqrt(1-$a));
     }
+
+    // ── Izin / Sakit / Libur ─────────────────────────────────────────────
+
+    public function izinPage()
+    {
+        $user      = Auth::user();
+        $placement = $this->activePlacement($user->id);
+        if (! $placement) {
+            return redirect()->route('siswa.prakerin.index')
+                ->with('error', 'Tidak ada penempatan prakerin aktif.');
+        }
+        $today   = today()->format('Y-m-d');
+        $absence = PrakerinAbsence::where('placement_id', $placement->id)
+            ->where('absence_date', $today)->first();
+
+        return view('siswa.prakerin.izin', compact('placement', 'absence', 'today'));
+    }
+
+    public function izinStore(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'type'       => 'required|in:izin,sakit,libur',
+            'reason'     => 'required|string|min:10|max:500',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+
+        $placement = $this->activePlacement($user->id);
+        if (! $placement) return back()->with('error', 'Tidak ada penempatan aktif.');
+
+        $today = today()->format('Y-m-d');
+        if (PrakerinAbsence::where('placement_id', $placement->id)->where('absence_date', $today)->exists()) {
+            return back()->with('error', 'Sudah ada pengajuan untuk hari ini.');
+        }
+
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')
+                ->store('prakerin/absence/' . date('Y/m'), 'public');
+        }
+
+        PrakerinAbsence::create([
+            'placement_id'    => $placement->id,
+            'student_id'      => $user->id,
+            'absence_date'    => $today,
+            'type'            => $request->type,
+            'reason'          => $request->reason,
+            'attachment_path' => $attachmentPath,
+            'status'          => 'pending',
+        ]);
+
+        return redirect()->route('siswa.prakerin.index')
+            ->with('success', 'Pengajuan ' . match($request->type) {
+                'izin'  => 'izin',
+                'sakit' => 'sakit',
+                'libur' => 'libur DU/DI',
+                default => $request->type,
+            } . ' berhasil dikirim. Menunggu konfirmasi guru pembimbing.');
+    }
 }
+

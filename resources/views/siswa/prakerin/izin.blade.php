@@ -1,0 +1,117 @@
+<x-simans-layout title="Ajukan Ketidakhadiran">
+    <div class="mb-5">
+        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-white flex items-center gap-1 mb-3 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Kembali
+        </a>
+        <h1 class="text-xl font-bold text-white">Konfirmasi Tidak Hadir</h1>
+        <p class="text-gray-400 text-sm mt-0.5">
+            {{ $placement->location->name }} &middot; {{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }}
+        </p>
+    </div>
+
+    @if ($absence)
+        {{-- Sudah ada pengajuan --}}
+        <div class="bg-gray-900 border border-white/5 rounded-2xl p-5">
+            <p class="text-white font-semibold mb-1">Pengajuan sudah dikirim</p>
+            <div class="space-y-2 mt-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">Jenis</span>
+                    <span class="text-white text-sm font-medium">{{ $absence->type_label }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-sm">Status</span>
+                    <span class="text-sm font-semibold px-2.5 py-0.5 rounded-lg
+                        {{ $absence->status === 'approved' ? 'bg-emerald-500/10 text-emerald-400' :
+                           ($absence->status === 'rejected' ? 'bg-red-500/10 text-red-400' :
+                           'bg-amber-500/10 text-amber-400') }}">
+                        {{ $absence->status_label }}
+                    </span>
+                </div>
+                <div class="pt-2 border-t border-white/5">
+                    <p class="text-gray-500 text-xs mb-1">Keterangan yang dikirim:</p>
+                    <p class="text-gray-300 text-sm">{{ $absence->reason }}</p>
+                </div>
+                @if ($absence->notes)
+                    <div class="pt-2 border-t border-white/5">
+                        <p class="text-blue-400 text-xs font-semibold mb-1">Catatan pembimbing:</p>
+                        <p class="text-blue-300 text-sm">{{ $absence->notes }}</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @else
+        <div class="bg-gray-900/50 border border-white/5 rounded-xl px-4 py-3 mb-5 flex items-start gap-3">
+            <svg class="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <p class="text-orange-300 text-xs leading-relaxed">
+                Jika tidak hadir tanpa konfirmasi, akan otomatis tercatat <strong>alfa</strong> dan mendapat poin pelanggaran.
+                Ajukan konfirmasi sebelum hari berakhir.
+            </p>
+        </div>
+
+        @if ($errors->any())
+            <div class="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm space-y-0.5">
+                @foreach ($errors->all() as $e)<p>{{ $e }}</p>@endforeach
+            </div>
+        @endif
+
+        <form action="{{ route('siswa.prakerin.izin.store') }}" method="POST" enctype="multipart/form-data"
+              class="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
+            @csrf
+
+            {{-- Pilih jenis --}}
+            <div class="p-5 border-b border-white/5">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Jenis Ketidakhadiran</p>
+                <div class="grid grid-cols-3 gap-3" x-data="{ selected: '{{ old('type', 'izin') }}' }">
+                    @foreach (['izin' => 'Izin', 'sakit' => 'Sakit', 'libur' => 'Libur DU/DI'] as $val => $label)
+                        <label class="cursor-pointer" @click="selected = '{{ $val }}'">
+                            <input type="radio" name="type" value="{{ $val }}" class="sr-only"
+                                   x-model="selected">
+                            <div class="p-3 rounded-xl border text-center transition-all"
+                                 :class="selected === '{{ $val }}'
+                                    ? 'border-orange-500/50 bg-orange-500/10'
+                                    : 'border-white/10 bg-gray-800 hover:border-white/20'">
+                                <p class="text-sm font-medium transition-colors"
+                                   :class="selected === '{{ $val }}' ? 'text-orange-400' : 'text-gray-300'">
+                                    {{ $label }}
+                                </p>
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Keterangan --}}
+            <div class="p-5 border-b border-white/5">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Keterangan</p>
+                <textarea name="reason" rows="4" required minlength="10" maxlength="500"
+                          placeholder="Jelaskan alasan tidak hadir hari ini..."
+                          class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder-gray-600 focus:outline-none focus:border-orange-500/50 resize-none">{{ old('reason') }}</textarea>
+                <p class="text-gray-600 text-xs mt-1">Minimal 10 karakter</p>
+            </div>
+
+            {{-- Lampiran --}}
+            <div class="p-5 border-b border-white/5">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                    Lampiran <span class="text-gray-600 font-normal">(Opsional — surat dokter, dll)</span>
+                </p>
+                <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.pdf"
+                       class="block w-full text-sm text-gray-400
+                              file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0
+                              file:text-sm file:bg-gray-800 file:text-gray-300
+                              hover:file:bg-gray-700 cursor-pointer">
+                <p class="text-gray-600 text-xs mt-1">JPG, PNG, atau PDF. Maks 5MB.</p>
+            </div>
+
+            {{-- Submit --}}
+            <div class="p-5">
+                <button type="submit"
+                        class="w-full py-3 bg-orange-700 hover:bg-orange-600 text-white text-sm font-semibold rounded-xl transition-colors">
+                    Kirim Konfirmasi
+                </button>
+            </div>
+        </form>
+    @endif
+</x-simans-layout>

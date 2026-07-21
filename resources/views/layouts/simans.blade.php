@@ -110,6 +110,10 @@
                 </div>
                 <x-sidebar-link href="{{ route('guru.prakerin.index') }}" :active="request()->routeIs('guru.prakerin.*')" icon="building">
                     Koordinator Prakerin
+                    @php $pendingIzin = \App\Models\PrakerinAbsence::whereHas('placement.location.supervisors', fn($q) => $q->where('teacher_id', auth()->id()))->where('status','pending')->count(); @endphp
+                    @if ($pendingIzin > 0)
+                        <span class="ml-auto px-1.5 py-0.5 bg-orange-500 text-white text-xs rounded-md font-bold">{{ $pendingIzin }}</span>
+                    @endif
                 </x-sidebar-link>
                 @endif
             @endif

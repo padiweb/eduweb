@@ -22,6 +22,8 @@ use App\Http\Controllers\Guru\TeacherAttendanceController;
 use App\Http\Controllers\Guru\PrakerinController as GuruPrakerinController;
 use App\Http\Controllers\Siswa\StudentAssignmentController;
 use App\Http\Controllers\Siswa\PrakerinController as SiswaPrakerinController;
+use App\Http\Controllers\Siswa\PrakerinAbsenceController as SiswaPrakerinAbsenceController;
+use App\Http\Controllers\Guru\PrakerinAbsenceController as GuruPrakerinAbsenceController;
 use App\Http\Controllers\Admin\Prakerin\PeriodController as PrakerinPeriodController;
 use App\Http\Controllers\Admin\Prakerin\LocationController as PrakerinLocationController;
 use App\Http\Controllers\Admin\Prakerin\PlacementController as PrakerinPlacementController;
@@ -182,6 +184,10 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::get('/recap/absensi', [GuruPrakerinController::class, 'recapAbsensi'])->name('recap.absensi');
             Route::get('/recap/jurnal', [GuruPrakerinController::class, 'recapJurnal'])->name('recap.jurnal');
             Route::post('/journals/{journal}/note', [GuruPrakerinController::class, 'addNote'])->name('journal.note');
+            // Kelola ketidakhadiran siswa
+            Route::get('/izin', [GuruPrakerinController::class, 'izinIndex'])->name('izin');
+            Route::post('/izin/{absence}/approve', [GuruPrakerinController::class, 'izinApprove'])->name('izin.approve');
+            Route::post('/izin/{absence}/reject', [GuruPrakerinController::class, 'izinReject'])->name('izin.reject');
         });
 
         // Absensi Siswa (kelola sesi)
@@ -281,6 +287,9 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::post('/jurnal', [SiswaPrakerinController::class, 'jurnalStore'])->name('jurnal.store');
             Route::get('/jurnal/riwayat', [SiswaPrakerinController::class, 'jurnalHistory'])->name('jurnal.history');
             Route::delete('/jurnal/foto/{photo}', [SiswaPrakerinController::class, 'deletePhoto'])->name('jurnal.photo.delete');
+            // Konfirmasi ketidakhadiran
+            Route::get('/izin', [SiswaPrakerinController::class, 'izinPage'])->name('izin');
+            Route::post('/izin', [SiswaPrakerinController::class, 'izinStore'])->name('izin.store');
         });
 
     });

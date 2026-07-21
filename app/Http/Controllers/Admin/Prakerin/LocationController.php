@@ -13,12 +13,16 @@ class LocationController extends Controller
 {
     private function school() { return Auth::user()->school; }
 
-    /** Bersihkan field jam — ubah string kosong jadi null */
+    /** Bersihkan field jam — ubah string kosong jadi null, potong HH:MM:SS jadi HH:MM */
     private function cleanTimeFields(Request $request): void
     {
         foreach (['checkin_time', 'checkout_time', 'checkin_late_after'] as $field) {
-            if ($request->input($field) === '' || $request->input($field) === null) {
+            $val = $request->input($field);
+            if ($val === '' || $val === null) {
                 $request->merge([$field => null]);
+            } else {
+                // Ambil hanya HH:MM (5 karakter pertama), buang detik jika ada
+                $request->merge([$field => substr($val, 0, 5)]);
             }
         }
     }

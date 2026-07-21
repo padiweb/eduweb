@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\PrakerinAbsence;
 use App\Models\PrakerinAttendance;
 use App\Models\PrakerinJournal;
 use App\Models\PrakerinPlacement;
@@ -47,6 +48,20 @@ class CheckPrakerinViolations extends Command
 
             $student = $placement->student;
             if (! $student) continue;
+
+            // Skip jika ada izin/sakit/libur yang disetujui untuk hari ini
+            $hasApprovedAbsence = PrakerinAbsence::where('placement_id', $placement->id)
+                ->where('absence_date', $dateStr)
+                ->where('status', 'approved')
+                ->exists();
+            if ($hasApprovedAbsence) continue;
+
+            // Skip jika ada pengajuan izin/sakit/libur yang disetujui
+            $hasApprovedAbsence = PrakerinAbsence::where('placement_id', $placement->id)
+                ->where('absence_date', $dateStr)
+                ->where('status', 'approved')
+                ->exists();
+            if ($hasApprovedAbsence) continue;
 
             // 1. Absen masuk
             $checkin = PrakerinAttendance::where('placement_id', $placement->id)

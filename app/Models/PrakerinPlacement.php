@@ -25,6 +25,7 @@ class PrakerinPlacement extends Model
     public function student(): BelongsTo   { return $this->belongsTo(User::class, 'student_id'); }
     public function attendances(): HasMany { return $this->hasMany(PrakerinAttendance::class, 'placement_id'); }
     public function journals(): HasMany    { return $this->hasMany(PrakerinJournal::class, 'placement_id'); }
+    public function absences(): HasMany    { return $this->hasMany(PrakerinAbsence::class, 'placement_id'); }
 
     public function getEffectiveStartDate()
     {
