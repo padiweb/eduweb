@@ -11,33 +11,33 @@
     </div>
 
     @if ($absence)
-        {{-- Sudah ada pengajuan --}}
-        <div class="bg-gray-900 border border-white/5 rounded-2xl p-5">
-            <p class="text-white font-semibold mb-1">Pengajuan sudah dikirim</p>
-            <div class="space-y-2 mt-3">
+        {{-- Sudah lapor hari ini --}}
+        <div class="bg-gray-900 border border-orange-500/20 rounded-2xl p-5">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-white font-semibold text-sm">Ketidakhadiran tercatat</p>
+                    <p class="text-emerald-400 text-xs mt-0.5">Anda tidak akan tercatat alfa hari ini</p>
+                </div>
+            </div>
+            <div class="space-y-2 pt-3 border-t border-white/5">
                 <div class="flex items-center justify-between">
                     <span class="text-gray-500 text-sm">Jenis</span>
-                    <span class="text-white text-sm font-medium">{{ $absence->type_label }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-500 text-sm">Status</span>
-                    <span class="text-sm font-semibold px-2.5 py-0.5 rounded-lg
-                        {{ $absence->status === 'approved' ? 'bg-emerald-500/10 text-emerald-400' :
-                           ($absence->status === 'rejected' ? 'bg-red-500/10 text-red-400' :
-                           'bg-amber-500/10 text-amber-400') }}">
-                        {{ $absence->status_label }}
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-lg
+                        {{ $absence->type === 'sakit' ? 'bg-red-500/10 text-red-400' :
+                           ($absence->type === 'libur' ? 'bg-blue-500/10 text-blue-400' :
+                           'bg-orange-500/10 text-orange-400') }}">
+                        {{ $absence->type_label }}
                     </span>
                 </div>
                 <div class="pt-2 border-t border-white/5">
-                    <p class="text-gray-500 text-xs mb-1">Keterangan yang dikirim:</p>
+                    <p class="text-gray-500 text-xs mb-1">Keterangan:</p>
                     <p class="text-gray-300 text-sm">{{ $absence->reason }}</p>
                 </div>
-                @if ($absence->notes)
-                    <div class="pt-2 border-t border-white/5">
-                        <p class="text-blue-400 text-xs font-semibold mb-1">Catatan pembimbing:</p>
-                        <p class="text-blue-300 text-sm">{{ $absence->notes }}</p>
-                    </div>
-                @endif
             </div>
         </div>
     @else
@@ -46,8 +46,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
             <p class="text-orange-300 text-xs leading-relaxed">
-                Jika tidak hadir tanpa konfirmasi, akan otomatis tercatat <strong>alfa</strong> dan mendapat poin pelanggaran.
-                Ajukan konfirmasi sebelum hari berakhir.
+                Jika tidak hadir tanpa laporan, akan otomatis tercatat <strong>alfa</strong> dan mendapat poin pelanggaran.
+                Lapor sebelum hari berakhir agar tidak tercatat alfa.
             </p>
         </div>
 

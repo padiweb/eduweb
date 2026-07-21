@@ -38,24 +38,32 @@ class PrakerinController extends Controller
         $user      = Auth::user();
         $placement = $this->activePlacement($user->id);
         $today     = today()->format('Y-m-d');
-        $checkin = $checkout = $journal = null;
+        $checkin = $checkout = $journal = $absence = null;
         $recentLogs = collect();
 
         if ($placement) {
+            // Cek izin/sakit/libur hari ini
+            $absence = PrakerinAbsence::where('placement_id', $placement->id)
+                ->where('absence_date', $today)->where('status', 'approved')->first();
+
+            // Checkin fisik = hanya status hadir/terlambat (bukan izin/sakit/libur)
             $checkin  = PrakerinAttendance::where('placement_id', $placement->id)
-                ->where('attendance_date', $today)->where('type', 'check_in')->first();
+                ->where('attendance_date', $today)->where('type', 'check_in')
+                ->whereIn('status', ['hadir', 'terlambat'])->first();
             $checkout = PrakerinAttendance::where('placement_id', $placement->id)
-                ->where('attendance_date', $today)->where('type', 'check_out')->first();
+                ->where('attendance_date', $today)->where('type', 'check_out')
+                ->whereIn('status', ['hadir', 'terlambat'])->first();
             $journal  = PrakerinJournal::where('placement_id', $placement->id)
                 ->where('journal_date', $today)->first();
             $recentLogs = PrakerinAttendance::where('placement_id', $placement->id)
                 ->where('attendance_date', '>=', today()->subDays(6)->format('Y-m-d'))
+                ->whereIn('status', ['hadir', 'terlambat']) // hanya absen fisik
                 ->orderByDesc('attendance_date')
                 ->get()->groupBy(fn($a) => $a->attendance_date->format('Y-m-d'));
         }
 
         return view('siswa.prakerin.index', compact(
-            'placement', 'checkin', 'checkout', 'journal', 'recentLogs', 'today'
+            'placement', 'checkin', 'checkout', 'journal', 'absence', 'recentLogs', 'today'
         ));
     }
 
@@ -72,9 +80,19 @@ class PrakerinController extends Controller
                 ->with('error', 'Tidak ada penempatan prakerin aktif hari ini.');
         }
 
-        $today    = today()->format('Y-m-d');
+        $today = today()->format('Y-m-d');
+
+        // Jika sudah lapor izin/sakit/libur, tidak bisa absen
+        $absence = PrakerinAbsence::where('placement_id', $placement->id)
+            ->where('absence_date', $today)->where('status', 'approved')->first();
+        if ($absence) {
+            return redirect()->route('siswa.prakerin.index')
+                ->with('info', "Anda sudah lapor {$absence->type_label} hari ini. Absensi tidak diperlukan.");
+        }
+
         $existing = PrakerinAttendance::where('placement_id', $placement->id)
-            ->where('attendance_date', $today)->where('type', $type)->first();
+            ->where('attendance_date', $today)->where('type', $type)
+            ->whereIn('status', ['hadir', 'terlambat'])->first();
 
         if ($existing) {
             return redirect()->route('siswa.prakerin.index')
@@ -282,7 +300,7 @@ class PrakerinController extends Controller
 
         $today = today()->format('Y-m-d');
         if (PrakerinAbsence::where('placement_id', $placement->id)->where('absence_date', $today)->exists()) {
-            return back()->with('error', 'Sudah ada pengajuan untuk hari ini.');
+            return back()->with('error', 'Sudah ada konfirmasi ketidakhadiran untuk hari ini.');
         }
 
         $attachmentPath = null;
@@ -291,23 +309,41 @@ class PrakerinController extends Controller
                 ->store('prakerin/absence/' . date('Y/m'), 'public');
         }
 
-        PrakerinAbsence::create([
+        // Langsung approved — tidak perlu persetujuan guru
+        $absence = PrakerinAbsence::create([
             'placement_id'    => $placement->id,
             'student_id'      => $user->id,
             'absence_date'    => $today,
             'type'            => $request->type,
             'reason'          => $request->reason,
             'attachment_path' => $attachmentPath,
-            'status'          => 'pending',
+            'status'          => 'approved',
+            'approved_at'     => now(),
         ]);
 
+        // Langsung buat record attendance agar tidak kena poin pelanggaran
+        PrakerinAttendance::updateOrCreate(
+            [
+                'placement_id'    => $placement->id,
+                'attendance_date' => $today,
+                'type'            => 'check_in',
+            ],
+            [
+                'student_id' => $user->id,
+                'status'     => $request->type, // izin / sakit / libur
+                'ip_address' => $request->ip(),
+            ]
+        );
+
+        $typeLabel = match($request->type) {
+            'izin'  => 'Izin',
+            'sakit' => 'Sakit',
+            'libur' => 'Libur DU/DI',
+            default => $request->type,
+        };
+
         return redirect()->route('siswa.prakerin.index')
-            ->with('success', 'Pengajuan ' . match($request->type) {
-                'izin'  => 'izin',
-                'sakit' => 'sakit',
-                'libur' => 'libur DU/DI',
-                default => $request->type,
-            } . ' berhasil dikirim. Menunggu konfirmasi guru pembimbing.');
+            ->with('success', "{$typeLabel} berhasil dicatat. Anda tidak akan tercatat alfa hari ini.");
     }
 }
 

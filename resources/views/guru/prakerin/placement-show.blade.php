@@ -104,11 +104,14 @@
 
                             <td class="px-5 py-3">
                                 @if ($day['checkin'])
-                                    <p class="text-emerald-400 text-xs font-semibold">{{ $day['checkin']->selfie_taken_at->format('H:i') }}</p>
+                                    <p class="text-emerald-400 text-xs font-semibold">{{ $day['checkin']->selfie_taken_at?->format('H:i') ?? $day['checkin']->created_at->format('H:i') }}</p>
                                     <p class="text-gray-500 text-xs">{{ $day['checkin']->status_label }}</p>
                                     @if ($day['checkin']->selfie_path)
-                                        <a href="{{ Storage::url($day['checkin']->selfie_path) }}" target="_blank"
-                                           class="text-gray-600 text-xs hover:text-gray-400">Selfie</a>
+                                        <a href="{{ Storage::url($day['checkin']->selfie_path) }}" target="_blank">
+                                            <img src="{{ Storage::url($day['checkin']->selfie_path) }}" alt="selfie masuk"
+                                                 style="width:48px;height:48px;object-fit:cover"
+                                                 class="rounded-lg mt-1 border border-white/10 hover:border-emerald-400/50 transition-colors"/>
+                                        </a>
                                     @endif
                                 @else
                                     <span class="text-red-400 text-xs">Tidak absen</span>
@@ -117,10 +120,13 @@
 
                             <td class="px-5 py-3">
                                 @if ($day['checkout'])
-                                    <p class="text-blue-400 text-xs font-semibold">{{ $day['checkout']->selfie_taken_at->format('H:i') }}</p>
+                                    <p class="text-blue-400 text-xs font-semibold">{{ $day['checkout']->selfie_taken_at?->format('H:i') ?? $day['checkout']->created_at->format('H:i') }}</p>
                                     @if ($day['checkout']->selfie_path)
-                                        <a href="{{ Storage::url($day['checkout']->selfie_path) }}" target="_blank"
-                                           class="text-gray-600 text-xs hover:text-gray-400">Selfie</a>
+                                        <a href="{{ Storage::url($day['checkout']->selfie_path) }}" target="_blank">
+                                            <img src="{{ Storage::url($day['checkout']->selfie_path) }}" alt="selfie pulang"
+                                                 style="width:48px;height:48px;object-fit:cover"
+                                                 class="rounded-lg mt-1 border border-white/10 hover:border-blue-400/50 transition-colors"/>
+                                        </a>
                                     @endif
                                 @else
                                     <span class="text-red-400 text-xs">Tidak absen</span>
@@ -137,7 +143,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                             </svg>
                                         </button>
-                                        <p class="text-gray-600 text-xs">{{ $day['journal']->submitted_at->format('H:i') }}</p>
+                                        <p class="text-gray-600 text-xs">{{ $day['journal']->submitted_at?->format('H:i') ?? $day['journal']->updated_at->format('H:i') }}</p>
                                         <div x-show="open" x-cloak class="mt-2 p-3 bg-gray-800 rounded-xl max-w-sm">
                                             <p class="text-gray-300 text-xs leading-relaxed">{{ Str::limit($day['journal']->content, 250) }}</p>
                                             @if ($day['journal']->teacher_note)

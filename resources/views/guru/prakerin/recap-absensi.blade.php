@@ -10,6 +10,9 @@
         <a href="{{ route('guru.prakerin.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-900 border border-white/10 text-gray-400 hover:text-white transition-colors">Dashboard</a>
         <a href="{{ route('guru.prakerin.locations') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-900 border border-white/10 text-gray-400 hover:text-white transition-colors">DU/DI Saya</a>
         <a href="{{ route('guru.prakerin.placements') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-900 border border-white/10 text-gray-400 hover:text-white transition-colors">Penempatan Siswa</a>
+        <a href="{{ route('guru.prakerin.izin') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-gray-900 border border-white/10 text-gray-400 hover:text-white transition-colors">
+            Izin/Sakit/Libur
+        </a>
         <a href="{{ route('guru.prakerin.recap.absensi') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-emerald-500 text-white">Rekap Absensi</a>
         <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-900 border border-white/10 text-gray-400 hover:text-white transition-colors">Rekap Jurnal</a>
     </div>
@@ -47,34 +50,45 @@
                     <tr class="border-b border-white/5">
                         <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Siswa</th>
                         <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">DU/DI</th>
-                        <th class="text-center text-xs text-gray-500 font-medium px-5 py-3">Total Hari</th>
-                        <th class="text-center text-xs text-gray-500 font-medium px-5 py-3">Hadir</th>
-                        <th class="text-center text-xs text-gray-500 font-medium px-5 py-3">Terlambat</th>
-                        <th class="text-center text-xs text-gray-500 font-medium px-5 py-3">Alfa</th>
-                        <th class="text-center text-xs text-gray-500 font-medium px-5 py-3">Jurnal</th>
-                        <th class="text-center text-xs text-gray-500 font-medium px-5 py-3">%</th>
-                        <th class="px-5 py-3"></th>
+                        <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Hari</th>
+                        <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Hadir</th>
+                        <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Terlambat</th>
+                        <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Izin/Sakit/Libur</th>
+                        <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Alfa</th>
+                        <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Jurnal</th>
+                        <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">%</th>
+                        <th class="px-4 py-3"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     @foreach ($placements as $p)
-                        @php $s = $stats[$p->id]; $pct = $s['total_days'] > 0 ? round($s['hadir'] / $s['total_days'] * 100) : 0; @endphp
+                        @php
+                            $s = $stats[$p->id];
+                            $tidakMasuk = ($s['izin'] ?? 0) + ($s['sakit'] ?? 0) + ($s['libur'] ?? 0);
+                            // Alfa = hari berlalu - hadir - izin/sakit/libur (minimum 0)
+                            $hariLalu = $s['total_days'];
+                            $alfa = max(0, $hariLalu - $s['hadir'] - $tidakMasuk);
+                            // Persen kehadiran = (hadir + tidak masuk beralasan) / total
+                            $efektif = $s['hadir'] + $tidakMasuk;
+                            $pct = $hariLalu > 0 ? round($s['hadir'] / $hariLalu * 100) : 0;
+                        @endphp
                         <tr class="hover:bg-white/[0.02] transition-colors">
                             <td class="px-5 py-3">
                                 <p class="text-white font-medium">{{ $p->student->name }}</p>
                             </td>
                             <td class="px-5 py-3 text-gray-400 text-xs">{{ $p->location->name }}</td>
-                            <td class="px-5 py-3 text-center text-gray-300">{{ $s['total_days'] }}</td>
-                            <td class="px-5 py-3 text-center text-emerald-400 font-semibold">{{ $s['hadir'] }}</td>
-                            <td class="px-5 py-3 text-center text-amber-400">{{ $s['terlambat'] }}</td>
-                            <td class="px-5 py-3 text-center text-red-400">{{ $s['alfa'] }}</td>
-                            <td class="px-5 py-3 text-center text-amber-400">{{ $s['jurnal'] }}</td>
-                            <td class="px-5 py-3 text-center">
+                            <td class="px-4 py-3 text-center text-gray-300">{{ $hariLalu }}</td>
+                            <td class="px-4 py-3 text-center text-emerald-400 font-semibold">{{ $s['hadir'] }}</td>
+                            <td class="px-4 py-3 text-center text-amber-400">{{ $s['terlambat'] }}</td>
+                            <td class="px-4 py-3 text-center text-blue-400">{{ $tidakMasuk }}</td>
+                            <td class="px-4 py-3 text-center text-red-400">{{ $alfa }}</td>
+                            <td class="px-4 py-3 text-center text-amber-400">{{ $s['jurnal'] }}</td>
+                            <td class="px-4 py-3 text-center">
                                 <span class="text-xs font-semibold {{ $pct >= 80 ? 'text-emerald-400' : ($pct >= 60 ? 'text-amber-400' : 'text-red-400') }}">
                                     {{ $pct }}%
                                 </span>
                             </td>
-                            <td class="px-5 py-3">
+                            <td class="px-4 py-3">
                                 <a href="{{ route('guru.prakerin.placements.show', $p) }}"
                                    class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 text-xs rounded-lg transition-colors">
                                     Detail

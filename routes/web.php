@@ -184,10 +184,8 @@ Route::middleware(['auth', 'school.active'])->group(function () {
             Route::get('/recap/absensi', [GuruPrakerinController::class, 'recapAbsensi'])->name('recap.absensi');
             Route::get('/recap/jurnal', [GuruPrakerinController::class, 'recapJurnal'])->name('recap.jurnal');
             Route::post('/journals/{journal}/note', [GuruPrakerinController::class, 'addNote'])->name('journal.note');
-            // Kelola ketidakhadiran siswa
+            // Rekap ketidakhadiran siswa (lihat saja)
             Route::get('/izin', [GuruPrakerinController::class, 'izinIndex'])->name('izin');
-            Route::post('/izin/{absence}/approve', [GuruPrakerinController::class, 'izinApprove'])->name('izin.approve');
-            Route::post('/izin/{absence}/reject', [GuruPrakerinController::class, 'izinReject'])->name('izin.reject');
         });
 
         // Absensi Siswa (kelola sesi)

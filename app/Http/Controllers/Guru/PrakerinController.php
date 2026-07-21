@@ -329,7 +329,7 @@ class PrakerinController extends Controller
         $period       = $periods->find($periodId);
         $myLocIds     = collect();
         $allLocations = collect();
-        $journals     = collect();
+        $placements   = collect();
 
         if ($period) {
             $myLocIds     = $this->myLocationIds($period->id);
@@ -337,19 +337,22 @@ class PrakerinController extends Controller
                 ->where('school_id', $this->school()->id)->orderBy('name')->get();
 
             $filterLocIds = $locId ? collect([$locId]) : $myLocIds;
-            $journals = PrakerinJournal::with(['student', 'placement.location', 'photos'])
-                ->whereHas('placement', fn($q) => $q
-                    ->where('school_id', $this->school()->id)
-                    ->where('period_id', $period->id)
-                    ->whereIn('location_id', $filterLocIds)
-                )
-                ->where('status', 'submitted')
-                ->orderByDesc('journal_date')
-                ->paginate(20)->withQueryString();
+            $placements   = PrakerinPlacement::with([
+                    'student',
+                    'location',
+                    'journals.photos',
+                    'attendances',
+                    'absences' => fn($q) => $q->where('status', 'approved'),
+                ])
+                ->where('school_id', $this->school()->id)
+                ->where('period_id', $period->id)
+                ->whereIn('location_id', $filterLocIds)
+                ->where('is_active', true)
+                ->get();
         }
 
         return view('guru.prakerin.recap-jurnal', compact(
-            'periods', 'period', 'periodId', 'locId', 'journals', 'myLocIds'
+            'periods', 'period', 'periodId', 'locId', 'placements'
         ) + ['locations' => $allLocations]);
     }
 
@@ -374,8 +377,8 @@ class PrakerinController extends Controller
         $periods  = $this->myPeriods();
         $periodId = $request->get('period_id', $periods->first()?->id);
         $period   = $periods->find($periodId);
-
         $absences = collect();
+
         if ($period) {
             $myLocIds = $this->myLocationIds($period->id);
             $absences = PrakerinAbsence::with(['student', 'placement.location'])
@@ -384,55 +387,9 @@ class PrakerinController extends Controller
                     ->whereIn('location_id', $myLocIds)
                 )
                 ->orderByDesc('absence_date')
-                ->paginate(20)->withQueryString();
+                ->paginate(30)->withQueryString();
         }
 
         return view('guru.prakerin.izin', compact('periods', 'period', 'periodId', 'absences'));
-    }
-
-    public function izinApprove(PrakerinAbsence $absence, Request $request)
-    {
-        $myLocIds = $this->myLocationIds($absence->placement->period_id);
-        abort_unless($myLocIds->contains($absence->placement->location_id), 403);
-
-        $request->validate(['notes' => 'nullable|string|max:500']);
-        $absence->update([
-            'status'      => 'approved',
-            'approved_by' => Auth::id(),
-            'approved_at' => now(),
-            'notes'       => $request->notes,
-        ]);
-
-        // Buat record attendance dengan status izin/sakit/libur
-        PrakerinAttendance::updateOrCreate(
-            [
-                'placement_id'    => $absence->placement_id,
-                'attendance_date' => $absence->absence_date,
-                'type'            => 'check_in',
-            ],
-            [
-                'student_id'  => $absence->student_id,
-                'status'      => $absence->type, // izin / sakit / libur
-                'ip_address'  => $request->ip(),
-            ]
-        );
-
-        return back()->with('success', 'Konfirmasi ketidakhadiran disetujui.');
-    }
-
-    public function izinReject(PrakerinAbsence $absence, Request $request)
-    {
-        $myLocIds = $this->myLocationIds($absence->placement->period_id);
-        abort_unless($myLocIds->contains($absence->placement->location_id), 403);
-
-        $request->validate(['notes' => 'required|string|max:500']);
-        $absence->update([
-            'status'      => 'rejected',
-            'approved_by' => Auth::id(),
-            'approved_at' => now(),
-            'notes'       => $request->notes,
-        ]);
-
-        return back()->with('success', 'Konfirmasi ketidakhadiran ditolak.');
     }
 }

@@ -20,7 +20,7 @@
     @if ($journal)
         <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15 flex items-center gap-2">
             <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            <p class="text-amber-300 text-xs">Jurnal sudah diisi pukul {{ $journal->submitted_at->format('H:i') }}. Anda bisa memperbarui isinya.</p>
+            <p class="text-amber-300 text-xs">Jurnal sudah diisi pukul {{ $journal->submitted_at?->format('H:i') ?? $journal->updated_at->format('H:i') }}. Anda bisa memperbarui isinya.</p>
         </div>
     @else
         <div class="mb-4 p-3 rounded-xl bg-blue-500/5 border border-blue-500/15 flex items-start gap-2">

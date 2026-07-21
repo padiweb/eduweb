@@ -57,7 +57,8 @@
         </p>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-            <div class="bg-gray-900 border {{ $checkin ? 'border-emerald-500/30' : 'border-white/5' }} rounded-2xl p-4 text-center">
+            {{-- Card Masuk --}}
+            <div class="bg-gray-900 border {{ $checkin ? 'border-emerald-500/30' : ($absence ? 'border-white/5' : 'border-white/5') }} rounded-2xl p-4 text-center">
                 <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $checkin ? 'bg-emerald-500/15' : 'bg-gray-800' }}">
                     <svg class="w-5 h-5 {{ $checkin ? 'text-emerald-400' : 'text-gray-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
@@ -65,8 +66,10 @@
                 </div>
                 <p class="text-xs text-gray-400 mb-1">Masuk</p>
                 @if ($checkin)
-                    <p class="text-emerald-400 text-xs font-bold">{{ $checkin->selfie_taken_at->format('H:i') }}</p>
+                    <p class="text-emerald-400 text-xs font-bold">{{ $checkin->selfie_taken_at?->format('H:i') ?? $checkin->created_at->format('H:i') }}</p>
                     <p class="text-gray-600 text-xs">{{ $checkin->status_label }}</p>
+                @elseif ($absence)
+                    <p class="text-gray-600 text-xs mt-1">—</p>
                 @else
                     <a href="{{ route('siswa.prakerin.absen', 'check_in') }}"
                        class="inline-block mt-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-lg font-semibold transition-colors">
@@ -75,7 +78,7 @@
                 @endif
             </div>
 
-            {{-- Absen Pulang --}}
+            {{-- Card Pulang --}}
             <div class="bg-gray-900 border {{ $checkout ? 'border-blue-500/30' : 'border-white/5' }} rounded-2xl p-4 text-center">
                 <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $checkout ? 'bg-blue-500/15' : 'bg-gray-800' }}">
                     <svg class="w-5 h-5 {{ $checkout ? 'text-blue-400' : 'text-gray-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +87,9 @@
                 </div>
                 <p class="text-xs text-gray-400 mb-1">Pulang</p>
                 @if ($checkout)
-                    <p class="text-blue-400 text-xs font-bold">{{ $checkout->selfie_taken_at->format('H:i') }}</p>
+                    <p class="text-blue-400 text-xs font-bold">{{ $checkout->selfie_taken_at?->format('H:i') ?? $checkout->created_at->format('H:i') }}</p>
+                @elseif ($absence)
+                    <p class="text-gray-600 text-xs mt-1">—</p>
                 @else
                     <a href="{{ route('siswa.prakerin.absen', 'check_out') }}"
                        class="inline-block mt-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs rounded-lg font-semibold transition-colors">
@@ -93,7 +98,7 @@
                 @endif
             </div>
 
-            {{-- Jurnal --}}
+            {{-- Card Jurnal --}}
             <div class="bg-gray-900 border {{ $journal ? 'border-amber-500/30' : 'border-white/5' }} rounded-2xl p-4 text-center">
                 <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $journal ? 'bg-amber-500/15' : 'bg-gray-800' }}">
                     <svg class="w-5 h-5 {{ $journal ? 'text-amber-400' : 'text-gray-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +107,7 @@
                 </div>
                 <p class="text-xs text-gray-400 mb-1">Jurnal</p>
                 @if ($journal)
-                    <p class="text-amber-400 text-xs font-bold">{{ $journal->submitted_at->format('H:i') }}</p>
+                    <p class="text-amber-400 text-xs font-bold">{{ $journal->submitted_at?->format('H:i') ?? $journal->updated_at->format('H:i') }}</p>
                     <a href="{{ route('siswa.prakerin.jurnal') }}" class="text-gray-500 text-xs hover:text-amber-400 transition-colors">Edit</a>
                 @else
                     <a href="{{ route('siswa.prakerin.jurnal') }}"
@@ -112,7 +117,7 @@
                 @endif
             </div>
 
-            {{-- Card Izin/Sakit/Libur --}}
+            {{-- Card Tidak Hadir --}}
             @php $absence = \App\Models\PrakerinAbsence::where('placement_id', $placement->id)->where('absence_date', $today)->first(); @endphp
             <div class="bg-gray-900 border {{ $absence ? 'border-orange-500/30' : 'border-white/5' }} rounded-2xl p-4 text-center">
                 <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $absence ? 'bg-orange-500/15' : 'bg-gray-800' }}">
@@ -123,12 +128,12 @@
                 <p class="text-xs text-gray-400 mb-1">Tidak Hadir</p>
                 @if ($absence)
                     <p class="text-orange-400 text-xs font-bold">{{ $absence->type_label }}</p>
-                    <p class="text-gray-600 text-xs">{{ $absence->status_label }}</p>
+                    <p class="text-emerald-400 text-xs">Tercatat</p>
                 @else
                     @if (! $checkin)
                         <a href="{{ route('siswa.prakerin.izin') }}"
                            class="inline-block mt-1 px-3 py-1.5 bg-orange-700 hover:bg-orange-600 text-white text-xs rounded-lg font-semibold transition-colors">
-                            Ajukan
+                            Lapor
                         </a>
                     @else
                         <p class="text-gray-700 text-xs mt-1">—</p>
@@ -156,10 +161,10 @@
                             <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($date)->translatedFormat('D, d M') }}</p>
                         </div>
                         <span class="px-2 py-0.5 rounded-md text-xs {{ $ci ? 'bg-emerald-500/10 text-emerald-400' : 'bg-gray-800 text-gray-600' }}">
-                            {{ $ci ? 'Masuk '.$ci->selfie_taken_at->format('H:i') : '— Masuk' }}
+                            {{ $ci ? 'Masuk '.($ci->selfie_taken_at?->format('H:i') ?? $ci->created_at->format('H:i')) : '— Masuk' }}
                         </span>
                         <span class="px-2 py-0.5 rounded-md text-xs {{ $co ? 'bg-blue-500/10 text-blue-400' : 'bg-gray-800 text-gray-600' }}">
-                            {{ $co ? 'Pulang '.$co->selfie_taken_at->format('H:i') : '— Pulang' }}
+                            {{ $co ? 'Pulang '.($co->selfie_taken_at?->format('H:i') ?? $co->created_at->format('H:i')) : '— Pulang' }}
                         </span>
                     </div>
                 @endforeach
