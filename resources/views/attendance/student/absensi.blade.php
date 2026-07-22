@@ -1,8 +1,8 @@
 <x-simans-layout title="Absensi Saya">
 
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-white">Absensi Saya</h1>
-        <p class="text-gray-400 text-sm mt-1">{{ now()->translatedFormat('l, d F Y') }}</p>
+        <h1 class="text-2xl font-bold text-gray-900">Absensi Saya</h1>
+        <p class="text-gray-500 text-sm mt-1">{{ now()->translatedFormat('l, d F Y') }}</p>
     </div>
 
     @php
@@ -27,10 +27,10 @@
     {{-- Status absensi hari ini --}}
     @if($myAttendance)
         @php $color = $colorMap[$myAttendance->status] ?? 'gray'; @endphp
-        <div class="bg-gray-900 border border-{{ $color }}-500/30 rounded-xl p-6 mb-5 text-center">
+        <div class="bg-white border border-{{ $color }}-500/30 rounded-xl p-6 mb-5 text-center">
             <div class="w-16 h-16 rounded-full bg-{{ $color }}-500/10 border-2 border-{{ $color }}-500/30 flex items-center justify-center mx-auto mb-4">
                 @if($myAttendance->status === 'hadir')
-                    <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 @elseif($myAttendance->status === 'terlambat')
@@ -43,8 +43,8 @@
                     </svg>
                 @endif
             </div>
-            <h2 class="text-xl font-bold text-white mb-1">{{ $labelMap[$myAttendance->status] ?? $myAttendance->status }}</h2>
-            <p class="text-gray-400 text-sm">
+            <h2 class="text-xl font-bold text-gray-900 mb-1">{{ $labelMap[$myAttendance->status] ?? $myAttendance->status }}</h2>
+            <p class="text-gray-500 text-sm">
                 @if($myAttendance->scanned_at)
                     Tercatat pukul {{ $myAttendance->scanned_at->format('H:i:s') }} WIB
                 @else
@@ -65,35 +65,35 @@
 
     @elseif($session && ! $session->is_closed)
         {{-- Belum absen, sesi masih aktif --}}
-        <div class="bg-gray-900 border border-amber-500/20 rounded-xl p-5 mb-5">
+        <div class="bg-white border border-amber-500/20 rounded-xl p-5 mb-5">
             <div class="text-center mb-5">
-                <p class="text-sm font-semibold text-white">{{ $classroom->name }}</p>
-                <p class="text-xs text-gray-400 mt-0.5">
+                <p class="text-sm font-semibold text-gray-900">{{ $classroom->name }}</p>
+                <p class="text-xs text-gray-500 mt-0.5">
                     Jam: {{ substr($session->open_time,0,5) }} – {{ substr($session->close_time,0,5) }} WIB
                 </p>
             </div>
 
             {{-- Tombol scan QR --}}
             <button id="btn-start-scan"
-                    class="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-2xl transition-colors text-base mb-3">
+                    class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 font-bold py-4 rounded-2xl transition-colors text-base mb-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z"/>
                 </svg>
                 Scan QR Absensi
             </button>
-            <p class="text-center text-xs text-gray-500">
+            <p class="text-center text-xs text-gray-400">
                 Atau scan QR di papan kelas langsung dari kamera HP
             </p>
         </div>
 
         {{-- Area scanner kamera --}}
         <div id="scanner-area" class="hidden mb-5">
-            <div class="bg-gray-900 border border-emerald-500/20 rounded-xl overflow-hidden">
-                <div class="flex items-center justify-between px-4 py-3 border-b border-white/5">
-                    <span class="text-sm font-semibold text-emerald-400">Arahkan ke QR Code</span>
+            <div class="bg-white border border-blue-200 rounded-xl overflow-hidden">
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                    <span class="text-sm font-semibold text-blue-600">Arahkan ke QR Code</span>
                     <button id="btn-stop-scan"
-                            class="text-gray-400 hover:text-white text-xs py-1 px-3 bg-gray-800 rounded-lg border border-white/10 transition-colors">
+                            class="text-gray-500 hover:text-gray-900 text-xs py-1 px-3 bg-white rounded-lg border border-gray-200 transition-colors">
                         Batal
                     </button>
                 </div>
@@ -107,29 +107,29 @@
                             <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-400 rounded-tr-lg"></div>
                             <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-400 rounded-bl-lg"></div>
                             <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-400 rounded-br-lg"></div>
-                            <div id="scan-line" class="absolute left-2 right-2 h-0.5 bg-emerald-400/80 rounded-full top-1/2"></div>
+                            <div id="scan-line" class="absolute left-2 right-2 h-0.5 bg-blue-500/80 rounded-full top-1/2"></div>
                         </div>
                     </div>
                 </div>
                 <div class="px-4 py-3 text-center">
-                    <p id="scan-status" class="text-sm text-gray-400">Mendeteksi QR Code...</p>
+                    <p id="scan-status" class="text-sm text-gray-500">Mendeteksi QR Code...</p>
                 </div>
             </div>
         </div>
 
         {{-- GPS + tombol absen (muncul setelah QR terdeteksi) --}}
         <div id="gps-area" class="hidden mb-5">
-            <div class="bg-gray-900 border border-blue-500/20 rounded-xl p-4">
-                <div class="flex items-center gap-3 mb-4 p-3 rounded-xl bg-gray-800 border border-white/10" id="gps-box">
+            <div class="bg-white border border-blue-500/20 rounded-xl p-4">
+                <div class="flex items-center gap-3 mb-4 p-3 rounded-xl bg-white border border-gray-200" id="gps-box">
                     <svg class="w-4 h-4 text-blue-400 animate-pulse flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
                     </svg>
-                    <span id="gps-status-text" class="text-sm text-gray-300">Mendeteksi lokasi GPS...</span>
+                    <span id="gps-status-text" class="text-sm text-gray-600">Mendeteksi lokasi GPS...</span>
                 </div>
                 <button id="btn-absen"
                         disabled
-                        class="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-2xl transition-all">
+                        class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 font-bold py-3.5 rounded-2xl transition-all">
                     Absen Sekarang
                 </button>
                 <p id="absen-error" class="text-red-400 text-xs text-center mt-2 hidden"></p>
@@ -137,35 +137,35 @@
         </div>
 
     @elseif($session && $session->is_closed)
-        <div class="bg-gray-900 border border-red-500/20 rounded-xl p-6 mb-5 text-center">
+        <div class="bg-white border border-red-500/20 rounded-xl p-6 mb-5 text-center">
             <svg class="w-12 h-12 text-red-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
             </svg>
-            <h2 class="text-lg font-semibold text-white mb-1">Absensi Ditutup</h2>
-            <p class="text-gray-400 text-sm">Sesi absensi hari ini sudah ditutup.</p>
-            <p class="text-gray-500 text-xs mt-1">Hubungi guru untuk absen manual.</p>
+            <h2 class="text-lg font-semibold text-gray-900 mb-1">Absensi Ditutup</h2>
+            <p class="text-gray-500 text-sm">Sesi absensi hari ini sudah ditutup.</p>
+            <p class="text-gray-400 text-xs mt-1">Hubungi guru untuk absen manual.</p>
         </div>
 
     @else
-        <div class="bg-gray-900 border border-white/5 rounded-xl p-6 mb-5 text-center">
-            <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <div class="bg-white border border-gray-200 rounded-xl p-6 mb-5 text-center">
+            <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
             </svg>
-            <h2 class="text-lg font-semibold text-white mb-1">Belum Ada Sesi Hari Ini</h2>
-            <p class="text-gray-400 text-sm">Absensi belum dibuka. Coba lagi nanti.</p>
+            <h2 class="text-lg font-semibold text-gray-900 mb-1">Belum Ada Sesi Hari Ini</h2>
+            <p class="text-gray-500 text-sm">Absensi belum dibuka. Coba lagi nanti.</p>
         </div>
     @endif
 
     {{-- Link riwayat --}}
     <a href="{{ route('siswa.attendance.history') }}"
-       class="flex items-center justify-between bg-gray-900 border border-white/5 rounded-xl px-5 py-4 hover:bg-gray-800 transition-colors">
+       class="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-5 py-4 hover:bg-gray-50 transition-colors">
         <div class="flex items-center gap-3">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
             </svg>
-            <span class="text-sm font-medium text-white">Lihat Riwayat Absensi</span>
+            <span class="text-sm font-medium text-gray-900">Lihat Riwayat Absensi</span>
         </div>
-        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
         </svg>
     </a>
@@ -221,13 +221,13 @@
                 scanArea.classList.add('hidden');
                 btnStart.parentElement.classList.remove('hidden');
                 scanStat.textContent = 'Mendeteksi QR Code...';
-                scanStat.className   = 'text-sm text-gray-400';
+                scanStat.className   = 'text-sm text-gray-500';
             });
         }
 
         function startCamera() {
             scanStat.textContent = 'Membuka kamera...';
-            scanStat.className   = 'text-sm text-gray-400';
+            scanStat.className   = 'text-sm text-gray-500';
 
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                 scanStat.textContent = 'Browser tidak mendukung kamera. Gunakan Chrome/Safari terbaru.';
@@ -291,7 +291,7 @@
                 if (!token && parsed.pathname.indexOf('/absensi/kelas/') !== -1) {
                     stopCamera();
                     scanStat.textContent = 'QR terdeteksi! Membuka halaman absensi...';
-                    scanStat.className   = 'text-sm text-emerald-400';
+                    scanStat.className   = 'text-sm text-blue-600';
                     // Redirect ke halaman class-scan yang sudah handle login
                     window.location.href = rawUrl;
                     return;
@@ -322,14 +322,14 @@
                 return;
             }
             gpsStat.textContent = 'Mendeteksi lokasi GPS...';
-            gpsStat.className   = 'text-sm text-gray-300';
+            gpsStat.className   = 'text-sm text-gray-600';
 
             navigator.geolocation.getCurrentPosition(
                 function(pos) {
                     gpsData = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, gps_accuracy: pos.coords.accuracy };
                     gpsStat.textContent = 'Lokasi terdeteksi (\u00b1' + Math.round(pos.coords.accuracy) + 'm) \u2014 siap absen';
-                    gpsStat.className   = 'text-sm text-emerald-400';
-                    gpsBox.className    = 'flex items-center gap-3 mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20';
+                    gpsStat.className   = 'text-sm text-blue-600';
+                    gpsBox.className    = 'flex items-center gap-3 mb-4 p-3 rounded-xl bg-blue-600/10 border border-blue-200';
                     btnAbsen.disabled   = false;
                 },
                 function(err) {

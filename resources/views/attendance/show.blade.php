@@ -3,14 +3,14 @@
     <div class="flex items-start justify-between mb-6">
         <div>
             <a href="{{ route('guru.attendance.index') }}"
-               class="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition-colors">
+               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
                 Kembali
             </a>
-            <h1 class="text-2xl font-bold text-white">{{ $session->classroom->name }}</h1>
-            <p class="text-gray-400 text-sm mt-0.5">
+            <h1 class="text-2xl font-bold text-gray-900">{{ $session->classroom->name }}</h1>
+            <p class="text-gray-500 text-sm mt-0.5">
                 {{ $session->session_date->translatedFormat('l, d F Y') }} &middot;
                 Jam: {{ substr($session->open_time, 0, 5) }}&ndash;{{ substr($session->close_time, 0, 5) }}
             </p>
@@ -19,7 +19,7 @@
             <form method="POST" action="{{ route('guru.attendance.close', $session->id) }}">
                 @csrf @method('PATCH')
                 <button onclick="return confirm('Tutup sesi? Siswa yang belum absen akan ditandai Alfa.')"
-                        class="flex items-center gap-2 bg-gray-800 hover:bg-red-900/40 text-gray-400 hover:text-red-400 border border-white/10 hover:border-red-500/30 text-sm font-medium px-4 py-2.5 rounded-xl transition-all">
+                        class="flex items-center gap-2 bg-white hover:bg-red-900/40 text-gray-500 hover:text-red-400 border border-gray-200 hover:border-red-500/30 text-sm font-medium px-4 py-2.5 rounded-xl transition-all">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -30,7 +30,7 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl text-sm">
             {{ session('success') }}
         </div>
     @endif
@@ -46,16 +46,16 @@
         <div class="space-y-4">
 
             {{-- Panel QR --}}
-            <div class="bg-gray-900 border {{ $session->is_closed ? 'border-white/5' : 'border-emerald-500/20' }} rounded-xl p-5">
+            <div class="bg-white border {{ $session->is_closed ? 'border-gray-200' : 'border-blue-200' }} rounded-xl p-5">
                 <div class="flex items-center gap-2 mb-4">
                     @if($session->is_closed)
                         <span class="w-2 h-2 rounded-full bg-gray-500"></span>
-                        <span class="text-sm font-semibold text-gray-400">Sesi Ditutup</span>
+                        <span class="text-sm font-semibold text-gray-500">Sesi Ditutup</span>
                     @else
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span class="text-sm font-semibold text-emerald-400">Sesi Aktif</span>
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span class="text-sm font-semibold text-blue-600">Sesi Aktif</span>
                     @endif
-                    <span class="ml-auto text-xs text-gray-500">{{ $session->openedBy?->name ?? 'Sistem' }}</span>
+                    <span class="ml-auto text-xs text-gray-400">{{ $session->openedBy?->name ?? 'Sistem' }}</span>
                 </div>
 
                 @if($qrImage && ! $session->is_closed)
@@ -64,77 +64,77 @@
                             {!! base64_decode($qrImage) !!}
                         </div>
                     </div>
-                    <p class="text-center text-xs text-gray-600">QR diperbarui otomatis setiap hari</p>
+                    <p class="text-center text-xs text-gray-400">QR diperbarui otomatis setiap hari</p>
                 @else
-                    <div class="bg-gray-800 rounded-xl p-6 text-center">
-                        <p class="text-gray-500 text-sm">Sesi ditutup</p>
+                    <div class="bg-white rounded-xl p-6 text-center">
+                        <p class="text-gray-400 text-sm">Sesi ditutup</p>
                     </div>
                 @endif
 
                 <div class="grid grid-cols-3 gap-2 mt-4">
-                    <div class="bg-gray-800 rounded-xl p-2.5 text-center">
-                        <p class="text-xs text-gray-500 mb-0.5">Buka</p>
-                        <p class="text-white font-semibold text-sm">{{ substr($session->open_time, 0, 5) }}</p>
+                    <div class="bg-white rounded-xl p-2.5 text-center">
+                        <p class="text-xs text-gray-400 mb-0.5">Buka</p>
+                        <p class="text-gray-900 font-semibold text-sm">{{ substr($session->open_time, 0, 5) }}</p>
                     </div>
                     <div class="bg-amber-900/30 border border-amber-500/20 rounded-xl p-2.5 text-center">
                         <p class="text-xs text-amber-600 mb-0.5">Batas</p>
                         <p class="text-amber-400 font-semibold text-sm">{{ substr($session->late_after, 0, 5) }}</p>
                     </div>
-                    <div class="bg-gray-800 rounded-xl p-2.5 text-center">
-                        <p class="text-xs text-gray-500 mb-0.5">Tutup</p>
-                        <p class="text-white font-semibold text-sm">{{ substr($session->close_time, 0, 5) }}</p>
+                    <div class="bg-white rounded-xl p-2.5 text-center">
+                        <p class="text-xs text-gray-400 mb-0.5">Tutup</p>
+                        <p class="text-gray-900 font-semibold text-sm">{{ substr($session->close_time, 0, 5) }}</p>
                     </div>
                 </div>
             </div>
 
             {{-- Stat cards --}}
             <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-900 border border-emerald-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-emerald-400" id="stat-hadir">{{ $recap['hadir'] + $recap['terlambat'] }}</p>
-                    <p class="text-xs text-gray-400 mt-1">Hadir</p>
+                <div class="bg-white border border-blue-200 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-blue-600" id="stat-hadir">{{ $recap['hadir'] + $recap['terlambat'] }}</p>
+                    <p class="text-xs text-gray-500 mt-1">Hadir</p>
                 </div>
-                <div class="bg-gray-900 border border-white/5 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-gray-400" id="stat-belum">{{ $recap['belum'] }}</p>
-                    <p class="text-xs text-gray-400 mt-1">Belum</p>
+                <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-gray-500" id="stat-belum">{{ $recap['belum'] }}</p>
+                    <p class="text-xs text-gray-500 mt-1">Belum</p>
                 </div>
-                <div class="bg-gray-900 border border-amber-500/20 rounded-xl p-4 text-center">
+                <div class="bg-white border border-amber-500/20 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-amber-400" id="stat-terlambat">{{ $recap['terlambat'] }}</p>
-                    <p class="text-xs text-gray-400 mt-1">Terlambat</p>
+                    <p class="text-xs text-gray-500 mt-1">Terlambat</p>
                 </div>
-                <div class="bg-gray-900 border border-red-500/20 rounded-xl p-4 text-center">
+                <div class="bg-white border border-red-500/20 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-red-400" id="stat-alfa">{{ $recap['alfa'] }}</p>
-                    <p class="text-xs text-gray-400 mt-1">Alfa</p>
+                    <p class="text-xs text-gray-500 mt-1">Alfa</p>
                 </div>
             </div>
 
             {{-- Progress --}}
-            <div class="bg-gray-900 border border-white/5 rounded-xl p-4">
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
                 <div class="flex justify-between mb-2">
-                    <span class="text-sm text-gray-400">Kehadiran</span>
-                    <span class="text-white font-bold" id="rate-text">{{ $recap['rate'] }}%</span>
+                    <span class="text-sm text-gray-500">Kehadiran</span>
+                    <span class="text-gray-900 font-bold" id="rate-text">{{ $recap['rate'] }}%</span>
                 </div>
-                <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                <div class="h-2 bg-white rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-blue-600 rounded-full transition-all duration-500"
                          style="width: {{ $recap['rate'] }}%"></div>
                 </div>
-                <p class="text-xs text-gray-600 mt-2">{{ $recap['total'] }} siswa terdaftar</p>
+                <p class="text-xs text-gray-400 mt-2">{{ $recap['total'] }} siswa terdaftar</p>
             </div>
         </div>
 
         {{-- Kolom Kanan: Tabel siswa --}}
         <div class="lg:col-span-2">
-            <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
 
                 {{-- Toolbar --}}
-                <div class="flex flex-wrap items-center gap-2 px-5 py-4 border-b border-white/5">
-                    <h3 class="text-sm font-semibold text-white mr-auto">Daftar Absensi Siswa</h3>
+                <div class="flex flex-wrap items-center gap-2 px-5 py-4 border-b border-gray-200">
+                    <h3 class="text-sm font-semibold text-gray-900 mr-auto">Daftar Absensi Siswa</h3>
                     @if(! $session->is_closed)
                         <button type="button" id="btn-check-all"
-                                class="text-xs text-gray-400 hover:text-white py-1.5 px-3 rounded-lg bg-gray-800 border border-white/10 transition-colors">
+                                class="text-xs text-gray-500 hover:text-gray-900 py-1.5 px-3 rounded-lg bg-white border border-gray-200 transition-colors">
                             Centang Semua
                         </button>
                         <button type="button" id="btn-uncheck-all"
-                                class="text-xs text-gray-400 hover:text-white py-1.5 px-3 rounded-lg bg-gray-800 border border-white/10 transition-colors">
+                                class="text-xs text-gray-500 hover:text-gray-900 py-1.5 px-3 rounded-lg bg-white border border-gray-200 transition-colors">
                             Hapus Semua
                         </button>
                         <button type="button" id="btn-bulk-edit"
@@ -152,13 +152,13 @@
                     <input type="hidden" name="subject_name" value="">
                     <input type="hidden" name="notes" value="">
 
-                    <div class="divide-y divide-white/5">
+                    <div class="divide-y divide-gray-100">
                         @foreach($session->classroom->students->sortBy('name') as $student)
                             @php
                                 $att      = $recap['attendances']->firstWhere('student_id', $student->id);
                                 $status   = $att?->status ?? null;
                                 $colorMap = [
-                                    'hadir'     => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                                    'hadir'     => 'bg-blue-600/10 text-blue-600 border-blue-200',
                                     'terlambat' => 'bg-amber-500/10 text-amber-400 border-amber-500/20',
                                     'izin'      => 'bg-blue-500/10 text-blue-400 border-blue-500/20',
                                     'sakit'     => 'bg-purple-500/10 text-purple-400 border-purple-500/20',
@@ -167,23 +167,23 @@
                                 $labelMap  = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
                                 $isPresent = $status && in_array($status, ['hadir','terlambat','izin','sakit']);
                             @endphp
-                            <div class="flex items-center gap-3 px-5 py-3 hover:bg-white/[0.02] transition-colors">
+                            <div class="flex items-center gap-3 px-5 py-3 hover:bg-gray-50 transition-colors">
 
                                 @if(! $session->is_closed)
                                     <input type="checkbox"
                                            name="present_ids[]"
                                            value="{{ $student->id }}"
                                            {{ $isPresent ? 'checked' : '' }}
-                                           class="roll-call-cb w-4 h-4 rounded border-gray-600 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0 flex-shrink-0 cursor-pointer">
+                                           class="roll-call-cb w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-emerald-500 focus:ring-offset-0 flex-shrink-0 cursor-pointer">
                                 @endif
 
-                                <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-300 flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
                                     {{ substr($student->name, 0, 2) }}
                                 </div>
 
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate">{{ $student->name }}</p>
-                                    <p class="text-xs text-gray-500">
+                                    <p class="text-sm font-medium text-gray-900 truncate">{{ $student->name }}</p>
+                                    <p class="text-xs text-gray-400">
                                         NIS: {{ $student->nis }}
                                         @if($att && $att->scanned_at) &middot; {{ $att->scanned_at->format('H:i:s') }} @endif
                                         @if($att && $att->is_manual_entry) &middot; <span class="text-amber-500">Manual</span> @endif
@@ -191,17 +191,17 @@
                                 </div>
 
                                 @if($status)
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border flex-shrink-0 {{ $colorMap[$status] ?? 'bg-gray-800 text-gray-400 border-white/10' }}">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border flex-shrink-0 {{ $colorMap[$status] ?? 'bg-white text-gray-500 border-gray-200' }}">
                                         {{ $labelMap[$status] ?? $status }}
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-gray-800 text-gray-500 border-white/5 flex-shrink-0">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-white text-gray-400 border-gray-200 flex-shrink-0">
                                         Belum Absen
                                     </span>
                                 @endif
 
                                 <button type="button"
-                                        class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-400 hover:text-white transition-colors flex-shrink-0"
+                                        class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0"
                                         data-student-id="{{ $student->id }}"
                                         data-student-name="{{ $student->name }}"
                                         data-current-status="{{ $status ?? '' }}">
@@ -214,15 +214,15 @@
                     </div>
 
                     @if(! $session->is_closed)
-                        <div class="px-5 py-4 border-t border-white/5 bg-gray-800/50 flex items-center justify-between gap-4">
-                            <p class="text-xs text-gray-400 flex-1">
+                        <div class="px-5 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between gap-4">
+                            <p class="text-xs text-gray-500 flex-1">
                                 Centang siswa yang hadir fisik, lalu simpan roll call.
                                 @if($session->roll_call_done)
-                                    <span class="text-emerald-400 font-medium ml-1">Sudah pukul {{ $session->roll_call_at->format('H:i') }}</span>
+                                    <span class="text-blue-600 font-medium ml-1">Sudah pukul {{ $session->roll_call_at->format('H:i') }}</span>
                                 @endif
                             </p>
                             <button type="submit"
-                                    class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-5 py-2 rounded-xl transition-colors flex-shrink-0">
+                                    class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-gray-900 text-sm font-semibold px-5 py-2 rounded-xl transition-colors flex-shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
@@ -237,10 +237,10 @@
 
     {{-- Modal Edit Satu Siswa --}}
     <div id="modal-edit" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-sm">
-            <div class="flex items-center justify-between p-5 border-b border-white/5">
-                <h3 class="font-semibold text-white">Edit Status Absensi</h3>
-                <button id="btn-close-modal" class="text-gray-500 hover:text-white transition-colors">
+        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-sm">
+            <div class="flex items-center justify-between p-5 border-b border-gray-200">
+                <h3 class="font-semibold text-gray-900">Edit Status Absensi</h3>
+                <button id="btn-close-modal" class="text-gray-400 hover:text-gray-900 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -248,42 +248,42 @@
             </div>
             <div class="p-5 space-y-4">
                 <div>
-                    <p class="text-xs text-gray-400 mb-0.5">Siswa</p>
-                    <p class="text-sm font-semibold text-white" id="modal-student-name"></p>
+                    <p class="text-xs text-gray-500 mb-0.5">Siswa</p>
+                    <p class="text-sm font-semibold text-gray-900" id="modal-student-name"></p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400 mb-2">Status Kehadiran</p>
+                    <p class="text-xs text-gray-500 mb-2">Status Kehadiran</p>
                     <div class="grid grid-cols-3 gap-2">
-                        <button type="button" class="status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="hadir"     data-color="emerald">Hadir</button>
-                        <button type="button" class="status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="terlambat" data-color="amber">Terlambat</button>
-                        <button type="button" class="status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="izin"      data-color="blue">Izin</button>
-                        <button type="button" class="status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="sakit"     data-color="purple">Sakit</button>
-                        <button type="button" class="status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="alfa"      data-color="red">Alfa</button>
+                        <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="hadir"     data-color="emerald">Hadir</button>
+                        <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="terlambat" data-color="amber">Terlambat</button>
+                        <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="izin"      data-color="blue">Izin</button>
+                        <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="sakit"     data-color="purple">Sakit</button>
+                        <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="alfa"      data-color="red">Alfa</button>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-400 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
                     <textarea id="modal-reason" rows="3"
-                              class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
+                              class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
                               placeholder="Wajib diisi. Dicatat dalam audit log..."></textarea>
                 </div>
             </div>
-            <div class="p-5 border-t border-white/5 flex gap-3">
-                <button id="btn-cancel-modal" class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium py-2.5 rounded-xl border border-white/10 transition-colors">Batal</button>
-                <button id="btn-submit-edit"  class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan</button>
+            <div class="p-5 border-t border-gray-200 flex gap-3">
+                <button id="btn-cancel-modal" class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
+                <button id="btn-submit-edit"  class="flex-1 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan</button>
             </div>
         </div>
     </div>
 
     {{-- Modal Edit Massal --}}
     <div id="modal-bulk" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-lg">
-            <div class="flex items-center justify-between p-5 border-b border-white/5">
+        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-lg">
+            <div class="flex items-center justify-between p-5 border-b border-gray-200">
                 <div>
-                    <h3 class="font-semibold text-white">Edit Massal Absensi</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Ubah status banyak siswa sekaligus</p>
+                    <h3 class="font-semibold text-gray-900">Edit Massal Absensi</h3>
+                    <p class="text-xs text-gray-500 mt-0.5">Ubah status banyak siswa sekaligus</p>
                 </div>
-                <button id="btn-close-bulk" class="text-gray-500 hover:text-white transition-colors">
+                <button id="btn-close-bulk" class="text-gray-400 hover:text-gray-900 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -292,45 +292,45 @@
             <div class="p-5 space-y-4">
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <p class="text-xs text-gray-400">Pilih Siswa</p>
+                        <p class="text-xs text-gray-500">Pilih Siswa</p>
                         <div class="flex gap-3">
-                            <button type="button" id="btn-bulk-check-all"   class="text-xs text-gray-500 hover:text-white transition-colors">Pilih Semua</button>
-                            <button type="button" id="btn-bulk-uncheck-all" class="text-xs text-gray-500 hover:text-white transition-colors">Hapus Semua</button>
+                            <button type="button" id="btn-bulk-check-all"   class="text-xs text-gray-400 hover:text-gray-900 transition-colors">Pilih Semua</button>
+                            <button type="button" id="btn-bulk-uncheck-all" class="text-xs text-gray-400 hover:text-gray-900 transition-colors">Hapus Semua</button>
                         </div>
                     </div>
-                    <div class="bg-gray-800 rounded-xl divide-y divide-white/5 max-h-48 overflow-y-auto">
+                    <div class="bg-white rounded-xl divide-y divide-gray-100 max-h-48 overflow-y-auto">
                         @foreach($session->classroom->students->sortBy('name') as $student)
                             @php $att = $recap['attendances']->firstWhere('student_id', $student->id); $st = $att?->status ?? null; @endphp
-                            <label class="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-white/5 transition-colors">
+                            <label class="flex items-center gap-3 px-4 py-2.5 cursor-pointer hover:bg-gray-50 transition-colors">
                                 <input type="checkbox" class="bulk-student-cb w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-0"
                                        value="{{ $student->id }}">
-                                <span class="flex-1 text-sm text-white">{{ $student->name }}</span>
-                                <span class="text-xs text-gray-500">{{ $st ? ucfirst($st) : 'Belum' }}</span>
+                                <span class="flex-1 text-sm text-gray-900">{{ $student->name }}</span>
+                                <span class="text-xs text-gray-400">{{ $st ? ucfirst($st) : 'Belum' }}</span>
                             </label>
                         @endforeach
                     </div>
-                    <p class="text-xs text-gray-600 mt-1.5"><span id="bulk-count">0</span> siswa dipilih</p>
+                    <p class="text-xs text-gray-400 mt-1.5"><span id="bulk-count">0</span> siswa dipilih</p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400 mb-2">Ubah Status Menjadi</p>
+                    <p class="text-xs text-gray-500 mb-2">Ubah Status Menjadi</p>
                     <div class="grid grid-cols-3 gap-2">
-                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="hadir"     data-color="emerald">Hadir</button>
-                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="terlambat" data-color="amber">Terlambat</button>
-                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="izin"      data-color="blue">Izin</button>
-                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="sakit"     data-color="purple">Sakit</button>
-                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-white/10 text-gray-400 text-xs font-semibold transition-all" data-value="alfa"      data-color="red">Alfa</button>
+                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="hadir"     data-color="emerald">Hadir</button>
+                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="terlambat" data-color="amber">Terlambat</button>
+                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="izin"      data-color="blue">Izin</button>
+                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="sakit"     data-color="purple">Sakit</button>
+                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="alfa"      data-color="red">Alfa</button>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-400 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
                     <textarea id="bulk-reason" rows="2"
-                              class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
+                              class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
                               placeholder="cth: Tidak hadir saat roll call..."></textarea>
                 </div>
             </div>
-            <div class="p-5 border-t border-white/5 flex gap-3">
-                <button id="btn-cancel-bulk" class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium py-2.5 rounded-xl border border-white/10 transition-colors">Batal</button>
-                <button id="btn-submit-bulk" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan Semua</button>
+            <div class="p-5 border-t border-gray-200 flex gap-3">
+                <button id="btn-cancel-bulk" class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
+                <button id="btn-submit-bulk" class="flex-1 bg-amber-500 hover:bg-amber-600 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan Semua</button>
             </div>
         </div>
     </div>
@@ -350,15 +350,15 @@
         // ── Helpers ───────────────────────────────────────────────────────
         function resetBtns(sel) {
             document.querySelectorAll(sel).forEach(function(b) {
-                b.classList.remove('border-emerald-500','text-emerald-400','border-amber-500','text-amber-400',
+                b.classList.remove('border-emerald-500','text-blue-600','border-amber-500','text-amber-400',
                     'border-blue-500','text-blue-400','border-purple-500','text-purple-400','border-red-500','text-red-400');
-                b.classList.add('border-white/10','text-gray-400');
+                b.classList.add('border-gray-200','text-gray-500');
             });
         }
         function highlightBtn(btn, sel) {
             resetBtns(sel);
             var c = btn.dataset.color;
-            btn.classList.remove('border-white/10','text-gray-400');
+            btn.classList.remove('border-gray-200','text-gray-500');
             btn.classList.add('border-'+c+'-500','text-'+c+'-400');
         }
 

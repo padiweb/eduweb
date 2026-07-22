@@ -24,16 +24,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
                     </svg>
                 @else
-                    <svg class="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 @endif
             </div>
-            <h1 class="text-2xl font-bold text-white mb-2">{{ $message }}</h1>
-            <p class="text-gray-400 text-sm mb-1">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $message }}</h1>
+            <p class="text-gray-500 text-sm mb-1">
                 {{ $session?->session_type === 'masuk' ? 'Absen Masuk' : 'Absen Pulang' }}
             </p>
-            <p class="text-gray-500 text-sm mb-6">
+            <p class="text-gray-400 text-sm mb-6">
                 Tercatat pukul {{ $attendance?->scanned_at?->format('H:i:s') }} WIB
             </p>
             @if($isLate)
@@ -41,7 +41,7 @@
                     Kamu tercatat terlambat. Harap lebih tepat waktu besok.
                 </div>
             @else
-                <div class="bg-emerald-900/20 border border-emerald-500/20 rounded-xl px-4 py-3 text-sm text-emerald-300 mb-5">
+                <div class="bg-emerald-900/20 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-700 mb-5">
                     +1 poin reward telah ditambahkan ke akunmu!
                 </div>
             @endif
@@ -52,12 +52,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold text-white mb-2">Absensi Gagal</h1>
-            <p class="text-gray-400 text-sm mb-6">{{ $message }}</p>
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">Absensi Gagal</h1>
+            <p class="text-gray-500 text-sm mb-6">{{ $message }}</p>
         @endif
 
         <a href="{{ route('guru.teacher-attendance.index') }}"
-           class="inline-block w-full bg-gray-800 hover:bg-gray-700 border border-white/10 text-white font-semibold py-3 rounded-2xl transition-colors">
+           class="inline-block w-full bg-white hover:bg-gray-100 border border-gray-200 text-gray-900 font-semibold py-3 rounded-2xl transition-colors">
             Kembali ke Halaman Absensi
         </a>
     </div>

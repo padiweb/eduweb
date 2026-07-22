@@ -1,18 +1,18 @@
 <x-simans-layout title="Ajukan Ketidakhadiran">
     <div class="mb-5">
-        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-white flex items-center gap-1 mb-3 transition-colors">
+        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-400 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
-        <h1 class="text-xl font-bold text-white">Konfirmasi Tidak Hadir</h1>
-        <p class="text-gray-400 text-sm mt-0.5">
+        <h1 class="text-xl font-bold text-gray-900">Konfirmasi Tidak Hadir</h1>
+        <p class="text-gray-500 text-sm mt-0.5">
             {{ $placement->location->name }} &middot; {{ \Carbon\Carbon::today()->translatedFormat('l, d F Y') }}
         </p>
     </div>
 
     @if ($absence)
         {{-- Sudah lapor hari ini --}}
-        <div class="bg-gray-900 border border-orange-500/20 rounded-2xl p-5">
+        <div class="bg-white border border-orange-500/20 rounded-2xl p-5">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
                     <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,13 +20,13 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-white font-semibold text-sm">Ketidakhadiran tercatat</p>
-                    <p class="text-emerald-400 text-xs mt-0.5">Anda tidak akan tercatat alfa hari ini</p>
+                    <p class="text-gray-900 font-semibold text-sm">Ketidakhadiran tercatat</p>
+                    <p class="text-blue-600 text-xs mt-0.5">Anda tidak akan tercatat alfa hari ini</p>
                 </div>
             </div>
-            <div class="space-y-2 pt-3 border-t border-white/5">
+            <div class="space-y-2 pt-3 border-t border-gray-200">
                 <div class="flex items-center justify-between">
-                    <span class="text-gray-500 text-sm">Jenis</span>
+                    <span class="text-gray-400 text-sm">Jenis</span>
                     <span class="px-2.5 py-0.5 text-xs font-semibold rounded-lg
                         {{ $absence->type === 'sakit' ? 'bg-red-500/10 text-red-400' :
                            ($absence->type === 'libur' ? 'bg-blue-500/10 text-blue-400' :
@@ -34,14 +34,14 @@
                         {{ $absence->type_label }}
                     </span>
                 </div>
-                <div class="pt-2 border-t border-white/5">
-                    <p class="text-gray-500 text-xs mb-1">Keterangan:</p>
-                    <p class="text-gray-300 text-sm">{{ $absence->reason }}</p>
+                <div class="pt-2 border-t border-gray-200">
+                    <p class="text-gray-400 text-xs mb-1">Keterangan:</p>
+                    <p class="text-gray-600 text-sm">{{ $absence->reason }}</p>
                 </div>
             </div>
         </div>
     @else
-        <div class="bg-gray-900/50 border border-white/5 rounded-xl px-4 py-3 mb-5 flex items-start gap-3">
+        <div class="bg-white border border-gray-200 rounded-xl px-4 py-3 mb-5 flex items-start gap-3">
             <svg class="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
@@ -58,12 +58,12 @@
         @endif
 
         <form action="{{ route('siswa.prakerin.izin.store') }}" method="POST" enctype="multipart/form-data"
-              class="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
+              class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
             @csrf
 
             {{-- Pilih jenis --}}
-            <div class="p-5 border-b border-white/5">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Jenis Ketidakhadiran</p>
+            <div class="p-5 border-b border-gray-200">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Jenis Ketidakhadiran</p>
                 <div class="grid grid-cols-3 gap-3" x-data="{ selected: '{{ old('type', 'izin') }}' }">
                     @foreach (['izin' => 'Izin', 'sakit' => 'Sakit', 'libur' => 'Libur DU/DI'] as $val => $label)
                         <label class="cursor-pointer" @click="selected = '{{ $val }}'">
@@ -72,9 +72,9 @@
                             <div class="p-3 rounded-xl border text-center transition-all"
                                  :class="selected === '{{ $val }}'
                                     ? 'border-orange-500/50 bg-orange-500/10'
-                                    : 'border-white/10 bg-gray-800 hover:border-white/20'">
+                                    : 'border-gray-200 bg-white hover:border-white/20'">
                                 <p class="text-sm font-medium transition-colors"
-                                   :class="selected === '{{ $val }}' ? 'text-orange-400' : 'text-gray-300'">
+                                   :class="selected === '{{ $val }}' ? 'text-orange-400' : 'text-gray-600'">
                                     {{ $label }}
                                 </p>
                             </div>
@@ -84,31 +84,31 @@
             </div>
 
             {{-- Keterangan --}}
-            <div class="p-5 border-b border-white/5">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Keterangan</p>
+            <div class="p-5 border-b border-gray-200">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Keterangan</p>
                 <textarea name="reason" rows="4" required minlength="10" maxlength="500"
                           placeholder="Jelaskan alasan tidak hadir hari ini..."
-                          class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-4 py-3 text-sm placeholder-gray-600 focus:outline-none focus:border-orange-500/50 resize-none">{{ old('reason') }}</textarea>
-                <p class="text-gray-600 text-xs mt-1">Minimal 10 karakter</p>
+                          class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:border-orange-500/50 resize-none">{{ old('reason') }}</textarea>
+                <p class="text-gray-400 text-xs mt-1">Minimal 10 karakter</p>
             </div>
 
             {{-- Lampiran --}}
-            <div class="p-5 border-b border-white/5">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                    Lampiran <span class="text-gray-600 font-normal">(Opsional — surat dokter, dll)</span>
+            <div class="p-5 border-b border-gray-200">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                    Lampiran <span class="text-gray-400 font-normal">(Opsional — surat dokter, dll)</span>
                 </p>
                 <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.pdf"
-                       class="block w-full text-sm text-gray-400
+                       class="block w-full text-sm text-gray-500
                               file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0
-                              file:text-sm file:bg-gray-800 file:text-gray-300
-                              hover:file:bg-gray-700 cursor-pointer">
-                <p class="text-gray-600 text-xs mt-1">JPG, PNG, atau PDF. Maks 5MB.</p>
+                              file:text-sm file:bg-white file:text-gray-600
+                              hover:file:bg-gray-100 cursor-pointer">
+                <p class="text-gray-400 text-xs mt-1">JPG, PNG, atau PDF. Maks 5MB.</p>
             </div>
 
             {{-- Submit --}}
             <div class="p-5">
                 <button type="submit"
-                        class="w-full py-3 bg-orange-700 hover:bg-orange-600 text-white text-sm font-semibold rounded-xl transition-colors">
+                        class="w-full py-3 bg-orange-700 hover:bg-orange-600 text-gray-900 text-sm font-semibold rounded-xl transition-colors">
                     Kirim Konfirmasi
                 </button>
             </div>

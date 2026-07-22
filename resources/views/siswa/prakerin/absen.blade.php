@@ -1,13 +1,13 @@
 <x-simans-layout title="{{ $type === 'check_in' ? 'Absen Masuk' : 'Absen Pulang' }} Prakerin">
     <div class="mb-5">
-        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-white flex items-center gap-1 mb-3 transition-colors">
+        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-400 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
-        <h1 class="text-xl font-bold text-white">{{ $type === 'check_in' ? 'Absen Masuk' : 'Absen Pulang' }}</h1>
-        <p class="text-gray-400 text-sm mt-0.5">{{ $placement->location->name }}</p>
+        <h1 class="text-xl font-bold text-gray-900">{{ $type === 'check_in' ? 'Absen Masuk' : 'Absen Pulang' }}</h1>
+        <p class="text-gray-500 text-sm mt-0.5">{{ $placement->location->name }}</p>
         @if ($type === 'check_in' && $placement->location->checkin_time)
-            <p class="text-gray-500 text-xs mt-0.5">
+            <p class="text-gray-400 text-xs mt-0.5">
                 Jam masuk: {{ $placement->location->checkin_time }}
                 @if ($placement->location->checkin_late_after)
                     · Toleransi: {{ $placement->location->checkin_late_after }}
@@ -16,19 +16,19 @@
         @endif
     </div>
 
-    <div id="gps-status" class="mb-4 p-3 rounded-xl bg-gray-900 border border-white/5 flex items-center gap-3">
-        <div id="gps-icon" class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center flex-shrink-0">
-            <svg class="w-4 h-4 text-gray-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div id="gps-status" class="mb-4 p-3 rounded-xl bg-white border border-gray-200 flex items-center gap-3">
+        <div id="gps-icon" class="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-gray-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
             </svg>
         </div>
         <div>
-            <p id="gps-text" class="text-gray-400 text-sm">Mengambil lokasi GPS...</p>
-            <p id="gps-detail" class="text-gray-600 text-xs mt-0.5"></p>
+            <p id="gps-text" class="text-gray-500 text-sm">Mengambil lokasi GPS...</p>
+            <p id="gps-detail" class="text-gray-400 text-xs mt-0.5"></p>
         </div>
     </div>
 
-    <div class="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden mb-4">
+    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-4">
         <div class="relative">
             <video id="video" autoplay playsinline class="w-full aspect-[3/4] object-cover bg-black"></video>
             <canvas id="canvas" class="hidden"></canvas>
@@ -37,13 +37,13 @@
                 <div class="w-48 h-48 rounded-full border-2 border-white/30 border-dashed"></div>
             </div>
             <button id="btn-retake" onclick="retakePhoto()"
-                    class="hidden absolute top-3 right-3 px-3 py-1.5 bg-gray-900/80 text-white text-xs rounded-lg border border-white/10 backdrop-blur-sm">
+                    class="hidden absolute top-3 right-3 px-3 py-1.5 bg-white/80 text-gray-900 text-xs rounded-lg border border-gray-200 backdrop-blur-sm">
                 Ulang Foto
             </button>
         </div>
         <div class="p-4">
             <button id="btn-capture" onclick="capturePhoto()"
-                    class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+                    class="w-full py-3 bg-blue-700 hover:bg-blue-600 text-gray-900 font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -51,7 +51,7 @@
                 Ambil Foto Selfie
             </button>
             <button id="btn-submit" onclick="submitAbsen()" disabled
-                    class="hidden w-full py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+                    class="hidden w-full py-3 bg-blue-700 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>
@@ -61,8 +61,8 @@
     </div>
 
     @if ($placement->location->latitude && $placement->location->longitude)
-        <div class="bg-gray-900/50 border border-white/5 rounded-xl p-3 text-center">
-            <p class="text-gray-500 text-xs">Radius check-in: <span class="text-gray-300">{{ $placement->location->radius_meters ?? 300 }}m</span> dari {{ $placement->location->name }}</p>
+        <div class="bg-white border border-gray-200 rounded-xl p-3 text-center">
+            <p class="text-gray-400 text-xs">Radius check-in: <span class="text-gray-600">{{ $placement->location->radius_meters ?? 300 }}m</span> dari {{ $placement->location->name }}</p>
         </div>
     @endif
 
@@ -86,9 +86,9 @@
         function setGpsStatus(s,t,d) {
             const icon=document.getElementById('gps-icon'), txt=document.getElementById('gps-text'), det=document.getElementById('gps-detail');
             txt.textContent=t; det.textContent=d;
-            if(s==='ok') { icon.className='w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0';
-                icon.innerHTML='<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
-                txt.className='text-emerald-400 text-sm'; }
+            if(s==='ok') { icon.className='w-8 h-8 rounded-lg bg-blue-600/10 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML='<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+                txt.className='text-blue-600 text-sm'; }
             else { icon.className='w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0';
                 icon.innerHTML='<svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
                 txt.className='text-red-400 text-sm'; }
@@ -139,7 +139,7 @@
         function showAlert(type,msg) {
             const el=document.getElementById('alert');
             el.className='mt-4 p-3 rounded-xl text-sm border';
-            if(type==='success') el.classList.add('bg-emerald-500/10','text-emerald-400','border-emerald-500/20');
+            if(type==='success') el.classList.add('bg-blue-600/10','text-blue-600','border-blue-200');
             else if(type==='warning') el.classList.add('bg-amber-500/10','text-amber-400','border-amber-500/20');
             else el.classList.add('bg-red-500/10','text-red-400','border-red-500/20');
             el.textContent=msg; el.classList.remove('hidden'); el.scrollIntoView({behavior:'smooth'});

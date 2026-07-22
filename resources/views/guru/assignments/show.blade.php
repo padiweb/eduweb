@@ -3,14 +3,14 @@
     <div class="flex items-start justify-between mb-6">
         <div>
             <a href="{{ route('guru.assignments.index') }}"
-               class="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition-colors">
+               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
                 Kembali
             </a>
-            <h1 class="text-2xl font-bold text-white">{{ $assignment->title }}</h1>
-            <p class="text-gray-400 text-sm mt-0.5">{{ $assignment->classroom->name }} &middot; {{ $assignment->subject->name }}</p>
+            <h1 class="text-2xl font-bold text-gray-900">{{ $assignment->title }}</h1>
+            <p class="text-gray-500 text-sm mt-0.5">{{ $assignment->classroom->name }} &middot; {{ $assignment->subject->name }}</p>
         </div>
 
         @if(! $assignment->is_closed)
@@ -26,14 +26,14 @@
                 </button>
             </form>
         @else
-            <span class="text-xs text-gray-500 bg-gray-800 border border-white/10 px-3 py-2 rounded-xl">
+            <span class="text-xs text-gray-400 bg-white border border-gray-200 px-3 py-2 rounded-xl">
                 Ditutup {{ $assignment->closed_at?->translatedFormat('d M Y H:i') }}
             </span>
         @endif
     </div>
 
     @if(session('success'))
-        <div class="mb-4 flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl text-sm">
             {{ session('success') }}
         </div>
     @endif
@@ -47,32 +47,32 @@
 
         {{-- Info tugas --}}
         <div class="space-y-4">
-            <div class="bg-gray-900 border border-white/5 rounded-xl p-5 space-y-3">
+            <div class="bg-white border border-gray-200 rounded-xl p-5 space-y-3">
                 <div>
-                    <p class="text-xs text-gray-500 mb-1">Metode</p>
-                    <p class="text-sm font-medium text-white">{{ $assignment->getSubmissionTypeLabel() }}</p>
+                    <p class="text-xs text-gray-400 mb-1">Metode</p>
+                    <p class="text-sm font-medium text-gray-900">{{ $assignment->getSubmissionTypeLabel() }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-500 mb-1">Nilai Maksimal</p>
-                    <p class="text-sm font-medium text-white">{{ $assignment->max_score }}</p>
+                    <p class="text-xs text-gray-400 mb-1">Nilai Maksimal</p>
+                    <p class="text-sm font-medium text-gray-900">{{ $assignment->max_score }}</p>
                 </div>
                 @if($assignment->deadline)
                     <div>
-                        <p class="text-xs text-gray-500 mb-1">Deadline</p>
-                        <p class="text-sm font-medium {{ $assignment->isPastDeadline() ? 'text-amber-400' : 'text-white' }}">
+                        <p class="text-xs text-gray-400 mb-1">Deadline</p>
+                        <p class="text-sm font-medium {{ $assignment->isPastDeadline() ? 'text-amber-400' : 'text-gray-900' }}">
                             {{ $assignment->deadline->translatedFormat('l, d F Y H:i') }}
                         </p>
                     </div>
                 @endif
                 @if($assignment->description)
                     <div>
-                        <p class="text-xs text-gray-500 mb-1">Instruksi</p>
-                        <p class="text-sm text-gray-300 leading-relaxed">{{ $assignment->description }}</p>
+                        <p class="text-xs text-gray-400 mb-1">Instruksi</p>
+                        <p class="text-sm text-gray-600 leading-relaxed">{{ $assignment->description }}</p>
                     </div>
                 @endif
                 @if($assignment->attachment_path)
                     <div>
-                        <p class="text-xs text-gray-500 mb-1">Lampiran Soal</p>
+                        <p class="text-xs text-gray-400 mb-1">Lampiran Soal</p>
                         <a href="{{ asset('storage/'.$assignment->attachment_path) }}" target="_blank"
                            class="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -92,42 +92,42 @@
                 $avg               = $submissions->whereNotNull('score')->avg('score');
             @endphp
             <div class="grid grid-cols-2 gap-3">
-                <div class="bg-gray-900 border border-emerald-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-emerald-400">{{ $submittedCount }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Dikumpulkan</p>
+                <div class="bg-white border border-blue-200 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-blue-600">{{ $submittedCount }}</p>
+                    <p class="text-xs text-gray-400 mt-1">Dikumpulkan</p>
                 </div>
-                <div class="bg-gray-900 border border-red-500/20 rounded-xl p-4 text-center">
+                <div class="bg-white border border-red-500/20 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-red-400">{{ $notSubmittedCount }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Tidak Kumpul</p>
+                    <p class="text-xs text-gray-400 mt-1">Tidak Kumpul</p>
                 </div>
-                <div class="bg-gray-900 border border-blue-500/20 rounded-xl p-4 text-center">
+                <div class="bg-white border border-blue-500/20 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-blue-400">{{ $gradedCount }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Sudah Dinilai</p>
+                    <p class="text-xs text-gray-400 mt-1">Sudah Dinilai</p>
                 </div>
-                <div class="bg-gray-900 border border-amber-500/20 rounded-xl p-4 text-center">
+                <div class="bg-white border border-amber-500/20 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-amber-400">{{ $avg ? number_format($avg,1) : '-' }}</p>
-                    <p class="text-xs text-gray-500 mt-1">Rata-rata</p>
+                    <p class="text-xs text-gray-400 mt-1">Rata-rata</p>
                 </div>
             </div>
         </div>
 
         {{-- Tabel siswa --}}
         <div class="lg:col-span-2">
-            <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
-                <div class="px-5 py-4 border-b border-white/5">
-                    <h2 class="text-sm font-semibold text-white">Daftar Pengumpulan</h2>
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-gray-200">
+                    <h2 class="text-sm font-semibold text-gray-900">Daftar Pengumpulan</h2>
                 </div>
-                <div class="divide-y divide-white/5">
+                <div class="divide-y divide-gray-100">
                     @foreach($students as $student)
                         @php $sub = $submissions->get($student->id); @endphp
                         <div class="px-5 py-4 {{ $sub?->isNotSubmitted() ? 'bg-red-500/[0.03]' : '' }}">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-300 flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
                                     {{ substr($student->name, 0, 2) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white truncate">{{ $student->name }}</p>
-                                    <p class="text-xs text-gray-500">
+                                    <p class="text-sm font-medium text-gray-900 truncate">{{ $student->name }}</p>
+                                    <p class="text-xs text-gray-400">
                                         @if(! $sub)
                                             Belum mengumpulkan
                                         @elseif($sub->isNotSubmitted())
@@ -138,7 +138,7 @@
                                         @elseif($sub->submitted_at)
                                             Dikumpulkan {{ \Carbon\Carbon::parse($sub->submitted_at)->translatedFormat('d M Y H:i') }}
                                         @else
-                                            <span class="text-gray-600">Dikumpulkan</span>
+                                            <span class="text-gray-400">Dikumpulkan</span>
                                         @endif
                                     </p>
                                 </div>
@@ -174,13 +174,13 @@
                                 {{-- Input nilai — selalu tampil jika ada submission (termasuk not_submitted) --}}
                                 @if($sub)
                                     <input type="number"
-                                           class="score-input w-16 bg-gray-800 border border-white/10 text-white rounded-lg px-2 py-1.5 text-sm text-center focus:outline-none focus:border-emerald-500 transition-colors flex-shrink-0"
+                                           class="score-input w-16 bg-white border border-gray-200 text-gray-700 rounded-lg px-2 py-1.5 text-sm text-center focus:outline-none focus:border-emerald-500 transition-colors flex-shrink-0"
                                            placeholder="Nilai"
                                            min="0" max="{{ $assignment->max_score }}"
                                            value="{{ $sub->score ?? '' }}"
                                            data-student-id="{{ $student->id }}"
                                            data-assignment-id="{{ $assignment->id }}">
-                                    <button class="btn-save-score text-xs text-emerald-400 hover:text-emerald-300 py-1.5 px-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex-shrink-0"
+                                    <button class="btn-save-score text-xs text-blue-600 hover:text-blue-700 py-1.5 px-2 rounded-lg bg-blue-600/10 border border-blue-200 flex-shrink-0"
                                             data-student-id="{{ $student->id }}">
                                         Simpan
                                     </button>
@@ -192,7 +192,7 @@
                                 <div class="mt-2 ml-11">
                                     <div class="flex items-center gap-2">
                                         <input type="text"
-                                               class="comment-input flex-1 bg-gray-800 border border-white/10 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors"
+                                               class="comment-input flex-1 bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 transition-colors"
                                                placeholder="{{ $sub->isNotSubmitted() ? 'Komentar untuk siswa yang tidak kumpul (opsional)...' : 'Komentar / catatan revisi (opsional)...' }}"
                                                value="{{ $sub->feedback ?? '' }}"
                                                data-student-id="{{ $student->id }}"
@@ -203,7 +203,7 @@
                                         </button>
                                     </div>
                                     @if($sub->feedback)
-                                        <p class="text-xs text-gray-600 mt-1">{{ $sub->feedback }}</p>
+                                        <p class="text-xs text-gray-400 mt-1">{{ $sub->feedback }}</p>
                                     @endif
                                 </div>
                             @endif
@@ -216,17 +216,17 @@
 
     {{-- Modal lihat konten teks --}}
     <div id="modal-content" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-lg">
-            <div class="flex items-center justify-between p-5 border-b border-white/5">
-                <h3 class="font-semibold text-white">Jawaban Siswa</h3>
-                <button id="close-content" class="text-gray-500 hover:text-white transition-colors">
+        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-lg">
+            <div class="flex items-center justify-between p-5 border-b border-gray-200">
+                <h3 class="font-semibold text-gray-900">Jawaban Siswa</h3>
+                <button id="close-content" class="text-gray-400 hover:text-gray-900 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
             <div class="p-5 max-h-96 overflow-y-auto">
-                <p id="content-text" class="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed"></p>
+                <p id="content-text" class="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed"></p>
             </div>
         </div>
     </div>

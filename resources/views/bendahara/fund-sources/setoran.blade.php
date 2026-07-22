@@ -2,12 +2,12 @@
 
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h1 class="text-xl font-bold text-white">Setoran Kas</h1>
-            <p class="text-gray-400 text-sm mt-0.5">Rekap uang yang diterima dan disetor ke rekening sekolah</p>
+            <h1 class="text-xl font-bold text-gray-900">Setoran Kas</h1>
+            <p class="text-gray-500 text-sm mt-0.5">Rekap uang yang diterima dan disetor ke rekening sekolah</p>
         </div>
         <button onclick="document.getElementById('modal-setoran').style.display='flex'"
             @if($sisaBelumSetor <= 0) disabled title="Tidak ada kas yang perlu disetor" @endif
-            class="flex items-center gap-2 {{ $sisaBelumSetor > 0 ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-700 cursor-not-allowed opacity-50' }} text-white text-sm font-medium px-4 py-2 rounded-lg">
+            class="flex items-center gap-2 {{ $sisaBelumSetor > 0 ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-100 cursor-not-allowed opacity-50' }} text-gray-900 text-sm font-medium px-4 py-2 rounded-lg">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
@@ -25,18 +25,18 @@
     {{-- Ringkasan kas --}}
     <div class="grid grid-cols-2 gap-4 mb-4">
         {{-- Kiri: total kas masuk dengan sisa per jenis --}}
-        <div class="bg-gray-900 border border-white/5 rounded-xl p-4">
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-3">Total Kas Diterima</p>
+        <div class="bg-white border border-gray-200 rounded-xl p-4">
+            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">Total Kas Diterima</p>
             <div class="space-y-2.5">
                 {{-- Tunai --}}
                 <div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-400">Tunai dari siswa</span>
-                        <span class="text-white">Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
+                        <span class="text-gray-500">Tunai dari siswa</span>
+                        <span class="text-gray-900">Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-xs mt-0.5">
-                        <span class="text-gray-600">Sudah disetor</span>
-                        <span class="text-gray-500">- Rp {{ number_format($sudahSetorTunai, 0, ',', '.') }}</span>
+                        <span class="text-gray-400">Sudah disetor</span>
+                        <span class="text-gray-400">- Rp {{ number_format($sudahSetorTunai, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-xs mt-0.5">
                         <span class="{{ $sisaTunai > 0 ? 'text-amber-400' : 'text-green-400' }}">Sisa belum disetor</span>
@@ -45,16 +45,16 @@
                         </span>
                     </div>
                 </div>
-                <div class="border-t border-white/5"></div>
+                <div class="border-t border-gray-200"></div>
                 {{-- Transfer --}}
                 <div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-400">Transfer dikonfirmasi</span>
-                        <span class="text-white">Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
+                        <span class="text-gray-500">Transfer dikonfirmasi</span>
+                        <span class="text-gray-900">Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-xs mt-0.5">
-                        <span class="text-gray-600">Sudah disetor</span>
-                        <span class="text-gray-500">- Rp {{ number_format($sudahSetorTransfer, 0, ',', '.') }}</span>
+                        <span class="text-gray-400">Sudah disetor</span>
+                        <span class="text-gray-400">- Rp {{ number_format($sudahSetorTransfer, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-xs mt-0.5">
                         <span class="{{ $sisaTransfer > 0 ? 'text-amber-400' : 'text-green-400' }}">Sisa belum disetor</span>
@@ -63,24 +63,24 @@
                         </span>
                     </div>
                 </div>
-                <div class="border-t border-white/5 pt-1 flex justify-between text-sm font-semibold">
-                    <span class="text-white">Total diterima</span>
+                <div class="border-t border-gray-200 pt-1 flex justify-between text-sm font-semibold">
+                    <span class="text-gray-900">Total diterima</span>
                     <span class="text-green-400">Rp {{ number_format($totalDiterima, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
 
         {{-- Kanan: saldo siap setor --}}
-        <div class="bg-gray-900 border {{ $sisaBelumSetor > 0 ? 'border-amber-500/20' : 'border-white/5' }} rounded-xl p-4">
-            <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-3">Status Setoran</p>
+        <div class="bg-white border {{ $sisaBelumSetor > 0 ? 'border-amber-500/20' : 'border-gray-200' }} rounded-xl p-4">
+            <p class="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">Status Setoran</p>
             <div class="space-y-2">
                 <div class="flex justify-between text-sm">
-                    <span class="text-gray-400">Sudah disetor ke bank</span>
-                    <span class="text-white">Rp {{ number_format($totalSudahDisetor, 0, ',', '.') }}</span>
+                    <span class="text-gray-500">Sudah disetor ke bank</span>
+                    <span class="text-gray-900">Rp {{ number_format($totalSudahDisetor, 0, ',', '.') }}</span>
                 </div>
-                <div class="border-t border-white/5 pt-2">
-                    <p class="text-xs text-gray-500 mb-1">Saldo belum disetor</p>
-                    <p class="text-2xl font-bold {{ $sisaBelumSetor > 0 ? 'text-amber-400' : 'text-gray-500' }}">
+                <div class="border-t border-gray-200 pt-2">
+                    <p class="text-xs text-gray-400 mb-1">Saldo belum disetor</p>
+                    <p class="text-2xl font-bold {{ $sisaBelumSetor > 0 ? 'text-amber-400' : 'text-gray-400' }}">
                         Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}
                     </p>
                     @if($sisaBelumSetor <= 0)
@@ -101,17 +101,17 @@
     </div>
 
     {{-- Info hari ini --}}
-    <div class="bg-gray-900 border border-white/5 rounded-xl px-4 py-3 mb-5 text-xs text-gray-500">
+    <div class="bg-white border border-gray-200 rounded-xl px-4 py-3 mb-5 text-xs text-gray-400">
         Hari ini ({{ now()->format('d/m/Y') }}): tunai masuk
-        <strong class="text-white">Rp {{ number_format($tunaiHariIni, 0, ',', '.') }}</strong>,
+        <strong class="text-gray-900">Rp {{ number_format($tunaiHariIni, 0, ',', '.') }}</strong>,
         transfer dikonfirmasi
-        <strong class="text-white">Rp {{ number_format($transferHariIni, 0, ',', '.') }}</strong>
+        <strong class="text-gray-900">Rp {{ number_format($transferHariIni, 0, ',', '.') }}</strong>
     </div>
 
     {{-- Filter tahun --}}
     <form method="GET" class="flex gap-3 mb-5">
         <select name="year" onchange="this.form.submit()"
-            class="bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+            class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
             @foreach($academicYears as $y)
                 <option value="{{ $y->id }}" {{ $yearId == $y->id ? 'selected' : '' }}>
                     {{ $y->name }} Sem {{ $y->semester }}{{ $y->is_active ? ' (Aktif)' : '' }}
@@ -120,41 +120,41 @@
         </select>
     </form>
 
-    <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         @if($setorans->isEmpty())
             <div class="px-5 py-12 text-center">
-                <p class="text-gray-500">Belum ada catatan setoran.</p>
+                <p class="text-gray-400">Belum ada catatan setoran.</p>
             </div>
         @else
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
-                        <tr class="border-b border-white/5">
-                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Tanggal</th>
-                            <th class="text-right text-xs text-gray-500 font-medium px-4 py-3">Kas Tunai</th>
-                            <th class="text-right text-xs text-gray-500 font-medium px-4 py-3">Transfer</th>
-                            <th class="text-right text-xs text-gray-500 font-medium px-4 py-3">Total Disetor</th>
-                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Tujuan</th>
-                            <th class="text-center text-xs text-gray-500 font-medium px-4 py-3">Status</th>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left text-xs text-gray-400 font-medium px-4 py-3">Tanggal</th>
+                            <th class="text-right text-xs text-gray-400 font-medium px-4 py-3">Kas Tunai</th>
+                            <th class="text-right text-xs text-gray-400 font-medium px-4 py-3">Transfer</th>
+                            <th class="text-right text-xs text-gray-400 font-medium px-4 py-3">Total Disetor</th>
+                            <th class="text-left text-xs text-gray-400 font-medium px-4 py-3">Tujuan</th>
+                            <th class="text-center text-xs text-gray-400 font-medium px-4 py-3">Status</th>
                             <th class="px-4 py-3"></th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5">
+                    <tbody class="divide-y divide-gray-100">
                         @foreach($setorans as $s)
                         <tr class="hover:bg-white/2 transition-colors">
                             <td class="px-4 py-3">
-                                <p class="text-white font-medium">{{ $s->tanggal_setoran->format('d/m/Y') }}</p>
+                                <p class="text-gray-900 font-medium">{{ $s->tanggal_setoran->format('d/m/Y') }}</p>
                                 @if($s->no_referensi)
-                                    <p class="text-xs text-gray-500">{{ $s->no_referensi }}</p>
+                                    <p class="text-xs text-gray-400">{{ $s->no_referensi }}</p>
                                 @endif
                                 @if($s->keterangan)
-                                    <p class="text-xs text-gray-600">{{ $s->keterangan }}</p>
+                                    <p class="text-xs text-gray-400">{{ $s->keterangan }}</p>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-right text-gray-400">Rp {{ number_format($s->total_tunai, 0, ',', '.') }}</td>
-                            <td class="px-4 py-3 text-right text-gray-400">Rp {{ number_format($s->total_transfer, 0, ',', '.') }}</td>
-                            <td class="px-4 py-3 text-right font-semibold text-white">{{ $s->total_setoran_formatted }}</td>
-                            <td class="px-4 py-3 text-gray-400 text-xs">{{ $s->fundSource->name ?? '-' }}</td>
+                            <td class="px-4 py-3 text-right text-gray-500">Rp {{ number_format($s->total_tunai, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-right text-gray-500">Rp {{ number_format($s->total_transfer, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-right font-semibold text-gray-900">{{ $s->total_setoran_formatted }}</td>
+                            <td class="px-4 py-3 text-gray-500 text-xs">{{ $s->fundSource->name ?? '-' }}</td>
                             <td class="px-4 py-3 text-center">
                                 @if($s->status === 'setor')
                                     <span class="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-full">Disetor</span>
@@ -176,10 +176,10 @@
                                         <form method="POST" action="{{ route('bendahara.setoran.destroy', $s) }}"
                                             onsubmit="return confirm('Hapus draft ini?')">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="text-xs text-gray-600 hover:text-red-400 transition-colors">Hapus</button>
+                                            <button type="submit" class="text-xs text-gray-400 hover:text-red-400 transition-colors">Hapus</button>
                                         </form>
                                     @else
-                                        <span class="text-xs text-gray-600">{{ $s->disetor_at?->format('d/m H:i') }}</span>
+                                        <span class="text-xs text-gray-400">{{ $s->disetor_at?->format('d/m H:i') }}</span>
                                     @endif
                                 </div>
                             </td>
@@ -188,16 +188,16 @@
                     </tbody>
                 </table>
             </div>
-            <div class="px-4 py-3 border-t border-white/5">{{ $setorans->links() }}</div>
+            <div class="px-4 py-3 border-t border-gray-200">{{ $setorans->links() }}</div>
         @endif
     </div>
 
     {{-- MODAL Catat Setoran --}}
     <div id="modal-setoran" style="display:none" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
+        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-white font-semibold">Catat Setoran Kas</h3>
-                <button onclick="document.getElementById('modal-setoran').style.display='none'" class="text-gray-600 hover:text-white">
+                <h3 class="text-gray-900 font-semibold">Catat Setoran Kas</h3>
+                <button onclick="document.getElementById('modal-setoran').style.display='none'" class="text-gray-400 hover:text-gray-900">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -206,7 +206,7 @@
 
             <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mb-4 text-xs">
                 <p class="text-amber-400 font-semibold mb-1">Saldo siap disetor</p>
-                <p class="text-2xl font-bold text-white">Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}</p>
+                <p class="text-2xl font-bold text-gray-900">Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}</p>
                 <p class="text-amber-400/70 mt-1">Maksimal yang bisa disetor sekarang</p>
             </div>
 
@@ -215,14 +215,14 @@
                 <div class="space-y-3">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Tanggal Setoran *</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Tanggal Setoran *</label>
                             <input type="date" name="tanggal_setoran" required value="{{ date('Y-m-d') }}"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Tahun Ajaran *</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Tahun Ajaran *</label>
                             <select name="academic_year_id" required
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                                 @foreach($academicYears as $y)
                                     <option value="{{ $y->id }}" {{ $y->is_active ? 'selected' : '' }}>
                                         {{ $y->name }} S{{ $y->semester }}
@@ -232,9 +232,9 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-xs text-gray-400 mb-1 block">Disetor ke *</label>
+                        <label class="text-xs text-gray-500 mb-1 block">Disetor ke *</label>
                         <select name="fund_source_id" required
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                             <option value="">-- Pilih rekening tujuan --</option>
                             @foreach($fundSources as $fs)
                                 <option value="{{ $fs->id }}">{{ $fs->name }}</option>
@@ -244,13 +244,13 @@
                     <div class="grid grid-cols-2 gap-3">
                         {{-- Kas Tunai --}}
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Kas Tunai (Rp)</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Kas Tunai (Rp)</label>
                             <div class="text-xs mb-1.5 space-y-0.5">
-                                <div class="flex justify-between text-gray-500">
+                                <div class="flex justify-between text-gray-400">
                                     <span>Diterima</span>
                                     <span>Rp {{ number_format($totalTunaiDiterima, 0, ',', '.') }}</span>
                                 </div>
-                                <div class="flex justify-between text-gray-600">
+                                <div class="flex justify-between text-gray-400">
                                     <span>Sudah disetor</span>
                                     <span>- Rp {{ number_format($sudahSetorTunai, 0, ',', '.') }}</span>
                                 </div>
@@ -262,7 +262,7 @@
                             <input type="text" name="total_tunai" id="input-tunai"
                                 value="{{ $sisaTunai > 0 ? number_format($sisaTunai, 0, ',', '.') : '0' }}"
                                 @if($sisaTunai <= 0) readonly @endif
-                                class="w-full bg-gray-800 border border-white/10 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTunai <= 0 ? 'text-gray-600 cursor-not-allowed opacity-50' : 'text-white focus:border-purple-500' }}"
+                                class="w-full bg-white border border-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTunai <= 0 ? 'text-gray-400 cursor-not-allowed opacity-50' : 'text-gray-900 focus:border-purple-500' }}"
                                 oninput="inputKas(this, maxTunai, 'err-tunai')"
                                 placeholder="0">
                             <p id="err-tunai" class="text-xs text-red-400 mt-1 hidden">
@@ -275,13 +275,13 @@
 
                         {{-- Transfer --}}
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Transfer (Rp)</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Transfer (Rp)</label>
                             <div class="text-xs mb-1.5 space-y-0.5">
-                                <div class="flex justify-between text-gray-500">
+                                <div class="flex justify-between text-gray-400">
                                     <span>Dikonfirmasi</span>
                                     <span>Rp {{ number_format($totalTransferDiterima, 0, ',', '.') }}</span>
                                 </div>
-                                <div class="flex justify-between text-gray-600">
+                                <div class="flex justify-between text-gray-400">
                                     <span>Sudah disetor</span>
                                     <span>- Rp {{ number_format($sudahSetorTransfer, 0, ',', '.') }}</span>
                                 </div>
@@ -293,7 +293,7 @@
                             <input type="text" name="total_transfer" id="input-transfer"
                                 value="{{ $sisaTransfer > 0 ? number_format($sisaTransfer, 0, ',', '.') : '0' }}"
                                 @if($sisaTransfer <= 0) readonly @endif
-                                class="w-full bg-gray-800 border border-white/10 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTransfer <= 0 ? 'text-gray-600 cursor-not-allowed opacity-50' : 'text-white focus:border-purple-500' }}"
+                                class="w-full bg-white border border-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTransfer <= 0 ? 'text-gray-400 cursor-not-allowed opacity-50' : 'text-gray-900 focus:border-purple-500' }}"
                                 oninput="inputKas(this, maxTransfer, 'err-transfer')"
                                 placeholder="0">
                             <p id="err-transfer" class="text-xs text-red-400 mt-1 hidden">
@@ -305,15 +305,15 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-xs text-gray-400 mb-1 block">Total yang Disetor (Rp) *</label>
+                        <label class="text-xs text-gray-500 mb-1 block">Total yang Disetor (Rp) *</label>
                         <input type="text" name="total_setoran" id="total-setoran" required
                             value="{{ number_format($sisaBelumSetor, 0, ',', '.') }}"
                             readonly
-                            class="w-full bg-gray-800 border border-white/5 text-white text-sm rounded-lg px-3 py-2 cursor-not-allowed"
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 cursor-not-allowed"
                             placeholder="0">
                         <div id="info-saldo" class="mt-1">
-                            <p class="text-xs text-gray-600">
-                                Maks: <strong class="text-white">Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}</strong> (saldo belum disetor)
+                            <p class="text-xs text-gray-400">
+                                Maks: <strong class="text-gray-900">Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}</strong> (saldo belum disetor)
                             </p>
                         </div>
                         <p id="error-saldo" class="text-xs text-red-400 mt-1 hidden">
@@ -322,21 +322,21 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">No. Slip Bank</label>
+                            <label class="text-xs text-gray-500 mb-1 block">No. Slip Bank</label>
                             <input type="text" name="no_referensi" placeholder="Opsional"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Keterangan</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Keterangan</label>
                             <input type="text" name="keterangan" placeholder="Opsional"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                         </div>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-setoran').style.display='none'"
-                        class="flex-1 bg-gray-800 text-gray-300 text-sm py-2 rounded-lg">Batal</button>
-                    <button type="submit" id="btn-simpan-setoran" class="flex-1 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium py-2 rounded-lg">
+                        class="flex-1 bg-white text-gray-600 text-sm py-2 rounded-lg">Batal</button>
+                    <button type="submit" id="btn-simpan-setoran" class="flex-1 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 text-sm font-medium py-2 rounded-lg">
                         Simpan Draft
                     </button>
                 </div>

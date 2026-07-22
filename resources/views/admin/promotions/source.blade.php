@@ -3,29 +3,29 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <a href="{{ route('admin.promotions.index') }}"
-               class="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition-colors w-fit">
+               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors w-fit">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
                 Kembali
             </a>
-            <h1 class="text-2xl font-bold text-white">Promosi Massal</h1>
-            <p class="text-gray-400 text-sm mt-1">
-                Tujuan: <span class="text-emerald-400 font-semibold">{{ $activeYear?->label ?? 'Belum ada tahun ajaran aktif' }}</span>
+            <h1 class="text-2xl font-bold text-gray-900">Promosi Massal</h1>
+            <p class="text-gray-500 text-sm mt-1">
+                Tujuan: <span class="text-blue-600 font-semibold">{{ $activeYear?->label ?? 'Belum ada tahun ajaran aktif' }}</span>
             </p>
         </div>
         <div class="flex items-center gap-2">
             {{-- Tombol set semua naik kelas --}}
             <button type="button"
                     onclick="setAllStudents('naik')"
-                    class="flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 px-4 py-2 rounded-xl transition-colors">
+                    class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-200 px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
                 </svg>
                 Semua Naik Kelas
             </button>
             <button form="form-promosi" type="submit"
-                    class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
                     onclick="return confirm('Proses promosi massal? Pastikan semua pilihan sudah benar.')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -36,15 +36,15 @@
     </div>
 
     @if($classrooms->isEmpty())
-        <div class="bg-gray-900 border border-white/5 rounded-xl p-12 text-center">
-            <p class="text-gray-500 text-sm">Tidak ada kelas aktif di tahun ajaran yang dipilih.</p>
+        <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
+            <p class="text-gray-400 text-sm">Tidak ada kelas aktif di tahun ajaran yang dipilih.</p>
         </div>
     @else
         {{-- Tombol global --}}
-        <div class="flex items-center gap-3 mb-4 p-4 bg-gray-900 border border-white/5 rounded-xl">
-            <span class="text-xs text-gray-400 font-semibold">Set semua siswa:</span>
+        <div class="flex items-center gap-3 mb-4 p-4 bg-white border border-gray-200 rounded-xl">
+            <span class="text-xs text-gray-500 font-semibold">Set semua siswa:</span>
             <button type="button" onclick="setAllStudents('naik')"
-                    class="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                    class="text-xs text-blue-600 bg-blue-600/10 border border-blue-200 hover:bg-blue-600/20 px-3 py-1.5 rounded-lg transition-colors">
                 ⬆ Semua Naik Kelas
             </button>
             <button type="button" onclick="setAllStudents('lulus')"
@@ -59,12 +59,12 @@
             @foreach($classrooms as $classroom)
                 @if($classroom->students->count() === 0) @continue @endif
 
-                <div class="mb-6 bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
+                <div class="mb-6 bg-white border border-gray-200 rounded-xl overflow-hidden">
                     {{-- Header kelas --}}
-                    <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+                    <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                         <div>
-                            <h2 class="text-sm font-bold text-white">{{ $classroom->name }}</h2>
-                            <p class="text-xs text-gray-500 mt-0.5">
+                            <h2 class="text-sm font-bold text-gray-900">{{ $classroom->name }}</h2>
+                            <p class="text-xs text-gray-400 mt-0.5">
                                 Kelas {{ $classroom->grade }}
                                 @if($classroom->major) &middot; {{ $classroom->major->name }} @endif
                                 &middot; {{ $classroom->students->count() }} siswa aktif
@@ -74,7 +74,7 @@
                         <div class="flex items-center gap-2">
                             <button type="button"
                                     onclick="setAllInClass('{{ $classroom->id }}', 'naik', {{ $classroom->grade }})"
-                                    class="text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                                    class="text-xs text-blue-600 hover:text-blue-700 bg-blue-600/10 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
                                 ⬆ Semua Naik Kelas
                             </button>
                             @if($classroom->grade >= ($school->school_program_years * 2 / 2 + 9))
@@ -88,7 +88,7 @@
                     </div>
 
                     {{-- Daftar siswa --}}
-                    <div class="divide-y divide-white/5">
+                    <div class="divide-y divide-gray-100">
                         @foreach($classroom->students as $i => $student)
                             @php $idx = $classroom->id . '_' . $student->id; @endphp
                             <input type="hidden" name="promotions[{{ $idx }}][student_id]" value="{{ $student->id }}">
@@ -100,15 +100,15 @@
                                         <img src="{{ $student->avatarUrl }}" class="w-full h-full object-cover" alt="">
                                     </div>
                                     <div class="min-w-0">
-                                        <p class="text-sm font-medium text-white truncate">{{ $student->name }}</p>
-                                        <p class="text-xs text-gray-600">{{ $student->nis ?? $student->nisn ?? '-' }}</p>
+                                        <p class="text-sm font-medium text-gray-900 truncate">{{ $student->name }}</p>
+                                        <p class="text-xs text-gray-400">{{ $student->nis ?? $student->nisn ?? '-' }}</p>
                                     </div>
                                 </div>
 
                                 {{-- Pilih aksi --}}
                                 <div class="sm:col-span-3">
                                     <select name="promotions[{{ $idx }}][action]"
-                                            class="action-select w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                            class="action-select w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
                                             data-idx="{{ $idx }}"
                                             data-classid="{{ $classroom->id }}"
                                             onchange="handleActionChange(this)">
@@ -123,7 +123,7 @@
                                 {{-- Pilih kelas tujuan --}}
                                 <div class="sm:col-span-4 target-class-wrap-{{ $idx }}">
                                     <select name="promotions[{{ $idx }}][target_class]"
-                                            class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                                         <option value="">-- Pilih kelas tujuan --</option>
                                         @foreach($targetClassrooms->sortBy('grade') as $tc)
                                             <option value="{{ $tc->id }}">
@@ -137,7 +137,7 @@
                                 <div class="sm:col-span-2">
                                     <input type="text" name="promotions[{{ $idx }}][notes]"
                                            placeholder="Catatan..."
-                                           class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                                 </div>
                             </div>
                         @endforeach
@@ -149,7 +149,7 @@
         {{-- Tombol proses di bawah --}}
         <div class="flex justify-end mt-4">
             <button form="form-promosi" type="submit"
-                    class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
+                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
                     onclick="return confirm('Proses promosi massal? Pastikan semua pilihan sudah benar.')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>

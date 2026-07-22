@@ -2,11 +2,11 @@
 
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h1 class="text-xl font-bold text-white">Sumber Dana</h1>
-            <p class="text-gray-400 text-sm mt-0.5">BOS, BOSDA, kas siswa, dan sumber lainnya</p>
+            <h1 class="text-xl font-bold text-gray-900">Sumber Dana</h1>
+            <p class="text-gray-500 text-sm mt-0.5">BOS, BOSDA, kas siswa, dan sumber lainnya</p>
         </div>
         <button onclick="document.getElementById('modal-add').classList.remove('hidden')"
-            class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+            class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
@@ -25,13 +25,13 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         @forelse($sources as $source)
-        <div class="bg-gray-900 border {{ $source->is_active ? 'border-white/5' : 'border-white/3 opacity-60' }} rounded-xl p-5">
+        <div class="bg-white border {{ $source->is_active ? 'border-gray-200' : 'border-white/3 opacity-60' }} rounded-xl p-5">
             <div class="flex items-start justify-between mb-4">
                 <div>
                     <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-white font-semibold">{{ $source->name }}</span>
+                        <span class="text-gray-900 font-semibold">{{ $source->name }}</span>
                         @if($source->code)
-                            <span class="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded">{{ $source->code }}</span>
+                            <span class="text-xs text-gray-400 bg-white px-2 py-0.5 rounded">{{ $source->code }}</span>
                         @endif
                         @if(!$source->is_active)
                             <span class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full">Nonaktif</span>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="flex flex-col items-end gap-1.5">
                     <button onclick="openEdit({{ $source->id }}, '{{ addslashes($source->name) }}', '{{ $source->code }}', '{{ $source->type }}', '{{ addslashes($source->description ?? '') }}')"
-                        class="text-xs text-gray-500 hover:text-white transition-colors">Edit</button>
+                        class="text-xs text-gray-400 hover:text-gray-900 transition-colors">Edit</button>
                     <form method="POST" action="{{ route('bendahara.fund-sources.toggle', $source) }}">
                         @csrf @method('PATCH')
                         <button type="submit" class="text-xs {{ $source->is_active ? 'text-amber-500 hover:text-amber-400' : 'text-green-500 hover:text-green-400' }} transition-colors">
@@ -55,18 +55,18 @@
                 </div>
             </div>
 
-            <div class="space-y-1.5 text-sm border-t border-white/5 pt-4 mb-4">
+            <div class="space-y-1.5 text-sm border-t border-gray-200 pt-4 mb-4">
                 <div class="flex justify-between">
-                    <span class="text-gray-400">Total pemasukan</span>
+                    <span class="text-gray-500">Total pemasukan</span>
                     <span class="text-green-400 font-medium">Rp {{ number_format($source->total_income, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-400">Total pengeluaran</span>
+                    <span class="text-gray-500">Total pengeluaran</span>
                     <span class="text-red-400 font-medium">Rp {{ number_format($source->total_expense, 0, ',', '.') }}</span>
                 </div>
-                <div class="flex justify-between border-t border-white/5 pt-1.5 font-semibold">
-                    <span class="text-gray-300">Saldo</span>
-                    <span class="{{ $source->balance >= 0 ? 'text-white' : 'text-red-400' }}">
+                <div class="flex justify-between border-t border-gray-200 pt-1.5 font-semibold">
+                    <span class="text-gray-600">Saldo</span>
+                    <span class="{{ $source->balance >= 0 ? 'text-gray-900' : 'text-red-400' }}">
                         Rp {{ number_format(abs($source->balance), 0, ',', '.') }}
                         {{ $source->balance < 0 ? '(Defisit)' : '' }}
                     </span>
@@ -82,38 +82,38 @@
             </a>
 
             @if($source->description)
-                <p class="text-xs text-gray-600 mt-3">{{ $source->description }}</p>
+                <p class="text-xs text-gray-400 mt-3">{{ $source->description }}</p>
             @endif
         </div>
         @empty
-            <div class="col-span-3 bg-gray-900 border border-white/5 rounded-xl px-5 py-12 text-center">
-                <p class="text-gray-500">Belum ada sumber dana.</p>
-                <p class="text-gray-600 text-xs mt-1">Klik "Tambah Sumber Dana" untuk mulai — contoh: BOS, BOSDA, Kas Siswa.</p>
+            <div class="col-span-3 bg-white border border-gray-200 rounded-xl px-5 py-12 text-center">
+                <p class="text-gray-400">Belum ada sumber dana.</p>
+                <p class="text-gray-400 text-xs mt-1">Klik "Tambah Sumber Dana" untuk mulai — contoh: BOS, BOSDA, Kas Siswa.</p>
             </div>
         @endforelse
     </div>
 
     {{-- MODAL: Tambah --}}
     <div id="modal-add" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-white font-semibold mb-4">Tambah Sumber Dana</h3>
+        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6">
+            <h3 class="text-gray-900 font-semibold mb-4">Tambah Sumber Dana</h3>
             <form method="POST" action="{{ route('bendahara.fund-sources.store') }}">
                 @csrf
                 <div class="space-y-3">
                     <div>
-                        <label class="text-xs text-gray-400 mb-1 block">Nama *</label>
+                        <label class="text-xs text-gray-500 mb-1 block">Nama *</label>
                         <input type="text" name="name" required placeholder="BOS, BOSDA, Kas Siswa, dll"
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Kode (opsional)</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Kode (opsional)</label>
                             <input type="text" name="code" placeholder="BOS"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Jenis *</label>
-                            <select name="type" required class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            <label class="text-xs text-gray-500 mb-1 block">Jenis *</label>
+                            <select name="type" required class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                                 <option value="siswa">Kas Siswa</option>
                                 <option value="bos">Dana BOS</option>
                                 <option value="bosda">Dana BOSDA</option>
@@ -122,16 +122,16 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-xs text-gray-400 mb-1 block">Keterangan</label>
+                        <label class="text-xs text-gray-500 mb-1 block">Keterangan</label>
                         <textarea name="description" rows="2" placeholder="Opsional..."
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add').classList.add('hidden')"
-                        class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>
             </form>
         </div>
@@ -139,25 +139,25 @@
 
     {{-- MODAL: Edit --}}
     <div id="modal-edit" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6">
-            <h3 class="text-white font-semibold mb-4">Edit Sumber Dana</h3>
+        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6">
+            <h3 class="text-gray-900 font-semibold mb-4">Edit Sumber Dana</h3>
             <form id="form-edit" method="POST" action="">
                 @csrf @method('PUT')
                 <div class="space-y-3">
                     <div>
-                        <label class="text-xs text-gray-400 mb-1 block">Nama *</label>
+                        <label class="text-xs text-gray-500 mb-1 block">Nama *</label>
                         <input type="text" id="edit-name" name="name" required
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Kode</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Kode</label>
                             <input type="text" id="edit-code" name="code"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Jenis *</label>
-                            <select id="edit-type" name="type" required class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            <label class="text-xs text-gray-500 mb-1 block">Jenis *</label>
+                            <select id="edit-type" name="type" required class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                                 <option value="siswa">Kas Siswa</option>
                                 <option value="bos">Dana BOS</option>
                                 <option value="bosda">Dana BOSDA</option>
@@ -166,16 +166,16 @@
                         </div>
                     </div>
                     <div>
-                        <label class="text-xs text-gray-400 mb-1 block">Keterangan</label>
+                        <label class="text-xs text-gray-500 mb-1 block">Keterangan</label>
                         <textarea id="edit-desc" name="description" rows="2"
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                        class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
+                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>
             </form>
         </div>

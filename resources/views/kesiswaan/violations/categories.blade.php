@@ -3,19 +3,19 @@
     <div class="flex items-start justify-between mb-6">
         <div>
             <a href="{{ route('kesiswaan.violations.index') }}"
-               class="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition-colors">
+               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
                 Kembali
             </a>
-            <h1 class="text-2xl font-bold text-white">Kategori Pelanggaran</h1>
-            <p class="text-gray-400 text-sm mt-1">Kelola kategori untuk input pelanggaran manual</p>
+            <h1 class="text-2xl font-bold text-gray-900">Kategori Pelanggaran</h1>
+            <p class="text-gray-500 text-sm mt-1">Kelola kategori untuk input pelanggaran manual</p>
         </div>
     </div>
 
     @if(session('success'))
-        <div class="mb-4 flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl text-sm">
             {{ session('success') }}
         </div>
     @endif
@@ -29,25 +29,25 @@
 
         {{-- Form tambah kategori --}}
         <div>
-            <div class="bg-gray-900 border border-emerald-500/20 rounded-xl p-5">
-                <h2 class="text-sm font-semibold text-white mb-4">Tambah Kategori Baru</h2>
+            <div class="bg-white border border-blue-200 rounded-xl p-5">
+                <h2 class="text-sm font-semibold text-gray-900 mb-4">Tambah Kategori Baru</h2>
 
                 <form method="POST" action="{{ route('kesiswaan.violations.categories.store') }}" class="space-y-3">
                     @csrf
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1.5">Nama Kategori <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Nama Kategori <span class="text-red-400">*</span></label>
                         <input type="text" name="name" required
                                value="{{ old('name') }}"
                                placeholder="cth: Perkelahian, Bolos, dll"
-                               class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                         @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1.5">Tingkat Keparahan <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Tingkat Keparahan <span class="text-red-400">*</span></label>
                         <select name="severity" required
-                                class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             <option value="">Pilih tingkat...</option>
                             <option value="ringan"  {{ old('severity') === 'ringan'  ? 'selected' : '' }}>Ringan</option>
                             <option value="sedang"  {{ old('severity') === 'sedang'  ? 'selected' : '' }}>Sedang</option>
@@ -57,16 +57,16 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1.5">Poin Default <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Poin Default <span class="text-red-400">*</span></label>
                         <input type="number" name="default_points" required min="1" max="100"
                                value="{{ old('default_points', 5) }}"
-                               class="w-full bg-gray-800 border border-white/10 text-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                        <p class="text-xs text-gray-600 mt-1">Bisa diubah saat input pelanggaran</p>
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        <p class="text-xs text-gray-400 mt-1">Bisa diubah saat input pelanggaran</p>
                         @error('default_points') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <button type="submit"
-                            class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah Kategori
                     </button>
                 </form>
@@ -75,54 +75,54 @@
 
         {{-- Daftar kategori --}}
         <div class="lg:col-span-2">
-            <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
-                <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
-                    <h2 class="text-sm font-semibold text-white">Semua Kategori</h2>
-                    <span class="text-xs text-gray-500">{{ $categories->count() }} kategori</span>
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+                    <h2 class="text-sm font-semibold text-gray-900">Semua Kategori</h2>
+                    <span class="text-xs text-gray-400">{{ $categories->count() }} kategori</span>
                 </div>
 
                 @if($categories->count() > 0)
-                    <div class="divide-y divide-white/5">
+                    <div class="divide-y divide-gray-100">
                         @foreach($categories as $cat)
                             @php
                                 $severityMap = [
-                                    'ringan' => ['bg-emerald-500/10 text-emerald-400 border-emerald-500/20', 'Ringan'],
+                                    'ringan' => ['bg-blue-600/10 text-blue-600 border-blue-200', 'Ringan'],
                                     'sedang' => ['bg-amber-500/10 text-amber-400 border-amber-500/20',   'Sedang'],
                                     'berat'  => ['bg-red-500/10 text-red-400 border-red-500/20',         'Berat'],
                                 ];
-                                [$badgeClass, $severityLabel] = $severityMap[$cat->severity] ?? ['bg-gray-800 text-gray-400 border-white/10', $cat->severity];
+                                [$badgeClass, $severityLabel] = $severityMap[$cat->severity] ?? ['bg-white text-gray-500 border-gray-200', $cat->severity];
                             @endphp
                             <div class="flex items-center gap-4 px-5 py-4">
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-white">{{ $cat->name }}</p>
-                                    <p class="text-xs text-gray-500 mt-0.5">
+                                    <p class="text-sm font-medium text-gray-900">{{ $cat->name }}</p>
+                                    <p class="text-xs text-gray-400 mt-0.5">
                                         Digunakan {{ $cat->violations_count }} kali
                                     </p>
                                 </div>
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border {{ $badgeClass }} flex-shrink-0">
                                     {{ $severityLabel }}
                                 </span>
-                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 border border-white/10 flex-shrink-0">
-                                    <span class="text-sm font-bold text-white">{{ $cat->default_points }}</span>
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 flex-shrink-0">
+                                    <span class="text-sm font-bold text-gray-900">{{ $cat->default_points }}</span>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
-                        <svg class="w-12 h-12 text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/>
                         </svg>
-                        <p class="text-gray-500 text-sm">Belum ada kategori pelanggaran.</p>
-                        <p class="text-gray-600 text-xs mt-1">Tambahkan kategori di form sebelah kiri.</p>
+                        <p class="text-gray-400 text-sm">Belum ada kategori pelanggaran.</p>
+                        <p class="text-gray-400 text-xs mt-1">Tambahkan kategori di form sebelah kiri.</p>
                     </div>
                 @endif
             </div>
 
             {{-- Info kategori otomatis --}}
-            <div class="mt-4 bg-gray-900 border border-white/5 rounded-xl p-4">
-                <p class="text-xs font-semibold text-gray-400 mb-2">Kategori Otomatis dari Sistem</p>
+            <div class="mt-4 bg-white border border-gray-200 rounded-xl p-4">
+                <p class="text-xs font-semibold text-gray-500 mb-2">Kategori Otomatis dari Sistem</p>
                 <div class="space-y-1.5">
                     @foreach([
                         ['Keterlambatan',            1, 'amber'],
@@ -131,12 +131,12 @@
                         ['Tidak Mengumpulkan Tugas', 2, 'orange'],
                     ] as [$name, $pts, $color])
                         <div class="flex items-center justify-between">
-                            <span class="text-xs text-gray-400">{{ $name }}</span>
+                            <span class="text-xs text-gray-500">{{ $name }}</span>
                             <span class="text-xs font-semibold text-{{ $color }}-400">{{ $pts }} poin</span>
                         </div>
                     @endforeach
                 </div>
-                <p class="text-xs text-gray-600 mt-2">Kategori ini dibuat otomatis oleh sistem dan tidak bisa dihapus.</p>
+                <p class="text-xs text-gray-400 mt-2">Kategori ini dibuat otomatis oleh sistem dan tidak bisa dihapus.</p>
             </div>
         </div>
     </div>

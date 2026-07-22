@@ -1,14 +1,14 @@
 <x-simans-layout title="Buat Tagihan">
 
     <div class="mb-6">
-        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-400 hover:text-white text-sm flex items-center gap-1 mb-3 w-fit">
+        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-3 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
             Kembali
         </a>
-        <h1 class="text-xl font-bold text-white">Buat Tagihan Baru</h1>
-        <p class="text-gray-400 text-sm mt-0.5">Tagihan dibuat berdasarkan tarif kelas, override per siswa, atau input manual</p>
+        <h1 class="text-xl font-bold text-gray-900">Buat Tagihan Baru</h1>
+        <p class="text-gray-500 text-sm mt-0.5">Tagihan dibuat berdasarkan tarif kelas, override per siswa, atau input manual</p>
     </div>
 
     @if($errors->any())
@@ -26,13 +26,13 @@
 
             {{-- Kiri --}}
             <div class="space-y-4">
-                <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
-                    <h2 class="text-sm font-semibold text-white mb-4">Informasi Tagihan</h2>
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
+                    <h2 class="text-sm font-semibold text-gray-900 mb-4">Informasi Tagihan</h2>
                     <div class="space-y-3">
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Jenis Pembayaran *</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Jenis Pembayaran *</label>
                             <select name="payment_type_id" required x-model="typeId" @change="rateChecked = false"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                                 <option value="">-- Pilih jenis --</option>
                                 @foreach($types as $type)
                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -46,9 +46,9 @@
                             @endif
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Tahun Ajaran *</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Tahun Ajaran *</label>
                             <select name="academic_year_id" required x-model="yearId" @change="rateChecked = false"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                                 @foreach($academicYears as $year)
                                     <option value="{{ $year->id }}" {{ $year->is_active ? 'selected' : '' }}>
                                         {{ $year->name }} Sem {{ $year->semester }}{{ $year->is_active ? ' ✓' : '' }}
@@ -58,42 +58,42 @@
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-xs text-gray-400 mb-1 block">Label Periode *</label>
+                                <label class="text-xs text-gray-500 mb-1 block">Label Periode *</label>
                                 <input type="text" name="period_label" required x-model="periodLabel"
                                     placeholder="Juli 2026"
-                                    class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                             </div>
                             <div>
-                                <label class="text-xs text-gray-400 mb-1 block">Tanggal Periode *</label>
+                                <label class="text-xs text-gray-500 mb-1 block">Tanggal Periode *</label>
                                 <input type="date" name="period_date" required value="{{ date('Y-m-01') }}"
-                                    class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                             </div>
                         </div>
                         <div>
-                            <label class="text-xs text-gray-400 mb-1 block">Jatuh Tempo</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Jatuh Tempo</label>
                             <input type="date" name="due_date"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
-                    <h2 class="text-sm font-semibold text-white mb-4">Skema Pembayaran</h2>
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
+                    <h2 class="text-sm font-semibold text-gray-900 mb-4">Skema Pembayaran</h2>
                     <div class="space-y-3">
                         <div class="flex gap-4">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="radio" name="installment_type" value="full" x-model="installType" class="text-purple-500">
-                                <span class="text-sm text-white">Bayar penuh</span>
+                                <span class="text-sm text-gray-900">Bayar penuh</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="radio" name="installment_type" value="installment" x-model="installType" class="text-purple-500">
-                                <span class="text-sm text-white">Cicilan</span>
+                                <span class="text-sm text-gray-900">Cicilan</span>
                             </label>
                         </div>
                         <div x-show="installType === 'installment'" x-cloak>
-                            <label class="text-xs text-gray-400 mb-1 block">Jumlah Cicilan</label>
+                            <label class="text-xs text-gray-500 mb-1 block">Jumlah Cicilan</label>
                             <select name="installment_count"
-                                class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                                 @for($i = 2; $i <= 12; $i++)
                                     <option value="{{ $i }}">{{ $i }} cicilan</option>
                                 @endfor
@@ -120,23 +120,23 @@
 
             {{-- Kanan --}}
             <div class="space-y-4">
-                <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
-                    <h2 class="text-sm font-semibold text-white mb-4">Target Siswa</h2>
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
+                    <h2 class="text-sm font-semibold text-gray-900 mb-4">Target Siswa</h2>
                     <div class="flex gap-4 mb-4">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="scope" value="classroom" x-model="scope" @change="rateChecked = false" class="text-purple-500">
-                            <span class="text-sm text-white">Per kelas</span>
+                            <span class="text-sm text-gray-900">Per kelas</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="radio" name="scope" value="student" x-model="scope" @change="rateChecked = false" class="text-purple-500">
-                            <span class="text-sm text-white">Pilih siswa</span>
+                            <span class="text-sm text-gray-900">Pilih siswa</span>
                         </label>
                     </div>
 
                     <div x-show="scope === 'classroom'" x-cloak>
-                        <label class="text-xs text-gray-400 mb-1 block">Kelas *</label>
+                        <label class="text-xs text-gray-500 mb-1 block">Kelas *</label>
                         <select name="classroom_id" x-model="classroomId" @change="rateChecked = false"
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
                             <option value="">-- Pilih kelas --</option>
                             @foreach($classrooms as $cls)
                                 <option value="{{ $cls->id }}">
@@ -149,18 +149,18 @@
 
                     <div x-show="scope === 'student'" x-cloak>
                         <input type="text" x-model="search" placeholder="Cari nama atau NIS..."
-                            class="w-full bg-gray-800 border border-white/10 text-white text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none mb-2">
-                        <div class="max-h-48 overflow-y-auto space-y-1 border border-white/5 rounded-lg p-2">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none mb-2">
+                        <div class="max-h-48 overflow-y-auto space-y-1 border border-gray-200 rounded-lg p-2">
                             @foreach($classrooms as $cls)
                                 @if($cls->students->isNotEmpty())
-                                    <p class="text-xs text-gray-500 px-2 py-1 font-medium">{{ $cls->name }}</p>
+                                    <p class="text-xs text-gray-400 px-2 py-1 font-medium">{{ $cls->name }}</p>
                                     @foreach($cls->students as $student)
-                                    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
+                                    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
                                         x-show="!search || '{{ strtolower($student->name) }}'.includes(search.toLowerCase()) || '{{ $student->nis ?? '' }}'.includes(search)">
                                         <input type="checkbox" name="student_ids[]" value="{{ $student->id }}"
                                             @change="rateChecked = false" class="text-purple-500 rounded">
-                                        <span class="text-sm text-white">{{ $student->name }}</span>
-                                        <span class="text-xs text-gray-500 ml-auto">{{ $student->nis ?? '-' }}</span>
+                                        <span class="text-sm text-gray-900">{{ $student->name }}</span>
+                                        <span class="text-xs text-gray-400 ml-auto">{{ $student->nis ?? '-' }}</span>
                                     </label>
                                     @endforeach
                                 @endif
@@ -193,35 +193,35 @@
                         </p>
                         <template x-for="s in rateResults.filter(r => r.source === 'none')" :key="s.id">
                             <div class="flex items-center gap-2 mb-1.5">
-                                <span class="text-xs text-gray-300 flex-1" x-text="s.name"></span>
+                                <span class="text-xs text-gray-600 flex-1" x-text="s.name"></span>
                                 <input type="number"
                                     :name="'manual_amount[' + s.id + ']'"
                                     placeholder="0"
                                     min="0"
-                                    class="w-32 bg-gray-800 border border-amber-500/30 text-white text-xs rounded-lg px-2 py-1.5 focus:border-amber-500 focus:outline-none">
-                                <span class="text-xs text-gray-600">Rp</span>
+                                    class="w-32 bg-white border border-amber-500/30 text-gray-900 text-xs rounded-lg px-2 py-1.5 focus:border-amber-500 focus:outline-none">
+                                <span class="text-xs text-gray-400">Rp</span>
                             </div>
                         </template>
                     </div>
 
                     {{-- Siswa dengan tarif --}}
-                    <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
-                        <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-                            <p class="text-xs font-semibold text-white">Preview Tagihan</p>
-                            <p class="text-xs text-gray-500">
+                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                            <p class="text-xs font-semibold text-gray-900">Preview Tagihan</p>
+                            <p class="text-xs text-gray-400">
                                 <span x-text="rateResults.length"></span> siswa total
                             </p>
                         </div>
-                        <div class="divide-y divide-white/5 max-h-56 overflow-y-auto">
+                        <div class="divide-y divide-gray-100 max-h-56 overflow-y-auto">
                             <template x-for="s in rateResults" :key="s.id">
                                 <div class="px-4 py-2.5 flex items-center justify-between">
-                                    <span class="text-sm text-white" x-text="s.name"></span>
+                                    <span class="text-sm text-gray-900" x-text="s.name"></span>
                                     <div class="text-right">
                                         <span class="text-sm font-medium"
                                             :class="s.amount > 0 ? 'text-green-400' : 'text-amber-400'"
                                             x-text="s.amount > 0 ? 'Rp ' + s.amount.toLocaleString('id-ID') : 'Input manual'">
                                         </span>
-                                        <p class="text-xs text-gray-500"
+                                        <p class="text-xs text-gray-400"
                                             x-text="s.source === 'override' ? 'Tarif khusus' : s.source === 'rate' ? 'Tarif kelas' : 'Belum ada tarif'">
                                         </p>
                                     </div>
@@ -235,9 +235,9 @@
 
         <div class="flex gap-3 mt-5">
             <a href="{{ route('bendahara.bills.index') }}"
-                class="px-6 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium rounded-lg transition-colors">Batal</a>
+                class="px-6 py-2.5 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium rounded-lg transition-colors">Batal</a>
             <button type="submit"
-                class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors">
+                class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium rounded-lg transition-colors">
                 Buat Tagihan
             </button>
         </div>

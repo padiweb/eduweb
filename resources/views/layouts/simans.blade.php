@@ -4,280 +4,550 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Dashboard' }} — EduWeb</title>
+    <title>{{ $title ?? 'Dashboard' }} — SiManS</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="h-full bg-gray-950 text-white antialiased">
+    <style>
+        /* ── Reset & Base ── */
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; }
+        body {
+            background-color: #f0f2f5;
+            color: #1e293b;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
 
-<div class="flex h-full min-h-screen">
+        /* ── Layout wrapper ── */
+        .simans-wrap { display: flex; min-height: 100vh; }
+
+        /* ── SIDEBAR ── */
+        .simans-sidebar {
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            width: 240px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 4px 0 16px rgba(15,23,42,0.06);
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+
+        /* Brand area */
+        .simans-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 20px 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .simans-brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(59,130,246,0.35);
+        }
+        .simans-brand-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.2;
+            letter-spacing: -0.3px;
+        }
+        .simans-brand-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 1px;
+        }
+
+        /* Nav scroll area */
+        .simans-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 12px 8px;
+        }
+        .simans-nav::-webkit-scrollbar { width: 4px; }
+        .simans-nav::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
+
+        /* Section label */
+        .simans-section {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            padding: 14px 10px 6px;
+        }
+
+        /* Nav link */
+        .simans-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            text-decoration: none;
+            color: #64748b;
+            border-left: 3px solid transparent;
+            margin-left: -1px;
+            transition: all 0.15s ease;
+            margin-bottom: 2px;
+        }
+        .simans-link:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .simans-link.active {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            color: #1d4ed8;
+            border-left-color: #3b82f6;
+            font-weight: 600;
+        }
+        .simans-link svg { flex-shrink: 0; }
+
+        /* User footer */
+        .simans-user {
+            padding: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .simans-user-inner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            transition: background 0.15s;
+        }
+        .simans-user-inner:hover { background: #f8fafc; }
+        .simans-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+        .simans-user-name { font-size: 13px; font-weight: 600; color: #0f172a; }
+        .simans-user-role { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+        .simans-logout {
+            margin-left: auto;
+            background: none; border: none; cursor: pointer;
+            color: #94a3b8;
+            padding: 4px;
+            border-radius: 6px;
+            transition: color 0.15s, background 0.15s;
+            display: flex;
+        }
+        .simans-logout:hover { color: #ef4444; background: #fef2f2; }
+
+        /* ── MAIN AREA ── */
+        .simans-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-left: 240px;
+        }
+
+        /* ── TOPBAR ── */
+        .simans-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            height: 58px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 14px;
+        }
+        .simans-topbar-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.2px;
+        }
+        .simans-topbar-date {
+            font-size: 12px;
+            color: #64748b;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 4px 12px;
+        }
+        .simans-notif {
+            position: relative;
+            background: none; border: none; cursor: pointer;
+            color: #64748b;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
+        }
+        .simans-notif:hover { background: #f1f5f9; color: #1e293b; }
+        .simans-notif-dot {
+            position: absolute;
+            top: 4px; right: 4px;
+            width: 8px; height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .simans-hamburger {
+            display: none;
+            background: none; border: none; cursor: pointer;
+            color: #64748b; padding: 6px;
+            border-radius: 8px;
+        }
+        .simans-hamburger:hover { background: #f1f5f9; color: #1e293b; }
+
+        /* ── PAGE CONTENT ── */
+        .simans-content {
+            flex: 1;
+            padding: 22px 24px;
+        }
+
+        /* ── ALERTS ── */
+        .alert-success {
+            display: flex; align-items: center; gap: 10px;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #15803d;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            margin-bottom: 20px;
+        }
+        .alert-error {
+            display: flex; align-items: center; gap: 10px;
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            margin-bottom: 20px;
+        }
+
+        /* ── CARD global ── */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 1px 4px rgba(15,23,42,0.06);
+            transition: box-shadow 0.2s;
+        }
+        .card:hover { box-shadow: 0 4px 16px rgba(15,23,42,0.10); }
+
+        /* ── BUTTON primary global ── */
+        .btn-primary, button.bg-blue-600, a.bg-blue-600 {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: white !important;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(59,130,246,0.30);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover, button.bg-blue-600:hover, a.bg-blue-600:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.45) !important;
+            transform: translateY(-1px);
+        }
+
+        /* ── TABLE ── */
+        table tr:hover td { background: #f8fafc; }
+
+        /* ── INPUT focus ── */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+        }
+
+        /* ── SCROLLBAR global ── */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ── MOBILE ── */
+        @media (max-width: 1023px) {
+            .simans-sidebar { transform: translateX(-100%); }
+            .simans-sidebar.open { transform: translateX(0); }
+            .simans-main { padding-left: 0; }
+            .simans-hamburger { display: flex; }
+        }
+
+        /* Alpine cloak */
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="simans-wrap">
 
     {{-- ===== SIDEBAR ===== --}}
-    <aside id="sidebar"
-           class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 border-r border-white/5 flex flex-col transition-transform duration-300 lg:translate-x-0 -translate-x-full">
+    <aside id="simans-sidebar" class="simans-sidebar">
 
         {{-- Brand --}}
-        <div class="flex items-center gap-3 px-5 py-5 border-b border-white/5">
+        <div class="simans-brand">
             @php $sSchool = auth()->user()->school; @endphp
             @if($sSchool?->logo_path)
                 <img src="{{ Storage::url($sSchool->logo_path) }}" alt="{{ $sSchool->name }}"
-                    style="width:32px;height:32px;object-fit:contain;border-radius:6px;flex-shrink:0;background:white;padding:2px">
+                     style="width:36px;height:36px;object-fit:contain;border-radius:8px;flex-shrink:0;background:#eff6ff;padding:4px;border:1px solid #dbeafe">
             @else
-                <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/>
+                <div class="simans-brand-icon">
+                    <svg width="18" height="18" fill="none" stroke="white" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"/>
                     </svg>
                 </div>
             @endif
-            <div class="min-w-0">
-                <p class="font-bold text-white text-sm leading-tight truncate">{{ $sSchool?->name ?? 'EduWeb' }}</p>
-                <p class="text-xs text-gray-500 leading-none mt-0.5">EduWeb by Padiweb</p>
+            <div>
+                <div class="simans-brand-name">{{ $sSchool?->name ?? 'SiManS' }}</div>
+                <div class="simans-brand-sub">by Padiweb</div>
             </div>
         </div>
 
         {{-- Navigation --}}
-        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+        <nav class="simans-nav">
             @php $role = auth()->user()->role; @endphp
 
-            <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="home">
+            <a href="{{ route('dashboard') }}"
+               class="simans-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
+                </svg>
                 Beranda
-            </x-sidebar-link>
+            </a>
 
             {{-- ── SISWA ── --}}
             @if($role === 'siswa')
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Akademik</p>
-                </div>
-                <x-sidebar-link href="{{ route('siswa.siswa.dashboard') }}" :active="request()->routeIs('siswa.siswa.dashboard')" icon="chart">
+                <div class="simans-section">Akademik</div>
+                <a href="{{ route('siswa.siswa.dashboard') }}" class="simans-link {{ request()->routeIs('siswa.siswa.dashboard') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('siswa.attendance.absensi') }}" :active="request()->routeIs('siswa.attendance.*')" icon="qrcode">
+                </a>
+                <a href="{{ route('siswa.attendance.absensi') }}" class="simans-link {{ request()->routeIs('siswa.attendance.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z M6.75 6.75h.75v.75h-.75v-.75zM6.75 17.25h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75z"/></svg>
                     Absensi
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('siswa.assignments.index') }}" :active="request()->routeIs('siswa.assignments.*')" icon="book">
+                </a>
+                <a href="{{ route('siswa.assignments.index') }}" class="simans-link {{ request()->routeIs('siswa.assignments.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
                     Tugas & Nilai
-                </x-sidebar-link>
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Keuangan</p>
-                </div>
-                <x-sidebar-link href="{{ route('siswa.payment.index') }}" :active="request()->routeIs('siswa.payment.*')" icon="credit-card">
+                </a>
+                <div class="simans-section">Keuangan</div>
+                <a href="{{ route('siswa.payment.index') }}" class="simans-link {{ request()->routeIs('siswa.payment.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
                     Status Pembayaran
-                </x-sidebar-link>
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Informasi</p>
-                </div>
-                <x-sidebar-link href="{{ route('siswa.violations') }}" :active="request()->routeIs('siswa.violations')" icon="shield">
+                </a>
+                <div class="simans-section">Informasi</div>
+                <a href="{{ route('siswa.violations') }}" class="simans-link {{ request()->routeIs('siswa.violations') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                     Pelanggaran
-                </x-sidebar-link>
+                </a>
                 @if(auth()->user()?->school?->feature_prakerin)
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Prakerin</p>
-                </div>
-                <x-sidebar-link href="{{ route('siswa.prakerin.index') }}" :active="request()->routeIs('siswa.prakerin.*')" icon="building">
-                    Absen & Jurnal
-                </x-sidebar-link>
+                    <div class="simans-section">Prakerin</div>
+                    <a href="{{ route('siswa.prakerin.index') }}" class="simans-link {{ request()->routeIs('siswa.prakerin.*') ? 'active' : '' }}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+                        Absen & Jurnal
+                    </a>
                 @endif
             @endif
 
             {{-- ── GURU / WALI KELAS ── --}}
             @if(in_array($role, ['guru', 'wali_kelas']))
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kelas</p>
-                </div>
-                <x-sidebar-link href="{{ route('guru.dashboard') }}" :active="request()->routeIs('guru.dashboard')" icon="chart">
+                <div class="simans-section">Kelas</div>
+                <a href="{{ route('guru.dashboard') }}" class="simans-link {{ request()->routeIs('guru.dashboard') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('guru.attendance.index') }}" :active="request()->routeIs('guru.attendance.*')" icon="clipboard">
+                </a>
+                <a href="{{ route('guru.attendance.index') }}" class="simans-link {{ request()->routeIs('guru.attendance.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
                     Absensi Siswa
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('guru.assignments.index') }}" :active="request()->routeIs('guru.assignments.*')" icon="book">
+                </a>
+                <a href="{{ route('guru.assignments.index') }}" class="simans-link {{ request()->routeIs('guru.assignments.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
                     Tugas & Nilai
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('guru.journal.index') }}" :active="request()->routeIs('guru.journal.*')" icon="journal">
+                </a>
+                <a href="{{ route('guru.journal.index') }}" class="simans-link {{ request()->routeIs('guru.journal.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>
                     Jurnal Mengajar
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="calendar">
-                    Jadwal
-                </x-sidebar-link>
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kehadiran</p>
-                </div>
-                <x-sidebar-link href="{{ route('guru.teacher-attendance.index') }}" :active="request()->routeIs('guru.teacher-attendance.*')" icon="clock">
+                </a>
+                <div class="simans-section">Kehadiran</div>
+                <a href="{{ route('guru.teacher-attendance.index') }}" class="simans-link {{ request()->routeIs('guru.teacher-attendance.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Absensi Saya
-                </x-sidebar-link>
+                </a>
                 @if(auth()->user()?->school?->feature_prakerin && \App\Models\PrakerinLocation::whereHas('supervisors', fn($q) => $q->where('teacher_id', auth()->id()))->exists())
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Prakerin</p>
-                </div>
-                <x-sidebar-link href="{{ route('guru.prakerin.index') }}" :active="request()->routeIs('guru.prakerin.*')" icon="building">
-                    Koordinator Prakerin
-                </x-sidebar-link>
+                    <div class="simans-section">Prakerin</div>
+                    <a href="{{ route('guru.prakerin.index') }}" class="simans-link {{ request()->routeIs('guru.prakerin.*') ? 'active' : '' }}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+                        Koordinator Prakerin
+                    </a>
                 @endif
             @endif
 
             {{-- ── KESISWAAN ── --}}
             @if($role === 'kesiswaan')
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Kesiswaan</p>
-                </div>
-                <x-sidebar-link href="{{ route('kesiswaan.dashboard') }}" :active="request()->routeIs('kesiswaan.dashboard')" icon="chart">
+                <div class="simans-section">Kesiswaan</div>
+                <a href="{{ route('kesiswaan.dashboard') }}" class="simans-link {{ request()->routeIs('kesiswaan.dashboard') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('kesiswaan.violations.index') }}" :active="request()->routeIs('kesiswaan.violations.*')" icon="shield">
+                </a>
+                <a href="{{ route('kesiswaan.violations.index') }}" class="simans-link {{ request()->routeIs('kesiswaan.violations.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                     Pelanggaran
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="clipboard">
+                </a>
+                <a href="#" class="simans-link">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
                     Rekap Absensi
-                </x-sidebar-link>
+                </a>
             @endif
 
             {{-- ── BENDAHARA ── --}}
             @if($role === 'bendahara')
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Pembayaran Siswa</p>
-                </div>
-                <x-sidebar-link href="{{ route('bendahara.dashboard') }}" :active="request()->routeIs('bendahara.dashboard')" icon="chart">
+                <div class="simans-section">Pembayaran Siswa</div>
+                <a href="{{ route('bendahara.dashboard') }}" class="simans-link {{ request()->routeIs('bendahara.dashboard') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.bills.index') }}" :active="request()->routeIs('bendahara.bills.*')" icon="credit-card">
+                </a>
+                <a href="{{ route('bendahara.bills.index') }}" class="simans-link {{ request()->routeIs('bendahara.bills.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
                     Kelola Tagihan
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.transactions.index') }}" :active="request()->routeIs('bendahara.transactions.*')" icon="clipboard">
+                </a>
+                <a href="{{ route('bendahara.transactions.index') }}" class="simans-link {{ request()->routeIs('bendahara.transactions.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
                     Konfirmasi Transfer
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.payment-types.index') }}" :active="request()->routeIs('bendahara.payment-types.*')" icon="cog">
+                </a>
+                <a href="{{ route('bendahara.payment-types.index') }}" class="simans-link {{ request()->routeIs('bendahara.payment-types.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     Jenis & Tarif
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.discount-programs.index') }}" :active="request()->routeIs('bendahara.discount-programs.*')" icon="shield">
+                </a>
+                <a href="{{ route('bendahara.discount-programs.index') }}" class="simans-link {{ request()->routeIs('bendahara.discount-programs.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                     Beasiswa & Keringanan
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.bills.tunggakan') }}" :active="request()->routeIs('bendahara.bills.tunggakan')" icon="bell">
+                </a>
+                <a href="{{ route('bendahara.bills.tunggakan') }}" class="simans-link {{ request()->routeIs('bendahara.bills.tunggakan') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
                     Daftar Tunggakan
-                </x-sidebar-link>
-
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Keuangan Sekolah</p>
-                </div>
-                <x-sidebar-link href="{{ route('bendahara.finance.index') }}" :active="request()->routeIs('bendahara.finance.*')" icon="chart">
+                </a>
+                <div class="simans-section">Keuangan Sekolah</div>
+                <a href="{{ route('bendahara.finance.index') }}" class="simans-link {{ request()->routeIs('bendahara.finance.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard Keuangan
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.fund-sources.index') }}" :active="request()->routeIs('bendahara.fund-sources.*')" icon="credit-card">
-                    Sumber Dana</x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.setoran.index') }}" :active="request()->routeIs('bendahara.setoran.*')" icon="building-bank">
+                </a>
+                <a href="{{ route('bendahara.fund-sources.index') }}" class="simans-link {{ request()->routeIs('bendahara.fund-sources.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                    Sumber Dana
+                </a>
+                <a href="{{ route('bendahara.setoran.index') }}" class="simans-link {{ request()->routeIs('bendahara.setoran.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg>
                     Setoran Kas
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.expenses.categories') }}" :active="request()->routeIs('bendahara.expenses.categories')" icon="tag">
-                    Kategori Pengeluaran
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.expenses.index') }}" :active="request()->routeIs('bendahara.expenses.*')" icon="arrow-down-right">
+                </a>
+                <a href="{{ route('bendahara.expenses.index') }}" class="simans-link {{ request()->routeIs('bendahara.expenses.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181"/></svg>
                     Pengeluaran
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.payroll.index') }}" :active="request()->routeIs('bendahara.payroll.*')" icon="users">
+                </a>
+                <a href="{{ route('bendahara.payroll.index') }}" class="simans-link {{ request()->routeIs('bendahara.payroll.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                     Penggajian
-                </x-sidebar-link>
+                </a>
             @endif
 
             {{-- ── KEPALA SEKOLAH ── --}}
             @if($role === 'kepala_sekolah')
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Monitoring</p>
-                </div>
-                <x-sidebar-link href="{{ route('kepala.dashboard') }}" :active="request()->routeIs('kepala.dashboard')" icon="chart">
+                <div class="simans-section">Monitoring</div>
+                <a href="{{ route('kepala.dashboard') }}" class="simans-link {{ request()->routeIs('kepala.dashboard') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.bills.index') }}" :active="request()->routeIs('bendahara.bills.*')" icon="credit-card">
+                </a>
+                <a href="{{ route('bendahara.bills.index') }}" class="simans-link {{ request()->routeIs('bendahara.bills.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
                     Data Tagihan
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.bills.index', ['status' => 'unpaid']) }}" :active="false" icon="shield">
-                    Tunggakan
-                </x-sidebar-link>
-
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Keuangan</p>
-                </div>
-                <x-sidebar-link href="{{ route('bendahara.finance.index') }}" :active="request()->routeIs('bendahara.finance.*')" icon="chart">
+                </a>
+                <div class="simans-section">Keuangan</div>
+                <a href="{{ route('bendahara.finance.index') }}" class="simans-link {{ request()->routeIs('bendahara.finance.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard Keuangan
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.expenses.pending') }}" :active="request()->routeIs('bendahara.expenses.pending')" icon="bell">
+                </a>
+                <a href="{{ route('bendahara.expenses.pending') }}" class="simans-link {{ request()->routeIs('bendahara.expenses.pending') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
                     Approval Pengeluaran
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('bendahara.expenses.index') }}" :active="false" icon="clipboard">
-                    Semua Pengeluaran
-                </x-sidebar-link>
+                </a>
             @endif
 
             {{-- ── ADMIN ── --}}
             @if($role === 'admin')
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Manajemen</p>
-                </div>
-                <x-sidebar-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')" icon="chart">
+                <div class="simans-section">Manajemen</div>
+                <a href="{{ route('admin.dashboard') }}" class="simans-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                     Dashboard
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.*')" icon="users">
+                </a>
+                <a href="{{ route('admin.users.index') }}" class="simans-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                     Manajemen User
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.classrooms.index') }}" :active="request()->routeIs('admin.classrooms.*')" icon="school">
+                </a>
+                <a href="{{ route('admin.classrooms.index') }}" class="simans-link {{ request()->routeIs('admin.classrooms.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/></svg>
                     Manajemen Kelas
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.subjects.index') }}" :active="request()->routeIs('admin.subjects.*')" icon="book">
+                </a>
+                <a href="{{ route('admin.subjects.index') }}" class="simans-link {{ request()->routeIs('admin.subjects.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
                     Mata Pelajaran
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.schedules.index') }}" :active="request()->routeIs('admin.schedules.*')" icon="calendar">
+                </a>
+                <a href="{{ route('admin.schedules.index') }}" class="simans-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                     Jadwal Mengajar
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.promotions.index') }}" :active="request()->routeIs('admin.promotions.*')" icon="arrow-up">
+                </a>
+                <a href="{{ route('admin.promotions.index') }}" class="simans-link {{ request()->routeIs('admin.promotions.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/></svg>
                     Promosi Siswa
-                </x-sidebar-link>
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Monitoring</p>
-                </div>
-                <x-sidebar-link href="{{ route('admin.teacher-attendance.index') }}" icon="users">
+                </a>
+                <div class="simans-section">Monitoring</div>
+                <a href="{{ route('admin.teacher-attendance.index') }}" class="simans-link {{ request()->routeIs('admin.teacher-attendance.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                     Absensi Guru
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="clipboard">
-                    Rekap Absensi
-                </x-sidebar-link>
-                <x-sidebar-link href="#" :active="false" icon="shield">
-                    Pelanggaran
-                </x-sidebar-link>
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
-                </div>
+                </a>
                 @if(auth()->user()?->school?->feature_prakerin)
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Prakerin</p>
-                </div>
-                <x-sidebar-link href="{{ route('admin.prakerin.periods.index') }}" :active="request()->routeIs('admin.prakerin.*')" icon="building">
-                    Manajemen Prakerin
-                </x-sidebar-link>
+                    <div class="simans-section">Prakerin</div>
+                    <a href="{{ route('admin.prakerin.periods.index') }}" class="simans-link {{ request()->routeIs('admin.prakerin.*') ? 'active' : '' }}">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/></svg>
+                        Manajemen Prakerin
+                    </a>
                 @endif
-                <div class="pt-4 pb-1 px-3">
-                    <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-600">Sistem</p>
-                </div>
-                <x-sidebar-link href="{{ route('admin.settings.school') }}" :active="request()->routeIs('admin.settings.*')" icon="cog">
+                <div class="simans-section">Sistem</div>
+                <a href="{{ route('admin.settings.school') }}" class="simans-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     Pengaturan Sekolah
-                </x-sidebar-link>
-                <x-sidebar-link href="{{ route('admin.qr.index') }}" :active="request()->routeIs('admin.qr.*')" icon="qrcode">
+                </a>
+                <a href="{{ route('admin.qr.index') }}" class="simans-link {{ request()->routeIs('admin.qr.*') ? 'active' : '' }}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z M6.75 6.75h.75v.75h-.75v-.75zM6.75 17.25h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75z"/></svg>
                     Kelola QR Kelas
-                </x-sidebar-link>
+                </a>
             @endif
-
         </nav>
 
-        {{-- User card --}}
-        <div class="p-3 border-t border-white/5">
-            <div class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors">
-                <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-700/50 flex items-center justify-center text-xs font-bold text-emerald-400 flex-shrink-0">
-                    {{ auth()->user()->initials }}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-white truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-gray-400">{{ ucfirst(str_replace('_', ' ', auth()->user()->role)) }}</p>
+        {{-- User footer --}}
+        <div class="simans-user">
+            <div class="simans-user-inner">
+                <div class="simans-avatar">{{ auth()->user()->initials }}</div>
+                <div style="flex:1;min-width:0;">
+                    <div class="simans-user-name truncate">{{ auth()->user()->name }}</div>
+                    <div class="simans-user-role">{{ ucfirst(str_replace('_', ' ', auth()->user()->role)) }}</div>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors" title="Keluar">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <button type="submit" class="simans-logout" title="Keluar">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
                         </svg>
                     </button>
@@ -287,43 +557,38 @@
     </aside>
 
     {{-- ===== MAIN AREA ===== --}}
-    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+    <div class="simans-main">
 
         {{-- Topbar --}}
-        <header class="sticky top-0 z-40 h-14 bg-gray-900/95 backdrop-blur border-b border-white/5 flex items-center gap-4 px-4 lg:px-6">
-
-            {{-- Hamburger mobile --}}
-            <button id="sidebar-toggle" class="lg:hidden text-gray-400 hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <header class="simans-topbar">
+            <button id="simans-hamburger" class="simans-hamburger" aria-label="Menu">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
                 </svg>
             </button>
 
-            {{-- Page title --}}
-            <span class="text-sm font-semibold text-white">{{ $title ?? 'Dashboard' }}</span>
+            <span class="simans-topbar-title">{{ $title ?? 'Dashboard' }}</span>
 
-            <div class="flex-1"></div>
+            <div style="flex:1"></div>
 
-            {{-- Tanggal --}}
-            <span class="hidden sm:block text-xs text-gray-500 bg-gray-800 px-3 py-1.5 rounded-full border border-white/5">
+            <span class="simans-topbar-date hidden sm:block">
                 {{ now()->translatedFormat('l, d F Y') }}
             </span>
 
-            {{-- Notifikasi --}}
-            <button class="relative text-gray-400 hover:text-white transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <button class="simans-notif" aria-label="Notifikasi">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
                 </svg>
-                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-gray-900"></span>
+                <span class="simans-notif-dot"></span>
             </button>
         </header>
 
         {{-- Page Content --}}
-        <main class="flex-1 p-4 lg:p-6">
+        <main class="simans-content">
 
             @if(session('success'))
-                <div class="mb-5 flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <div class="alert-success">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     {{ session('success') }}
@@ -331,8 +596,8 @@
             @endif
 
             @if(session('error'))
-                <div class="mb-5 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <div class="alert-error">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
                     </svg>
                     {{ session('error') }}
@@ -340,13 +605,13 @@
             @endif
 
             @if($errors->any())
-                <div class="mb-5 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
-                    <ul class="space-y-1">
+                <div class="alert-error" style="align-items:flex-start">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+                    </svg>
+                    <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px">
                         @foreach($errors->all() as $error)
-                            <li class="flex items-center gap-2">
-                                <span class="w-1 h-1 rounded-full bg-red-400 flex-shrink-0"></span>
-                                {{ $error }}
-                            </li>
+                            <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -358,24 +623,18 @@
 </div>
 
 {{-- Sidebar overlay mobile --}}
-<div id="sidebar-overlay" class="fixed inset-0 z-40 bg-black/60 hidden lg:hidden"></div>
+<div id="simans-overlay" style="display:none;position:fixed;inset:0;z-index:40;background:rgba(15,23,42,0.5)"></div>
 
 <script>
-    const sidebar   = document.getElementById('sidebar');
-    const overlay   = document.getElementById('sidebar-overlay');
-    const toggleBtn = document.getElementById('sidebar-toggle');
+    const sb  = document.getElementById('simans-sidebar');
+    const ov  = document.getElementById('simans-overlay');
+    const hbg = document.getElementById('simans-hamburger');
 
-    function openSidebar()  {
-        sidebar.classList.remove('-translate-x-full');
-        overlay.classList.remove('hidden');
-    }
-    function closeSidebar() {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-    }
+    function openSidebar()  { sb.classList.add('open');  ov.style.display = 'block'; }
+    function closeSidebar() { sb.classList.remove('open'); ov.style.display = 'none'; }
 
-    toggleBtn?.addEventListener('click', openSidebar);
-    overlay?.addEventListener('click', closeSidebar);
+    hbg?.addEventListener('click', openSidebar);
+    ov?.addEventListener('click', closeSidebar);
 </script>
 
 @stack('scripts')
