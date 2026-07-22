@@ -75,14 +75,14 @@
 
             {{-- Tombol scan QR --}}
             <button id="btn-start-scan"
-                    class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 font-bold py-4 rounded-2xl transition-colors text-base mb-3">
+                    class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors text-base mb-3">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z"/>
                 </svg>
                 Scan QR Absensi
             </button>
-            <p class="text-center text-xs text-gray-400">
+            <p class="text-center text-xs text-gray-500">
                 Atau scan QR di papan kelas langsung dari kamera HP
             </p>
         </div>
@@ -125,11 +125,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
                     </svg>
-                    <span id="gps-status-text" class="text-sm text-gray-600">Mendeteksi lokasi GPS...</span>
+                    <span id="gps-status-text" class="text-sm text-gray-400">Mendeteksi lokasi GPS...</span>
                 </div>
                 <button id="btn-absen"
                         disabled
-                        class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 font-bold py-3.5 rounded-2xl transition-all">
+                        class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-all">
                     Absen Sekarang
                 </button>
                 <p id="absen-error" class="text-red-400 text-xs text-center mt-2 hidden"></p>
@@ -143,12 +143,12 @@
             </svg>
             <h2 class="text-lg font-semibold text-gray-900 mb-1">Absensi Ditutup</h2>
             <p class="text-gray-500 text-sm">Sesi absensi hari ini sudah ditutup.</p>
-            <p class="text-gray-400 text-xs mt-1">Hubungi guru untuk absen manual.</p>
+            <p class="text-gray-500 text-xs mt-1">Hubungi guru untuk absen manual.</p>
         </div>
 
     @else
         <div class="bg-white border border-gray-200 rounded-xl p-6 mb-5 text-center">
-            <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="w-12 h-12 text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
             </svg>
             <h2 class="text-lg font-semibold text-gray-900 mb-1">Belum Ada Sesi Hari Ini</h2>
@@ -165,7 +165,7 @@
             </svg>
             <span class="text-sm font-medium text-gray-900">Lihat Riwayat Absensi</span>
         </div>
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
         </svg>
     </a>
@@ -322,7 +322,7 @@
                 return;
             }
             gpsStat.textContent = 'Mendeteksi lokasi GPS...';
-            gpsStat.className   = 'text-sm text-gray-600';
+            gpsStat.className   = 'text-sm text-gray-400';
 
             navigator.geolocation.getCurrentPosition(
                 function(pos) {

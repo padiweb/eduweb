@@ -8,32 +8,32 @@
     {{-- Ringkasan --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div class="bg-white border border-gray-200 rounded-xl p-4">
-            <p class="text-xs text-gray-400 mb-1">Total Tagihan</p>
+            <p class="text-xs text-gray-500 mb-1">Total Tagihan</p>
             <p class="text-lg font-bold text-gray-900">Rp {{ number_format($summary['total_tagihan'], 0, ',', '.') }}</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4">
-            <p class="text-xs text-gray-400 mb-1">Sudah Dibayar</p>
+            <p class="text-xs text-gray-500 mb-1">Sudah Dibayar</p>
             <p class="text-lg font-bold text-green-400">Rp {{ number_format($summary['total_bayar'], 0, ',', '.') }}</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4">
-            <p class="text-xs text-gray-400 mb-1">Tunggakan</p>
+            <p class="text-xs text-gray-500 mb-1">Tunggakan</p>
             <p class="text-lg font-bold text-red-400">Rp {{ number_format($summary['tunggakan'], 0, ',', '.') }}</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4">
-            <p class="text-xs text-gray-400 mb-1">Tagihan Lunas</p>
-            <p class="text-lg font-bold text-purple-400">{{ $summary['lunas'] }} tagihan</p>
+            <p class="text-xs text-gray-500 mb-1">Tagihan Lunas</p>
+            <p class="text-lg font-bold text-blue-600">{{ $summary['lunas'] }} tagihan</p>
         </div>
     </div>
 
     {{-- Filter --}}
     <form method="GET" class="flex flex-wrap gap-3 mb-4">
-        <select name="status" class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+        <select name="status" class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
             <option value="">Semua status</option>
             <option value="unpaid"  {{ request('status') == 'unpaid'  ? 'selected' : '' }}>Belum bayar</option>
             <option value="partial" {{ request('status') == 'partial' ? 'selected' : '' }}>Cicilan</option>
             <option value="paid"    {{ request('status') == 'paid'    ? 'selected' : '' }}>Lunas</option>
         </select>
-        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm px-4 py-2 rounded-lg">Filter</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Filter</button>
         @if(request('status'))
             <a href="{{ route('siswa.payment.index') }}" class="text-gray-500 hover:text-gray-900 text-sm px-3 py-2 rounded-lg">Reset</a>
         @endif
@@ -63,7 +63,7 @@
                 </div>
                 <p class="text-xs text-gray-500">{{ $bill->period_label }}</p>
                 @if($bill->due_date && $bill->status !== 'paid')
-                    <p class="text-xs {{ \Carbon\Carbon::parse($bill->due_date)->isPast() ? 'text-red-400' : 'text-gray-400' }} mt-0.5">
+                    <p class="text-xs {{ \Carbon\Carbon::parse($bill->due_date)->isPast() ? 'text-red-400' : 'text-gray-500' }} mt-0.5">
                         Jatuh tempo {{ \Carbon\Carbon::parse($bill->due_date)->format('d/m/Y') }}
                     </p>
                 @endif
@@ -78,13 +78,13 @@
                 @endif
             </div>
             <a href="{{ route('siswa.payment.show', $bill) }}"
-                class="shrink-0 text-xs bg-purple-600 hover:bg-purple-700 text-gray-900 px-3 py-1.5 rounded-lg transition-colors">
+                class="shrink-0 text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
                 Detail
             </a>
         </div>
         @empty
             <div class="bg-white border border-gray-200 rounded-xl px-5 py-12 text-center">
-                <p class="text-gray-400">Belum ada tagihan.</p>
+                <p class="text-gray-500">Belum ada tagihan.</p>
             </div>
         @endforelse
     </div>

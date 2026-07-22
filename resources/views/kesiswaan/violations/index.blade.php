@@ -29,14 +29,14 @@
                 <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors">
 
                     {{-- Avatar --}}
-                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-400 flex-shrink-0">
                         {{ substr($student->name, 0, 2) }}
                     </div>
 
                     {{-- Info --}}
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-900 truncate">{{ $student->name }}</p>
-                        <p class="text-xs text-gray-400">
+                        <p class="text-xs text-gray-500">
                             NIS: {{ $student->nis }}
                             @if($student->classrooms->first())
                                 · {{ $student->classrooms->first()->name }}
@@ -45,7 +45,7 @@
                     </div>
 
                     {{-- Jumlah pelanggaran --}}
-                    <span class="text-xs text-gray-400 flex-shrink-0">
+                    <span class="text-xs text-gray-500 flex-shrink-0">
                         {{ $student->violation_count ?? 0 }} pelanggaran
                     </span>
 
@@ -62,7 +62,7 @@
                 </div>
             @empty
                 <div class="px-5 py-12 text-center">
-                    <p class="text-gray-400 text-sm">Belum ada data siswa.</p>
+                    <p class="text-gray-500 text-sm">Belum ada data siswa.</p>
                 </div>
             @endforelse
         </div>

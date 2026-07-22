@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('admin.prakerin.placements.index', ['period_id' => $placement->period_id]) }}"
-           class="text-gray-400 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+           class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg> Kembali
@@ -27,54 +27,54 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-gray-900">{{ $totalPast }}</p>
-            <p class="text-gray-400 text-xs mt-0.5">Total Hari (s.d. hari ini)</p>
+            <p class="text-gray-500 text-xs mt-0.5">Total Hari (s.d. hari ini)</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-blue-600">{{ $hadirCount }}</p>
-            <p class="text-gray-400 text-xs mt-0.5">Hadir Masuk</p>
+            <p class="text-gray-500 text-xs mt-0.5">Hadir Masuk</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-amber-400">{{ $jurnalCount }}</p>
-            <p class="text-gray-400 text-xs mt-0.5">Jurnal Terisi</p>
+            <p class="text-gray-500 text-xs mt-0.5">Jurnal Terisi</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-red-400">{{ $alfaCount }}</p>
-            <p class="text-gray-400 text-xs mt-0.5">Tidak Hadir</p>
+            <p class="text-gray-500 text-xs mt-0.5">Tidak Hadir</p>
         </div>
     </div>
 
     {{-- Info --}}
-    <div class="bg-white border border-gray-200 rounded-2xl p-4 mb-5">
+    <div class="bg-white border border-gray-200 rounded-xl p-4 mb-5">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div><p class="text-gray-400 text-xs">DU/DI</p><p class="text-gray-900 mt-0.5">{{ $placement->location->name }}</p></div>
+            <div><p class="text-gray-500 text-xs">DU/DI</p><p class="text-gray-900 mt-0.5">{{ $placement->location->name }}</p></div>
             <div>
-                <p class="text-gray-400 text-xs">Periode Efektif</p>
+                <p class="text-gray-500 text-xs">Periode Efektif</p>
                 <p class="text-gray-900 mt-0.5">
                     {{ $placement->getEffectiveStartDate()->format('d M Y') }} –
                     {{ $placement->getEffectiveEndDate()->format('d M Y') }}
                 </p>
             </div>
             <div>
-                <p class="text-gray-400 text-xs">Jam Masuk / Pulang</p>
+                <p class="text-gray-500 text-xs">Jam Masuk / Pulang</p>
                 <p class="text-gray-900 mt-0.5">
                     {{ $placement->location->checkin_time ?? '—' }} / {{ $placement->location->checkout_time ?? '—' }}
                 </p>
             </div>
             <div>
-                <p class="text-gray-400 text-xs">Pembimbing Sekolah</p>
+                <p class="text-gray-500 text-xs">Pembimbing Sekolah</p>
                 @if ($placement->location->supervisors->count() > 0)
                     @foreach ($placement->location->supervisors as $sv)
                         <p class="text-gray-900 mt-0.5 text-xs">{{ $sv->name }}</p>
                     @endforeach
                 @else
-                    <p class="text-gray-400 mt-0.5">—</p>
+                    <p class="text-gray-500 mt-0.5">—</p>
                 @endif
             </div>
         </div>
     </div>
 
     {{-- Tabel rekap --}}
-    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         <div class="px-5 py-3 border-b border-gray-200">
             <p class="text-sm font-semibold text-gray-900">Rekap Harian</p>
         </div>
@@ -82,11 +82,11 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Tanggal</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Masuk</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Pulang</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Jurnal</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Foto</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Tanggal</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Masuk</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Pulang</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Jurnal</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Foto</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -105,7 +105,7 @@
                             <td class="px-5 py-3">
                                 @if ($day['checkin'])
                                     <p class="text-blue-600 text-xs font-semibold">{{ $day['checkin']->selfie_taken_at?->format('H:i') ?? $day['checkin']->created_at->format('H:i') }}</p>
-                                    <p class="text-gray-400 text-xs">{{ $day['checkin']->status_label }}</p>
+                                    <p class="text-gray-500 text-xs">{{ $day['checkin']->status_label }}</p>
                                     @if ($day['checkin']->selfie_path)
                                         <a href="{{ Storage::url($day['checkin']->selfie_path) }}" target="_blank">
                                             <img src="{{ Storage::url($day['checkin']->selfie_path) }}" alt="selfie masuk"
@@ -143,9 +143,9 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                             </svg>
                                         </button>
-                                        <p class="text-gray-400 text-xs">{{ $day['journal']->submitted_at?->format('H:i') ?? $day['journal']->updated_at->format('H:i') }}</p>
+                                        <p class="text-gray-500 text-xs">{{ $day['journal']->submitted_at?->format('H:i') ?? $day['journal']->updated_at->format('H:i') }}</p>
                                         <div x-show="open" x-cloak class="mt-2 p-3 bg-white rounded-xl max-w-sm">
-                                            <p class="text-gray-600 text-xs leading-relaxed">{{ Str::limit($day['journal']->content, 250) }}</p>
+                                            <p class="text-gray-400 text-xs leading-relaxed">{{ Str::limit($day['journal']->content, 250) }}</p>
                                             @if ($day['journal']->teacher_note)
                                                 <div class="mt-2 pt-2 border-t border-gray-200">
                                                     <p class="text-blue-400 text-xs font-semibold">Catatan guru:</p>

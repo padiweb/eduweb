@@ -30,9 +30,9 @@
         <form method="GET" class="flex items-center gap-3">
             <label class="text-sm text-gray-500">Tanggal:</label>
             <input type="date" name="date" value="{{ $date }}"
-                   class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                   class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
             <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm px-4 py-2 rounded-xl transition-colors">
+                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-xl transition-colors">
                 Lihat
             </button>
         </form>
@@ -40,8 +40,8 @@
 
     @if($sessions->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <p class="text-gray-400 text-sm">Belum ada sesi absensi di tanggal ini.</p>
-            <p class="text-gray-400 text-xs mt-1">Sesi dibuat otomatis oleh scheduler jam 06:00.</p>
+            <p class="text-gray-500 text-sm">Belum ada sesi absensi di tanggal ini.</p>
+            <p class="text-gray-500 text-xs mt-1">Sesi dibuat otomatis oleh scheduler jam 06:00.</p>
         </div>
     @else
         @foreach($summary as $sum)
@@ -53,7 +53,7 @@
                         <h2 class="text-sm font-bold text-gray-900">
                             Sesi {{ $session->session_type === 'masuk' ? 'Masuk' : 'Pulang' }}
                         </h2>
-                        <p class="text-xs text-gray-400 mt-0.5">
+                        <p class="text-xs text-gray-500 mt-0.5">
                             {{ substr($session->open_time,0,5) }} — {{ substr($session->close_time,0,5) }}
                         </p>
                     </div>
@@ -61,7 +61,7 @@
                         <span class="text-blue-600">{{ $sum['hadir'] }} hadir</span>
                         @if($sum['terlambat'] > 0) <span class="text-amber-400">{{ $sum['terlambat'] }} terlambat</span> @endif
                         @if($sum['izin'] > 0)      <span class="text-blue-400">{{ $sum['izin'] }} izin</span> @endif
-                        @if($sum['sakit'] > 0)     <span class="text-purple-400">{{ $sum['sakit'] }} sakit</span> @endif
+                        @if($sum['sakit'] > 0)     <span class="text-blue-600">{{ $sum['sakit'] }} sakit</span> @endif
                         @if($sum['dinas'] > 0)     <span class="text-cyan-400">{{ $sum['dinas'] }} dinas</span> @endif
                         @if($sum['alfa'] > 0)      <span class="text-red-400">{{ $sum['alfa'] }} alfa</span> @endif
                     </div>
@@ -81,14 +81,14 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate">{{ $att->teacher->name }}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">
+                                    <p class="text-xs text-gray-500 mt-0.5">
                                         @if($att->scanned_at) {{ $att->scanned_at->format('H:i') }} @endif
                                         @if($att->notes) &middot; {{ $att->notes }} @endif
                                         @if($att->is_manual_entry) &middot; <span class="text-amber-500">Manual</span> @endif
                                     </p>
                                 </div>
                                 @if($att->distance_meters !== null)
-                                    <span class="text-xs text-gray-400 flex-shrink-0">{{ round($att->distance_meters) }}m</span>
+                                    <span class="text-xs text-gray-500 flex-shrink-0">{{ round($att->distance_meters) }}m</span>
                                 @endif
                                 <span class="text-xs font-semibold px-2 py-0.5 rounded-full border flex-shrink-0
                                     bg-{{ $c }}-500/10 text-{{ $c }}-400 border-{{ $c }}-500/20">
@@ -125,9 +125,9 @@
                             @csrf
                             <input type="hidden" name="session_id" value="{{ $session->id }}">
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">Guru</label>
+                                <label class="block text-xs text-gray-500 mb-1">Guru</label>
                                 <select name="teacher_id" required
-                                        class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                        class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     <option value="">Pilih guru...</option>
                                     @foreach($teachers as $t)
                                         <option value="{{ $t->id }}">{{ $t->name }}</option>
@@ -135,9 +135,9 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">Status</label>
+                                <label class="block text-xs text-gray-500 mb-1">Status</label>
                                 <select name="status" required
-                                        class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                        class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     <option value="hadir">Hadir</option>
                                     <option value="terlambat">Terlambat</option>
                                     <option value="izin">Izin</option>
@@ -147,12 +147,12 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">Keterangan</label>
+                                <label class="block text-xs text-gray-500 mb-1">Keterangan</label>
                                 <input type="text" name="notes" placeholder="Opsional"
-                                       class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                       class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                             <button type="submit"
-                                    class="bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm px-4 py-1.5 rounded-xl transition-colors">
+                                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-1.5 rounded-xl transition-colors">
                                 Simpan
                             </button>
                         </form>

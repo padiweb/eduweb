@@ -2,7 +2,7 @@
 
     <div class="mb-4">
         <a href="{{ route('guru.prakerin.recap.jurnal', ['period_id' => $placement->period_id, 'location_id' => $placement->location_id]) }}"
-           class="text-gray-400 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+           class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -15,7 +15,7 @@
             </div>
             <div class="text-right">
                 <p class="text-xl font-bold {{ $filled < $total ? 'text-red-400' : 'text-blue-600' }}">{{ $filled }}/{{ $total }}</p>
-                <p class="text-gray-400 text-xs">jurnal terisi</p>
+                <p class="text-gray-500 text-xs">jurnal terisi</p>
             </div>
         </div>
     </div>
@@ -89,7 +89,7 @@
                                 @if ($isToday) <span class="text-blue-400 text-xs ml-1">Hari ini</span> @endif
                             </span>
                             @if ($journal)
-                                <p class="text-gray-400 text-xs">
+                                <p class="text-gray-500 text-xs">
                                     {{ $journal->submitted_at?->format('H:i') ?? '' }}
                                     @if ($journal->photos->count() > 0)
                                         · {{ $journal->photos->count() }} foto
@@ -102,7 +102,7 @@
                     </div>
                     <div class="flex items-center gap-2 flex-shrink-0">
                         <span class="px-2 py-0.5 text-xs rounded-lg border {{ $badgeClass }}">{{ $badgeText }}</span>
-                        <svg class="w-4 h-4 text-gray-400 transition-transform"
+                        <svg class="w-4 h-4 text-gray-500 transition-transform"
                              :class="open === '{{ $key }}' ? 'rotate-180' : ''"
                              fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -118,14 +118,14 @@
                         <div class="px-4 py-4 space-y-4">
                             {{-- Isi jurnal --}}
                             <div>
-                                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-2">Laporan Kegiatan</p>
+                                <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">Laporan Kegiatan</p>
                                 <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{{ $journal->content }}</p>
                             </div>
 
                             {{-- Foto --}}
                             @if ($journal->photos->count() > 0)
                                 <div>
-                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-2">
+                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">
                                         Foto Dokumentasi ({{ $journal->photos->count() }})
                                     </p>
                                     <div class="flex gap-2 overflow-x-auto pb-1">
@@ -144,10 +144,10 @@
                             {{-- Catatan guru --}}
                             <div class="pt-3 border-t border-gray-200">
                                 @if ($journal->teacher_note)
-                                    <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1.5">Catatan Pembimbing</p>
+                                    <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1.5">Catatan Pembimbing</p>
                                     <div class="p-3 bg-blue-500/5 border border-blue-500/15 rounded-xl">
                                         <p class="text-blue-300 text-sm">{{ $journal->teacher_note }}</p>
-                                        <p class="text-gray-400 text-xs mt-1">{{ $journal->noted_at?->translatedFormat('d M Y, H:i') }}</p>
+                                        <p class="text-gray-500 text-xs mt-1">{{ $journal->noted_at?->translatedFormat('d M Y, H:i') }}</p>
                                     </div>
                                 @else
                                     <form action="{{ route('guru.prakerin.journal.note', $journal) }}" method="POST" class="flex gap-2">
@@ -166,14 +166,14 @@
 
                     @elseif ($absence)
                         <div class="px-4 py-4">
-                            <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1.5">Keterangan</p>
-                            <p class="text-gray-600 text-sm">{{ $absence->reason }}</p>
-                            <p class="text-gray-400 text-xs mt-2">Jurnal tidak wajib diisi saat {{ strtolower($absence->type_label) }}.</p>
+                            <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1.5">Keterangan</p>
+                            <p class="text-gray-400 text-sm">{{ $absence->reason }}</p>
+                            <p class="text-gray-500 text-xs mt-2">Jurnal tidak wajib diisi saat {{ strtolower($absence->type_label) }}.</p>
                         </div>
 
                     @else
                         <div class="px-4 py-4 text-center">
-                            <p class="text-gray-400 text-sm">
+                            <p class="text-gray-500 text-sm">
                                 {{ $isPast ? 'Siswa tidak mengisi jurnal pada hari ini.' : 'Belum ada jurnal.' }}
                             </p>
                         </div>

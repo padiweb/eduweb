@@ -2,16 +2,16 @@
 
 @php
 $config = match($status) {
-    'hadir'     => ['label' => 'Hadir',     'class' => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'],
-    'terlambat' => ['label' => 'Terlambat', 'class' => 'bg-amber-500/10 text-amber-400 border-amber-500/20'],
-    'izin'      => ['label' => 'Izin',      'class' => 'bg-blue-500/10 text-blue-400 border-blue-500/20'],
-    'sakit'     => ['label' => 'Sakit',     'class' => 'bg-purple-500/10 text-purple-400 border-purple-500/20'],
-    'alfa'      => ['label' => 'Alfa',      'class' => 'bg-red-500/10 text-red-400 border-red-500/20'],
-    default     => ['label' => ucfirst($status), 'class' => 'bg-gray-500/10 text-gray-400 border-gray-500/20'],
+    'hadir'     => ['label'=>'Hadir',     'bg'=>'#ecfdf5','color'=>'#065f46','dot'=>'#10b981'],
+    'terlambat' => ['label'=>'Terlambat', 'bg'=>'#fffbeb','color'=>'#92400e','dot'=>'#f59e0b'],
+    'izin'      => ['label'=>'Izin',      'bg'=>'#eff6ff','color'=>'#1e40af','dot'=>'#3b82f6'],
+    'sakit'     => ['label'=>'Sakit',     'bg'=>'#f5f3ff','color'=>'#4c1d95','dot'=>'#7c3aed'],
+    'alfa'      => ['label'=>'Alfa',      'bg'=>'#fff1f2','color'=>'#991b1b','dot'=>'#ef4444'],
+    default     => ['label'=>ucfirst($status),'bg'=>'#f8fafc','color'=>'#475569','dot'=>'#94a3b8'],
 };
 @endphp
 
-<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border {{ $config['class'] }}">
-    <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:{{ $config['bg'] }};color:{{ $config['color'] }}">
+    <span style="width:6px;height:6px;border-radius:50%;background:{{ $config['dot'] }};flex-shrink:0"></span>
     {{ $config['label'] }}
 </span>

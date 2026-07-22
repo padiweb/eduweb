@@ -8,7 +8,7 @@
     {{-- Sub-nav --}}
     <div class="flex gap-2 mb-5 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none">
         <a href="{{ route('guru.prakerin.index') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Dashboard</a>
-        <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-gray-900">DU/DI Saya</a>
+        <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">DU/DI Saya</a>
         <a href="{{ route('guru.prakerin.placements') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Penempatan Siswa</a>
         <a href="{{ route('guru.prakerin.recap.absensi') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Absensi</a>
         <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Jurnal</a>
@@ -24,19 +24,19 @@
     @endif
 
     @if (! $period)
-        <div class="bg-white border border-gray-200 rounded-2xl p-10 text-center">
+        <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
             <p class="text-gray-500 text-sm">Anda belum menjadi pembimbing di DU/DI manapun.</p>
-            <p class="text-gray-400 text-xs mt-1">Hubungi admin atau koordinator untuk ditambahkan.</p>
+            <p class="text-gray-500 text-xs mt-1">Hubungi admin atau koordinator untuk ditambahkan.</p>
         </div>
     @elseif ($locations->isEmpty())
-        <div class="bg-white border border-gray-200 rounded-2xl p-10 text-center">
+        <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
             <p class="text-gray-500 text-sm">Belum ada DU/DI yang Anda bimbing di periode ini.</p>
         </div>
     @else
         {{-- Daftar DU/DI --}}
         <div class="space-y-3">
             @foreach ($locations as $loc)
-                <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex-1 min-w-0">
                             <p class="text-gray-900 font-semibold">{{ $loc->name }}</p>
@@ -44,7 +44,7 @@
                                 <p class="text-gray-500 text-sm mt-0.5">{{ $loc->address }}</p>
                             @endif
                             @if ($loc->field_supervisor_name)
-                                <p class="text-gray-400 text-xs mt-1">
+                                <p class="text-gray-500 text-xs mt-1">
                                     Pembimbing lapangan: {{ $loc->field_supervisor_name }}
                                     @if ($loc->field_supervisor_phone) &middot; {{ $loc->field_supervisor_phone }} @endif
                                 </p>
@@ -53,22 +53,22 @@
                             {{-- Info jam & GPS --}}
                             <div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs">
                                 @if ($loc->checkin_time)
-                                    <span class="text-gray-400">
-                                        Masuk: <span class="text-gray-600">{{ $loc->checkin_time }}</span>
+                                    <span class="text-gray-500">
+                                        Masuk: <span class="text-gray-400">{{ $loc->checkin_time }}</span>
                                         @if ($loc->checkin_late_after)
-                                            &middot; Toleransi: <span class="text-gray-600">{{ $loc->checkin_late_after }}</span>
+                                            &middot; Toleransi: <span class="text-gray-400">{{ $loc->checkin_late_after }}</span>
                                         @endif
                                     </span>
                                 @endif
                                 @if ($loc->checkout_time)
-                                    <span class="text-gray-400">Pulang: <span class="text-gray-600">{{ $loc->checkout_time }}</span></span>
+                                    <span class="text-gray-500">Pulang: <span class="text-gray-400">{{ $loc->checkout_time }}</span></span>
                                 @endif
                                 @if ($loc->latitude)
                                     <span class="text-blue-600">GPS aktif</span>
                                 @else
                                     <span class="text-amber-400">GPS belum diset</span>
                                 @endif
-                                <span class="text-gray-400">Siswa: <span class="text-gray-600">{{ $loc->placements->count() }}</span></span>
+                                <span class="text-gray-500">Siswa: <span class="text-gray-400">{{ $loc->placements->count() }}</span></span>
                             </div>
 
                             {{-- Guru pembimbing --}}
@@ -87,7 +87,7 @@
                         </div>
 
                         <button onclick="openEdit({{ $loc->id }})"
-                                class="flex-shrink-0 px-3 py-1.5 bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
+                                class="flex-shrink-0 px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-xs rounded-lg transition-colors">
                             Edit
                         </button>
                     </div>
@@ -99,12 +99,12 @@
     {{-- Modal Edit DU/DI --}}
     <div id="modal-edit" class="hidden fixed inset-0 z-50 bg-black/60 overflow-y-auto">
         <div class="min-h-full flex items-start justify-center p-4 py-8">
-            <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-lg">
+            <div class="bg-white border border-gray-200 rounded-xl w-full max-w-lg">
 
                 {{-- Modal header --}}
                 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200">
                     <h2 class="text-gray-900 font-semibold" id="modal-title">Edit DU/DI</h2>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-900 transition-colors">
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-900 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                         </svg>
@@ -117,83 +117,83 @@
 
                     {{-- Identitas --}}
                     <div class="px-5 py-5 space-y-3">
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Identitas DU/DI</p>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Identitas DU/DI</p>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1.5">Nama DU/DI <span class="text-red-400">*</span></label>
+                            <label class="block text-xs text-gray-500 mb-1.5">Nama DU/DI <span class="text-red-400">*</span></label>
                             <input type="text" name="name" id="e-name" required maxlength="150"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60">
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/60">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-400 mb-1.5">Alamat</label>
+                            <label class="block text-xs text-gray-500 mb-1.5">Alamat</label>
                             <textarea name="address" id="e-address" rows="2"
-                                      class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60 resize-none"></textarea>
+                                      class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/60 resize-none"></textarea>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Nama Pembimbing Lapangan</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">Nama Pembimbing Lapangan</label>
                                 <input type="text" name="field_supervisor_name" id="e-sv-name" maxlength="100"
                                        placeholder="Dari perusahaan"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60 placeholder-gray-700">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/60 placeholder-gray-700">
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">No. HP</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">No. HP</label>
                                 <input type="text" name="field_supervisor_phone" id="e-sv-phone" maxlength="20"
                                        placeholder="08xxxxxxxxxx"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60 placeholder-gray-700">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/60 placeholder-gray-700">
                             </div>
                         </div>
                     </div>
 
                     {{-- GPS --}}
                     <div class="px-5 py-5 space-y-3">
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Koordinat GPS</p>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Koordinat GPS</p>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Latitude</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">Latitude</label>
                                 <input type="number" name="latitude" id="e-lat" step="0.00000001" placeholder="-7.32440"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60 placeholder-gray-700">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/60 placeholder-gray-700">
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Longitude</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">Longitude</label>
                                 <input type="number" name="longitude" id="e-lng" step="0.00000001" placeholder="110.96994"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60 placeholder-gray-700">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/60 placeholder-gray-700">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Radius Check-in (meter)</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">Radius Check-in (meter)</label>
                                 <input type="number" name="radius_meters" id="e-radius" min="50" max="2000"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/60">
                             </div>
                             <div class="flex flex-col justify-end">
                                 <button type="button" onclick="detectGps()"
-                                        class="w-full py-2.5 bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors">
+                                        class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors">
                                     Deteksi Lokasi
                                 </button>
                             </div>
                         </div>
-                        <p id="gps-status" class="text-xs text-gray-400"></p>
+                        <p id="gps-status" class="text-xs text-gray-500"></p>
                     </div>
 
                     {{-- Jam --}}
                     <div class="px-5 py-5 space-y-3">
-                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Jam Kehadiran</p>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Jam Kehadiran</p>
                         <div class="grid grid-cols-3 gap-3">
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Jam Masuk</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">Jam Masuk</label>
                                 <input type="time" name="checkin_time" id="e-checkin"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500/60">
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Toleransi</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">Toleransi</label>
                                 <input type="time" name="checkin_late_after" id="e-late"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60">
-                                <p class="text-gray-400 text-xs mt-1">Setelah ini terlambat</p>
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500/60">
+                                <p class="text-gray-500 text-xs mt-1">Setelah ini terlambat</p>
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1.5">Jam Pulang</label>
+                                <label class="block text-xs text-gray-500 mb-1.5">Jam Pulang</label>
                                 <input type="time" name="checkout_time" id="e-checkout"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500/60">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500/60">
                             </div>
                         </div>
                     </div>
@@ -201,11 +201,11 @@
                     {{-- Actions --}}
                     <div class="px-5 py-4 flex gap-3">
                         <button type="button" onclick="closeModal()"
-                                class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-xl hover:bg-gray-100 transition-colors">
+                                class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-400 text-sm rounded-xl hover:bg-gray-50 transition-colors">
                             Batal
                         </button>
                         <button type="submit"
-                                class="flex-1 py-2.5 bg-blue-700 hover:bg-blue-600 text-gray-900 text-sm font-semibold rounded-xl transition-colors">
+                                class="flex-1 py-2.5 bg-blue-700 hover:bg-blue-600 text-white text-sm font-semibold rounded-xl transition-colors">
                             Simpan Perubahan
                         </button>
                     </div>
@@ -237,7 +237,7 @@
 
             const gpsEl = document.getElementById('gps-status');
             gpsEl.textContent  = loc.latitude ? 'GPS sudah diset' : 'Belum ada koordinat GPS';
-            gpsEl.className    = 'text-xs ' + (loc.latitude ? 'text-blue-600' : 'text-gray-400');
+            gpsEl.className    = 'text-xs ' + (loc.latitude ? 'text-blue-600' : 'text-gray-500');
 
             document.getElementById('modal-edit').classList.remove('hidden');
         }

@@ -25,7 +25,7 @@
                 Semua Naik Kelas
             </button>
             <button form="form-promosi" type="submit"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
                     onclick="return confirm('Proses promosi massal? Pastikan semua pilihan sudah benar.')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -37,7 +37,7 @@
 
     @if($classrooms->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <p class="text-gray-400 text-sm">Tidak ada kelas aktif di tahun ajaran yang dipilih.</p>
+            <p class="text-gray-500 text-sm">Tidak ada kelas aktif di tahun ajaran yang dipilih.</p>
         </div>
     @else
         {{-- Tombol global --}}
@@ -64,7 +64,7 @@
                     <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                         <div>
                             <h2 class="text-sm font-bold text-gray-900">{{ $classroom->name }}</h2>
-                            <p class="text-xs text-gray-400 mt-0.5">
+                            <p class="text-xs text-gray-500 mt-0.5">
                                 Kelas {{ $classroom->grade }}
                                 @if($classroom->major) &middot; {{ $classroom->major->name }} @endif
                                 &middot; {{ $classroom->students->count() }} siswa aktif
@@ -101,14 +101,14 @@
                                     </div>
                                     <div class="min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate">{{ $student->name }}</p>
-                                        <p class="text-xs text-gray-400">{{ $student->nis ?? $student->nisn ?? '-' }}</p>
+                                        <p class="text-xs text-gray-500">{{ $student->nis ?? $student->nisn ?? '-' }}</p>
                                     </div>
                                 </div>
 
                                 {{-- Pilih aksi --}}
                                 <div class="sm:col-span-3">
                                     <select name="promotions[{{ $idx }}][action]"
-                                            class="action-select w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                            class="action-select w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                             data-idx="{{ $idx }}"
                                             data-classid="{{ $classroom->id }}"
                                             onchange="handleActionChange(this)">
@@ -123,7 +123,7 @@
                                 {{-- Pilih kelas tujuan --}}
                                 <div class="sm:col-span-4 target-class-wrap-{{ $idx }}">
                                     <select name="promotions[{{ $idx }}][target_class]"
-                                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                         <option value="">-- Pilih kelas tujuan --</option>
                                         @foreach($targetClassrooms->sortBy('grade') as $tc)
                                             <option value="{{ $tc->id }}">
@@ -137,7 +137,7 @@
                                 <div class="sm:col-span-2">
                                     <input type="text" name="promotions[{{ $idx }}][notes]"
                                            placeholder="Catatan..."
-                                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                 </div>
                             </div>
                         @endforeach
@@ -149,7 +149,7 @@
         {{-- Tombol proses di bawah --}}
         <div class="flex justify-end mt-4">
             <button form="form-promosi" type="submit"
-                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
+                    class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
                     onclick="return confirm('Proses promosi massal? Pastikan semua pilihan sudah benar.')">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>

@@ -1,6 +1,6 @@
 <x-simans-layout title="Jurnal Harian Prakerin">
     <div class="mb-5">
-        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-400 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
@@ -47,16 +47,16 @@
         <input type="hidden" name="journal_date" value="{{ $date }}">
 
         <div class="mb-4">
-            <label class="block text-sm text-gray-600 font-medium mb-2">Laporan Kegiatan <span class="text-red-400">*</span></label>
+            <label class="block text-sm text-gray-400 font-medium mb-2">Laporan Kegiatan <span class="text-red-400">*</span></label>
             <textarea name="content" rows="8" required minlength="50"
                       placeholder="Tuliskan kegiatan yang kamu lakukan hari ini di {{ $placement->location->name }}. Minimal 50 karakter."
                       class="w-full bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 resize-none">{{ old('content', $journal?->content) }}</textarea>
-            <p class="text-gray-400 text-xs mt-1">Minimal 50 karakter</p>
+            <p class="text-gray-500 text-xs mt-1">Minimal 50 karakter</p>
         </div>
 
         <div class="mb-6">
-            <label class="block text-sm text-gray-600 font-medium mb-2">
-                Foto Dokumentasi <span class="text-gray-400 font-normal">(opsional, maks. 5 foto)</span>
+            <label class="block text-sm text-gray-400 font-medium mb-2">
+                Foto Dokumentasi <span class="text-gray-500 font-normal">(opsional, maks. 5 foto)</span>
             </label>
             @if ($journal && $journal->photos->count() > 0)
                 <div class="grid grid-cols-3 gap-2 mb-3">
@@ -77,13 +77,13 @@
             @endif
             <div id="photo-list" class="space-y-2"></div>
             <button type="button" onclick="addPhotoInput()"
-                    class="mt-2 w-full py-3 border border-dashed border-gray-200 rounded-xl text-gray-400 text-sm hover:border-amber-500/40 hover:text-amber-400 transition-colors flex items-center justify-center gap-2">
+                    class="mt-2 w-full py-3 border border-dashed border-gray-200 rounded-xl text-gray-500 text-sm hover:border-amber-500/40 hover:text-amber-400 transition-colors flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 Tambah Foto
             </button>
         </div>
 
-        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-gray-900 font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+        <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             Simpan Jurnal
         </button>
@@ -97,12 +97,12 @@
             const div=document.createElement('div'); div.id='pr-'+i; div.className='flex items-start gap-2';
             div.innerHTML=`<div class="flex-1 space-y-1">
                 <input type="file" name="photos[${i}]" accept="image/*"
-                       class="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:bg-amber-600 file:text-gray-900 hover:file:bg-amber-500 cursor-pointer"/>
+                       class="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:bg-amber-600 file:text-white hover:file:bg-amber-500 cursor-pointer"/>
                 <input type="text" name="captions[${i}]" placeholder="Keterangan (opsional)"
                        class="w-full bg-white border border-gray-200 text-gray-900 rounded-lg px-3 py-1.5 text-xs placeholder-gray-400 focus:outline-none focus:border-amber-500/50"/>
             </div>
             <button type="button" onclick="document.getElementById('pr-${i}').remove();photoCount=Math.max(0,photoCount-1)"
-                    class="mt-1 w-8 h-8 bg-white hover:bg-red-600/20 text-gray-400 hover:text-red-400 rounded-lg flex items-center justify-center transition-colors">
+                    class="mt-1 w-8 h-8 bg-white hover:bg-red-600/20 text-gray-500 hover:text-red-400 rounded-lg flex items-center justify-center transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>`;
             document.getElementById('photo-list').appendChild(div);

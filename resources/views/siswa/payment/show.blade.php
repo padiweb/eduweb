@@ -43,7 +43,7 @@
                     </div>
                     @endif
                     <div class="flex justify-between border-t border-gray-200 pt-2 font-medium">
-                        <span class="text-gray-600">Total tagihan</span>
+                        <span class="text-gray-400">Total tagihan</span>
                         <span class="text-gray-900">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between">
@@ -77,7 +77,7 @@
                     <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2.5">
                         <div>
                             <span class="text-sm text-gray-900">Cicilan ke-{{ $inst->installment_number }}</span>
-                            <span class="text-xs text-gray-400 ml-2">{{ \Carbon\Carbon::parse($inst->due_date)->format('d/m/Y') }}</span>
+                            <span class="text-xs text-gray-500 ml-2">{{ \Carbon\Carbon::parse($inst->due_date)->format('d/m/Y') }}</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="text-right">
@@ -103,7 +103,7 @@
                 </div>
                 @if($bill->transactions->isEmpty())
                     <div class="px-5 py-8 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada transaksi</p>
+                        <p class="text-gray-500 text-sm">Belum ada transaksi</p>
                     </div>
                 @else
                     <div class="divide-y divide-gray-100">
@@ -113,9 +113,9 @@
                             <div>
                                 <div class="flex items-center gap-2">
                                     <span class="text-sm font-medium text-gray-900">Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
-                                    <span class="text-xs text-gray-400">{{ $trx->channel === 'cash' ? 'Tunai' : 'Transfer' }}</span>
+                                    <span class="text-xs text-gray-500">{{ $trx->channel === 'cash' ? 'Tunai' : 'Transfer' }}</span>
                                 </div>
-                                <p class="text-xs text-gray-400 mt-0.5">
+                                <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $trx->created_at->format('d/m/Y H:i') }}
                                     @if($trx->confirmedBy) · Dikonfirmasi {{ $trx->confirmedBy->name }} @endif
                                     @if($trx->rejection_reason)
@@ -176,7 +176,7 @@
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Untuk cicilan</label>
                             <select name="installment_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 <option value="">Tanpa cicilan</option>
                                 @foreach($bill->installments->where('status','!=','paid') as $inst)
                                     <option value="{{ $inst->id }}">
@@ -191,37 +191,37 @@
                             <label class="text-xs text-gray-500 mb-1 block">Jumlah Transfer (Rp) *</label>
                             <input type="number" name="amount" required min="1"
                                 placeholder="{{ $bill->amount_remaining }}"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                            <p class="text-xs text-gray-400 mt-1">Sisa: Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
+                            <p class="text-xs text-gray-500 mt-1">Sisa: Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Nama Bank Pengirim *</label>
                             <input type="text" name="bank_name" required placeholder="BCA, BRI, Mandiri, dll"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Nama Pengirim *</label>
                             <input type="text" name="sender_name" required placeholder="Nama sesuai rekening"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Tanggal Transfer *</label>
                             <input type="date" name="transfer_date" required
                                 max="{{ date('Y-m-d') }}"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Bukti Transfer * (JPG/PNG/PDF, maks 2MB)</label>
                             <input type="file" name="receipt" required accept=".jpg,.jpeg,.png,.pdf"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none file:mr-3 file:text-xs file:bg-purple-600 file:text-gray-900 file:border-0 file:rounded file:px-2 file:py-1">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none file:mr-3 file:text-xs file:bg-blue-600 file:text-white file:border-0 file:rounded file:px-2 file:py-1">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Catatan</label>
                             <textarea name="notes" rows="2" placeholder="Opsional..."
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none resize-none"></textarea>
                         </div>
                         <button type="submit"
-                            class="w-full bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2.5 rounded-lg transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
                             Kirim Bukti Transfer
                         </button>
                     </div>
@@ -233,7 +233,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
                 <p class="text-sm text-amber-400 font-medium">Menunggu konfirmasi</p>
-                <p class="text-xs text-gray-400 mt-1">Bukti transfer Anda sedang diperiksa oleh bendahara</p>
+                <p class="text-xs text-gray-500 mt-1">Bukti transfer Anda sedang diperiksa oleh bendahara</p>
             </div>
             @endif
 

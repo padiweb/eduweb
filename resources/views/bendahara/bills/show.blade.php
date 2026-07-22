@@ -12,7 +12,7 @@
                 <div class="flex items-center gap-3">
                     <h1 class="text-xl font-bold text-gray-900">{{ $bill->paymentType->name }} — {{ $bill->period_label }}</h1>
                     <a href="{{ route('bendahara.bills.edit', $bill) }}"
-                        class="text-xs bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 px-3 py-1 rounded-lg transition-colors">
+                        class="text-xs bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 px-3 py-1 rounded-lg transition-colors">
                         Edit
                     </a>
                 </div>
@@ -56,7 +56,7 @@
                     </div>
                     @endif
                     <div class="flex justify-between border-t border-gray-200 pt-2 font-medium">
-                        <span class="text-gray-600">Total tagihan</span>
+                        <span class="text-gray-400">Total tagihan</span>
                         <span class="text-gray-900">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between">
@@ -82,7 +82,7 @@
                     <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2.5">
                         <div>
                             <span class="text-sm text-gray-900">Cicilan ke-{{ $inst->installment_number }}</span>
-                            <span class="text-xs text-gray-400 ml-2">{{ \Carbon\Carbon::parse($inst->due_date)->format('d/m/Y') }}</span>
+                            <span class="text-xs text-gray-500 ml-2">{{ \Carbon\Carbon::parse($inst->due_date)->format('d/m/Y') }}</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="text-right">
@@ -108,7 +108,7 @@
                 </div>
                 @if($bill->transactions->isEmpty())
                     <div class="px-5 py-8 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada transaksi</p>
+                        <p class="text-gray-500 text-sm">Belum ada transaksi</p>
                     </div>
                 @else
                     <div class="divide-y divide-gray-100">
@@ -126,13 +126,13 @@
                                             default=>'Beasiswa'
                                         };
                                     @endphp
-                                    <span class="text-xs text-gray-400">{{ $cl }}</span>
+                                    <span class="text-xs text-gray-500">{{ $cl }}</span>
                                     @if($trx->channel === 'transfer' && $trx->receipt_path)
                                         <a href="{{ route('bendahara.transactions.receipt', $trx) }}" target="_blank"
                                             class="text-xs text-blue-400 hover:text-blue-300">Lihat bukti</a>
                                     @endif
                                 </div>
-                                <p class="text-xs text-gray-400 mt-0.5">
+                                <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $trx->created_at->format('d/m/Y H:i') }}
                                     @if($trx->confirmedBy) · {{ $trx->confirmedBy->name }} @endif
                                     @if($trx->rejection_reason) · <span class="text-red-400">{{ $trx->rejection_reason }}</span> @endif
@@ -179,16 +179,16 @@
                             <input type="number" name="amount" id="show-amount" min="1"
                                 max="{{ $bill->amount_remaining }}"
                                 placeholder="{{ $bill->amount_remaining }}"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                            <p class="text-xs text-gray-400 mt-1">Sisa: Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
+                            <p class="text-xs text-gray-500 mt-1">Sisa: Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Catatan</label>
                             <input type="text" name="cashier_notes" placeholder="Opsional..."
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <button type="submit"
-                            class="w-full bg-green-600 hover:bg-green-700 text-gray-900 text-sm font-medium py-2.5 rounded-lg transition-colors">
+                            class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
                             Catat Pembayaran
                         </button>
                     </div>

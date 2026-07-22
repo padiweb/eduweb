@@ -30,7 +30,7 @@
             <div class="bg-white border border-gray-200 rounded-xl p-5 space-y-3">
                 @if($assignment->deadline)
                     <div>
-                        <p class="text-xs text-gray-400 mb-0.5">Deadline</p>
+                        <p class="text-xs text-gray-500 mb-0.5">Deadline</p>
                         <p class="text-sm font-semibold {{ $assignment->isPastDeadline() ? 'text-amber-400' : 'text-gray-900' }}">
                             {{ $assignment->deadline->translatedFormat('l, d F Y H:i') }}
                         </p>
@@ -40,22 +40,22 @@
                     </div>
                 @endif
                 <div>
-                    <p class="text-xs text-gray-400 mb-0.5">Metode Pengumpulan</p>
+                    <p class="text-xs text-gray-500 mb-0.5">Metode Pengumpulan</p>
                     <p class="text-sm text-gray-900">{{ $assignment->getSubmissionTypeLabel() }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400 mb-0.5">Nilai Maksimal</p>
+                    <p class="text-xs text-gray-500 mb-0.5">Nilai Maksimal</p>
                     <p class="text-sm text-gray-900">{{ $assignment->max_score }}</p>
                 </div>
                 @if($assignment->description)
                     <div class="border-t border-gray-200 pt-3">
-                        <p class="text-xs text-gray-400 mb-1">Instruksi</p>
-                        <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{{ $assignment->description }}</p>
+                        <p class="text-xs text-gray-500 mb-1">Instruksi</p>
+                        <p class="text-sm text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $assignment->description }}</p>
                     </div>
                 @endif
                 @if($assignment->attachment_path)
                     <div class="border-t border-gray-200 pt-3">
-                        <p class="text-xs text-gray-400 mb-1.5">Lampiran Soal</p>
+                        <p class="text-xs text-gray-500 mb-1.5">Lampiran Soal</p>
                         <a href="{{ asset('storage/'.$assignment->attachment_path) }}" target="_blank"
                            class="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -74,24 +74,24 @@
                     {{-- Nilai --}}
                     @if($submission->score !== null)
                         <div>
-                            <p class="text-xs text-gray-400 mb-1">Nilaimu</p>
+                            <p class="text-xs text-gray-500 mb-1">Nilaimu</p>
                             <p class="text-4xl font-bold {{ $submission->score >= 80 ? 'text-blue-600' : ($submission->score >= 60 ? 'text-amber-400' : 'text-red-400') }}">
                                 {{ $submission->score }}
-                                <span class="text-sm text-gray-400 font-normal">/ {{ $assignment->max_score }}</span>
+                                <span class="text-sm text-gray-500 font-normal">/ {{ $assignment->max_score }}</span>
                             </p>
                         </div>
                     @else
                         <div>
-                            <p class="text-xs text-gray-400 mb-1">Nilai</p>
-                            <p class="text-sm text-gray-400 italic">Belum dinilai</p>
+                            <p class="text-xs text-gray-500 mb-1">Nilai</p>
+                            <p class="text-sm text-gray-500 italic">Belum dinilai</p>
                         </div>
                     @endif
 
                     {{-- Komentar guru --}}
                     @if($submission->feedback)
                         <div class="{{ $submission->score !== null ? 'border-t border-gray-200 pt-3' : '' }}">
-                            <p class="text-xs text-gray-400 mb-1">Komentar Guru</p>
-                            <p class="text-sm text-gray-600 leading-relaxed">{{ $submission->feedback }}</p>
+                            <p class="text-xs text-gray-500 mb-1">Komentar Guru</p>
+                            <p class="text-sm text-gray-400 leading-relaxed">{{ $submission->feedback }}</p>
                         </div>
                     @endif
                 </div>
@@ -100,7 +100,7 @@
             {{-- Preview file yang sudah dikumpulkan --}}
             @if($submission && ! $submission->isNotSubmitted() && $submission->hasContent())
                 <div class="bg-white border border-gray-200 rounded-xl p-4">
-                    <p class="text-xs text-gray-400 mb-2">Jawabanmu</p>
+                    <p class="text-xs text-gray-500 mb-2">Jawabanmu</p>
 
                     @if($submission->file_path)
                         @php $files = array_values(array_filter(explode(',', $submission->file_path))); @endphp
@@ -133,7 +133,7 @@
                             {{ $submission->link_url }}
                         </a>
                     @elseif($submission->content)
-                        <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap line-clamp-4">{{ $submission->content }}</p>
+                        <p class="text-sm text-gray-400 leading-relaxed whitespace-pre-wrap line-clamp-4">{{ $submission->content }}</p>
                     @endif
                 </div>
             @endif
@@ -143,16 +143,16 @@
         <div class="lg:col-span-2">
             @if($assignment->is_closed)
                 <div class="bg-white border border-gray-200 rounded-xl p-8 text-center">
-                    <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <svg class="w-12 h-12 text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                     </svg>
                     <p class="text-gray-500 text-sm font-medium">Tugas sudah ditutup</p>
-                    <p class="text-gray-400 text-xs mt-1">Tidak bisa mengumpulkan atau merevisi jawaban.</p>
+                    <p class="text-gray-500 text-xs mt-1">Tidak bisa mengumpulkan atau merevisi jawaban.</p>
                 </div>
             @elseif($submission && $submission->isNotSubmitted())
                 <div class="bg-white border border-red-500/20 rounded-xl p-8 text-center">
                     <p class="text-red-400 text-sm font-medium">Tidak Mengumpulkan Tugas</p>
-                    <p class="text-gray-400 text-xs mt-1">Tugas ini sudah ditutup dan kamu tidak mengumpulkan.</p>
+                    <p class="text-gray-500 text-xs mt-1">Tugas ini sudah ditutup dan kamu tidak mengumpulkan.</p>
                 </div>
             @else
                 <div class="bg-white border {{ $submission ? 'border-blue-200' : 'border-gray-200' }} rounded-xl p-5">
@@ -160,13 +160,13 @@
                         {{ $submission ? 'Revisi Jawaban' : 'Kumpulkan Tugas' }}
                     </h2>
                     @if($submission)
-                        <p class="text-xs text-gray-400 mb-4">
+                        <p class="text-xs text-gray-500 mb-4">
                             Dikumpulkan {{ $submission->submitted_at->translatedFormat('d M Y H:i') }}
                             @if($submission->isLate()) <span class="text-amber-400">&middot; Terlambat</span> @endif
                             &middot; Kamu bisa merevisi sebelum tugas ditutup.
                         </p>
                     @else
-                        <p class="text-xs text-gray-400 mb-4">Kumpulkan jawaban sebelum tugas ditutup.</p>
+                        <p class="text-xs text-gray-500 mb-4">Kumpulkan jawaban sebelum tugas ditutup.</p>
                     @endif
 
                     <form method="POST"
@@ -181,7 +181,7 @@
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">Jawaban Teks</label>
                                 <textarea name="content" rows="5"
-                                          class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
+                                          class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors"
                                           placeholder="Tulis jawabanmu di sini...">{{ $submission?->content }}</textarea>
                             </div>
                         @endif
@@ -203,21 +203,21 @@
                                 <div id="file-inputs" class="space-y-2">
                                     <div class="file-input-row flex items-center gap-2">
                                         <input type="file" name="files[]"
-                                               class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
+                                               class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
                                     </div>
                                 </div>
 
                                 @if($submission?->file_path)
                                     @php $existingFiles = array_filter(explode(',', $submission->file_path)); @endphp
                                     <div class="mt-2 space-y-1">
-                                        <p class="text-xs text-gray-400">File saat ini (upload baru untuk mengganti):</p>
+                                        <p class="text-xs text-gray-500">File saat ini (upload baru untuk mengganti):</p>
                                         @foreach($existingFiles as $i => $fp)
                                             <p class="text-xs text-blue-400">{{ $i+1 }}. {{ basename($fp) }}</p>
                                         @endforeach
                                     </div>
                                 @endif
 
-                                <p class="text-xs text-gray-400 mt-1.5">Semua jenis file. Maks 50MB per file.</p>
+                                <p class="text-xs text-gray-500 mt-1.5">Semua jenis file. Maks 50MB per file.</p>
                             </div>
                         @endif
 
@@ -228,7 +228,7 @@
                                 <input type="url" name="link_url"
                                        value="{{ $submission?->link_url }}"
                                        placeholder="https://..."
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                         @endif
 
@@ -244,7 +244,7 @@
                         </div>
 
                         <button type="submit" id="btn-submit"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 font-bold py-3 rounded-2xl transition-colors">
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors">
                             {{ $submission ? 'Revisi Jawaban' : 'Kumpulkan Tugas' }}
                         </button>
                     </form>
@@ -261,8 +261,8 @@
             var container = document.getElementById('file-inputs');
             var row       = document.createElement('div');
             row.className = 'file-input-row flex items-center gap-2';
-            row.innerHTML = '<input type="file" name="files[]" class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">'
-                + '<button type="button" class="btn-remove-file text-gray-400 hover:text-red-400 transition-colors flex-shrink-0">'
+            row.innerHTML = '<input type="file" name="files[]" class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">'
+                + '<button type="button" class="btn-remove-file text-gray-500 hover:text-red-400 transition-colors flex-shrink-0">'
                 + '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
                 + '</button>';
             container.appendChild(row);

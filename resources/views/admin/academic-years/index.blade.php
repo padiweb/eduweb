@@ -31,13 +31,13 @@
                         <input type="text" name="name" required
                                placeholder="cth: 2025/2026"
                                value="{{ old('name') }}"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Semester <span class="text-red-400">*</span></label>
                         <select name="semester" required
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="1" {{ old('semester') == '1' ? 'selected' : '' }}>Semester 1 (Ganjil)</option>
                             <option value="2" {{ old('semester') == '2' ? 'selected' : '' }}>Semester 2 (Genap)</option>
                         </select>
@@ -45,22 +45,22 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Tanggal Mulai <span class="text-red-400">*</span></label>
                         <input type="date" name="start_date" required value="{{ old('start_date') }}"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Tanggal Selesai <span class="text-red-400">*</span></label>
                         <input type="date" name="end_date" required value="{{ old('end_date') }}"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah Tahun Ajaran
                     </button>
                 </form>
             </div>
 
             <div class="mt-4 bg-white border border-gray-200 rounded-xl p-4">
-                <p class="text-xs text-gray-400 leading-relaxed">
+                <p class="text-xs text-gray-500 leading-relaxed">
                     Hanya <span class="text-gray-900 font-medium">satu tahun ajaran</span> yang bisa aktif sekaligus.
                     Tahun ajaran aktif menentukan kelas, absensi, tugas, dan nilai yang sedang berjalan.
                 </p>
@@ -72,7 +72,7 @@
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Semua Tahun Ajaran</h2>
-                    <span class="text-xs text-gray-400">{{ $academicYears->count() }} tahun ajaran</span>
+                    <span class="text-xs text-gray-500">{{ $academicYears->count() }} tahun ajaran</span>
                 </div>
 
                 @if($academicYears->count() > 0)
@@ -82,7 +82,7 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <p class="text-sm font-semibold text-gray-900">{{ $ay->name }}</p>
-                                        <span class="text-xs {{ $ay->semester == 1 ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-purple-400 bg-purple-500/10 border-purple-500/20' }} border px-2 py-0.5 rounded-full">
+                                        <span class="text-xs {{ $ay->semester == 1 ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-blue-600 bg-blue-500/10 border-blue-200' }} border px-2 py-0.5 rounded-full">
                                             Semester {{ $ay->semester }} ({{ $ay->semester == 1 ? 'Ganjil' : 'Genap' }})
                                         </span>
                                         @if($ay->is_active)
@@ -91,7 +91,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <p class="text-xs text-gray-400 mt-0.5">
+                                    <p class="text-xs text-gray-500 mt-0.5">
                                         {{ $ay->start_date->translatedFormat('d M Y') }} &ndash; {{ $ay->end_date->translatedFormat('d M Y') }}
                                         &middot; {{ $ay->classrooms_count }} kelas
                                     </p>
@@ -117,7 +117,7 @@
                                             </button>
                                         </form>
                                     @else
-                                        <span class="text-xs text-gray-400 italic">Sedang aktif</span>
+                                        <span class="text-xs text-gray-500 italic">Sedang aktif</span>
                                     @endif
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada tahun ajaran. Tambahkan di form sebelah kiri.</p>
+                        <p class="text-gray-500 text-sm">Belum ada tahun ajaran. Tambahkan di form sebelah kiri.</p>
                     </div>
                 @endif
             </div>

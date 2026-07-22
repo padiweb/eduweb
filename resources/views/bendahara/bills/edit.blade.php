@@ -24,42 +24,42 @@
                             <label class="text-xs text-gray-500 mb-1 block">Label Periode *</label>
                             <input type="text" name="period_label" required
                                 value="{{ old('period_label', $bill->period_label) }}"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Tanggal Periode *</label>
                             <input type="date" name="period_date" required
                                 value="{{ old('period_date', \Carbon\Carbon::parse($bill->period_date)->format('Y-m-d')) }}"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Jatuh Tempo</label>
                         <input type="date" name="due_date"
                             value="{{ old('due_date', $bill->due_date ? \Carbon\Carbon::parse($bill->due_date)->format('Y-m-d') : '') }}"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Nominal Tarif Dasar (Rp) *</label>
                         <input type="number" name="amount_base" required min="0"
                             value="{{ old('amount_base', $bill->amount_base) }}"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Diskon/Beasiswa (Rp)</label>
                         <input type="number" name="amount_discount" min="0"
                             value="{{ old('amount_discount', $bill->amount_discount) }}"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                        <p class="text-xs text-gray-400 mt-1">Total tagihan = Tarif dasar - Diskon</p>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
+                        <p class="text-xs text-gray-500 mt-1">Total tagihan = Tarif dasar - Diskon</p>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-6">
                     <a href="{{ route('bendahara.bills.show', $bill) }}"
-                        class="flex-1 text-center bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2.5 rounded-lg transition-colors">
+                        class="flex-1 text-center bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2.5 rounded-lg transition-colors">
                         Batal
                     </a>
                     <button type="submit"
-                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2.5 rounded-lg transition-colors">
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -89,7 +89,7 @@
                         <span class="text-green-400">Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between border-t border-gray-200 pt-2 font-medium">
-                        <span class="text-gray-600">Total tagihan</span>
+                        <span class="text-gray-400">Total tagihan</span>
                         <span class="text-gray-900">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between">
@@ -103,7 +103,7 @@
             {{-- Hapus --}}
             <div class="bg-white border border-red-500/20 rounded-xl p-5">
                 <h3 class="text-sm font-semibold text-red-400 mb-1">Hapus Tagihan</h3>
-                <p class="text-xs text-gray-400 mb-3">
+                <p class="text-xs text-gray-500 mb-3">
                     Tagihan yang sudah ada pembayaran approved tidak dapat dihapus. Tindakan ini permanen.
                 </p>
                 <form method="POST" action="{{ route('bendahara.bills.destroy', $bill) }}"

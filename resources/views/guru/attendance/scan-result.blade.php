@@ -33,7 +33,7 @@
             <p class="text-gray-500 text-sm mb-1">
                 {{ $session?->session_type === 'masuk' ? 'Absen Masuk' : 'Absen Pulang' }}
             </p>
-            <p class="text-gray-400 text-sm mb-6">
+            <p class="text-gray-500 text-sm mb-6">
                 Tercatat pukul {{ $attendance?->scanned_at?->format('H:i:s') }} WIB
             </p>
             @if($isLate)
@@ -57,7 +57,7 @@
         @endif
 
         <a href="{{ route('guru.teacher-attendance.index') }}"
-           class="inline-block w-full bg-white hover:bg-gray-100 border border-gray-200 text-gray-900 font-semibold py-3 rounded-2xl transition-colors">
+           class="inline-block w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-900 font-semibold py-3 rounded-xl transition-colors">
             Kembali ke Halaman Absensi
         </a>
     </div>

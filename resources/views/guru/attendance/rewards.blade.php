@@ -16,15 +16,15 @@
     <div class="grid grid-cols-3 gap-4 mb-6">
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-blue-600">{{ $summary['this_month'] }}</p>
-            <p class="text-xs text-gray-400 mt-1">Bulan Ini</p>
+            <p class="text-xs text-gray-500 mt-1">Bulan Ini</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-blue-400">{{ $summary['this_year'] }}</p>
-            <p class="text-xs text-gray-400 mt-1">Tahun Ini</p>
+            <p class="text-xs text-gray-500 mt-1">Tahun Ini</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-2xl font-bold text-gray-900">{{ $summary['total'] }}</p>
-            <p class="text-xs text-gray-400 mt-1">Total</p>
+            <p class="text-xs text-gray-500 mt-1">Total</p>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
         </div>
         @if($points->isEmpty())
             <div class="px-5 py-12 text-center">
-                <p class="text-gray-400 text-sm">Belum ada poin reward.</p>
+                <p class="text-gray-500 text-sm">Belum ada poin reward.</p>
             </div>
         @else
             <div class="divide-y divide-gray-100">
@@ -57,10 +57,10 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-gray-900">{{ $pt->typeLabel }}</p>
                             @if($pt->description)
-                                <p class="text-xs text-gray-400 mt-0.5">{{ $pt->description }}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">{{ $pt->description }}</p>
                             @endif
                         </div>
-                        <p class="text-xs text-gray-400 flex-shrink-0">{{ $pt->point_date->translatedFormat('d M Y') }}</p>
+                        <p class="text-xs text-gray-500 flex-shrink-0">{{ $pt->point_date->translatedFormat('d M Y') }}</p>
                     </div>
                 @endforeach
             </div>

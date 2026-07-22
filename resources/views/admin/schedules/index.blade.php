@@ -32,11 +32,11 @@
     @php $activeTab = request('tab', 'schedule'); @endphp
     <div class="flex gap-1 mb-5 bg-white border border-gray-200 rounded-xl p-1 w-fit">
         <a href="{{ route('admin.schedules.index', ['classroom_id' => request('classroom_id'), 'tab' => 'schedule']) }}"
-           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'schedule' ? 'bg-blue-600 text-gray-900' : 'text-gray-500 hover:text-gray-900' }}">
+           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'schedule' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
             Jadwal per Kelas
         </a>
         <a href="{{ route('admin.schedules.index', ['tab' => 'mapping']) }}"
-           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'mapping' ? 'bg-blue-600 text-gray-900' : 'text-gray-500 hover:text-gray-900' }}">
+           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'mapping' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
             Peruntukan Mapel
         </a>
     </div>
@@ -50,7 +50,7 @@
             <input type="hidden" name="tab" value="schedule">
             <label class="text-sm text-gray-500 flex-shrink-0">Pilih Kelas:</label>
             <select name="classroom_id" onchange="this.form.submit()"
-                    class="flex-1 min-w-0 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    class="flex-1 min-w-0 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 <option value="">-- Pilih kelas --</option>
                 @foreach($classrooms as $c)
                     <option value="{{ $c->id }}" {{ $classroomId == $c->id ? 'selected' : '' }}>
@@ -73,7 +73,7 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Mata Pelajaran <span class="text-red-400">*</span></label>
                             <select name="subject_id" required
-                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                 <option value="">Pilih mapel...</option>
                                 @foreach($subjects->groupBy(fn($s) => $s->group?->name ?? 'Tanpa Kelompok') as $groupName => $mapels)
                                     <optgroup label="{{ $groupName }}">
@@ -87,7 +87,7 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Guru <span class="text-red-400">*</span></label>
                             <select name="teacher_id" required
-                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                 <option value="">Pilih guru...</option>
                                 @foreach($teachers as $t)
                                     <option value="{{ $t->id }}">{{ $t->name }}</option>
@@ -97,7 +97,7 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Hari <span class="text-red-400">*</span></label>
                             <select name="day_of_week" required
-                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                 @foreach([1=>'Senin',2=>'Selasa',3=>'Rabu',4=>'Kamis',5=>'Jumat',6=>'Sabtu'] as $d => $n)
                                     <option value="{{ $d }}">{{ $n }}</option>
                                 @endforeach
@@ -107,27 +107,27 @@
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">Mulai <span class="text-red-400">*</span></label>
                                 <input type="time" name="start_time" required
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">Selesai <span class="text-red-400">*</span></label>
                                 <input type="time" name="end_time" required
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Ruangan (opsional)</label>
                             <input type="text" name="room" placeholder="cth: Lab TKJ 1, Kelas A"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         </div>
                         <button type="submit"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                             Tambah Jadwal
                         </button>
                     </form>
                 </div>
                 <div class="mt-4 bg-white border border-gray-200 rounded-xl p-4">
-                    <p class="text-xs text-gray-400 leading-relaxed">
+                    <p class="text-xs text-gray-500 leading-relaxed">
                         1 guru bisa mengajar <span class="text-gray-900">banyak mata pelajaran</span> di kelas berbeda.
                         Jadwal ini menjadi acuan guru saat membuat tugas.
                     </p>
@@ -139,7 +139,7 @@
                 @php $days = [1=>'Senin',2=>'Selasa',3=>'Rabu',4=>'Kamis',5=>'Jumat',6=>'Sabtu']; @endphp
                 @if($schedules->isEmpty())
                     <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada jadwal untuk {{ $selectedClassroom->name }}.</p>
+                        <p class="text-gray-500 text-sm">Belum ada jadwal untuk {{ $selectedClassroom->name }}.</p>
                     </div>
                 @else
                     <div class="space-y-4">
@@ -154,21 +154,21 @@
                                             <div class="px-4 py-3" x-data="{ editing: false }">
                                                 {{-- Tampilan normal --}}
                                                 <div class="flex items-center gap-3" x-show="!editing">
-                                                    <div class="text-xs text-gray-400 flex-shrink-0 w-20 text-center leading-relaxed">
+                                                    <div class="text-xs text-gray-500 flex-shrink-0 w-20 text-center leading-relaxed">
                                                         {{ substr($schedule->start_time, 0, 5) }}<br>
                                                         <span class="text-gray-900">↓</span><br>
                                                         {{ substr($schedule->end_time, 0, 5) }}
                                                     </div>
                                                     <div class="flex-1 min-w-0">
                                                         <p class="text-sm font-semibold text-gray-900 truncate">{{ $schedule->subject->name }}</p>
-                                                        <p class="text-xs text-gray-400 mt-0.5">
+                                                        <p class="text-xs text-gray-500 mt-0.5">
                                                             {{ $schedule->teacher->name }}
                                                             @if($schedule->room) &middot; {{ $schedule->room }} @endif
                                                         </p>
                                                     </div>
                                                     <div class="flex items-center gap-1 flex-shrink-0">
                                                         <button type="button" @click="editing=true"
-                                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
                                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                                                             </svg>
@@ -191,9 +191,9 @@
                                                     @csrf @method('PUT')
                                                     <div class="grid grid-cols-2 gap-2">
                                                         <div class="col-span-2">
-                                                            <label class="block text-xs text-gray-400 mb-1">Mata Pelajaran</label>
+                                                            <label class="block text-xs text-gray-500 mb-1">Mata Pelajaran</label>
                                                             <select name="subject_id" required
-                                                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                                                 @foreach($subjects->groupBy(fn($s) => $s->group?->name ?? 'Tanpa Kelompok') as $gName => $mapels)
                                                                     <optgroup label="{{ $gName }}">
                                                                         @foreach($mapels as $s)
@@ -204,38 +204,38 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-span-2">
-                                                            <label class="block text-xs text-gray-400 mb-1">Guru</label>
+                                                            <label class="block text-xs text-gray-500 mb-1">Guru</label>
                                                             <select name="teacher_id" required
-                                                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                                                 @foreach($teachers as $t)
                                                                     <option value="{{ $t->id }}" {{ $schedule->teacher_id == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
                                                         <div>
-                                                            <label class="block text-xs text-gray-400 mb-1">Hari</label>
+                                                            <label class="block text-xs text-gray-500 mb-1">Hari</label>
                                                             <select name="day_of_week" required
-                                                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                                                 @foreach([1=>'Senin',2=>'Selasa',3=>'Rabu',4=>'Kamis',5=>'Jumat',6=>'Sabtu'] as $d => $n)
                                                                     <option value="{{ $d }}" {{ $schedule->day_of_week == $d ? 'selected' : '' }}>{{ $n }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
                                                         <div>
-                                                            <label class="block text-xs text-gray-400 mb-1">Ruangan</label>
+                                                            <label class="block text-xs text-gray-500 mb-1">Ruangan</label>
                                                             <input type="text" name="room" value="{{ $schedule->room }}"
                                                                    placeholder="Ruangan"
-                                                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                                         </div>
                                                         <div>
-                                                            <label class="block text-xs text-gray-400 mb-1">Mulai</label>
+                                                            <label class="block text-xs text-gray-500 mb-1">Mulai</label>
                                                             <input type="time" name="start_time" value="{{ substr($schedule->start_time,0,5) }}" required
-                                                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                                         </div>
                                                         <div>
-                                                            <label class="block text-xs text-gray-400 mb-1">Selesai</label>
+                                                            <label class="block text-xs text-gray-500 mb-1">Selesai</label>
                                                             <input type="time" name="end_time" value="{{ substr($schedule->end_time,0,5) }}" required
-                                                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                                         </div>
                                                     </div>
                                                     <div class="flex gap-2">
@@ -264,7 +264,7 @@
             <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5"/>
             </svg>
-            <p class="text-gray-400 text-sm">Pilih kelas di atas untuk lihat dan mengatur jadwal.</p>
+            <p class="text-gray-500 text-sm">Pilih kelas di atas untuk lihat dan mengatur jadwal.</p>
         </div>
     @endif
     @endif
@@ -274,13 +274,13 @@
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-200">
             <h2 class="text-sm font-semibold text-gray-900">Mapel → Kelas yang Mengajarkan</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Daftar setiap mata pelajaran dan kelas aktif yang memiliki jadwal mapel tersebut</p>
+            <p class="text-xs text-gray-500 mt-0.5">Daftar setiap mata pelajaran dan kelas aktif yang memiliki jadwal mapel tersebut</p>
         </div>
 
         @if($subjectMapping->isEmpty())
             <div class="px-5 py-12 text-center">
-                <p class="text-gray-400 text-sm">Belum ada jadwal yang dibuat.</p>
-                <p class="text-gray-400 text-xs mt-1">Buat jadwal di tab "Jadwal per Kelas" dulu.</p>
+                <p class="text-gray-500 text-sm">Belum ada jadwal yang dibuat.</p>
+                <p class="text-gray-500 text-xs mt-1">Buat jadwal di tab "Jadwal per Kelas" dulu.</p>
             </div>
         @else
             <div class="divide-y divide-gray-100">
@@ -289,12 +289,12 @@
                         <div class="flex items-start gap-3">
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-semibold text-gray-900">{{ $item['subject']->name }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">
+                                <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $item['subject']->group?->name ?? 'Tanpa kelompok' }}
                                     @if($item['subject']->code) &middot; {{ $item['subject']->code }} @endif
                                 </p>
                             </div>
-                            <span class="text-xs text-gray-400 flex-shrink-0">{{ $item['classes']->count() }} kelas</span>
+                            <span class="text-xs text-gray-500 flex-shrink-0">{{ $item['classes']->count() }} kelas</span>
                         </div>
                         <div class="mt-2 flex flex-wrap gap-1.5">
                             @foreach($item['classes'] as $cls)

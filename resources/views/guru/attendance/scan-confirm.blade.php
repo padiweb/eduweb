@@ -23,7 +23,7 @@
         </div>
 
         {{-- Info sesi --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 mb-4">
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-blue-600/10 border border-blue-200 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
             </svg>
-            <p id="gps-status" class="text-sm text-gray-600">Mendeteksi lokasi GPS...</p>
+            <p id="gps-status" class="text-sm text-gray-400">Mendeteksi lokasi GPS...</p>
         </div>
 
         <form id="form-absen" method="POST" action="{{ route('teacher.attendance.confirm') }}">
@@ -64,13 +64,13 @@
             <input type="hidden" name="longitude" id="inp-lng">
 
             <button type="submit" id="btn-absen" disabled
-                    class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 font-bold py-4 rounded-2xl text-base transition-all">
+                    class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl text-base transition-all">
                 Absen Sekarang
             </button>
         </form>
 
         <a href="{{ route('guru.teacher-attendance.index') }}"
-           class="block text-center text-sm text-gray-400 hover:text-gray-600 mt-4 transition-colors">
+           class="block text-center text-sm text-gray-500 hover:text-gray-400 mt-4 transition-colors">
             Kembali ke halaman absensi
         </a>
     </div>

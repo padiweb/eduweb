@@ -40,14 +40,14 @@
                         <input type="text" name="name" required
                                value="{{ old('name') }}"
                                placeholder="cth: Perkelahian, Bolos, dll"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Tingkat Keparahan <span class="text-red-400">*</span></label>
                         <select name="severity" required
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">Pilih tingkat...</option>
                             <option value="ringan"  {{ old('severity') === 'ringan'  ? 'selected' : '' }}>Ringan</option>
                             <option value="sedang"  {{ old('severity') === 'sedang'  ? 'selected' : '' }}>Sedang</option>
@@ -60,13 +60,13 @@
                         <label class="block text-xs text-gray-500 mb-1.5">Poin Default <span class="text-red-400">*</span></label>
                         <input type="number" name="default_points" required min="1" max="100"
                                value="{{ old('default_points', 5) }}"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                        <p class="text-xs text-gray-400 mt-1">Bisa diubah saat input pelanggaran</p>
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
+                        <p class="text-xs text-gray-500 mt-1">Bisa diubah saat input pelanggaran</p>
                         @error('default_points') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah Kategori
                     </button>
                 </form>
@@ -78,7 +78,7 @@
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Semua Kategori</h2>
-                    <span class="text-xs text-gray-400">{{ $categories->count() }} kategori</span>
+                    <span class="text-xs text-gray-500">{{ $categories->count() }} kategori</span>
                 </div>
 
                 @if($categories->count() > 0)
@@ -95,7 +95,7 @@
                             <div class="flex items-center gap-4 px-5 py-4">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900">{{ $cat->name }}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">
+                                    <p class="text-xs text-gray-500 mt-0.5">
                                         Digunakan {{ $cat->violations_count }} kali
                                     </p>
                                 </div>
@@ -114,8 +114,8 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/>
                         </svg>
-                        <p class="text-gray-400 text-sm">Belum ada kategori pelanggaran.</p>
-                        <p class="text-gray-400 text-xs mt-1">Tambahkan kategori di form sebelah kiri.</p>
+                        <p class="text-gray-500 text-sm">Belum ada kategori pelanggaran.</p>
+                        <p class="text-gray-500 text-xs mt-1">Tambahkan kategori di form sebelah kiri.</p>
                     </div>
                 @endif
             </div>
@@ -136,7 +136,7 @@
                         </div>
                     @endforeach
                 </div>
-                <p class="text-xs text-gray-400 mt-2">Kategori ini dibuat otomatis oleh sistem dan tidak bisa dihapus.</p>
+                <p class="text-xs text-gray-500 mt-2">Kategori ini dibuat otomatis oleh sistem dan tidak bisa dihapus.</p>
             </div>
         </div>
     </div>

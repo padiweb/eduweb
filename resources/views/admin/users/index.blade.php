@@ -15,14 +15,14 @@
                 Kelola Jabatan
             </a>
             <a href="{{ route('admin.users.import', ['role' => $tab]) }}"
-               class="flex items-center gap-2 bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 text-sm px-4 py-2 rounded-xl transition-colors">
+               class="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
                 </svg>
                 Import CSV
             </a>
             <a href="{{ route('admin.users.create', ['role' => $tab]) }}"
-               class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
+               class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                 </svg>
@@ -46,7 +46,7 @@
     <div class="flex flex-wrap gap-1 mb-4 bg-white border border-gray-200 rounded-xl p-1 w-fit">
         @foreach(['siswa'=>'Siswa','guru'=>'Guru','wali_kelas'=>'Wali Kelas','kesiswaan'=>'Kesiswaan','admin'=>'Admin','bendahara'=>'Bendahara','kepala_sekolah'=>'Kepala Sekolah'] as $role => $label)
             <a href="{{ route('admin.users.index', ['tab' => $role]) }}"
-               class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $tab === $role ? 'bg-blue-600 text-gray-900' : 'text-gray-500 hover:text-gray-900' }}">
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $tab === $role ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
                 {{ $label }}
             </a>
         @endforeach
@@ -58,28 +58,28 @@
         <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama, NIS, email..."
                class="flex-1 min-w-48 bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-blue-300">
         @if($tab === 'siswa')
-        <select name="kelas_id" class="bg-white border border-gray-200 text-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none">
+        <select name="kelas_id" class="bg-white border border-gray-200 text-gray-400 rounded-xl px-3 py-2 text-sm focus:outline-none">
             <option value="">Semua Kelas</option>
             @foreach($classrooms as $cls)
                 <option value="{{ $cls->id }}" {{ $kelasId == $cls->id ? 'selected' : '' }}>{{ $cls->name }}</option>
             @endforeach
         </select>
         @endif
-        <select name="status" class="bg-white border border-gray-200 text-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none">
+        <select name="status" class="bg-white border border-gray-200 text-gray-400 rounded-xl px-3 py-2 text-sm focus:outline-none">
             <option value="">Semua Status</option>
             <option value="aktif" {{ $status === 'aktif' ? 'selected' : '' }}>Aktif</option>
             <option value="nonaktif" {{ $status === 'nonaktif' ? 'selected' : '' }}>Non-aktif</option>
         </select>
-        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold rounded-xl transition-colors">Cari</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors">Cari</button>
         @if($search || $kelasId || $status)
-            <a href="{{ route('admin.users.index', ['tab' => $tab]) }}" class="px-4 py-2 bg-white hover:bg-gray-100 text-gray-600 text-sm rounded-xl border border-gray-200 transition-colors">Reset</a>
+            <a href="{{ route('admin.users.index', ['tab' => $tab]) }}" class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-400 text-sm rounded-xl border border-gray-200 transition-colors">Reset</a>
         @endif
     </form>
 
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-gray-900">{{ ucfirst(str_replace('_',' ',$tab)) }}</h2>
-            <span class="text-xs text-gray-400">{{ $users->total() }} user</span>
+            <span class="text-xs text-gray-500">{{ $users->total() }} user</span>
         </div>
 
         @if($users->count() > 0)
@@ -104,7 +104,7 @@
                                     <span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded-full">Nonaktif</span>
                                 @endif
                             </div>
-                            <p class="text-xs text-gray-400 mt-0.5">
+                            <p class="text-xs text-gray-500 mt-0.5">
                                 @if($user->role === 'siswa')
                                     NIS: {{ $user->nis ?? '-' }} &middot; NISN: {{ $user->nisn ?? '-' }}
                                     @if($classroom) &middot; {{ $classroom->name }} @endif
@@ -116,7 +116,7 @@
                                 @endif
                             </p>
                             @if($detail?->birth_date || $user->phone)
-                                <p class="text-xs text-gray-400 mt-0.5">
+                                <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $detail?->gender === 'L' ? 'L' : ($detail?->gender === 'P' ? 'P' : '') }}
                                     @if($detail?->birth_date) &middot; {{ $detail->age }} thn @endif
                                     @if($user->phone) &middot; {{ $user->phone }} @endif
@@ -126,21 +126,21 @@
 
                         {{-- Login --}}
                         <div class="text-right flex-shrink-0 hidden md:block">
-                            <p class="text-xs text-gray-400">{{ $user->username ?? $user->nis ?? $user->nip ?? $user->niy ?? '-' }}</p>
-                            <p class="text-xs text-gray-400 truncate max-w-[140px]">{{ $user->email ?? '' }}</p>
+                            <p class="text-xs text-gray-500">{{ $user->username ?? $user->nis ?? $user->nip ?? $user->niy ?? '-' }}</p>
+                            <p class="text-xs text-gray-500 truncate max-w-[140px]">{{ $user->email ?? '' }}</p>
                         </div>
 
                         {{-- Aksi --}}
                         <div class="flex items-center gap-1 flex-shrink-0">
                             <a href="{{ route('admin.users.edit', $user->id) }}"
-                               class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                               class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                                 </svg>
                             </a>
                             <form method="POST" action="{{ route('admin.users.toggle', $user->id) }}">
                                 @csrf @method('PATCH')
-                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 transition-colors {{ $user->is_active ? 'text-amber-400' : 'text-blue-600' }}"
+                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 transition-colors {{ $user->is_active ? 'text-amber-400' : 'text-blue-600' }}"
                                         title="{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         @if($user->is_active)
@@ -170,7 +170,7 @@
                 <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
                 </svg>
-                <p class="text-gray-400 text-sm">Belum ada {{ str_replace('_',' ',$tab) }}.</p>
+                <p class="text-gray-500 text-sm">Belum ada {{ str_replace('_',' ',$tab) }}.</p>
                 <a href="{{ route('admin.users.create', ['role' => $tab]) }}"
                    class="inline-flex items-center gap-1 mt-3 text-blue-600 hover:text-blue-700 text-sm transition-colors">
                     + Tambah {{ ucfirst(str_replace('_',' ',$tab)) }}

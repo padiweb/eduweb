@@ -7,7 +7,7 @@
         </div>
         @if ($activePeriod && $locations->count() > 0)
         <button onclick="document.getElementById('modal-tambah').classList.remove('hidden')"
-                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
+                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
@@ -20,7 +20,7 @@
     <div class="flex gap-2 mb-5 flex-wrap">
         <a href="{{ route('admin.prakerin.periods.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Periode</a>
         <a href="{{ route('admin.prakerin.locations.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">DU/DI</a>
-        <a href="{{ route('admin.prakerin.placements.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-gray-900">Penempatan Siswa</a>
+        <a href="{{ route('admin.prakerin.placements.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">Penempatan Siswa</a>
         <a href="{{ route('admin.prakerin.recap.absensi') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Absensi</a>
         <a href="{{ route('admin.prakerin.recap.jurnal') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Jurnal</a>
     </div>
@@ -30,7 +30,7 @@
         @foreach ($periods as $p)
             <a href="{{ route('admin.prakerin.placements.index', ['period_id' => $p->id]) }}"
                class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2
-               {{ $periodId == $p->id ? 'bg-blue-600 text-gray-900' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900' }}">
+               {{ $periodId == $p->id ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-white' }}">
                 {{ $p->name }}
                 @if ($p->isOngoing()) <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span> @endif
             </a>
@@ -45,26 +45,26 @@
     @endif
 
     @if (! $activePeriod)
-        <div class="bg-white border border-gray-200 rounded-2xl p-8 text-center">
+        <div class="bg-white border border-gray-200 rounded-xl p-8 text-center">
             <p class="text-gray-500">Pilih periode di atas atau <a href="{{ route('admin.prakerin.periods.index') }}" class="text-blue-600 hover:underline">buat periode baru</a>.</p>
         </div>
     @elseif ($locations->isEmpty())
-        <div class="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-5 mb-4">
+        <div class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5 mb-4">
             <p class="text-amber-400 text-sm">Belum ada DU/DI untuk periode ini. <a href="{{ route('admin.prakerin.locations.index', ['period_id' => $periodId]) }}" class="underline">Tambah DU/DI dulu</a>.</p>
         </div>
     @elseif ($placements->isEmpty())
-        <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center">
+        <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
             <p class="text-gray-500">Belum ada siswa yang ditempatkan di periode ini.</p>
         </div>
     @else
-        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Siswa</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">DU/DI</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3 hidden md:table-cell">Periode Siswa</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Status</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Siswa</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">DU/DI</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3 hidden md:table-cell">Periode Siswa</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Status</th>
                         <th class="px-5 py-3"></th>
                     </tr>
                 </thead>
@@ -77,14 +77,14 @@
                             <td class="px-5 py-3">
                                 <p class="text-gray-700">{{ $p->location->name }}</p>
                                 @if ($p->location->supervisors->count() > 0)
-                                    <p class="text-gray-400 text-xs">Pembimbing: {{ $p->location->supervisors->pluck('name')->join(', ') }}</p>
+                                    <p class="text-gray-500 text-xs">Pembimbing: {{ $p->location->supervisors->pluck('name')->join(', ') }}</p>
                                 @endif
                             </td>
                             <td class="px-5 py-3 hidden md:table-cell text-gray-500 text-xs">
                                 @if ($p->start_date || $p->end_date)
                                     {{ $p->start_date?->format('d M') ?? '—' }} – {{ $p->end_date?->format('d M Y') ?? '—' }}
                                 @else
-                                    <span class="text-gray-400">Ikut periode</span>
+                                    <span class="text-gray-500">Ikut periode</span>
                                 @endif
                             </td>
                             <td class="px-5 py-3">
@@ -93,13 +93,13 @@
                                 @elseif ($p->is_active)
                                     <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">Terjadwal</span>
                                 @else
-                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-gray-100 text-gray-500">Nonaktif</span>
+                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-gray-50 text-gray-500">Nonaktif</span>
                                 @endif
                             </td>
                             <td class="px-5 py-3">
                                 <div class="flex items-center gap-2 justify-end">
                                     <a href="{{ route('admin.prakerin.placements.show', $p) }}"
-                                       class="px-3 py-1.5 bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
+                                       class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-xs rounded-lg transition-colors">
                                         Rekap
                                     </a>
                                     <form action="{{ route('admin.prakerin.placements.destroy', $p) }}" method="POST"
@@ -121,14 +121,14 @@
 
     {{-- Modal Tambah --}}
     <div id="modal-tambah" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
-        <div class="bg-white border border-gray-200 rounded-2xl p-6 w-full max-w-md">
+        <div class="bg-white border border-gray-200 rounded-xl p-6 w-full max-w-md">
             <h2 class="text-gray-900 font-semibold mb-4">Tambah Penempatan Siswa</h2>
             <form action="{{ route('admin.prakerin.placements.store') }}" method="POST" class="space-y-3">
                 @csrf
                 <input type="hidden" name="period_id" value="{{ $periodId }}">
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Siswa <span class="text-red-400">*</span></label>
-                    <select name="student_id" required class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
+                    <select name="student_id" required class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
                         <option value="">— Pilih Siswa —</option>
                         @foreach ($students as $s)
                             @php $sudahDitempatkan = $placedStudents->get($s->id); @endphp
@@ -139,37 +139,37 @@
                         @endforeach
                     </select>
                     @if ($placedStudents->count() > 0)
-                        <p class="text-gray-400 text-xs mt-1">Siswa yang sudah ditempatkan tidak bisa dipilih.</p>
+                        <p class="text-gray-500 text-xs mt-1">Siswa yang sudah ditempatkan tidak bisa dipilih.</p>
                     @endif
                 </div>
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">DU/DI <span class="text-red-400">*</span></label>
-                    <select name="location_id" required class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
+                    <select name="location_id" required class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
                         <option value="">— Pilih DU/DI —</option>
                         @foreach ($locations as $loc)
                             <option value="{{ $loc->id }}">{{ $loc->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <p class="text-gray-400 text-xs">Tanggal override (kosongkan = ikut tanggal periode)</p>
+                <p class="text-gray-500 text-xs">Tanggal override (kosongkan = ikut tanggal periode)</p>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Mulai (opsional)</label>
-                        <input type="date" name="start_date" class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
+                        <input type="date" name="start_date" class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Selesai (opsional)</label>
-                        <input type="date" name="end_date" class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
+                        <input type="date" name="end_date" class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs text-gray-500 mb-1">Catatan</label>
-                    <textarea name="notes" rows="2" class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none placeholder-gray-400" placeholder="Catatan opsional"></textarea>
+                    <textarea name="notes" rows="2" class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none placeholder-gray-400" placeholder="Catatan opsional"></textarea>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-tambah').classList.add('hidden')"
-                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-xl">Batal</button>
-                    <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold rounded-xl">Simpan</button>
+                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-400 text-sm rounded-xl">Batal</button>
+                    <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl">Simpan</button>
                 </div>
             </form>
         </div>

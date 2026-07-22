@@ -8,7 +8,7 @@
     </div>
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         @if($expenses->isEmpty())
-            <div class="px-5 py-12 text-center"><p class="text-gray-400">Tidak ada pengeluaran yang menunggu approval.</p></div>
+            <div class="px-5 py-12 text-center"><p class="text-gray-500">Tidak ada pengeluaran yang menunggu approval.</p></div>
         @else
             <div class="divide-y divide-gray-100">
                 @foreach($expenses as $exp)
@@ -24,7 +24,7 @@
                         <p class="text-base font-bold text-amber-400">{{ $exp->amount_formatted }}</p>
                     </div>
                     <a href="{{ route('bendahara.expenses.show', $exp) }}"
-                        class="shrink-0 text-xs bg-purple-600 hover:bg-purple-700 text-gray-900 px-3 py-1.5 rounded-lg transition-colors">
+                        class="shrink-0 text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">
                         Review
                     </a>
                 </div>

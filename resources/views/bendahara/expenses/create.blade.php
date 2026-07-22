@@ -31,12 +31,12 @@
                             <label class="text-xs text-gray-500 mb-1 block">Keterangan *</label>
                             <input type="text" name="description" required value="{{ old('description') }}"
                                 placeholder="Gaji Juli 2026, Pembelian ATK, dll"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-xs text-gray-500 mb-1 block">Sumber Dana *</label>
-                                <select name="fund_source_id" required class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                <select name="fund_source_id" required class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                     <option value="">-- Pilih sumber --</option>
                                     @foreach($sources as $s)
                                         <option value="{{ $s->id }}" {{ old('fund_source_id')==$s->id ? 'selected':'' }}>{{ $s->name }}</option>
@@ -46,7 +46,7 @@
                             <div>
                                 <label class="text-xs text-gray-500 mb-1 block">Kategori *</label>
                                 <select name="expense_category_id" required
-                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                     <option value="">-- Pilih kategori --</option>
                                     @foreach($categories as $c)
                                         <option value="{{ $c->id }}"
@@ -63,17 +63,17 @@
                             <label class="text-xs text-gray-500 mb-1 block">Jumlah (Rp) *</label>
                             <input type="number" name="amount" required min="1" value="{{ old('amount') }}"
                                 placeholder="500000"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-xs text-gray-500 mb-1 block">Tanggal *</label>
                                 <input type="date" name="expense_date" required value="{{ old('expense_date', date('Y-m-d')) }}"
-                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="text-xs text-gray-500 mb-1 block">Tahun Ajaran *</label>
-                                <select name="academic_year_id" required class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                <select name="academic_year_id" required class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                     @foreach($academicYears as $y)
                                         <option value="{{ $y->id }}" {{ $y->is_active ? 'selected':'' }}>
                                             {{ $y->name }} S{{ $y->semester }}{{ $y->is_active ? ' ✓':'' }}
@@ -86,18 +86,18 @@
                             <div>
                                 <label class="text-xs text-gray-500 mb-1 block">Label Periode</label>
                                 <input type="text" name="period_label" value="{{ old('period_label') }}" placeholder="Juli 2026"
-                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="text-xs text-gray-500 mb-1 block">No. Referensi</label>
                                 <input type="text" name="reference_number" value="{{ old('reference_number') }}" placeholder="No. Nota/SK"
-                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             </div>
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Catatan</label>
                             <textarea name="notes" rows="2" placeholder="Opsional..."
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none">{{ old('notes') }}</textarea>
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none resize-none">{{ old('notes') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -109,8 +109,8 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Bukti / Nota / SK</label>
                         <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.pdf"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
-                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, PDF · Maks 5MB</p>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
+                        <p class="text-xs text-gray-500 mt-1">JPG, PNG, PDF · Maks 5MB</p>
                     </div>
                 </div>
 
@@ -123,9 +123,9 @@
                     </p>
                     @if($categories->where('requires_approval', true)->isNotEmpty())
                         <div class="mt-3 space-y-1">
-                            <p class="text-xs text-gray-400 font-medium">Kategori yang butuh approval:</p>
+                            <p class="text-xs text-gray-500 font-medium">Kategori yang butuh approval:</p>
                             @foreach($categories->where('requires_approval', true) as $c)
-                                <p class="text-xs text-gray-400">
+                                <p class="text-xs text-gray-500">
                                     · {{ $c->name }}
                                     @if($c->approval_threshold > 0)
                                         ≥ Rp {{ number_format($c->approval_threshold, 0, ',', '.') }}
@@ -142,9 +142,9 @@
 
         <div class="flex gap-3 mt-5">
             <a href="{{ route('bendahara.expenses.index') }}"
-                class="px-6 py-2.5 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium rounded-lg transition-colors">Batal</a>
+                class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium rounded-lg transition-colors">Batal</a>
             <button type="submit"
-                class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium rounded-lg transition-colors">
+                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
                 Simpan Pengeluaran
             </button>
         </div>

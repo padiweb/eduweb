@@ -30,20 +30,20 @@
                         <label class="block text-xs text-gray-500 mb-1.5">Nama Jabatan <span class="text-red-400">*</span></label>
                         <input type="text" name="name" required
                                placeholder="cth: Kepala Sekolah, Waka Kurikulum, BP/BK"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah Jabatan
                     </button>
                 </form>
 
                 <div class="mt-4 pt-4 border-t border-gray-200">
-                    <p class="text-xs text-gray-400">Contoh jabatan umum:</p>
+                    <p class="text-xs text-gray-500">Contoh jabatan umum:</p>
                     <div class="mt-2 flex flex-wrap gap-1">
                         @foreach(['Kepala Sekolah','Waka Kurikulum','Waka Kesiswaan','Waka Sarpras','Waka Humas','Wali Kelas','BP/BK','Kepala Lab','Kepala Perpustakaan','Bendahara'] as $contoh)
-                            <span class="text-xs text-gray-400 bg-white border border-gray-200 px-2 py-1 rounded-lg">{{ $contoh }}</span>
+                            <span class="text-xs text-gray-500 bg-white border border-gray-200 px-2 py-1 rounded-lg">{{ $contoh }}</span>
                         @endforeach
                     </div>
                 </div>
@@ -55,7 +55,7 @@
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Daftar Jabatan</h2>
-                    <span class="text-xs text-gray-400">{{ $positions->count() }} jabatan</span>
+                    <span class="text-xs text-gray-500">{{ $positions->count() }} jabatan</span>
                 </div>
                 @if($positions->count() > 0)
                     <div class="divide-y divide-gray-100">
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900">{{ $pos->name }}</p>
-                                    <p class="text-xs text-gray-400">{{ $pos->teachers_count }} guru memegang jabatan ini</p>
+                                    <p class="text-xs text-gray-500">{{ $pos->teachers_count }} guru memegang jabatan ini</p>
                                 </div>
                                 <form method="POST" action="{{ route('admin.users.positions.destroy', $pos->id) }}"
                                       onsubmit="return confirm('Hapus jabatan {{ addslashes($pos->name) }}?')">
@@ -85,7 +85,7 @@
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada jabatan. Tambahkan di form sebelah kiri.</p>
+                        <p class="text-gray-500 text-sm">Belum ada jabatan. Tambahkan di form sebelah kiri.</p>
                     </div>
                 @endif
             </div>

@@ -14,7 +14,7 @@
                 @csrf
                 <button type="submit"
                         onclick="return confirm('Roll call selesai? Siswa yang belum absen akan ditandai Alfa.')"
-                        class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-gray-900 text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
+                        class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Roll Call Selesai
                 </button>
@@ -24,7 +24,7 @@
                 @csrf @method('PATCH')
                 <button type="submit"
                         onclick="return confirm('Tutup sesi absensi ini?')"
-                        class="flex items-center gap-2 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium px-4 py-2.5 rounded-xl border border-gray-200 transition-colors">
+                        class="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium px-4 py-2.5 rounded-xl border border-gray-200 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                     Tutup Sesi
                 </button>
@@ -50,30 +50,30 @@
                           data-expires="{{ $session->token_expires_at->toISOString() }}">--:--</span>
                 @else
                     <span class="w-2 h-2 rounded-full bg-gray-500"></span>
-                    <span class="text-sm font-semibold text-gray-400">Sesi Ditutup</span>
+                    <span class="text-sm font-semibold text-gray-500">Sesi Ditutup</span>
                 @endif
             </div>
 
             @if($qrImage)
-                <div class="bg-white rounded-2xl p-4 w-fit mx-auto mb-4">
+                <div class="bg-white rounded-xl p-4 w-fit mx-auto mb-4">
                     <div id="qr-image" class="w-56 h-56">{!! base64_decode($qrImage) !!}</div>
                 </div>
-                <p class="text-center text-xs text-gray-400 mb-4">Tampilkan QR ini ke siswa untuk di-scan</p>
+                <p class="text-center text-xs text-gray-500 mb-4">Tampilkan QR ini ke siswa untuk di-scan</p>
             @else
-                <div class="bg-white rounded-2xl p-8 flex items-center justify-center mb-4">
-                    <p class="text-gray-400 text-sm">QR tidak tersedia — sesi sudah ditutup</p>
+                <div class="bg-white rounded-xl p-8 flex items-center justify-center mb-4">
+                    <p class="text-gray-500 text-sm">QR tidak tersedia — sesi sudah ditutup</p>
                 </div>
             @endif
 
             @if($session->isActive())
                 <div class="flex items-center gap-3">
-                    <select id="qr-duration" class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                    <select id="qr-duration" class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
                         <option value="5">5 menit</option>
                         <option value="10" selected>10 menit</option>
                         <option value="15">15 menit</option>
                         <option value="30">30 menit</option>
                     </select>
-                    <button id="btn-refresh" class="flex items-center gap-2 bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 text-sm font-medium px-4 py-2 rounded-xl transition-colors">
+                    <button id="btn-refresh" class="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm font-medium px-4 py-2 rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
                         </svg>
@@ -90,15 +90,15 @@
             <div class="grid grid-cols-3 gap-3">
                 <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-blue-600" id="stat-hadir">{{ $recap['hadir'] + $recap['terlambat'] }}</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Hadir</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Hadir</p>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-amber-400" id="stat-belum">{{ $recap['belum'] }}</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Belum</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Belum</p>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-red-400" id="stat-alfa">{{ $recap['alfa'] }}</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Alfa</p>
+                    <p class="text-xs text-gray-500 mt-0.5">Alfa</p>
                 </div>
             </div>
 
@@ -113,27 +113,27 @@
                          id="progress"
                          style="width: {{ $recap['rate'] }}%"></div>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">{{ $recap['total'] }} siswa terdaftar</p>
+                <p class="text-xs text-gray-500 mt-2">{{ $recap['total'] }} siswa terdaftar</p>
             </div>
 
             {{-- Daftar hadir --}}
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
                     <h3 class="text-sm font-semibold text-gray-900">Sudah Absen</h3>
-                    <span class="text-xs text-gray-400" id="present-count">{{ $recap['hadir'] + $recap['terlambat'] }} siswa</span>
+                    <span class="text-xs text-gray-500" id="present-count">{{ $recap['hadir'] + $recap['terlambat'] }} siswa</span>
                 </div>
                 <div class="divide-y divide-gray-100 max-h-48 overflow-y-auto" id="attendance-list">
                     @forelse($recap['attendances'] as $att)
                         <div class="flex items-center gap-3 px-4 py-3">
-                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
+                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-400 flex-shrink-0">
                                 {{ substr($att->student->name, 0, 2) }}
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm text-gray-900 truncate">{{ $att->student->name }}</p>
-                                <p class="text-xs text-gray-400">{{ $att->scanned_at->format('H:i:s') }}</p>
+                                <p class="text-xs text-gray-500">{{ $att->scanned_at->format('H:i:s') }}</p>
                             </div>
                             <x-status-badge :status="$att->status"/>
-                            <button class="text-gray-400 hover:text-gray-500 transition-colors"
+                            <button class="text-gray-500 hover:text-gray-500 transition-colors"
                                     data-action="override"
                                     data-student-id="{{ $att->student_id }}"
                                     data-student-name="{{ $att->student->name }}"
@@ -145,7 +145,7 @@
                         </div>
                     @empty
                         <div class="px-4 py-8 text-center">
-                            <p class="text-gray-400 text-sm">Menunggu siswa scan QR...</p>
+                            <p class="text-gray-500 text-sm">Menunggu siswa scan QR...</p>
                         </div>
                     @endforelse
                 </div>
@@ -160,7 +160,7 @@
                 <div class="divide-y divide-gray-100 max-h-36 overflow-y-auto">
                     @foreach($recap['missing'] as $student)
                         <div class="flex items-center gap-3 px-4 py-3">
-                            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-400 flex-shrink-0">
+                            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-500 flex-shrink-0">
                                 {{ substr($student->name, 0, 2) }}
                             </div>
                             <span class="flex-1 text-sm text-gray-500 truncate">{{ $student->name }}</span>
@@ -181,10 +181,10 @@
 
     {{-- Modal Koreksi --}}
     <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70">
-        <div class="bg-white border border-gray-200 rounded-2xl p-6 w-full max-w-md mx-4">
+        <div class="bg-white border border-gray-200 rounded-xl p-6 w-full max-w-md mx-4">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-semibold text-gray-900">Koreksi Absensi</h3>
-                <button id="close-modal" class="text-gray-400 hover:text-gray-900 transition-colors">
+                <button id="close-modal" class="text-gray-500 hover:text-gray-900 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -202,16 +202,16 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-600 mb-1.5">Alasan Koreksi <span class="text-red-400">*</span></label>
+                <label class="block text-sm font-medium text-gray-400 mb-1.5">Alasan Koreksi <span class="text-red-400">*</span></label>
                 <textarea id="override-reason" rows="3" placeholder="Wajib diisi — tercatat di audit log..."
-                          class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"></textarea>
+                          class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors"></textarea>
             </div>
 
             <div class="flex gap-3">
-                <button id="cancel-modal" class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">
+                <button id="cancel-modal" class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">
                     Batal
                 </button>
-                <button id="submit-override" class="flex-1 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                <button id="submit-override" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                     Simpan
                 </button>
             </div>

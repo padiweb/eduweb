@@ -19,7 +19,7 @@
         <form method="GET" class="flex items-center gap-3">
             <label class="text-sm text-gray-500 flex-shrink-0">Pilih Guru:</label>
             <select name="teacher_id" onchange="this.form.submit()"
-                    class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 <option value="">-- Pilih guru --</option>
                 @foreach($teachers as $t)
                     <option value="{{ $t->id }}" {{ $teacherId == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
@@ -40,12 +40,12 @@
                         <div class="divide-y divide-gray-100">
                             @foreach($schedules[$dayNum]->sortBy('start_time') as $s)
                                 <div class="flex items-center gap-4 px-5 py-3.5">
-                                    <div class="text-xs text-gray-400 flex-shrink-0 w-20 text-center">
+                                    <div class="text-xs text-gray-500 flex-shrink-0 w-20 text-center">
                                         {{ substr($s->start_time, 0, 5) }} — {{ substr($s->end_time, 0, 5) }}
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-semibold text-gray-900">{{ $s->subject->name }}</p>
-                                        <p class="text-xs text-gray-400">{{ $s->classroom->name }}
+                                        <p class="text-xs text-gray-500">{{ $s->classroom->name }}
                                             @if($s->room) &middot; {{ $s->room }} @endif
                                         </p>
                                     </div>
@@ -69,13 +69,13 @@
             @endphp
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <p class="text-xs text-gray-400 mb-2">Mata Pelajaran yang Diajar</p>
+                    <p class="text-xs text-gray-500 mb-2">Mata Pelajaran yang Diajar</p>
                     @foreach($uniqueSubjects as $subj)
                         <p class="text-sm text-gray-900">{{ $subj->name }}</p>
                     @endforeach
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400 mb-2">Kelas yang Diajar</p>
+                    <p class="text-xs text-gray-500 mb-2">Kelas yang Diajar</p>
                     @foreach($uniqueClasses as $cls)
                         <p class="text-sm text-gray-900">{{ $cls->name }}</p>
                     @endforeach
@@ -84,11 +84,11 @@
         </div>
     @elseif($teacherId)
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <p class="text-gray-400 text-sm">Guru ini belum punya jadwal mengajar.</p>
+            <p class="text-gray-500 text-sm">Guru ini belum punya jadwal mengajar.</p>
         </div>
     @else
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <p class="text-gray-400 text-sm">Pilih guru di atas untuk melihat jadwalnya.</p>
+            <p class="text-gray-500 text-sm">Pilih guru di atas untuk melihat jadwalnya.</p>
         </div>
     @endif
 

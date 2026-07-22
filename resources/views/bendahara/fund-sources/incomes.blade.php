@@ -21,7 +21,7 @@
                 </p>
             </div>
             <button onclick="document.getElementById('modal-add').classList.remove('hidden')"
-                class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                 </svg>
@@ -40,45 +40,45 @@
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         @if($fundSource->incomes->isEmpty())
             <div class="px-5 py-12 text-center">
-                <p class="text-gray-400">Belum ada pemasukan dari sumber ini.</p>
-                <p class="text-gray-400 text-xs mt-1">Klik "Catat Pemasukan" untuk menambah.</p>
+                <p class="text-gray-500">Belum ada pemasukan dari sumber ini.</p>
+                <p class="text-gray-500 text-xs mt-1">Klik "Catat Pemasukan" untuk menambah.</p>
             </div>
         @else
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-gray-200">
-                            <th class="text-left text-xs text-gray-400 font-medium px-4 py-3">Tanggal</th>
-                            <th class="text-left text-xs text-gray-400 font-medium px-4 py-3">Keterangan</th>
-                            <th class="text-left text-xs text-gray-400 font-medium px-4 py-3">Periode</th>
-                            <th class="text-right text-xs text-gray-400 font-medium px-4 py-3">Jumlah</th>
-                            <th class="text-left text-xs text-gray-400 font-medium px-4 py-3">Dicatat oleh</th>
+                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Tanggal</th>
+                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Keterangan</th>
+                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Periode</th>
+                            <th class="text-right text-xs text-gray-500 font-medium px-4 py-3">Jumlah</th>
+                            <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Dicatat oleh</th>
                             <th class="px-4 py-3"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @foreach($fundSource->incomes as $income)
                         <tr class="hover:bg-white/2 transition-colors">
-                            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
+                            <td class="px-4 py-3 text-gray-400 whitespace-nowrap">
                                 {{ $income->income_date->format('d/m/Y') }}
                             </td>
                             <td class="px-4 py-3">
                                 <p class="text-gray-900">{{ $income->description }}</p>
                                 @if($income->reference_number)
-                                    <p class="text-xs text-gray-400">No: {{ $income->reference_number }}</p>
+                                    <p class="text-xs text-gray-500">No: {{ $income->reference_number }}</p>
                                 @endif
                                 @if($income->notes)
-                                    <p class="text-xs text-gray-400">{{ $income->notes }}</p>
+                                    <p class="text-xs text-gray-500">{{ $income->notes }}</p>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-gray-500">
                                 {{ $income->period_label ?? '-' }}
-                                <p class="text-xs text-gray-400">{{ $income->academicYear->name ?? '-' }}</p>
+                                <p class="text-xs text-gray-500">{{ $income->academicYear->name ?? '-' }}</p>
                             </td>
                             <td class="px-4 py-3 text-right text-green-400 font-semibold whitespace-nowrap">
                                 {{ $income->amount_formatted }}
                             </td>
-                            <td class="px-4 py-3 text-gray-400 text-xs">{{ $income->createdBy->name ?? '-' }}</td>
+                            <td class="px-4 py-3 text-gray-500 text-xs">{{ $income->createdBy->name ?? '-' }}</td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <button onclick="openEdit(
@@ -95,7 +95,7 @@
                                     <form method="POST" action="{{ route('bendahara.fund-sources.incomes.destroy', $income) }}"
                                         onsubmit="return confirm('Hapus data pemasukan ini?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="text-xs text-gray-400 hover:text-red-400 transition-colors">
+                                        <button type="submit" class="text-xs text-gray-500 hover:text-red-400 transition-colors">
                                             Hapus
                                         </button>
                                     </form>
@@ -120,7 +120,7 @@
 
     {{-- MODAL: Catat Pemasukan --}}
     <div id="modal-add" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-lg p-6">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-lg p-6">
             <h3 class="text-gray-900 font-semibold mb-4">Catat Pemasukan — {{ $fundSource->name }}</h3>
             <form method="POST" action="{{ route('bendahara.fund-sources.incomes.store', $fundSource) }}" enctype="multipart/form-data">
                 @csrf
@@ -129,13 +129,13 @@
                         <label class="text-xs text-gray-500 mb-1 block">Keterangan *</label>
                         <input type="text" name="description" required
                             placeholder="Pencairan BOS Triwulan I, Setoran SPP, dll"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Tahun Ajaran *</label>
                             <select name="academic_year_id" required
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 @foreach($academicYears as $y)
                                     <option value="{{ $y->id }}" {{ $y->is_active ? 'selected' : '' }}>
                                         {{ $y->name }} Sem {{ $y->semester }}{{ $y->is_active ? ' ✓' : '' }}
@@ -146,43 +146,43 @@
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Tanggal *</label>
                             <input type="date" name="income_date" required value="{{ date('Y-m-d') }}"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Jumlah (Rp) *</label>
                         <input type="number" name="amount" required min="1" placeholder="10000000"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Label Periode</label>
                             <input type="text" name="period_label" placeholder="Triwulan I 2026"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">No. Referensi</label>
                             <input type="text" name="reference_number" placeholder="No. SK / Kuitansi"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Catatan</label>
                         <textarea name="notes" rows="2" placeholder="Opsional..."
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none resize-none"></textarea>
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Lampiran (SK/Bukti)</label>
                         <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.pdf"
                             class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2">
-                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, PDF · Maks 5MB</p>
+                        <p class="text-xs text-gray-500 mt-1">JPG, PNG, PDF · Maks 5MB</p>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-green-600 hover:bg-green-700 text-gray-900 text-sm font-medium py-2 rounded-lg">Catat</button>
+                        class="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 rounded-lg">Catat</button>
                 </div>
             </form>
         </div>
@@ -190,7 +190,7 @@
 
     {{-- MODAL: Edit Pemasukan --}}
     <div id="modal-edit" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-lg p-6">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-lg p-6">
             <h3 class="text-gray-900 font-semibold mb-4">Edit Pemasukan</h3>
             <form id="form-edit" method="POST" action="">
                 @csrf @method('PUT')
@@ -198,43 +198,43 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Keterangan *</label>
                         <input type="text" id="edit-description" name="description" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Jumlah (Rp) *</label>
                             <input type="number" id="edit-amount" name="amount" required min="1"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Tanggal *</label>
                             <input type="date" id="edit-date" name="income_date" required
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Label Periode</label>
                             <input type="text" id="edit-period" name="period_label"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">No. Referensi</label>
                             <input type="text" id="edit-ref" name="reference_number"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Catatan</label>
                         <textarea id="edit-notes" name="notes" rows="2"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none resize-none"></textarea>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2 rounded-lg">Simpan</button>
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>
             </form>
         </div>

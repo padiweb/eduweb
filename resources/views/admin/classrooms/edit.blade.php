@@ -39,12 +39,12 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Nama Kelas <span class="text-red-400">*</span></label>
                         <input type="text" name="name" required value="{{ $classroom->name }}"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Tingkat</label>
                         <select name="grade" required
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             @foreach(range(1, 13) as $g)
                                 <option value="{{ $g }}" {{ $classroom->grade == $g ? 'selected' : '' }}>{{ $g }}</option>
                             @endforeach
@@ -53,7 +53,7 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Jurusan</label>
                         <select name="major_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">Tanpa Jurusan</option>
                             @foreach($majors as $m)
                                 <option value="{{ $m->id }}" {{ $classroom->major_id == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
@@ -63,7 +63,7 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Wali Kelas</label>
                         <select name="homeroom_teacher_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">Belum ditentukan</option>
                             @foreach($teachers as $t)
                                 <option value="{{ $t->id }}" {{ $classroom->homeroom_teacher_id == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
@@ -71,7 +71,7 @@
                         </select>
                     </div>
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Simpan Perubahan
                     </button>
                 </form>
@@ -83,14 +83,14 @@
                 <form method="POST" action="{{ route('admin.classrooms.assign-student', $classroom->id) }}" class="space-y-3">
                     @csrf
                     <select name="student_id" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="">Pilih siswa...</option>
                         @foreach($availableStudents->whereNotIn('id', $classroom->students->pluck('id')) as $s)
                             <option value="{{ $s->id }}">{{ $s->name }} ({{ $s->nis ?? $s->nisn ?? '-' }})</option>
                         @endforeach
                     </select>
                     <button type="submit"
-                            class="w-full bg-blue-500 hover:bg-blue-600 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah ke Kelas
                     </button>
                 </form>
@@ -99,12 +99,12 @@
             {{-- Import CSV --}}
             <div class="bg-white border border-gray-200 rounded-xl p-5">
                 <h2 class="text-sm font-semibold text-gray-900 mb-1">Import CSV</h2>
-                <p class="text-xs text-gray-400 mb-3">Satu kolom NIS atau NISN per baris.</p>
+                <p class="text-xs text-gray-500 mb-3">Satu kolom NIS atau NISN per baris.</p>
                 <form method="POST" action="{{ route('admin.classrooms.import', $classroom->id) }}"
                       enctype="multipart/form-data" class="space-y-3">
                     @csrf
                     <input type="file" name="csv_file" accept=".csv,.txt" required
-                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
+                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
                     <button type="submit"
                             class="w-full bg-gray-100 hover:bg-gray-600 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Upload & Import
@@ -118,7 +118,7 @@
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Daftar Siswa</h2>
-                    <span class="text-xs text-gray-400">{{ $classroom->students->count() }} siswa</span>
+                    <span class="text-xs text-gray-500">{{ $classroom->students->count() }} siswa</span>
                 </div>
 
                 @if($classroom->students->count() > 0)
@@ -126,13 +126,13 @@
                         @foreach($classroom->students->sortBy('name') as $no => $student)
                             <div class="px-5 py-4" x-data="{ showActions: false }">
                                 <div class="flex items-center gap-3">
-                                    <span class="text-xs text-gray-400 w-5 text-right flex-shrink-0">{{ $no + 1 }}</span>
+                                    <span class="text-xs text-gray-500 w-5 text-right flex-shrink-0">{{ $no + 1 }}</span>
                                     <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0" style="min-width:32px">
                                         <img src="{{ $student->avatarUrl }}" alt="" class="w-full h-full object-cover">
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-medium text-gray-900 truncate">{{ $student->name }}</p>
-                                        <p class="text-xs text-gray-400">
+                                        <p class="text-xs text-gray-500">
                                             {{ $student->nis ?? '-' }}
                                             @if($student->studentDetail?->gender) &middot; {{ $student->studentDetail->gender }} @endif
                                         </p>
@@ -156,7 +156,7 @@
 
                                     {{-- Toggle aksi --}}
                                     <button type="button" @click="showActions = !showActions"
-                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0">
+                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
                                         </svg>
@@ -224,7 +224,7 @@
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada siswa di kelas ini.</p>
+                        <p class="text-gray-500 text-sm">Belum ada siswa di kelas ini.</p>
                     </div>
                 @endif
             </div>

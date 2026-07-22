@@ -1,29 +1,30 @@
-@props(['label', 'value', 'color' => 'emerald', 'icon' => '', 'sub' => null, 'trend' => null])
+@props(['label', 'value', 'color' => 'blue', 'icon' => '', 'sub' => null, 'trend' => null])
 
 @php
 $colors = [
-    'emerald' => ['bg' => 'bg-emerald-500/10', 'text' => 'text-emerald-400', 'border' => 'border-t-emerald-500', 'icon_bg' => 'bg-emerald-500/10'],
-    'blue'    => ['bg' => 'bg-blue-500/10',    'text' => 'text-blue-400',    'border' => 'border-t-blue-500',    'icon_bg' => 'bg-blue-500/10'],
-    'amber'   => ['bg' => 'bg-amber-500/10',   'text' => 'text-amber-400',   'border' => 'border-t-amber-500',   'icon_bg' => 'bg-amber-500/10'],
-    'red'     => ['bg' => 'bg-red-500/10',     'text' => 'text-red-400',     'border' => 'border-t-red-500',     'icon_bg' => 'bg-red-500/10'],
-    'purple'  => ['bg' => 'bg-purple-500/10',  'text' => 'text-purple-400',  'border' => 'border-t-purple-500',  'icon_bg' => 'bg-purple-500/10'],
-    'gray'    => ['bg' => 'bg-gray-500/10',    'text' => 'text-gray-400',    'border' => 'border-t-gray-500',    'icon_bg' => 'bg-gray-500/10'],
+    'blue'    => ['val'=>'#1e40af','icon_bg'=>'#eff6ff','icon_color'=>'#3b82f6','border'=>'#3b82f6'],
+    'emerald' => ['val'=>'#065f46','icon_bg'=>'#ecfdf5','icon_color'=>'#10b981','border'=>'#10b981'],
+    'amber'   => ['val'=>'#92400e','icon_bg'=>'#fffbeb','icon_color'=>'#f59e0b','border'=>'#f59e0b'],
+    'red'     => ['val'=>'#991b1b','icon_bg'=>'#fff1f2','icon_color'=>'#ef4444','border'=>'#ef4444'],
+    'purple'  => ['val'=>'#1e40af','icon_bg'=>'#eff6ff','icon_color'=>'#3b82f6','border'=>'#3b82f6'],
+    'orange'  => ['val'=>'#9a3412','icon_bg'=>'#fff7ed','icon_color'=>'#f97316','border'=>'#f97316'],
+    'gray'    => ['val'=>'#334155','icon_bg'=>'#f8fafc','icon_color'=>'#64748b','border'=>'#cbd5e1'],
 ];
-$c = $colors[$color] ?? $colors['emerald'];
+$c = $colors[$color] ?? $colors['blue'];
 @endphp
 
-<div class="bg-gray-900 border border-white/5 border-t-2 {{ $c['border'] }} rounded-xl p-5">
-    <div class="flex items-start justify-between mb-3">
-        <p class="text-xs font-medium text-gray-400 uppercase tracking-wide">{{ $label }}</p>
+<div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid {{ $c['border'] }};border-radius:14px;padding:18px 20px;box-shadow:0 1px 4px rgba(15,23,42,0.06);position:relative;overflow:hidden;transition:box-shadow .2s"
+     onmouseover="this.style.boxShadow='0 4px 16px rgba(15,23,42,0.10)'"
+     onmouseout="this.style.boxShadow='0 1px 4px rgba(15,23,42,0.06)'">
+    <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;background:{{ $c['icon_bg'] }};border-radius:50%;opacity:.5"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
+        <p style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin:0">{{ $label }}</p>
         @if($trend)
-            <span class="text-xs font-semibold px-2 py-0.5 rounded-full
-                {{ str_starts_with($trend, '+') ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400' }}">
-                {{ $trend }}
-            </span>
+            <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:{{ str_starts_with($trend,'+') ? '#ecfdf5' : '#fff1f2' }};color:{{ str_starts_with($trend,'+') ? '#065f46' : '#991b1b' }}">{{ $trend }}</span>
         @endif
     </div>
-    <p class="text-3xl font-bold text-white tracking-tight">{{ $value }}</p>
+    <p style="font-size:30px;font-weight:800;color:{{ $c['val'] }};letter-spacing:-1px;line-height:1;margin:0">{{ $value }}</p>
     @if($sub)
-        <p class="text-xs text-gray-500 mt-1">{{ $sub }}</p>
+        <p style="font-size:11.5px;color:#94a3b8;margin:6px 0 0">{{ $sub }}</p>
     @endif
 </div>

@@ -10,7 +10,7 @@
         <a href="{{ route('guru.prakerin.index') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Dashboard</a>
         <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">DU/DI Saya</a>
         <a href="{{ route('guru.prakerin.placements') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Penempatan Siswa</a>
-        <a href="{{ route('guru.prakerin.izin') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-orange-600 text-gray-900">Izin/Sakit/Libur</a>
+        <a href="{{ route('guru.prakerin.izin') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-orange-600 text-white">Izin/Sakit/Libur</a>
         <a href="{{ route('guru.prakerin.recap.absensi') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Absensi</a>
         <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Jurnal</a>
     </div>
@@ -21,7 +21,7 @@
         @foreach ($periods as $p)
             <a href="{{ route('guru.prakerin.izin', ['period_id' => $p->id]) }}"
                class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors
-               {{ $period?->id == $p->id ? 'bg-orange-600 text-gray-900' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900' }}">
+               {{ $period?->id == $p->id ? 'bg-orange-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900' }}">
                 {{ $p->name }}
             </a>
         @endforeach
@@ -29,24 +29,24 @@
     @endif
 
     @if (! $period)
-        <div class="bg-white border border-gray-200 rounded-2xl p-10 text-center">
+        <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
             <p class="text-gray-500 text-sm">Tidak ada periode aktif.</p>
         </div>
     @elseif ($absences->isEmpty())
-        <div class="bg-white border border-gray-200 rounded-2xl p-10 text-center">
+        <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
             <p class="text-gray-500 text-sm">Belum ada laporan ketidakhadiran.</p>
         </div>
     @else
-        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Siswa</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">DU/DI</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Tanggal</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Jenis</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Keterangan</th>
-                        <th class="text-left text-xs text-gray-400 font-medium px-5 py-3">Lampiran</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Siswa</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">DU/DI</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Tanggal</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Jenis</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Keterangan</th>
+                        <th class="text-left text-xs text-gray-500 font-medium px-5 py-3">Lampiran</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -56,7 +56,7 @@
                                 <p class="text-gray-900 font-medium text-sm">{{ $abs->student->name }}</p>
                             </td>
                             <td class="px-5 py-3 text-gray-500 text-xs">{{ $abs->placement->location->name }}</td>
-                            <td class="px-5 py-3 text-gray-600 text-xs whitespace-nowrap">
+                            <td class="px-5 py-3 text-gray-400 text-xs whitespace-nowrap">
                                 {{ $abs->absence_date->translatedFormat('d M Y') }}
                             </td>
                             <td class="px-5 py-3">

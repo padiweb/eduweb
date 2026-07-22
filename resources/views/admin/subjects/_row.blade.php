@@ -2,7 +2,7 @@
     {{-- Info mapel --}}
     <div class="flex-1 min-w-0" x-show="!editing">
         <p class="text-sm font-semibold text-gray-900">{{ $subject->name }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">
+        <p class="text-xs text-gray-500 mt-0.5">
             {{ $subject->code ? 'Kode: '.$subject->code.' &middot; ' : '' }}
             {{ $subject->major?->name ?? 'Semua jurusan' }}
             &middot; {{ $subject->schedules_count }} jadwal
@@ -15,13 +15,13 @@
         @csrf @method('PUT')
         <div class="grid grid-cols-2 gap-2">
             <input type="text" name="name" value="{{ $subject->name }}" required
-                   class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                   class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
             <input type="text" name="code" value="{{ $subject->code }}" placeholder="Kode"
-                   class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                   class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
         </div>
         <div class="grid grid-cols-2 gap-2">
             <select name="subject_group_id"
-                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 <option value="">Tanpa kelompok</option>
                 @foreach($groups->sortBy('sort_order') as $g)
                     <option value="{{ $g->id }}" {{ $subject->subject_group_id == $g->id ? 'selected' : '' }}>
@@ -30,7 +30,7 @@
                 @endforeach
             </select>
             <select name="major_id"
-                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 <option value="">Semua jurusan</option>
                 @foreach($majors as $m)
                     <option value="{{ $m->id }}" {{ $subject->major_id == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
@@ -46,7 +46,7 @@
     {{-- Aksi --}}
     <div class="flex items-center gap-1 flex-shrink-0" x-show="!editing">
         <button type="button" @click="editing=true"
-                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
             </svg>

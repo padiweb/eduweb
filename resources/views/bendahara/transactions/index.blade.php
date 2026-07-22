@@ -8,7 +8,7 @@
         <div class="flex gap-2">
             @foreach(['pending'=>'Menunggu','approved'=>'Diterima','rejected'=>'Ditolak'] as $s => $l)
                 <a href="{{ route('bendahara.transactions.index', ['status' => $s]) }}"
-                    class="text-xs px-3 py-1.5 rounded-lg border transition-colors {{ $status === $s ? 'bg-purple-600 border-purple-600 text-gray-900' : 'bg-white border-gray-200 text-gray-500 hover:text-gray-900' }}">
+                    class="text-xs px-3 py-1.5 rounded-lg border transition-colors {{ $status === $s ? 'bg-blue-600 border-purple-600 text-white' : 'bg-white border-gray-200 text-gray-500 hover:text-white' }}">
                     {{ $l }}
                 </a>
             @endforeach
@@ -22,7 +22,7 @@
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         @if($transactions->isEmpty())
             <div class="px-5 py-12 text-center">
-                <p class="text-gray-400">Tidak ada transaksi {{ $status === 'pending' ? 'yang menunggu konfirmasi' : $status }}.</p>
+                <p class="text-gray-500">Tidak ada transaksi {{ $status === 'pending' ? 'yang menunggu konfirmasi' : $status }}.</p>
             </div>
         @else
             <div class="divide-y divide-gray-100">
@@ -31,10 +31,10 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-0.5">
                             <p class="text-sm font-medium text-gray-900">{{ $trx->bill->student->name ?? '-' }}</p>
-                            <span class="text-xs text-gray-400">{{ $trx->bill->student->nis ?? '' }}</span>
+                            <span class="text-xs text-gray-500">{{ $trx->bill->student->nis ?? '' }}</span>
                         </div>
                         <p class="text-xs text-gray-500">{{ $trx->bill->paymentType->name ?? '-' }} · {{ $trx->bill->period_label ?? '-' }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">
+                        <p class="text-xs text-gray-500 mt-0.5">
                             {{ $trx->bank_name ?? '-' }} · a.n. {{ $trx->sender_name ?? '-' }}
                             · {{ $trx->transfer_date ? \Carbon\Carbon::parse($trx->transfer_date)->format('d/m/Y') : '-' }}
                             · {{ $trx->created_at->diffForHumans() }}
@@ -42,12 +42,12 @@
                     </div>
                     <div class="text-right shrink-0">
                         <p class="text-base font-semibold text-gray-900">Rp {{ number_format($trx->amount, 0, ',', '.') }}</p>
-                        <p class="text-xs text-gray-400">{{ $trx->reference_number }}</p>
+                        <p class="text-xs text-gray-500">{{ $trx->reference_number }}</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         @if($trx->receipt_path)
                             <a href="{{ route('bendahara.transactions.receipt', $trx) }}" target="_blank"
-                                class="text-xs bg-white hover:bg-gray-100 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg transition-colors">
+                                class="text-xs bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 px-3 py-1.5 rounded-lg transition-colors">
                                 Bukti
                             </a>
                         @endif
@@ -55,7 +55,7 @@
                             <form method="POST" action="{{ route('bendahara.transactions.approve', $trx) }}">
                                 @csrf @method('PATCH')
                                 <button type="submit" onclick="return confirm('Konfirmasi pembayaran ini?')"
-                                    class="text-xs bg-green-600 hover:bg-green-700 text-gray-900 px-3 py-1.5 rounded-lg transition-colors">
+                                    class="text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg transition-colors">
                                     Terima
                                 </button>
                             </form>
@@ -81,7 +81,7 @@
 
     {{-- Modal tolak --}}
     <div id="modal-reject" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-sm p-6">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-sm p-6">
             <h3 class="text-gray-900 font-semibold mb-4">Tolak Transfer</h3>
             <form id="form-reject" method="POST" action="">
                 @csrf @method('PATCH')
@@ -93,9 +93,9 @@
                 </div>
                 <div class="flex gap-3">
                     <button type="button" onclick="document.getElementById('modal-reject').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-red-600 hover:bg-red-700 text-gray-900 text-sm font-medium py-2 rounded-lg transition-colors">Tolak</button>
+                        class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Tolak</button>
                 </div>
             </form>
         </div>

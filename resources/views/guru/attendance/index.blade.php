@@ -29,11 +29,11 @@
     <div class="grid grid-cols-2 gap-4 mb-6">
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-3xl font-bold text-blue-600">{{ $pointsThisMonth }}</p>
-            <p class="text-xs text-gray-400 mt-1">Poin Bulan Ini</p>
+            <p class="text-xs text-gray-500 mt-1">Poin Bulan Ini</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <p class="text-3xl font-bold text-gray-900">{{ $pointsTotal }}</p>
-            <p class="text-xs text-gray-400 mt-1">Total Poin</p>
+            <p class="text-xs text-gray-500 mt-1">Total Poin</p>
         </div>
     </div>
 
@@ -61,7 +61,7 @@
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <div>
                         <p class="text-sm font-bold text-gray-900">{{ $label }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">
+                        <p class="text-xs text-gray-500 mt-0.5">
                             {{ substr($session->open_time,0,5) }} – {{ substr($session->close_time,0,5) }} WIB
                             @if($session->late_after && $session->session_type === 'masuk')
                                 &middot; Terlambat setelah {{ substr($session->late_after,0,5) }}
@@ -69,7 +69,7 @@
                         </p>
                     </div>
                     <span class="text-xs px-2.5 py-1 rounded-full border
-                        {{ $isOpen ? 'text-blue-600 bg-blue-600/10 border-blue-200' : 'text-gray-400 bg-white border-gray-200' }}">
+                        {{ $isOpen ? 'text-blue-600 bg-blue-600/10 border-blue-200' : 'text-gray-500 bg-white border-gray-200' }}">
                         {{ $isOpen ? 'Buka' : 'Tutup' }}
                     </span>
                 </div>
@@ -97,14 +97,14 @@
                     @elseif($isOpen)
                         {{-- Tombol scan QR --}}
                         <button data-session-id="{{ $session->id }}" data-session-type="{{ $session->session_type }}"
-                                class="btn-start-scan w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 font-bold py-4 rounded-2xl transition-colors text-base mb-3">
+                                class="btn-start-scan w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-colors text-base mb-3">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z"/>
                             </svg>
                             Scan QR {{ $label }}
                         </button>
-                        <p class="text-center text-xs text-gray-400 mb-4">Scan QR yang ditempel di kantor guru</p>
+                        <p class="text-center text-xs text-gray-500 mb-4">Scan QR yang ditempel di kantor guru</p>
 
                         {{-- Izin / Sakit / Dinas --}}
                         <div x-data="{ showForm: false }">
@@ -118,18 +118,18 @@
                                     @csrf
                                     <input type="hidden" name="session_id" value="{{ $session->id }}">
                                     <select name="status" required
-                                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                         <option value="izin">Izin</option>
                                         <option value="sakit">Sakit</option>
                                         <option value="dinas">Perjalanan Dinas</option>
                                     </select>
                                     <input type="text" name="notes" placeholder="Keterangan (opsional)"
-                                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     <input type="file" name="attachment" accept="image/*,.pdf"
-                                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-xs transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
-                                    <p class="text-xs text-gray-400">Lampirkan surat/bukti (opsional)</p>
+                                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-xs transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
+                                    <p class="text-xs text-gray-500">Lampirkan surat/bukti (opsional)</p>
                                     <button type="submit"
-                                            class="w-full bg-blue-500 hover:bg-blue-600 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                                            class="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                                         Kirim
                                     </button>
                                 </form>
@@ -137,7 +137,7 @@
                         </div>
                     @else
                         <div class="text-center py-4">
-                            <p class="text-sm text-gray-400">Sesi belum dibuka atau sudah ditutup.</p>
+                            <p class="text-sm text-gray-500">Sesi belum dibuka atau sudah ditutup.</p>
                         </div>
                     @endif
                 </div>
@@ -183,10 +183,10 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
                 </svg>
-                <span id="gps-status-text" class="text-sm text-gray-600">Mendeteksi lokasi GPS...</span>
+                <span id="gps-status-text" class="text-sm text-gray-400">Mendeteksi lokasi GPS...</span>
             </div>
             <button id="btn-absen" disabled
-                    class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 font-bold py-3.5 rounded-2xl transition-all">
+                    class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-all">
                 Absen Sekarang
             </button>
             <p id="absen-error" class="text-red-400 text-xs text-center mt-2 hidden"></p>
@@ -200,7 +200,7 @@
         </div>
         @if($history->isEmpty())
             <div class="px-5 py-8 text-center">
-                <p class="text-gray-400 text-sm">Belum ada riwayat absensi.</p>
+                <p class="text-gray-500 text-sm">Belum ada riwayat absensi.</p>
             </div>
         @else
             <div class="divide-y divide-gray-100">
@@ -216,14 +216,14 @@
                                 {{ $rec->session->session_type === 'masuk' ? 'Masuk' : 'Pulang' }}
                                 &middot; <span class="text-{{ $c }}-400 font-semibold">{{ $rec->statusLabel }}</span>
                             </p>
-                            <p class="text-xs text-gray-400 mt-0.5">
+                            <p class="text-xs text-gray-500 mt-0.5">
                                 {{ $rec->session->session_date->translatedFormat('d M Y') }}
                                 @if($rec->scanned_at) &middot; {{ $rec->scanned_at->format('H:i') }} @endif
                                 @if($rec->notes) &middot; {{ $rec->notes }} @endif
                             </p>
                         </div>
                         @if($rec->distance_meters !== null)
-                            <span class="text-xs text-gray-400 flex-shrink-0">{{ round($rec->distance_meters) }}m</span>
+                            <span class="text-xs text-gray-500 flex-shrink-0">{{ round($rec->distance_meters) }}m</span>
                         @endif
                     </div>
                 @endforeach
@@ -353,7 +353,7 @@
 
         function requestGPS() {
             gpsStat.textContent = 'Mendeteksi lokasi GPS...';
-            gpsStat.className   = 'text-sm text-gray-600';
+            gpsStat.className   = 'text-sm text-gray-400';
             gpsBox.className    = 'flex items-center gap-3 mb-4 p-3 rounded-xl bg-white border border-gray-200';
 
             if (!navigator.geolocation) {

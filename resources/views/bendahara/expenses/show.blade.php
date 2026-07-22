@@ -108,7 +108,7 @@
                         <div class="px-5 py-3.5 flex items-center justify-between">
                             <div>
                                 <p class="text-sm text-gray-900">{{ $log->user->name ?? '-' }}</p>
-                                <p class="text-xs text-gray-400">{{ $log->created_at->format('d/m/Y H:i') }}</p>
+                                <p class="text-xs text-gray-500">{{ $log->created_at->format('d/m/Y H:i') }}</p>
                                 @if($log->notes)
                                     <p class="text-xs text-gray-500 mt-0.5">{{ $log->notes }}</p>
                                 @endif
@@ -140,7 +140,7 @@
                         </div>
                         <button type="submit"
                             onclick="return confirm('Setujui pengeluaran ini?')"
-                            class="w-full bg-green-600 hover:bg-green-700 text-gray-900 text-sm font-medium py-2.5 rounded-lg transition-colors">
+                            class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2.5 rounded-lg transition-colors">
                             ✓ Setujui Pengeluaran
                         </button>
                     </form>
@@ -157,7 +157,7 @@
                                     placeholder="Alasan penolakan (wajib)..."
                                     class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-red-500 focus:outline-none resize-none mb-2"></textarea>
                                 <button type="submit"
-                                    class="w-full bg-red-600 hover:bg-red-700 text-gray-900 text-sm font-medium py-2 rounded-lg transition-colors">
+                                    class="w-full bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">
                                     Konfirmasi Penolakan
                                 </button>
                             </form>
@@ -169,7 +169,7 @@
 
             {{-- Info --}}
             <div class="bg-white border border-gray-200 rounded-xl p-5 text-sm space-y-2">
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Info</p>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Info</p>
                 <div class="flex justify-between">
                     <span class="text-gray-500">Tanggal pengeluaran</span>
                     <span class="text-gray-900">{{ $expense->expense_date->format('d/m/Y') }}</span>
@@ -191,7 +191,7 @@
                     Hapus Pengeluaran
                 </button>
                 <div x-show="open" x-cloak class="mt-3">
-                    <p class="text-xs text-gray-400 mb-2">Pengeluaran yang sudah disetujui tidak dapat dihapus.</p>
+                    <p class="text-xs text-gray-500 mb-2">Pengeluaran yang sudah disetujui tidak dapat dihapus.</p>
                     <form method="POST" action="{{ route('bendahara.expenses.destroy', $expense) }}"
                         onsubmit="return confirm('Yakin hapus pengeluaran ini? Tindakan tidak dapat dibatalkan.')">
                         @csrf @method('DELETE')

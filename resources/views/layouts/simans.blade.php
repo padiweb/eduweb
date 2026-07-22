@@ -6,15 +6,43 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Dashboard' }} — SiManS</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ── Design Tokens ── */
+        :root {
+            --blue-50:  #eff6ff;
+            --blue-100: #dbeafe;
+            --blue-200: #bfdbfe;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --blue-700: #1d4ed8;
+            --gray-50:  #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --gray-900: #0f172a;
+            --shadow-sm: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+            --shadow-md: 0 4px 16px rgba(15,23,42,0.10);
+            --shadow-blue: 0 4px 14px rgba(59,130,246,0.35);
+            --radius-card: 14px;
+            --radius-btn:  8px;
+            --radius-input: 8px;
+        }
+
         /* ── Reset & Base ── */
         *, *::before, *::after { box-sizing: border-box; }
         html, body { height: 100%; margin: 0; }
         body {
-            background-color: #f0f2f5;
+            background-color: #f0f4f8;
             color: #1e293b;
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
             -webkit-font-smoothing: antialiased;
+            font-size: 14px;
         }
 
         /* ── Layout wrapper ── */
@@ -289,6 +317,187 @@
 
         /* Alpine cloak */
         [x-cloak] { display: none !important; }
+
+        /* ─────────────────────────────────────────────
+           GLOBAL DESIGN SYSTEM — override Tailwind
+        ───────────────────────────────────────────── */
+
+        /* ── PAGE BACKGROUND ── */
+        body { background: #f0f4f8; }
+
+        /* ── CARDS ── */
+        .bg-white {
+            background: #ffffff !important;
+        }
+        .rounded-xl, .rounded-2xl {
+            border-radius: var(--radius-card) !important;
+        }
+        /* Card otomatis dapat shadow */
+        .bg-white.border {
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.2s ease;
+        }
+        .bg-white.border:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ── TOMBOL PRIMER ── */
+        .bg-blue-600, .bg-blue-500 {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            border-radius: var(--radius-btn) !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 6px rgba(59,130,246,0.30) !important;
+            transition: all 0.18s ease !important;
+            border: none !important;
+        }
+        .bg-blue-600:hover, .bg-blue-500:hover,
+        .hover\:bg-blue-700:hover, .hover\:bg-blue-600:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.45) !important;
+            transform: translateY(-1px) !important;
+            color: #ffffff !important;
+        }
+        button.bg-blue-600, a.bg-blue-600 { cursor: pointer; }
+
+        /* ── TOMBOL SEKUNDER / OUTLINE ── */
+        .border-gray-200.bg-white,
+        button.border.border-gray-200 {
+            color: var(--gray-700) !important;
+            font-weight: 500 !important;
+        }
+        button:not([class*="bg-"]) {
+            border-radius: var(--radius-btn) !important;
+        }
+
+        /* ── TOMBOL DANGER (red) ── */
+        .bg-red-600, .bg-red-500 {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #ffffff !important;
+            border-radius: var(--radius-btn) !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 6px rgba(239,68,68,0.28) !important;
+            transition: all 0.18s ease !important;
+        }
+        .bg-red-600:hover { box-shadow: 0 4px 12px rgba(239,68,68,0.40) !important; transform: translateY(-1px) !important; }
+
+        /* ── TOMBOL SUCCESS (emerald/green) ── */
+        .bg-emerald-500, .bg-emerald-600, .bg-green-500 {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            border-radius: var(--radius-btn) !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 6px rgba(16,185,129,0.28) !important;
+        }
+        .bg-emerald-500:hover, .bg-emerald-600:hover {
+            box-shadow: 0 4px 12px rgba(16,185,129,0.40) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        /* ── TOMBOL AMBER/ORANGE ── */
+        .bg-amber-500, .bg-yellow-500 {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            color: #ffffff !important;
+            border-radius: var(--radius-btn) !important;
+            font-weight: 600 !important;
+        }
+
+        /* ── INPUT & SELECT ── */
+        input[type="text"], input[type="email"], input[type="number"],
+        input[type="password"], input[type="date"], input[type="time"],
+        input[type="search"], textarea, select {
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: var(--radius-input) !important;
+            color: #1e293b !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 13.5px !important;
+            transition: border-color 0.15s, box-shadow 0.15s !important;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+            outline: none !important;
+        }
+        input::placeholder, textarea::placeholder { color: #94a3b8 !important; }
+
+        /* ── LABEL ── */
+        label {
+            font-size: 12.5px !important;
+            font-weight: 600 !important;
+            color: #475569 !important;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── TEKS ABU → LEBIH HIDUP ── */
+        .text-gray-500 { color: #64748b !important; }
+        .text-gray-400 { color: #94a3b8 !important; }
+        .text-gray-600 { color: #475569 !important; }
+
+        /* ── TABLE ── */
+        table { border-collapse: collapse; width: 100%; }
+        thead th {
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.07em !important;
+            text-transform: uppercase !important;
+            color: #64748b !important;
+            background: #f8fafc !important;
+            padding: 10px 16px !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+        }
+        tbody td {
+            padding: 11px 16px !important;
+            font-size: 13.5px !important;
+            color: #334155 !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            vertical-align: middle !important;
+        }
+        tbody tr:hover td { background: #f8fafc !important; }
+        tbody tr:last-child td { border-bottom: none !important; }
+
+        /* ── BADGE / PILL ── */
+        .badge, [class*="px-2"][class*="rounded"] {
+            font-size: 11px !important;
+            font-weight: 600 !important;
+        }
+
+        /* ── SECTION HEADER (judul halaman) ── */
+        h1 { font-weight: 800; letter-spacing: -0.5px; color: #0f172a; }
+        h2 { font-weight: 700; color: #1e293b; }
+        h3 { font-weight: 600; color: #334155; }
+
+        /* ── LINK ── */
+        a.text-blue-600, a.text-blue-500 {
+            color: #2563eb !important;
+            font-weight: 500;
+        }
+        a.text-blue-600:hover { color: #1d4ed8 !important; }
+
+        /* ── ABU LATAR SEKSI ── */
+        .bg-gray-50 { background: #f8fafc !important; }
+        .bg-gray-100 { background: #f1f5f9 !important; }
+
+        /* ── BORDER ── */
+        .border-gray-200 { border-color: #e2e8f0 !important; }
+        .border-gray-100 { border-color: #f1f5f9 !important; }
+        .divide-gray-100 > * + * { border-color: #f1f5f9 !important; }
+
+        /* ── PAGINATION ── */
+        nav[aria-label] a, nav[aria-label] span {
+            border-radius: 8px !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ── ANIMASI PULSE ── */
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
     </style>
 </head>
 <body>

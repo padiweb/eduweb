@@ -32,7 +32,7 @@
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Jenis Pembayaran *</label>
                             <select name="payment_type_id" required x-model="typeId" @change="rateChecked = false"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 <option value="">-- Pilih jenis --</option>
                                 @foreach($types as $type)
                                     <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -48,7 +48,7 @@
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Tahun Ajaran *</label>
                             <select name="academic_year_id" required x-model="yearId" @change="rateChecked = false"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 @foreach($academicYears as $year)
                                     <option value="{{ $year->id }}" {{ $year->is_active ? 'selected' : '' }}>
                                         {{ $year->name }} Sem {{ $year->semester }}{{ $year->is_active ? ' ✓' : '' }}
@@ -61,18 +61,18 @@
                                 <label class="text-xs text-gray-500 mb-1 block">Label Periode *</label>
                                 <input type="text" name="period_label" required x-model="periodLabel"
                                     placeholder="Juli 2026"
-                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="text-xs text-gray-500 mb-1 block">Tanggal Periode *</label>
                                 <input type="date" name="period_date" required value="{{ date('Y-m-01') }}"
-                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             </div>
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Jatuh Tempo</label>
                             <input type="date" name="due_date"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                     </div>
                 </div>
@@ -82,18 +82,18 @@
                     <div class="space-y-3">
                         <div class="flex gap-4">
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="installment_type" value="full" x-model="installType" class="text-purple-500">
+                                <input type="radio" name="installment_type" value="full" x-model="installType" class="text-blue-600">
                                 <span class="text-sm text-gray-900">Bayar penuh</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="installment_type" value="installment" x-model="installType" class="text-purple-500">
+                                <input type="radio" name="installment_type" value="installment" x-model="installType" class="text-blue-600">
                                 <span class="text-sm text-gray-900">Cicilan</span>
                             </label>
                         </div>
                         <div x-show="installType === 'installment'" x-cloak>
                             <label class="text-xs text-gray-500 mb-1 block">Jumlah Cicilan</label>
                             <select name="installment_count"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 @for($i = 2; $i <= 12; $i++)
                                     <option value="{{ $i }}">{{ $i }} cicilan</option>
                                 @endfor
@@ -124,11 +124,11 @@
                     <h2 class="text-sm font-semibold text-gray-900 mb-4">Target Siswa</h2>
                     <div class="flex gap-4 mb-4">
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="scope" value="classroom" x-model="scope" @change="rateChecked = false" class="text-purple-500">
+                            <input type="radio" name="scope" value="classroom" x-model="scope" @change="rateChecked = false" class="text-blue-600">
                             <span class="text-sm text-gray-900">Per kelas</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="radio" name="scope" value="student" x-model="scope" @change="rateChecked = false" class="text-purple-500">
+                            <input type="radio" name="scope" value="student" x-model="scope" @change="rateChecked = false" class="text-blue-600">
                             <span class="text-sm text-gray-900">Pilih siswa</span>
                         </label>
                     </div>
@@ -136,7 +136,7 @@
                     <div x-show="scope === 'classroom'" x-cloak>
                         <label class="text-xs text-gray-500 mb-1 block">Kelas *</label>
                         <select name="classroom_id" x-model="classroomId" @change="rateChecked = false"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             <option value="">-- Pilih kelas --</option>
                             @foreach($classrooms as $cls)
                                 <option value="{{ $cls->id }}">
@@ -149,18 +149,18 @@
 
                     <div x-show="scope === 'student'" x-cloak>
                         <input type="text" x-model="search" placeholder="Cari nama atau NIS..."
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none mb-2">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none mb-2">
                         <div class="max-h-48 overflow-y-auto space-y-1 border border-gray-200 rounded-lg p-2">
                             @foreach($classrooms as $cls)
                                 @if($cls->students->isNotEmpty())
-                                    <p class="text-xs text-gray-400 px-2 py-1 font-medium">{{ $cls->name }}</p>
+                                    <p class="text-xs text-gray-500 px-2 py-1 font-medium">{{ $cls->name }}</p>
                                     @foreach($cls->students as $student)
                                     <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
                                         x-show="!search || '{{ strtolower($student->name) }}'.includes(search.toLowerCase()) || '{{ $student->nis ?? '' }}'.includes(search)">
                                         <input type="checkbox" name="student_ids[]" value="{{ $student->id }}"
-                                            @change="rateChecked = false" class="text-purple-500 rounded">
+                                            @change="rateChecked = false" class="text-blue-600 rounded">
                                         <span class="text-sm text-gray-900">{{ $student->name }}</span>
-                                        <span class="text-xs text-gray-400 ml-auto">{{ $student->nis ?? '-' }}</span>
+                                        <span class="text-xs text-gray-500 ml-auto">{{ $student->nis ?? '-' }}</span>
                                     </label>
                                     @endforeach
                                 @endif
@@ -171,7 +171,7 @@
                     {{-- Tombol cek tarif --}}
                     <button type="button" @click="checkRates()"
                         x-show="typeId && yearId"
-                        class="mt-3 w-full text-sm text-purple-400 hover:text-purple-300 border border-purple-500/20 hover:border-purple-500/40 rounded-lg py-2 transition-colors flex items-center justify-center gap-2">
+                        class="mt-3 w-full text-sm text-blue-600 hover:text-blue-500 border border-blue-200 hover:border-blue-300 rounded-lg py-2 transition-colors flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 10.607z"/>
                         </svg>
@@ -193,13 +193,13 @@
                         </p>
                         <template x-for="s in rateResults.filter(r => r.source === 'none')" :key="s.id">
                             <div class="flex items-center gap-2 mb-1.5">
-                                <span class="text-xs text-gray-600 flex-1" x-text="s.name"></span>
+                                <span class="text-xs text-gray-400 flex-1" x-text="s.name"></span>
                                 <input type="number"
                                     :name="'manual_amount[' + s.id + ']'"
                                     placeholder="0"
                                     min="0"
                                     class="w-32 bg-white border border-amber-500/30 text-gray-900 text-xs rounded-lg px-2 py-1.5 focus:border-amber-500 focus:outline-none">
-                                <span class="text-xs text-gray-400">Rp</span>
+                                <span class="text-xs text-gray-500">Rp</span>
                             </div>
                         </template>
                     </div>
@@ -208,7 +208,7 @@
                     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                         <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
                             <p class="text-xs font-semibold text-gray-900">Preview Tagihan</p>
-                            <p class="text-xs text-gray-400">
+                            <p class="text-xs text-gray-500">
                                 <span x-text="rateResults.length"></span> siswa total
                             </p>
                         </div>
@@ -221,7 +221,7 @@
                                             :class="s.amount > 0 ? 'text-green-400' : 'text-amber-400'"
                                             x-text="s.amount > 0 ? 'Rp ' + s.amount.toLocaleString('id-ID') : 'Input manual'">
                                         </span>
-                                        <p class="text-xs text-gray-400"
+                                        <p class="text-xs text-gray-500"
                                             x-text="s.source === 'override' ? 'Tarif khusus' : s.source === 'rate' ? 'Tarif kelas' : 'Belum ada tarif'">
                                         </p>
                                     </div>
@@ -235,9 +235,9 @@
 
         <div class="flex gap-3 mt-5">
             <a href="{{ route('bendahara.bills.index') }}"
-                class="px-6 py-2.5 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium rounded-lg transition-colors">Batal</a>
+                class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium rounded-lg transition-colors">Batal</a>
             <button type="submit"
-                class="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium rounded-lg transition-colors">
+                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
                 Buat Tagihan
             </button>
         </div>

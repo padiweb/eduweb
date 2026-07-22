@@ -17,7 +17,7 @@
         <form method="GET" class="flex items-center gap-3 flex-wrap">
             <label class="text-sm text-gray-500">Periode:</label>
             <select name="month"
-                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 @foreach(range(1,12) as $m)
                     <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
                         {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
@@ -25,13 +25,13 @@
                 @endforeach
             </select>
             <select name="year"
-                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 @foreach(range(now()->year, now()->year - 3) as $y)
                     <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
                 @endforeach
             </select>
             <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm px-4 py-2 rounded-xl transition-colors">
+                    class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-xl transition-colors">
                 Lihat
             </button>
         </form>
@@ -51,9 +51,9 @@
                   class="flex flex-wrap items-end gap-3">
                 @csrf
                 <div>
-                    <label class="block text-xs text-gray-400 mb-1">Guru</label>
+                    <label class="block text-xs text-gray-500 mb-1">Guru</label>
                     <select name="teacher_id" required
-                            class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="">Pilih guru...</option>
                         @foreach($teachers as $item)
                             <option value="{{ $item['teacher']->id }}">{{ $item['teacher']->name }}</option>
@@ -61,25 +61,25 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-400 mb-1">Tipe</label>
+                    <label class="block text-xs text-gray-500 mb-1">Tipe</label>
                     <select name="type" required
-                            class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="bonus">Bonus</option>
                         <option value="pengurang">Pengurang</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-400 mb-1">Poin</label>
+                    <label class="block text-xs text-gray-500 mb-1">Poin</label>
                     <input type="number" name="points" min="1" max="100" required
-                           class="w-20 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                           class="w-20 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 </div>
                 <div class="flex-1 min-w-48">
-                    <label class="block text-xs text-gray-400 mb-1">Keterangan</label>
+                    <label class="block text-xs text-gray-500 mb-1">Keterangan</label>
                     <input type="text" name="description" required placeholder="cth: Lomba guru berprestasi"
-                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 </div>
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm px-4 py-2 rounded-xl transition-colors">
+                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-xl transition-colors">
                     Simpan
                 </button>
             </form>
@@ -92,7 +92,7 @@
             <h2 class="text-sm font-semibold text-gray-900">
                 {{ \Carbon\Carbon::create()->month($month)->translatedFormat('F') }} {{ $year }}
             </h2>
-            <span class="text-xs text-gray-400">{{ $teachers->count() }} guru</span>
+            <span class="text-xs text-gray-500">{{ $teachers->count() }} guru</span>
         </div>
         <div class="divide-y divide-gray-100">
             @foreach($teachers as $item)
@@ -102,7 +102,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-900">{{ $item['teacher']->name }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">
+                        <p class="text-xs text-gray-500 mt-0.5">
                             <span class="text-blue-600">{{ $item['absen_tepat_waktu'] }} absen</span>
                             &middot;
                             <span class="text-blue-400">{{ $item['isi_jurnal'] }} jurnal</span>
@@ -111,10 +111,10 @@
                         </p>
                     </div>
                     <div class="text-right flex-shrink-0">
-                        <p class="text-lg font-bold {{ $item['total'] > 0 ? 'text-blue-600' : 'text-gray-400' }}">
+                        <p class="text-lg font-bold {{ $item['total'] > 0 ? 'text-blue-600' : 'text-gray-500' }}">
                             {{ $item['total'] }}
                         </p>
-                        <p class="text-xs text-gray-400">poin</p>
+                        <p class="text-xs text-gray-500">poin</p>
                     </div>
                 </div>
             @endforeach

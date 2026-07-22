@@ -55,7 +55,7 @@
                         <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                         <span class="text-sm font-semibold text-blue-600">Sesi Aktif</span>
                     @endif
-                    <span class="ml-auto text-xs text-gray-400">{{ $session->openedBy?->name ?? 'Sistem' }}</span>
+                    <span class="ml-auto text-xs text-gray-500">{{ $session->openedBy?->name ?? 'Sistem' }}</span>
                 </div>
 
                 @if($qrImage && ! $session->is_closed)
@@ -64,16 +64,16 @@
                             {!! base64_decode($qrImage) !!}
                         </div>
                     </div>
-                    <p class="text-center text-xs text-gray-400">QR diperbarui otomatis setiap hari</p>
+                    <p class="text-center text-xs text-gray-500">QR diperbarui otomatis setiap hari</p>
                 @else
                     <div class="bg-white rounded-xl p-6 text-center">
-                        <p class="text-gray-400 text-sm">Sesi ditutup</p>
+                        <p class="text-gray-500 text-sm">Sesi ditutup</p>
                     </div>
                 @endif
 
                 <div class="grid grid-cols-3 gap-2 mt-4">
                     <div class="bg-white rounded-xl p-2.5 text-center">
-                        <p class="text-xs text-gray-400 mb-0.5">Buka</p>
+                        <p class="text-xs text-gray-500 mb-0.5">Buka</p>
                         <p class="text-gray-900 font-semibold text-sm">{{ substr($session->open_time, 0, 5) }}</p>
                     </div>
                     <div class="bg-amber-900/30 border border-amber-500/20 rounded-xl p-2.5 text-center">
@@ -81,7 +81,7 @@
                         <p class="text-amber-400 font-semibold text-sm">{{ substr($session->late_after, 0, 5) }}</p>
                     </div>
                     <div class="bg-white rounded-xl p-2.5 text-center">
-                        <p class="text-xs text-gray-400 mb-0.5">Tutup</p>
+                        <p class="text-xs text-gray-500 mb-0.5">Tutup</p>
                         <p class="text-gray-900 font-semibold text-sm">{{ substr($session->close_time, 0, 5) }}</p>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                     <div id="progress-bar" class="h-full bg-blue-600 rounded-full transition-all duration-500"
                          style="width: {{ $recap['rate'] }}%"></div>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">{{ $recap['total'] }} siswa terdaftar</p>
+                <p class="text-xs text-gray-500 mt-2">{{ $recap['total'] }} siswa terdaftar</p>
             </div>
         </div>
 
@@ -161,7 +161,7 @@
                                     'hadir'     => 'bg-blue-600/10 text-blue-600 border-blue-200',
                                     'terlambat' => 'bg-amber-500/10 text-amber-400 border-amber-500/20',
                                     'izin'      => 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-                                    'sakit'     => 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+                                    'sakit'     => 'bg-blue-500/10 text-blue-600 border-blue-200',
                                     'alfa'      => 'bg-red-500/10 text-red-400 border-red-500/20',
                                 ];
                                 $labelMap  = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
@@ -174,16 +174,16 @@
                                            name="present_ids[]"
                                            value="{{ $student->id }}"
                                            {{ $isPresent ? 'checked' : '' }}
-                                           class="roll-call-cb w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-emerald-500 focus:ring-offset-0 flex-shrink-0 cursor-pointer">
+                                           class="roll-call-cb w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-0 flex-shrink-0 cursor-pointer">
                                 @endif
 
-                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-400 flex-shrink-0">
                                     {{ substr($student->name, 0, 2) }}
                                 </div>
 
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-gray-900 truncate">{{ $student->name }}</p>
-                                    <p class="text-xs text-gray-400">
+                                    <p class="text-xs text-gray-500">
                                         NIS: {{ $student->nis }}
                                         @if($att && $att->scanned_at) &middot; {{ $att->scanned_at->format('H:i:s') }} @endif
                                         @if($att && $att->is_manual_entry) &middot; <span class="text-amber-500">Manual</span> @endif
@@ -195,13 +195,13 @@
                                         {{ $labelMap[$status] ?? $status }}
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-white text-gray-400 border-gray-200 flex-shrink-0">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-white text-gray-500 border-gray-200 flex-shrink-0">
                                         Belum Absen
                                     </span>
                                 @endif
 
                                 <button type="button"
-                                        class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0"
+                                        class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0"
                                         data-student-id="{{ $student->id }}"
                                         data-student-name="{{ $student->name }}"
                                         data-current-status="{{ $status ?? '' }}">
@@ -222,7 +222,7 @@
                                 @endif
                             </p>
                             <button type="submit"
-                                    class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-gray-900 text-sm font-semibold px-5 py-2 rounded-xl transition-colors flex-shrink-0">
+                                    class="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-5 py-2 rounded-xl transition-colors flex-shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
@@ -237,10 +237,10 @@
 
     {{-- Modal Edit Satu Siswa --}}
     <div id="modal-edit" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-sm">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-sm">
             <div class="flex items-center justify-between p-5 border-b border-gray-200">
                 <h3 class="font-semibold text-gray-900">Edit Status Absensi</h3>
-                <button id="btn-close-modal" class="text-gray-400 hover:text-gray-900 transition-colors">
+                <button id="btn-close-modal" class="text-gray-500 hover:text-gray-900 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -264,26 +264,26 @@
                 <div>
                     <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
                     <textarea id="modal-reason" rows="3"
-                              class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
+                              class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors"
                               placeholder="Wajib diisi. Dicatat dalam audit log..."></textarea>
                 </div>
             </div>
             <div class="p-5 border-t border-gray-200 flex gap-3">
-                <button id="btn-cancel-modal" class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
-                <button id="btn-submit-edit"  class="flex-1 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan</button>
+                <button id="btn-cancel-modal" class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
+                <button id="btn-submit-edit"  class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan</button>
             </div>
         </div>
     </div>
 
     {{-- Modal Edit Massal --}}
     <div id="modal-bulk" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-lg">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-lg">
             <div class="flex items-center justify-between p-5 border-b border-gray-200">
                 <div>
                     <h3 class="font-semibold text-gray-900">Edit Massal Absensi</h3>
                     <p class="text-xs text-gray-500 mt-0.5">Ubah status banyak siswa sekaligus</p>
                 </div>
-                <button id="btn-close-bulk" class="text-gray-400 hover:text-gray-900 transition-colors">
+                <button id="btn-close-bulk" class="text-gray-500 hover:text-gray-900 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -294,8 +294,8 @@
                     <div class="flex items-center justify-between mb-2">
                         <p class="text-xs text-gray-500">Pilih Siswa</p>
                         <div class="flex gap-3">
-                            <button type="button" id="btn-bulk-check-all"   class="text-xs text-gray-400 hover:text-gray-900 transition-colors">Pilih Semua</button>
-                            <button type="button" id="btn-bulk-uncheck-all" class="text-xs text-gray-400 hover:text-gray-900 transition-colors">Hapus Semua</button>
+                            <button type="button" id="btn-bulk-check-all"   class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Pilih Semua</button>
+                            <button type="button" id="btn-bulk-uncheck-all" class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Hapus Semua</button>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl divide-y divide-gray-100 max-h-48 overflow-y-auto">
@@ -305,11 +305,11 @@
                                 <input type="checkbox" class="bulk-student-cb w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-500 focus:ring-offset-0"
                                        value="{{ $student->id }}">
                                 <span class="flex-1 text-sm text-gray-900">{{ $student->name }}</span>
-                                <span class="text-xs text-gray-400">{{ $st ? ucfirst($st) : 'Belum' }}</span>
+                                <span class="text-xs text-gray-500">{{ $st ? ucfirst($st) : 'Belum' }}</span>
                             </label>
                         @endforeach
                     </div>
-                    <p class="text-xs text-gray-400 mt-1.5"><span id="bulk-count">0</span> siswa dipilih</p>
+                    <p class="text-xs text-gray-500 mt-1.5"><span id="bulk-count">0</span> siswa dipilih</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500 mb-2">Ubah Status Menjadi</p>
@@ -324,13 +324,13 @@
                 <div>
                     <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
                     <textarea id="bulk-reason" rows="2"
-                              class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors"
+                              class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors"
                               placeholder="cth: Tidak hadir saat roll call..."></textarea>
                 </div>
             </div>
             <div class="p-5 border-t border-gray-200 flex gap-3">
-                <button id="btn-cancel-bulk" class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
-                <button id="btn-submit-bulk" class="flex-1 bg-amber-500 hover:bg-amber-600 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan Semua</button>
+                <button id="btn-cancel-bulk" class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
+                <button id="btn-submit-bulk" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">Simpan Semua</button>
             </div>
         </div>
     </div>
@@ -351,7 +351,7 @@
         function resetBtns(sel) {
             document.querySelectorAll(sel).forEach(function(b) {
                 b.classList.remove('border-emerald-500','text-blue-600','border-amber-500','text-amber-400',
-                    'border-blue-500','text-blue-400','border-purple-500','text-purple-400','border-red-500','text-red-400');
+                    'border-blue-500','text-blue-400','border-purple-500','text-blue-600','border-red-500','text-red-400');
                 b.classList.add('border-gray-200','text-gray-500');
             });
         }

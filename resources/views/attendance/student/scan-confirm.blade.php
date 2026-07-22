@@ -13,13 +13,13 @@
 
     {{-- Header --}}
     <div class="text-center mb-8">
-        <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-3">
+        <div class="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center mx-auto mb-3">
             <svg class="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"/>
             </svg>
         </div>
         <p class="font-bold text-gray-900">EduWeb</p>
-        <p class="text-gray-400 text-xs">{{ auth()->user()->school->name }}</p>
+        <p class="text-gray-500 text-xs">{{ auth()->user()->school->name }}</p>
     </div>
 
     {{-- State: Loading GPS --}}
@@ -42,14 +42,14 @@
         </div>
         <h2 class="text-lg font-semibold text-gray-900 mb-2">GPS Tidak Aktif</h2>
         <p class="text-gray-500 text-sm mb-4" id="gps-error-msg">Izinkan akses lokasi di browser kamu</p>
-        <button onclick="requestGPS()" class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 font-semibold py-3 rounded-2xl transition-colors text-sm">
+        <button onclick="requestGPS()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors text-sm">
             Coba Lagi
         </button>
     </div>
 
     {{-- State: Siap --}}
     <div id="state-ready" class="hidden">
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 mb-4">
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-10 h-10 rounded-full bg-emerald-900 border border-emerald-700/50 flex items-center justify-center text-sm font-bold text-blue-600">
                     {{ substr(auth()->user()->name, 0, 2) }}
@@ -68,10 +68,10 @@
             </div>
         </div>
 
-        <button id="btn-absen" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-gray-900 font-bold py-4 rounded-2xl transition-all text-base">
+        <button id="btn-absen" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold py-4 rounded-xl transition-all text-base">
             Absen Sekarang
         </button>
-        <p class="text-center text-gray-400 text-xs mt-3">{{ now()->format('H:i') }} WIB</p>
+        <p class="text-center text-gray-500 text-xs mt-3">{{ now()->format('H:i') }} WIB</p>
     </div>
 
     {{-- State: Submitting --}}
@@ -93,7 +93,7 @@
         </div>
         <h2 class="text-xl font-bold text-gray-900 mb-1" id="success-title">Absensi Berhasil!</h2>
         <p class="text-gray-500 text-sm mb-6" id="success-detail"></p>
-        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left mb-4">
+        <div class="bg-white border border-gray-200 rounded-xl p-4 text-left mb-4">
             <div class="flex justify-between text-sm py-2">
                 <span class="text-gray-500">Nama</span>
                 <span class="text-gray-900 font-medium">{{ auth()->user()->name }}</span>
@@ -121,7 +121,7 @@
         </div>
         <h2 class="text-lg font-semibold text-gray-900 mb-2">Absensi Gagal</h2>
         <p class="text-gray-500 text-sm mb-6" id="error-msg"></p>
-        <button onclick="showState('ready')" class="w-full bg-white hover:bg-gray-100 text-gray-600 font-medium py-3 rounded-2xl border border-gray-200 transition-colors text-sm">
+        <button onclick="showState('ready')" class="w-full bg-white hover:bg-gray-50 text-gray-400 font-medium py-3 rounded-xl border border-gray-200 transition-colors text-sm">
             Coba Lagi
         </button>
     </div>

@@ -7,14 +7,14 @@
         </div>
         <div class="flex items-center gap-3">
             <button onclick="document.getElementById('modal-generate-spp').style.display='flex'"
-                class="flex items-center gap-2 bg-emerald-700 hover:bg-blue-700 text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                class="flex items-center gap-2 bg-emerald-700 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/>
                 </svg>
                 Generate SPP
             </button>
             <button onclick="document.getElementById('modal-add-type').classList.remove('hidden')"
-                class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                 </svg>
@@ -42,20 +42,20 @@
                 <div class="flex items-center gap-2">
                     <span class="text-gray-900 font-medium">{{ $type->name }}</span>
                     @if($type->code)
-                        <span class="text-xs text-gray-400 bg-white px-2 py-0.5 rounded">{{ $type->code }}</span>
+                        <span class="text-xs text-gray-500 bg-white px-2 py-0.5 rounded">{{ $type->code }}</span>
                     @endif
                     @if(!$type->is_active)
                         <span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">Nonaktif</span>
                     @endif
                 </div>
-                <p class="text-xs text-gray-400 mt-0.5">
+                <p class="text-xs text-gray-500 mt-0.5">
                     {{ $type->category_label }} · {{ $type->period_type_label }} · {{ $type->bills_count }} tagihan
                 </p>
             </div>
             <div class="flex items-center gap-3">
                 <form method="POST" action="{{ route('bendahara.payment-types.toggle', $type) }}" onclick="event.stopPropagation()">
                     @csrf @method('PATCH')
-                    <button type="submit" class="text-xs {{ $type->is_active ? 'text-green-400 hover:text-red-400' : 'text-gray-400 hover:text-green-400' }} transition-colors">
+                    <button type="submit" class="text-xs {{ $type->is_active ? 'text-green-400 hover:text-red-400' : 'text-gray-500 hover:text-green-400' }} transition-colors">
                         {{ $type->is_active ? 'Aktif' : 'Nonaktif' }}
                     </button>
                 </form>
@@ -70,14 +70,14 @@
                     onclick="event.stopPropagation()"
                     onsubmit="return confirm('Hapus jenis pembayaran {{ addslashes($type->name) }}? Tarif yang terkait juga akan dihapus.')">
                     @csrf @method('DELETE')
-                    <button type="submit" class="text-gray-400 hover:text-red-400 transition-colors">
+                    <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                         </svg>
                     </button>
                 </form>
                 @endif
-                <svg class="w-4 h-4 text-gray-400 transition-transform duration-200" :class="open && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-gray-500 transition-transform duration-200" :class="open && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
                 </svg>
             </div>
@@ -87,7 +87,7 @@
             <div class="flex items-center justify-between mb-3">
                 <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Tarif</p>
                 <button onclick="openAddRate({{ $type->id }})"
-                    class="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1">
+                    class="text-xs text-blue-600 hover:text-blue-500 flex items-center gap-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
@@ -96,21 +96,21 @@
             </div>
 
             @if($type->rates->isEmpty())
-                <p class="text-sm text-gray-400 italic">Belum ada tarif. Tambah tarif agar bisa membuat tagihan.</p>
+                <p class="text-sm text-gray-500 italic">Belum ada tarif. Tambah tarif agar bisa membuat tagihan.</p>
             @else
                 <div class="space-y-2">
                     @foreach($type->rates as $rate)
                     <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2.5">
                         <div>
                             <span class="text-sm text-gray-900">{{ $rate->getScopeLabel() }}</span>
-                            <span class="text-xs text-gray-400 ml-2">{{ $rate->academicYear->name ?? '-' }} Sem {{ $rate->academicYear->semester ?? '' }}</span>
+                            <span class="text-xs text-gray-500 ml-2">{{ $rate->academicYear->name ?? '-' }} Sem {{ $rate->academicYear->semester ?? '' }}</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="text-sm font-medium text-green-400">Rp {{ number_format($rate->amount, 0, ',', '.') }}</span>
                             <form method="POST" action="{{ route('bendahara.payment-rates.destroy', $rate) }}"
                                 onsubmit="return confirm('Hapus tarif ini?')">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-gray-400 hover:text-red-400 transition-colors">
+                                <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                     </svg>
@@ -125,13 +125,13 @@
     </div>
     @empty
         <div class="bg-white border border-gray-200 rounded-xl px-5 py-12 text-center">
-            <p class="text-gray-400">Belum ada jenis pembayaran. Klik "Tambah Jenis" untuk mulai.</p>
+            <p class="text-gray-500">Belum ada jenis pembayaran. Klik "Tambah Jenis" untuk mulai.</p>
         </div>
     @endforelse
 
     {{-- MODAL: Tambah Jenis --}}
     <div id="modal-add-type" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-md p-6">
             <h3 class="text-gray-900 font-semibold mb-4">Tambah Jenis Pembayaran</h3>
             <form method="POST" action="{{ route('bendahara.payment-types.store') }}">
                 @csrf
@@ -139,18 +139,18 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Nama *</label>
                         <input type="text" name="name" required placeholder="Contoh: SPP Bulanan"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Kode (opsional)</label>
                             <input type="text" name="code" placeholder="SPP"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Kategori *</label>
                             <select name="category" required
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 <option value="spp">SPP</option>
                                 <option value="ujian">Ujian</option>
                                 <option value="kegiatan">Kegiatan</option>
@@ -162,7 +162,7 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Periode *</label>
                         <select name="period_type" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             <option value="monthly">Bulanan</option>
                             <option value="semester">Per Semester</option>
                             <option value="once">Sekali Bayar</option>
@@ -171,14 +171,14 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Keterangan</label>
                         <textarea name="description" rows="2" placeholder="Opsional..."
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none resize-none"></textarea>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add-type').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
                 </div>
             </form>
         </div>
@@ -186,7 +186,7 @@
 
     {{-- MODAL: Edit Jenis --}}
     <div id="modal-edit-type" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-md p-6">
             <h3 class="text-gray-900 font-semibold mb-4">Edit Jenis Pembayaran</h3>
             <form id="form-edit-type" method="POST" action="">
                 @csrf @method('PUT')
@@ -194,18 +194,18 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Nama *</label>
                         <input type="text" id="edit-name" name="name" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Kode</label>
                             <input type="text" id="edit-code" name="code"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Kategori *</label>
                             <select id="edit-category" name="category" required
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 <option value="spp">SPP</option>
                                 <option value="ujian">Ujian</option>
                                 <option value="kegiatan">Kegiatan</option>
@@ -217,7 +217,7 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Periode *</label>
                         <select id="edit-period" name="period_type" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             <option value="monthly">Bulanan</option>
                             <option value="semester">Per Semester</option>
                             <option value="once">Sekali Bayar</option>
@@ -226,14 +226,14 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Keterangan</label>
                         <textarea id="edit-desc" name="description" rows="2"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none resize-none"></textarea>
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none resize-none"></textarea>
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-edit-type').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
                 </div>
             </form>
         </div>
@@ -241,7 +241,7 @@
 
     {{-- MODAL: Tambah Tarif --}}
     <div id="modal-add-rate" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-        <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-md p-6">
+        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-md p-6">
             <h3 class="text-gray-900 font-semibold mb-4">Tambah Tarif</h3>
             <form id="form-add-rate" method="POST" action="">
                 @csrf
@@ -249,7 +249,7 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Tahun Ajaran *</label>
                         <select name="academic_year_id" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                             @foreach($academicYears as $year)
                                 <option value="{{ $year->id }}" {{ $year->is_active ? 'selected' : '' }}>
                                     {{ $year->name }} Sem {{ $year->semester }}{{ $year->is_active ? ' (Aktif)' : '' }}
@@ -261,7 +261,7 @@
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Kelas (kosong = semua)</label>
                             <select name="classroom_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 <option value="">Semua kelas</option>
                                 @foreach($classrooms as $cls)
                                     <option value="{{ $cls->id }}">{{ $cls->name }}</option>
@@ -271,7 +271,7 @@
                         <div>
                             <label class="text-xs text-gray-500 mb-1 block">Jurusan (kosong = semua)</label>
                             <select name="major_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                                class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                                 <option value="">Semua jurusan</option>
                                 @foreach($majors as $major)
                                     <option value="{{ $major->id }}">{{ $major->name }}</option>
@@ -282,14 +282,14 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Nominal (Rp) *</label>
                         <input type="number" name="amount" required min="0" placeholder="500000"
-                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-purple-500 focus:outline-none">
+                            class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
                     </div>
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add-rate').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-100 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
-                        class="flex-1 bg-purple-600 hover:bg-purple-700 text-gray-900 text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
                 </div>
             </form>
         </div>

@@ -28,9 +28,9 @@
         </div>
         <div>
             <p class="text-lg font-bold text-gray-900">{{ $journalThisMonth }} jurnal</p>
-            <p class="text-xs text-gray-400">diisi bulan {{ now()->translatedFormat('F Y') }}</p>
+            <p class="text-xs text-gray-500">diisi bulan {{ now()->translatedFormat('F Y') }}</p>
         </div>
-        <p class="text-xs text-gray-400 ml-auto">+1 poin reward per jurnal</p>
+        <p class="text-xs text-gray-500 ml-auto">+1 poin reward per jurnal</p>
     </div>
 
     {{-- Jadwal hari ini --}}
@@ -38,7 +38,7 @@
 
     @if($todaySchedules->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-10 text-center mb-6">
-            <p class="text-gray-400 text-sm">Tidak ada jadwal mengajar hari ini.</p>
+            <p class="text-gray-500 text-sm">Tidak ada jadwal mengajar hari ini.</p>
         </div>
     @else
         <div class="space-y-3 mb-6">
@@ -48,14 +48,14 @@
                     {{-- Jam --}}
                     <div class="text-center flex-shrink-0 w-16">
                         <p class="text-sm font-bold text-gray-900">{{ substr($schedule->start_time, 0, 5) }}</p>
-                        <p class="text-xs text-gray-400">↓</p>
+                        <p class="text-xs text-gray-500">↓</p>
                         <p class="text-sm text-gray-500">{{ substr($schedule->end_time, 0, 5) }}</p>
                     </div>
 
                     {{-- Info mapel --}}
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900">{{ $schedule->subject->name }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ $schedule->classroom->name }}</p>
+                        <p class="text-xs text-gray-500 mt-0.5">{{ $schedule->classroom->name }}</p>
                         @if($journal)
                             <p class="text-xs text-blue-400 mt-1">
                                 Pertemuan {{ $journal->meeting_number }}: {{ $journal->topic }}
@@ -76,7 +76,7 @@
                         </div>
                     @else
                         <a href="{{ route('guru.journal.create', ['schedule_id' => $schedule->id, 'date' => today()->format('Y-m-d')]) }}"
-                           class="flex-shrink-0 flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
+                           class="flex-shrink-0 flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                             </svg>
@@ -92,14 +92,14 @@
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         <div class="px-5 py-4 border-b border-gray-200">
             <h2 class="text-sm font-semibold text-gray-900">Isi Jurnal Hari Lain</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Bisa isi jurnal untuk tanggal selain hari ini</p>
+            <p class="text-xs text-gray-500 mt-0.5">Bisa isi jurnal untuk tanggal selain hari ini</p>
         </div>
         <div class="p-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs text-gray-500 mb-1.5">Pilih Kelas & Mapel</label>
                     <select id="sel-schedule"
-                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="">-- Pilih jadwal --</option>
                         @foreach($allSchedules as $s)
                             <option value="{{ $s->id }}">
@@ -112,12 +112,12 @@
                     <label class="block text-xs text-gray-500 mb-1.5">Tanggal</label>
                     <input type="date" id="sel-date" value="{{ today()->format('Y-m-d') }}"
                            max="{{ today()->format('Y-m-d') }}"
-                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 </div>
             </div>
             <div class="mt-3">
                 <button onclick="goToJournal()"
-                        class="bg-blue-500 hover:bg-blue-600 text-gray-900 text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
+                        class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
                     Isi Jurnal
                 </button>
             </div>

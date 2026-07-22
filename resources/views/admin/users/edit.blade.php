@@ -55,8 +55,8 @@
                         </div>
                     @endif
                     <input type="file" name="photo" accept="image/*"
-                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
-                    <p class="text-xs text-gray-400 mt-1">JPG/PNG, maks 2MB.</p>
+                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
+                    <p class="text-xs text-gray-500 mt-1">JPG/PNG, maks 2MB.</p>
                 </div>
 
                 {{-- Status akun --}}
@@ -65,10 +65,10 @@
                     <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" name="is_active" value="1"
                                {{ (old('is_active', $isEdit ? $user->is_active : true)) ? 'checked' : '' }}
-                               class="w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-emerald-500 focus:ring-offset-0">
+                               class="w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-0">
                         <span class="text-sm text-gray-900">Akun Aktif</span>
                     </label>
-                    <p class="text-xs text-gray-400 mt-1">Nonaktif = tidak bisa login.</p>
+                    <p class="text-xs text-gray-500 mt-1">Nonaktif = tidak bisa login.</p>
                 </div>
 
                 {{-- Kelas (siswa) --}}
@@ -76,7 +76,7 @@
                     <div class="bg-white border border-gray-200 rounded-xl p-5">
                         <h2 class="text-sm font-semibold text-gray-900 mb-4">Kelas Aktif</h2>
                         <select name="classroom_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">-- Belum ada kelas --</option>
                             @foreach($classrooms as $c)
                                 <option value="{{ $c->id }}"
@@ -98,13 +98,13 @@
                                     <label class="flex items-center gap-2 cursor-pointer">
                                         <input type="checkbox" name="position_ids[]" value="{{ $pos->id }}"
                                                {{ $isEdit && $user->positions->contains($pos->id) ? 'checked' : '' }}
-                                               class="w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-emerald-500 focus:ring-offset-0">
+                                               class="w-4 h-4 rounded border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-0">
                                         <span class="text-sm text-gray-900">{{ $pos->name }}</span>
                                     </label>
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-xs text-gray-400">Belum ada jabatan. Buat di
+                            <p class="text-xs text-gray-500">Belum ada jabatan. Buat di
                                 <a href="{{ route('admin.users.positions') }}" class="text-blue-600 hover:underline">Kelola Jabatan</a>.
                             </p>
                         @endif
@@ -123,53 +123,53 @@
                             <label class="block text-xs text-gray-500 mb-1.5">Nama Lengkap <span class="text-red-400">*</span></label>
                             <input type="text" name="name" required
                                    value="{{ old('name', $user->name ?? '') }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         </div>
                         @if($isSiswa)
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">NIS</label>
                                 <input type="text" name="nis" value="{{ old('nis', $user->nis ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="Nomor Induk Siswa">
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">NISN</label>
                                 <input type="text" name="nisn" value="{{ old('nisn', $user->nisn ?? '') }}"
                                        maxlength="10"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="10 digit">
                             </div>
                         @else
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">NIP</label>
                                 <input type="text" name="nip" value="{{ old('nip', $user->nip ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="Untuk ASN/PPPK">
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">NIY</label>
                                 <input type="text" name="niy" value="{{ old('niy', $user->niy ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="Untuk honorer/GTY">
                             </div>
                         @endif
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Username Login</label>
                             <input type="text" name="username" value="{{ old('username', $user->username ?? '') }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                    placeholder="Opsional, bisa pakai NIS/NIP">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Email</label>
                             <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">
                                 No. HP / WhatsApp
                             </label>
                             <input type="text" name="phone" value="{{ old('phone', $user->phone ?? '') }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                    placeholder="08xxxxxxxxxx">
                         </div>
                         <div>
@@ -179,7 +179,7 @@
                             </label>
                             <input type="password" name="password"
                                    {{ ! $isEdit ? 'required' : '' }}
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                    placeholder="Min. 6 karakter">
                         </div>
                     </div>
@@ -192,18 +192,18 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Tempat Lahir</label>
                             <input type="text" name="birth_place" value="{{ old('birth_place', $detail?->birth_place ?? '') }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Tanggal Lahir</label>
                             <input type="date" name="birth_date"
                                    value="{{ old('birth_date', $detail?->birth_date?->format('Y-m-d') ?? '') }}"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                   class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Jenis Kelamin</label>
                             <select name="gender"
-                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                 <option value="">-- Pilih --</option>
                                 <option value="L" {{ old('gender', $detail?->gender) === 'L' ? 'selected' : '' }}>Laki-laki</option>
                                 <option value="P" {{ old('gender', $detail?->gender) === 'P' ? 'selected' : '' }}>Perempuan</option>
@@ -212,7 +212,7 @@
                         <div>
                             <label class="block text-xs text-gray-500 mb-1.5">Agama</label>
                             <select name="religion"
-                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                    class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                 <option value="">-- Pilih --</option>
                                 @foreach(['Islam','Kristen','Katolik','Hindu','Buddha','Konghucu'] as $agama)
                                     <option value="{{ $agama }}" {{ old('religion', $detail?->religion) === $agama ? 'selected' : '' }}>{{ $agama }}</option>
@@ -222,7 +222,7 @@
                         <div class="sm:col-span-2">
                             <label class="block text-xs text-gray-500 mb-1.5">Alamat</label>
                             <textarea name="address" rows="2"
-                                      class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 resize-none transition-colors">{{ old('address', $detail?->address ?? '') }}</textarea>
+                                      class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors">{{ old('address', $detail?->address ?? '') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -236,21 +236,21 @@
                                 <label class="block text-xs text-gray-500 mb-1.5">NIK Siswa</label>
                                 <input type="text" name="nik" maxlength="16"
                                        value="{{ old('nik', $detail?->nik ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="16 digit">
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">Nomor KK</label>
                                 <input type="text" name="no_kk" maxlength="16"
                                        value="{{ old('no_kk', $detail?->no_kk ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="16 digit">
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">WhatsApp Siswa</label>
                                 <input type="text" name="whatsapp"
                                        value="{{ old('whatsapp', $detail?->whatsapp ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="08xxxxxxxxxx">
                             </div>
                         </div>
@@ -263,19 +263,19 @@
                                 <label class="block text-xs text-gray-500 mb-1.5">Nama Ayah</label>
                                 <input type="text" name="father_name"
                                        value="{{ old('father_name', $detail?->father_name ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">Nama Ibu</label>
                                 <input type="text" name="mother_name"
                                        value="{{ old('mother_name', $detail?->mother_name ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                             <div class="sm:col-span-2">
                                 <label class="block text-xs text-gray-500 mb-1.5">WhatsApp Orang Tua</label>
                                 <input type="text" name="parent_whatsapp"
                                        value="{{ old('parent_whatsapp', $detail?->parent_whatsapp ?? '') }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors"
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                                        placeholder="08xxxxxxxxxx">
                             </div>
                         </div>
@@ -290,7 +290,7 @@
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">Status Kepegawaian</label>
                                 <select name="employment_status"
-                                        class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                        class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     <option value="">-- Pilih --</option>
                                     @foreach(['ASN','PPPK','Kontrak','Honor','GTY'] as $st)
                                         <option value="{{ $st }}" {{ old('employment_status', $detail?->employment_status) === $st ? 'selected' : '' }}>{{ $st }}</option>
@@ -300,7 +300,7 @@
                             <div>
                                 <label class="block text-xs text-gray-500 mb-1.5">Status Perkawinan</label>
                                 <select name="marital_status"
-                                        class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                        class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     <option value="">-- Pilih --</option>
                                     @foreach(['Belum Kawin','Kawin','Cerai Hidup','Cerai Mati'] as $ms)
                                         <option value="{{ $ms }}" {{ old('marital_status', $detail?->marital_status) === $ms ? 'selected' : '' }}>{{ $ms }}</option>
@@ -311,7 +311,7 @@
                                 <label class="block text-xs text-gray-500 mb-1.5">Jumlah Anak</label>
                                 <input type="number" name="children_count" min="0"
                                        value="{{ old('children_count', $detail?->children_count ?? 0) }}"
-                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                       class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             </div>
                         </div>
                     </div>
@@ -320,11 +320,11 @@
                 {{-- Tombol simpan --}}
                 <div class="flex gap-3 justify-end">
                     <a href="{{ route('admin.users.index', ['tab' => $role]) }}"
-                       class="px-6 py-2.5 text-sm font-medium rounded-xl bg-white hover:bg-gray-100 text-gray-600 border border-gray-200 transition-colors">
+                       class="px-6 py-2.5 text-sm font-medium rounded-xl bg-white hover:bg-gray-50 text-gray-400 border border-gray-200 transition-colors">
                         Batal
                     </a>
                     <button type="submit"
-                            class="px-6 py-2.5 text-sm font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-gray-900 transition-colors">
+                            class="px-6 py-2.5 text-sm font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors">
                         {{ $isEdit ? 'Simpan Perubahan' : 'Tambah User' }}
                     </button>
                 </div>

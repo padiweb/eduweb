@@ -110,7 +110,7 @@
         @endphp
 
         @if($nextWarning > 0)
-            <div class="mb-1 flex justify-between text-xs text-gray-400">
+            <div class="mb-1 flex justify-between text-xs text-gray-500">
                 <span>Menuju Peringatan {{ $warningLevel + 1 }}</span>
                 <span>{{ $totalPoints }} / {{ $nextWarning }} poin</span>
             </div>
@@ -129,16 +129,16 @@
         {{-- Info batas peringatan --}}
         <div class="grid grid-cols-3 gap-2 mt-4">
             <div class="text-center bg-white rounded-xl p-2.5 border {{ $totalPoints >= $w1 ? 'border-amber-500/30' : 'border-gray-200' }}">
-                <p class="text-xs font-semibold {{ $totalPoints >= $w1 ? 'text-amber-400' : 'text-gray-400' }}">P1</p>
-                <p class="text-sm font-bold {{ $totalPoints >= $w1 ? 'text-amber-400' : 'text-gray-400' }}">{{ $w1 }}</p>
+                <p class="text-xs font-semibold {{ $totalPoints >= $w1 ? 'text-amber-400' : 'text-gray-500' }}">P1</p>
+                <p class="text-sm font-bold {{ $totalPoints >= $w1 ? 'text-amber-400' : 'text-gray-500' }}">{{ $w1 }}</p>
             </div>
             <div class="text-center bg-white rounded-xl p-2.5 border {{ $totalPoints >= $w2 ? 'border-orange-500/30' : 'border-gray-200' }}">
-                <p class="text-xs font-semibold {{ $totalPoints >= $w2 ? 'text-orange-400' : 'text-gray-400' }}">P2</p>
-                <p class="text-sm font-bold {{ $totalPoints >= $w2 ? 'text-orange-400' : 'text-gray-400' }}">{{ $w2 }}</p>
+                <p class="text-xs font-semibold {{ $totalPoints >= $w2 ? 'text-orange-400' : 'text-gray-500' }}">P2</p>
+                <p class="text-sm font-bold {{ $totalPoints >= $w2 ? 'text-orange-400' : 'text-gray-500' }}">{{ $w2 }}</p>
             </div>
             <div class="text-center bg-white rounded-xl p-2.5 border {{ $totalPoints >= $w3 ? 'border-red-500/30' : 'border-gray-200' }}">
-                <p class="text-xs font-semibold {{ $totalPoints >= $w3 ? 'text-red-400' : 'text-gray-400' }}">P3</p>
-                <p class="text-sm font-bold {{ $totalPoints >= $w3 ? 'text-red-400' : 'text-gray-400' }}">{{ $w3 }}</p>
+                <p class="text-xs font-semibold {{ $totalPoints >= $w3 ? 'text-red-400' : 'text-gray-500' }}">P3</p>
+                <p class="text-sm font-bold {{ $totalPoints >= $w3 ? 'text-red-400' : 'text-gray-500' }}">{{ $w3 }}</p>
             </div>
         </div>
     </div>
@@ -154,19 +154,19 @@
             @endphp
             <div class="bg-white border border-amber-500/20 rounded-xl p-3 text-center">
                 <p class="text-xl font-bold text-amber-400">{{ $terlambat }}</p>
-                <p class="text-xs text-gray-400 mt-0.5">Terlambat</p>
+                <p class="text-xs text-gray-500 mt-0.5">Terlambat</p>
             </div>
             <div class="bg-white border border-red-500/20 rounded-xl p-3 text-center">
                 <p class="text-xl font-bold text-red-400">{{ $alfa }}</p>
-                <p class="text-xs text-gray-400 mt-0.5">Alfa</p>
+                <p class="text-xs text-gray-500 mt-0.5">Alfa</p>
             </div>
             <div class="bg-white border border-orange-500/20 rounded-xl p-3 text-center">
                 <p class="text-xl font-bold text-orange-400">{{ $tugas }}</p>
-                <p class="text-xs text-gray-400 mt-0.5">Tugas</p>
+                <p class="text-xs text-gray-500 mt-0.5">Tugas</p>
             </div>
             <div class="bg-white border border-red-500/20 rounded-xl p-3 text-center">
                 <p class="text-xl font-bold text-red-400">{{ $manual }}</p>
-                <p class="text-xs text-gray-400 mt-0.5">Tata Tertib</p>
+                <p class="text-xs text-gray-500 mt-0.5">Tata Tertib</p>
             </div>
         </div>
     @endif
@@ -193,7 +193,7 @@
                                 </span>
                             </div>
                             <p class="text-xs text-gray-500">{{ $v->description }}</p>
-                            <p class="text-xs text-gray-400 mt-0.5">
+                            <p class="text-xs text-gray-500 mt-0.5">
                                 {{ $v->incident_date->translatedFormat('l, d F Y') }}
                                 @if(! $v->isAutomatic()) · {{ $v->reportedBy->name }} @endif
                             </p>
@@ -206,8 +206,8 @@
                 <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
                 </svg>
-                <p class="text-gray-400 text-sm">Kamu belum punya pelanggaran.</p>
-                <p class="text-gray-400 text-xs mt-1">Pertahankan kedisiplinan!</p>
+                <p class="text-gray-500 text-sm">Kamu belum punya pelanggaran.</p>
+                <p class="text-gray-500 text-xs mt-1">Pertahankan kedisiplinan!</p>
             </div>
         @endif
     </div>
@@ -254,7 +254,7 @@
     @endif
 
     <div class="mt-4 bg-white border border-gray-200 rounded-xl px-4 py-3">
-        <p class="text-xs text-gray-400 leading-relaxed">
+        <p class="text-xs text-gray-500 leading-relaxed">
             Poin 1–3 otomatis dari sistem (terlambat, alfa, tugas). Poin tata tertib dicatat oleh kesiswaan.
             Poin berlaku selama kamu menjadi siswa aktif dan tidak hilang saat ganti semester.
             Jika ada kekeliruan, hubungi guru atau kesiswaan.

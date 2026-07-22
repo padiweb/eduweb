@@ -28,11 +28,11 @@
     @php $activeTab = request('tab', 'subjects'); @endphp
     <div class="flex gap-1 mb-6 bg-white border border-gray-200 rounded-xl p-1 w-fit">
         <a href="{{ route('admin.subjects.index', ['tab' => 'subjects']) }}"
-           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'subjects' ? 'bg-blue-600 text-gray-900' : 'text-gray-500 hover:text-gray-900' }}">
+           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'subjects' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
             Mata Pelajaran
         </a>
         <a href="{{ route('admin.subjects.index', ['tab' => 'groups']) }}"
-           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'groups' ? 'bg-blue-600 text-gray-900' : 'text-gray-500 hover:text-gray-900' }}">
+           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'groups' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
             Kelola Kelompok
         </a>
     </div>
@@ -49,19 +49,19 @@
                         <label class="block text-xs text-gray-500 mb-1.5">Nama Mapel <span class="text-red-400">*</span></label>
                         <input type="text" name="name" required value="{{ old('name') }}"
                                placeholder="cth: Matematika, Bahasa Indonesia"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Kode (opsional)</label>
                         <input type="text" name="code" value="{{ old('code') }}"
                                placeholder="cth: MTK, BIN, PKN"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Kelompok</label>
                         <select name="subject_group_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">Tanpa kelompok</option>
                             @foreach($groups->sortBy('sort_order') as $g)
                                 <option value="{{ $g->id }}" {{ old('subject_group_id') == $g->id ? 'selected' : '' }}>
@@ -78,16 +78,16 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Jurusan (opsional)</label>
                         <select name="major_id"
-                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">Semua jurusan</option>
                             @foreach($majors as $m)
                                 <option value="{{ $m->id }}" {{ old('major_id') == $m->id ? 'selected' : '' }}>{{ $m->name }}</option>
                             @endforeach
                         </select>
-                        <p class="text-xs text-gray-400 mt-1">Kosongkan jika mapel untuk semua jurusan.</p>
+                        <p class="text-xs text-gray-500 mt-1">Kosongkan jika mapel untuk semua jurusan.</p>
                     </div>
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah Mapel
                     </button>
                 </form>
@@ -97,7 +97,7 @@
         <div class="lg:col-span-2 space-y-4">
             @if($subjects->flatten()->isEmpty())
                 <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                    <p class="text-gray-400 text-sm">Belum ada mata pelajaran.</p>
+                    <p class="text-gray-500 text-sm">Belum ada mata pelajaran.</p>
                 </div>
             @else
                 @foreach($groups->sortBy('sort_order') as $group)
@@ -108,7 +108,7 @@
                                 <span class="text-xs font-bold text-gray-900 uppercase tracking-wide">
                                     {{ $group->code ? '['.$group->code.'] ' : '' }}{{ $group->name }}
                                 </span>
-                                <span class="text-xs text-gray-400">{{ $mapels->count() }} mapel</span>
+                                <span class="text-xs text-gray-500">{{ $mapels->count() }} mapel</span>
                             </div>
                             <div class="divide-y divide-gray-100">
                                 @foreach($mapels->sortBy('name') as $subject)
@@ -129,7 +129,7 @@
                 @if($tanpaKelompok->count() > 0)
                     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                         <div class="px-5 py-3 border-b border-gray-200 bg-white/[0.02]">
-                            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Tanpa Kelompok</span>
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tanpa Kelompok</span>
                         </div>
                         <div class="divide-y divide-gray-100">
                             @foreach($tanpaKelompok->sortBy('name') as $subject)
@@ -149,36 +149,36 @@
         <div>
             <div class="bg-white border border-blue-200 rounded-xl p-5">
                 <h2 class="text-sm font-semibold text-gray-900 mb-1">Tambah Kelompok Mapel</h2>
-                <p class="text-xs text-gray-400 mb-4">Sesuaikan dengan kurikulum sekolah.</p>
+                <p class="text-xs text-gray-500 mb-4">Sesuaikan dengan kurikulum sekolah.</p>
                 <form method="POST" action="{{ route('admin.subjects.groups.store') }}" class="space-y-3">
                     @csrf
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Nama Kelompok <span class="text-red-400">*</span></label>
                         <input type="text" name="name" required value="{{ old('name') }}"
                                placeholder="cth: Wajib Umum, Muatan Lokal"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Kode (opsional)</label>
                         <input type="text" name="code" value="{{ old('code') }}"
                                placeholder="cth: A, B, C1, Mulok"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Keterangan (opsional)</label>
                         <input type="text" name="description" value="{{ old('description') }}"
                                placeholder="cth: Mata pelajaran wajib nasional"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Urutan tampil</label>
                         <input type="number" name="sort_order" value="{{ old('sort_order', 0) }}" min="0"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                        <p class="text-xs text-gray-400 mt-1">Angka kecil tampil lebih atas.</p>
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
+                        <p class="text-xs text-gray-500 mt-1">Angka kecil tampil lebih atas.</p>
                     </div>
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah Kelompok
                     </button>
                 </form>
@@ -187,7 +187,7 @@
             <div class="mt-4 bg-white border border-gray-200 rounded-xl p-4 space-y-3">
                 <div>
                     <p class="text-xs font-semibold text-gray-500 mb-1">Contoh SMK:</p>
-                    <div class="space-y-0.5 text-xs text-gray-400">
+                    <div class="space-y-0.5 text-xs text-gray-500">
                         <p>[A] Muatan Nasional</p>
                         <p>[B] Muatan Kewilayahan</p>
                         <p>[C1] Dasar Bidang Keahlian</p>
@@ -197,7 +197,7 @@
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-gray-500 mb-1">Contoh SMP:</p>
-                    <div class="space-y-0.5 text-xs text-gray-400">
+                    <div class="space-y-0.5 text-xs text-gray-500">
                         <p>Mata Pelajaran Umum</p>
                         <p>Muatan Lokal</p>
                         <p>Pengembangan Diri</p>
@@ -210,12 +210,12 @@
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Daftar Kelompok</h2>
-                    <span class="text-xs text-gray-400">{{ $groups->count() }} kelompok</span>
+                    <span class="text-xs text-gray-500">{{ $groups->count() }} kelompok</span>
                 </div>
 
                 @if($groups->isEmpty())
                     <div class="px-5 py-12 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada kelompok mapel.</p>
+                        <p class="text-gray-500 text-sm">Belum ada kelompok mapel.</p>
                     </div>
                 @else
                     <div class="divide-y divide-gray-100">
@@ -230,13 +230,13 @@
                                             {{ $group->code ? '['.$group->code.'] ' : '' }}{{ $group->name }}
                                         </p>
                                         @if($group->description)
-                                            <p class="text-xs text-gray-400 mt-0.5">{{ $group->description }}</p>
+                                            <p class="text-xs text-gray-500 mt-0.5">{{ $group->description }}</p>
                                         @endif
-                                        <p class="text-xs text-gray-400 mt-0.5">{{ $group->subjects_count }} mata pelajaran</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">{{ $group->subjects_count }} mata pelajaran</p>
                                     </div>
                                     <div class="flex items-center gap-1 flex-shrink-0">
                                         <button type="button" @click="editing=true"
-                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                                             </svg>
@@ -259,17 +259,17 @@
                                     <div class="grid grid-cols-3 gap-2">
                                         <input type="text" name="name" value="{{ $group->name }}" required
                                                placeholder="Nama kelompok"
-                                               class="col-span-2 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                               class="col-span-2 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                         <input type="text" name="code" value="{{ $group->code }}" placeholder="Kode"
-                                               class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                               class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     </div>
                                     <div class="grid grid-cols-3 gap-2">
                                         <input type="text" name="description" value="{{ $group->description }}"
                                                placeholder="Keterangan"
-                                               class="col-span-2 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                               class="col-span-2 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                         <input type="number" name="sort_order" value="{{ $group->sort_order }}"
                                                placeholder="Urutan" min="0"
-                                               class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                               class="bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     </div>
                                     <div class="flex gap-2">
                                         <button type="submit"

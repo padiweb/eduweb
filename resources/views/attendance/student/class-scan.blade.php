@@ -16,7 +16,7 @@
 
     {{-- Logo --}}
     <div class="text-center mb-8">
-        <div class="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-emerald-500/20">
+        <div class="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-emerald-500/20">
             <svg class="w-7 h-7 text-gray-900" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"/>
             </svg>
@@ -35,7 +35,7 @@
             </div>
             <h2 class="text-lg font-semibold text-gray-900 mb-2">Sesi Belum Dibuka</h2>
             <p class="text-gray-500 text-sm mb-2">Absensi hari ini belum tersedia.</p>
-            <p class="text-gray-400 text-xs">Hubungi guru jika sudah melewati jam masuk.</p>
+            <p class="text-gray-500 text-xs">Hubungi guru jika sudah melewati jam masuk.</p>
         </div>
 
     @elseif($session->is_closed)
@@ -48,7 +48,7 @@
             </div>
             <h2 class="text-lg font-semibold text-gray-900 mb-2">Absensi Ditutup</h2>
             <p class="text-gray-500 text-sm">Sesi absensi hari ini sudah ditutup.</p>
-            <p class="text-gray-400 text-xs mt-2">Hubungi guru untuk absen manual.</p>
+            <p class="text-gray-500 text-xs mt-2">Hubungi guru untuk absen manual.</p>
         </div>
 
     @elseif(! $isWithinTime)
@@ -63,7 +63,7 @@
             <p class="text-gray-500 text-sm mb-4">
                 Jam absensi: <span class="text-gray-900 font-semibold">{{ substr($session->open_time, 0, 5) }} – {{ substr($session->close_time, 0, 5) }}</span>
             </p>
-            <p class="text-gray-400 text-xs">Sekarang: {{ now()->format('H:i') }} WIB</p>
+            <p class="text-gray-500 text-xs">Sekarang: {{ now()->format('H:i') }} WIB</p>
         </div>
 
     @else
@@ -90,14 +90,14 @@
             </div>
             <h2 class="text-lg font-semibold text-gray-900 mb-2">GPS Tidak Aktif</h2>
             <p class="text-gray-500 text-sm mb-6" id="gps-error-msg">Izinkan akses lokasi di browser</p>
-            <button onclick="requestGPS()" class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 font-semibold py-3.5 rounded-2xl transition-colors">
+            <button onclick="requestGPS()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-colors">
                 Coba Lagi
             </button>
         </div>
 
         {{-- State: Siap Absen --}}
         <div id="state-ready" class="hidden">
-            <div class="bg-white border border-gray-200 rounded-2xl p-4 mb-4">
+            <div class="bg-white border border-gray-200 rounded-xl p-4 mb-4">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-full bg-emerald-900 border border-emerald-700/50 flex items-center justify-center text-base font-bold text-blue-600 flex-shrink-0">
                         {{ substr(auth()->user()->name, 0, 2) }}
@@ -120,7 +120,7 @@
             {{-- Info jam --}}
             <div class="grid grid-cols-3 gap-2 mb-4">
                 <div class="bg-white border border-gray-200 rounded-xl p-2.5 text-center">
-                    <p class="text-xs text-gray-400 mb-0.5">Buka</p>
+                    <p class="text-xs text-gray-500 mb-0.5">Buka</p>
                     <p class="text-gray-900 font-semibold text-sm">{{ substr($session->open_time, 0, 5) }}</p>
                 </div>
                 <div class="bg-amber-900/30 border border-amber-500/20 rounded-xl p-2.5 text-center">
@@ -128,16 +128,16 @@
                     <p class="text-amber-400 font-semibold text-sm">{{ substr($session->late_after, 0, 5) }}</p>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-xl p-2.5 text-center">
-                    <p class="text-xs text-gray-400 mb-0.5">Tutup</p>
+                    <p class="text-xs text-gray-500 mb-0.5">Tutup</p>
                     <p class="text-gray-900 font-semibold text-sm">{{ substr($session->close_time, 0, 5) }}</p>
                 </div>
             </div>
 
             <button id="btn-absen"
-                    class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-gray-900 font-bold py-4 rounded-2xl transition-all text-lg shadow-lg shadow-emerald-500/20">
+                    class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all text-lg shadow-lg shadow-emerald-500/20">
                 ✓ Absen Sekarang
             </button>
-            <p class="text-center text-gray-400 text-xs mt-3">{{ now()->format('H:i') }} WIB · {{ now()->translatedFormat('l, d F Y') }}</p>
+            <p class="text-center text-gray-500 text-xs mt-3">{{ now()->format('H:i') }} WIB · {{ now()->translatedFormat('l, d F Y') }}</p>
         </div>
 
         {{-- State: Submitting --}}
@@ -160,7 +160,7 @@
             <h2 class="text-xl font-bold text-gray-900 mb-1" id="success-title">Absensi Berhasil!</h2>
             <p class="text-sm mb-5" id="success-subtitle"></p>
 
-            <div class="bg-white border border-gray-200 rounded-2xl divide-y divide-gray-100 text-left mb-4">
+            <div class="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 text-left mb-4">
                 <div class="flex justify-between items-center px-4 py-3">
                     <span class="text-sm text-gray-500">Nama</span>
                     <span class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</span>
@@ -200,7 +200,7 @@
             <h2 class="text-lg font-semibold text-gray-900 mb-2">Absensi Gagal</h2>
             <p class="text-gray-500 text-sm mb-6" id="error-msg"></p>
             <button onclick="showState('ready')"
-                    class="w-full bg-white hover:bg-gray-100 text-gray-600 font-medium py-3.5 rounded-2xl border border-gray-200 transition-colors">
+                    class="w-full bg-white hover:bg-gray-50 text-gray-400 font-medium py-3.5 rounded-xl border border-gray-200 transition-colors">
                 Coba Lagi
             </button>
         </div>

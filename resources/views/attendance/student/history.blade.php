@@ -8,7 +8,7 @@
     {{-- Filter bulan / tahun --}}
     <form method="GET" class="flex flex-wrap items-center gap-3 mb-6">
         <select name="bulan"
-                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
             @foreach($months as $m)
                 <option value="{{ $m['value'] }}" {{ $month == $m['value'] ? 'selected' : '' }}>
                     {{ $m['label'] }}
@@ -16,20 +16,20 @@
             @endforeach
         </select>
         <select name="tahun"
-                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
             @for($y = now()->year; $y >= now()->year - 5; $y--)
                 <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
             @endfor
         </select>
         <button type="submit"
-                class="bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
+                class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
             Tampilkan
         </button>
 
         @if($academicYears->count() > 0)
             <div class="ml-auto flex items-center gap-2">
                 <select name="semester_id"
-                        class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     <option value="">Rekap Semester...</option>
                     @foreach($academicYears as $ay)
                         <option value="{{ $ay->id }}" {{ request('semester_id') == $ay->id ? 'selected' : '' }}>
@@ -56,7 +56,7 @@
                 ] as $s)
                     <div class="bg-white rounded-xl p-3 text-center">
                         <p class="text-xl font-bold text-{{ $s['color'] }}-400">{{ $s['value'] }}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">{{ $s['label'] }}</p>
+                        <p class="text-xs text-gray-500 mt-0.5">{{ $s['label'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -74,7 +74,7 @@
         ] as $s)
             <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
                 <p class="text-2xl font-bold text-{{ $s['color'] }}-400">{{ $s['value'] }}</p>
-                <p class="text-xs text-gray-400 mt-1">{{ $s['label'] }}</p>
+                <p class="text-xs text-gray-500 mt-1">{{ $s['label'] }}</p>
             </div>
         @endforeach
     </div>
@@ -86,7 +86,7 @@
                 Detail Absensi —
                 {{ \Carbon\Carbon::create()->month($month)->translatedFormat('F') }} {{ $year }}
             </h2>
-            <span class="text-xs text-gray-400">{{ $recap['records']->count() }} hari</span>
+            <span class="text-xs text-gray-500">{{ $recap['records']->count() }} hari</span>
         </div>
 
         @if($recap['records']->count() > 0)
@@ -98,7 +98,7 @@
                             'hadir'     => 'text-blue-600 bg-blue-600/10 border-blue-200',
                             'terlambat' => 'text-amber-400 bg-amber-500/10 border-amber-500/20',
                             'izin'      => 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-                            'sakit'     => 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+                            'sakit'     => 'text-blue-600 bg-blue-500/10 border-blue-200',
                             'alfa'      => 'text-red-400 bg-red-500/10 border-red-500/20',
                         ];
                         $labelMap = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
@@ -111,7 +111,7 @@
                             <p class="text-lg font-bold {{ $isToday ? 'text-blue-600' : 'text-gray-900' }}">
                                 {{ $att->session->session_date->format('d') }}
                             </p>
-                            <p class="text-xs text-gray-400">
+                            <p class="text-xs text-gray-500">
                                 {{ $att->session->session_date->translatedFormat('D') }}
                             </p>
                         </div>
@@ -124,7 +124,7 @@
                                     <span class="text-xs text-blue-600 font-medium">Hari ini</span>
                                 @endif
                             </p>
-                            <p class="text-xs text-gray-400 mt-0.5">
+                            <p class="text-xs text-gray-500 mt-0.5">
                                 @if($att->scanned_at)
                                     Scan: {{ $att->scanned_at->format('H:i:s') }}
                                 @else
@@ -148,7 +148,7 @@
                 <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
                 </svg>
-                <p class="text-gray-400 text-sm">Tidak ada data absensi untuk bulan ini.</p>
+                <p class="text-gray-500 text-sm">Tidak ada data absensi untuk bulan ini.</p>
             </div>
         @endif
     </div>

@@ -18,7 +18,7 @@
         <form method="GET" class="flex items-center gap-3">
             <label class="text-sm text-gray-500 flex-shrink-0">Kelas & Mapel:</label>
             <select name="schedule_id" onchange="this.form.submit()"
-                    class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                    class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 <option value="">-- Pilih kelas & mapel --</option>
                 @foreach($schedules as $s)
                     <option value="{{ $s->id }}" {{ $scheduleId == $s->id ? 'selected' : '' }}>
@@ -37,30 +37,30 @@
                         {{ $selectedSchedule->classroom->name ?? '' }} — {{ $selectedSchedule->subject->name ?? '' }}
                     </h2>
                 </div>
-                <span class="text-xs text-gray-400">{{ $journals->count() }} jurnal</span>
+                <span class="text-xs text-gray-500">{{ $journals->count() }} jurnal</span>
             </div>
 
             @if($journals->isEmpty())
                 <div class="px-5 py-10 text-center">
-                    <p class="text-gray-400 text-sm">Belum ada jurnal untuk kelas & mapel ini.</p>
+                    <p class="text-gray-500 text-sm">Belum ada jurnal untuk kelas & mapel ini.</p>
                 </div>
             @else
                 <div class="divide-y divide-gray-100">
                     @foreach($journals as $j)
                         <div class="flex items-start gap-4 px-5 py-4">
                             <div class="text-center flex-shrink-0 w-12">
-                                <p class="text-xs text-gray-400">Ptm</p>
+                                <p class="text-xs text-gray-500">Ptm</p>
                                 <p class="text-xl font-bold text-blue-600">{{ $j->meeting_number }}</p>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-semibold text-gray-900">{{ $j->topic }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">
+                                <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $j->journal_date->translatedFormat('d F Y') }}
                                     &middot; {{ $j->methodLabel }}
                                     &middot; {{ $j->students_present }} hadir
                                 </p>
                                 @if($j->description)
-                                    <p class="text-xs text-gray-400 mt-1 truncate">{{ $j->description }}</p>
+                                    <p class="text-xs text-gray-500 mt-1 truncate">{{ $j->description }}</p>
                                 @endif
                             </div>
                             @if($j->photo_path)
@@ -75,7 +75,7 @@
                                     <span class="text-xs text-blue-600" title="+1 poin reward">★</span>
                                 @endif
                                 <a href="{{ route('guru.journal.create', ['schedule_id' => $j->schedule_id, 'date' => $j->journal_date->format('Y-m-d')]) }}"
-                                   class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                                   class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                                     </svg>
@@ -88,7 +88,7 @@
         </div>
     @else
         <div class="bg-white border border-gray-200 rounded-xl p-10 text-center">
-            <p class="text-gray-400 text-sm">Pilih kelas & mapel di atas untuk melihat riwayat jurnal.</p>
+            <p class="text-gray-500 text-sm">Pilih kelas & mapel di atas untuk melihat riwayat jurnal.</p>
         </div>
     @endif
 

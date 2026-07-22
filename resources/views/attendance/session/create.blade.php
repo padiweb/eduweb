@@ -20,9 +20,9 @@
                 @csrf
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1.5">Kelas</label>
+                    <label class="block text-sm font-medium text-gray-400 mb-1.5">Kelas</label>
                     <select name="classroom_id" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="">Pilih kelas...</option>
                         @foreach($classrooms as $classroom)
                             <option value="{{ $classroom->id }}" {{ old('classroom_id') == $classroom->id ? 'selected' : '' }}>
@@ -36,9 +36,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1.5">Mata Pelajaran</label>
+                    <label class="block text-sm font-medium text-gray-400 mb-1.5">Mata Pelajaran</label>
                     <select name="subject_id" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="">Pilih mata pelajaran...</option>
                         @foreach($subjects as $subject)
                             <option value="{{ $subject->id }}" {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
@@ -52,19 +52,19 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1.5">Durasi QR Aktif</label>
+                    <label class="block text-sm font-medium text-gray-400 mb-1.5">Durasi QR Aktif</label>
                     <select name="duration_minutes" required
-                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="5">5 menit</option>
                         <option value="10" selected>10 menit</option>
                         <option value="15">15 menit</option>
                         <option value="30">30 menit</option>
                     </select>
-                    <p class="text-gray-400 text-xs mt-1.5">QR Code akan kedaluwarsa setelah durasi ini. Bisa diperbarui kapan saja.</p>
+                    <p class="text-gray-500 text-xs mt-1.5">QR Code akan kedaluwarsa setelah durasi ini. Bisa diperbarui kapan saja.</p>
                 </div>
 
                 <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 font-semibold py-3 rounded-xl transition-colors text-sm">
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors text-sm">
                     Buka Sesi & Generate QR Code
                 </button>
             </form>

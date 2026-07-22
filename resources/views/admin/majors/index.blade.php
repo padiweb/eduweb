@@ -30,22 +30,22 @@
                         <label class="block text-xs text-gray-500 mb-1.5">Nama Jurusan <span class="text-red-400">*</span></label>
                         <input type="text" name="name" required value="{{ old('name') }}"
                                placeholder="cth: Teknik Komputer & Jaringan"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">Kode (opsional)</label>
                         <input type="text" name="code" value="{{ old('code') }}"
                                placeholder="cth: TKJ, RPL, TKR"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <button type="submit"
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Tambah Jurusan
                     </button>
                 </form>
             </div>
-            <p class="text-xs text-gray-400 mt-3 px-1">Jurusan bersifat opsional. Sekolah tanpa jurusan (SMP/SD) bisa lewati bagian ini.</p>
+            <p class="text-xs text-gray-500 mt-3 px-1">Jurusan bersifat opsional. Sekolah tanpa jurusan (SMP/SD) bisa lewati bagian ini.</p>
         </div>
 
         {{-- Daftar jurusan --}}
@@ -53,7 +53,7 @@
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Semua Jurusan</h2>
-                    <span class="text-xs text-gray-400">{{ $majors->count() }} jurusan</span>
+                    <span class="text-xs text-gray-500">{{ $majors->count() }} jurusan</span>
                 </div>
 
                 @if($majors->count() > 0)
@@ -62,7 +62,7 @@
                             <div class="flex items-center gap-4 px-5 py-4" x-data="{ editing: false }">
                                 <div class="flex-1 min-w-0" x-show="!editing">
                                     <p class="text-sm font-semibold text-gray-900">{{ $major->name }}</p>
-                                    <p class="text-xs text-gray-400">
+                                    <p class="text-xs text-gray-500">
                                         {{ $major->code ? 'Kode: '.$major->code.' &middot; ' : '' }}{{ $major->classrooms_count }} kelas
                                     </p>
                                 </div>
@@ -72,10 +72,10 @@
                                       class="flex-1 flex gap-2" x-show="editing" x-cloak>
                                     @csrf @method('PUT')
                                     <input type="text" name="name" value="{{ $major->name }}" required
-                                           class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                           class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     <input type="text" name="code" value="{{ $major->code }}"
                                            placeholder="Kode"
-                                           class="w-20 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                                           class="w-20 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                                     <button type="submit" class="text-xs text-blue-600 hover:text-blue-700 px-2 py-1.5 bg-blue-600/10 border border-blue-200 rounded-lg transition-colors">
                                         Simpan
                                     </button>
@@ -86,7 +86,7 @@
 
                                 <div class="flex items-center gap-1 flex-shrink-0" x-show="!editing">
                                     <button type="button" @click="editing=true"
-                                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                                         </svg>
@@ -107,8 +107,8 @@
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada jurusan.</p>
-                        <p class="text-gray-400 text-xs mt-1">Tambahkan di form sebelah kiri, atau lewati jika sekolah tidak pakai jurusan.</p>
+                        <p class="text-gray-500 text-sm">Belum ada jurusan.</p>
+                        <p class="text-gray-500 text-xs mt-1">Tambahkan di form sebelah kiri, atau lewati jika sekolah tidak pakai jurusan.</p>
                     </div>
                 @endif
             </div>

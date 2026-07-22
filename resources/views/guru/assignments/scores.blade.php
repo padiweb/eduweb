@@ -14,21 +14,21 @@
 
     <form method="GET" class="flex flex-wrap gap-3 mb-6">
         <select name="classroom_id"
-                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
             <option value="">Pilih Kelas...</option>
             @foreach($classrooms as $c)
                 <option value="{{ $c->id }}" {{ $classroomId == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
             @endforeach
         </select>
         <select name="subject_id"
-                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
             <option value="">Pilih Mata Pelajaran...</option>
             @foreach($subjects as $s)
                 <option value="{{ $s->id }}" {{ $subjectId == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
             @endforeach
         </select>
         <button type="submit"
-                class="bg-blue-600 hover:bg-blue-700 text-gray-900 text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
+                class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
             Tampilkan
         </button>
     </form>
@@ -55,7 +55,7 @@
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-5 py-3">
                                     <p class="font-medium text-gray-900">{{ $row['student']->name }}</p>
-                                    <p class="text-xs text-gray-400">{{ $row['student']->nis }}</p>
+                                    <p class="text-xs text-gray-500">{{ $row['student']->nis }}</p>
                                 </td>
                                 @foreach($data['assignments'] as $a)
                                     @php
@@ -71,7 +71,7 @@
                                                 {{ $score }}
                                             </span>
                                         @else
-                                            <span class="text-gray-400">-</span>
+                                            <span class="text-gray-500">-</span>
                                         @endif
                                     </td>
                                 @endforeach
@@ -81,7 +81,7 @@
                                             {{ $row['average'] }}
                                         </span>
                                     @else
-                                        <span class="text-gray-400 text-base">-</span>
+                                        <span class="text-gray-500 text-base">-</span>
                                     @endif
                                 </td>
                             </tr>
@@ -89,15 +89,15 @@
                     </tbody>
                 </table>
             </div>
-            <p class="text-xs text-gray-400 mt-2">TK = Tidak Dikumpulkan (tidak dihitung dalam rata-rata)</p>
+            <p class="text-xs text-gray-500 mt-2">TK = Tidak Dikumpulkan (tidak dihitung dalam rata-rata)</p>
         @else
             <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-                <p class="text-gray-400 text-sm">Belum ada tugas yang ditutup untuk kelas dan mapel ini.</p>
+                <p class="text-gray-500 text-sm">Belum ada tugas yang ditutup untuk kelas dan mapel ini.</p>
             </div>
         @endif
     @else
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <p class="text-gray-400 text-sm">Pilih kelas dan mata pelajaran untuk melihat rekap nilai.</p>
+            <p class="text-gray-500 text-sm">Pilih kelas dan mata pelajaran untuk melihat rekap nilai.</p>
         </div>
     @endif
 

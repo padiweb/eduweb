@@ -69,7 +69,7 @@
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5">
                             Poin <span class="text-red-400">*</span>
-                            <span class="text-gray-400">(default dari kategori, bisa diubah)</span>
+                            <span class="text-gray-500">(default dari kategori, bisa diubah)</span>
                         </label>
                         <input type="number" name="points" id="input-points" min="1" max="100" required
                                value="{{ old('points', 1) }}"
@@ -98,12 +98,12 @@
                         <label class="block text-xs text-gray-500 mb-1.5">Bukti (foto/PDF, opsional)</label>
                         <input type="file" name="evidence_path"
                                accept="image/jpeg,image/png,application/pdf"
-                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition-colors file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
+                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-amber-500 transition-colors file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
                         @error('evidence_path') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <button type="submit"
-                            class="w-full bg-amber-500 hover:bg-amber-600 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                            class="w-full bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Catat Pelanggaran
                     </button>
                 </form>
@@ -115,7 +115,7 @@
             <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Riwayat Pelanggaran</h2>
-                    <span class="text-xs text-gray-400">{{ $violations->count() }} catatan</span>
+                    <span class="text-xs text-gray-500">{{ $violations->count() }} catatan</span>
                 </div>
 
                 @if($violations->count() > 0)
@@ -146,11 +146,11 @@
                                             {{ $v->source_label }}
                                         </span>
                                         @if($isAuto)
-                                            <span class="text-xs text-gray-400">Otomatis</span>
+                                            <span class="text-xs text-gray-500">Otomatis</span>
                                         @endif
                                     </div>
                                     <p class="text-xs text-gray-500 mt-0.5">{{ $v->description }}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">
+                                    <p class="text-xs text-gray-500 mt-0.5">
                                         {{ $v->incident_date->translatedFormat('d F Y') }}
                                         @if(! $isAuto)
                                             · {{ $v->reportedBy->name }}
@@ -165,7 +165,7 @@
                                           onsubmit="return confirm('Arsipkan pelanggaran ini?')">
                                         @csrf @method('PATCH')
                                         <button type="submit"
-                                                class="text-xs text-gray-400 hover:text-red-400 transition-colors py-1 px-2 rounded-lg hover:bg-red-500/10"
+                                                class="text-xs text-gray-500 hover:text-red-400 transition-colors py-1 px-2 rounded-lg hover:bg-red-500/10"
                                                 title="Arsipkan">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
@@ -186,7 +186,7 @@
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
-                        <p class="text-gray-400 text-sm">Belum ada pelanggaran tercatat.</p>
+                        <p class="text-gray-500 text-sm">Belum ada pelanggaran tercatat.</p>
                     </div>
                 @endif
             </div>
