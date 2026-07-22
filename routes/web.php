@@ -91,6 +91,9 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/qr/{classroom}/cetak', [\App\Http\Controllers\Attendance\ClassQrController::class, 'print'])->name('qr.cetak');
 
         // Manajemen User — /positions & /create HARUS di atas /{user}
+        Route::get('/users/import', [UserManagementController::class, 'importView'])->name('users.import');
+        Route::post('/users/import', [UserManagementController::class, 'importStore'])->name('users.import.store');
+        Route::get('/users/import/template', [UserManagementController::class, 'downloadTemplate'])->name('users.import.template');
         Route::get('/users/positions', [UserManagementController::class, 'positions'])->name('users.positions');
         Route::post('/users/positions', [UserManagementController::class, 'storePosition'])->name('users.positions.store');
         Route::delete('/users/positions/{position}', [UserManagementController::class, 'destroyPosition'])->name('users.positions.destroy');

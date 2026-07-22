@@ -19,17 +19,37 @@ class UserManagementController extends Controller
 
     public function index(Request $request)
     {
-        $school = auth()->user()->school;
-        $tab    = $request->get('tab', 'siswa');
+        $school  = auth()->user()->school;
+        $tab     = $request->get('tab', 'siswa');
+        $search  = $request->get('search');
+        $kelasId = $request->get('kelas_id');
+        $status  = $request->get('status');
 
-        $users = User::where('school_id', $school->id)
-            ->where('role', $tab)
+        $query = User::where('school_id', $school->id)->where('role', $tab)
             ->with(['studentDetail', 'teacherDetail', 'positions',
                 'classrooms' => fn($q) => $q->whereHas('academicYear', fn($q2) => $q2->where('is_active', true))
-            ])
-            ->orderBy('name')
-            ->paginate(20)
-            ->withQueryString();
+            ]);
+
+        if ($search) {
+            $query->where(fn($q) => $q
+                ->where('name', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%")
+                ->orWhere('nis', 'like', "%$search%")
+                ->orWhere('nip', 'like', "%$search%")
+                ->orWhere('username', 'like', "%$search%")
+            );
+        }
+
+        if ($kelasId) {
+            $query->whereHas('classrooms', fn($q) => $q->where('classrooms.id', $kelasId)
+                ->whereHas('academicYear', fn($q2) => $q2->where('is_active', true))
+            );
+        }
+
+        if ($status === 'aktif') $query->where('is_active', true);
+        if ($status === 'nonaktif') $query->where('is_active', false);
+
+        $users = $query->orderBy('name')->paginate(25)->withQueryString();
 
         $classrooms = Classroom::where('school_id', $school->id)
             ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
@@ -37,8 +57,9 @@ class UserManagementController extends Controller
 
         $positions = Position::where('school_id', $school->id)->orderBy('name')->get();
 
-        return view('admin.users.index', compact('users', 'tab', 'classrooms', 'positions'));
+        return view('admin.users.index', compact('users', 'tab', 'classrooms', 'positions', 'search', 'kelasId', 'status'));
     }
+
 
     // ── Form tambah ──────────────────────────────────────────────────────
 
@@ -307,4 +328,140 @@ class UserManagementController extends Controller
 
         TeacherDetail::updateOrCreate(['user_id' => $user->id], $data);
     }
+
+    // ── Import siswa dari Excel/CSV ──────────────────────────────────────
+
+    public function importView(Request $request)
+    {
+        $school     = auth()->user()->school;
+        $classrooms = Classroom::where('school_id', $school->id)
+            ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
+            ->orderBy('name')->get();
+        return view('admin.users.import', compact('classrooms'));
+    }
+
+    public function importStore(Request $request)
+    {
+        $request->validate([
+            'file'       => 'required|file|mimes:xlsx,xls,csv|max:5120',
+            'kelas_id'   => 'nullable|exists:classrooms,id',
+            'role'       => 'required|in:siswa,guru,wali_kelas,kesiswaan,bendahara,admin',
+        ]);
+
+        $school    = auth()->user()->school;
+        $kelasId   = $request->kelas_id;
+        $role      = $request->role;
+        $file      = $request->file('file');
+        $ext       = strtolower($file->getClientOriginalExtension());
+
+        // Parse file
+        $rows = [];
+        if ($ext === 'csv') {
+            $handle = fopen($file->getRealPath(), 'r');
+            $header = null;
+            while (($line = fgetcsv($handle)) !== false) {
+                if (!$header) { $header = array_map('trim', $line); continue; }
+                $rows[] = array_combine($header, array_map('trim', $line));
+            }
+            fclose($handle);
+        } else {
+            // Excel via simple parsing (PhpSpreadsheet tidak tersedia, parse sebagai CSV fallback)
+            // Convert xlsx ke csv via command line jika tersedia
+            $csvPath = tempnam(sys_get_temp_dir(), 'import_') . '.csv';
+            // Fallback: minta user upload CSV
+            return back()->with('error', 'Untuk file Excel (.xlsx/.xls), harap simpan dulu sebagai CSV terlebih dahulu, lalu upload ulang.');
+        }
+
+        $created = 0; $skipped = 0; $errors = [];
+
+        foreach ($rows as $i => $row) {
+            $rowNum = $i + 2;
+            $name = $row['name'] ?? $row['nama'] ?? $row['Nama'] ?? null;
+            $nis  = $row['nis']  ?? $row['NIS']  ?? null;
+            $email = $row['email'] ?? $row['Email'] ?? null;
+            $nip  = $row['nip']  ?? $row['NIP']  ?? null;
+
+            if (empty($name)) { $errors[] = "Baris $rowNum: Nama kosong, dilewati."; $skipped++; continue; }
+
+            // Cek duplikat NIS
+            if ($nis && User::where('school_id', $school->id)->where('nis', $nis)->exists()) {
+                $errors[] = "Baris $rowNum: NIS $nis sudah ada, dilewati.";
+                $skipped++; continue;
+            }
+
+            // Generate email jika kosong
+            if (empty($email)) {
+                $slug  = strtolower(preg_replace('/[^a-z0-9]/i', '.', $name));
+                $email = $slug . '@' . str_replace(' ', '', strtolower($school->name)) . '.sch.id';
+            }
+
+            // Password default = NIS atau nama tanpa spasi lowercase
+            $password = $nis ?: strtolower(str_replace(' ', '', $name));
+
+            try {
+                $user = User::create([
+                    'school_id'  => $school->id,
+                    'name'       => $name,
+                    'nis'        => $nis ?: null,
+                    'nip'        => $nip ?: null,
+                    'email'      => $email,
+                    'role'       => $role,
+                    'password'   => Hash::make($password),
+                    'is_active'  => true,
+                ]);
+
+                if ($kelasId) {
+                    if (!$user->classrooms()->where('classrooms.id', $kelasId)->exists()) {
+                        $user->classrooms()->attach($kelasId);
+                    }
+                }
+                $created++;
+            } catch (\Exception $e) {
+                $errors[] = "Baris $rowNum ($name): " . $e->getMessage();
+                $skipped++;
+            }
+        }
+
+        $msg = "Import selesai: $created berhasil ditambahkan";
+        if ($skipped > 0) $msg .= ", $skipped dilewati";
+
+        return redirect()->route('admin.users.index', ['tab' => $role])
+            ->with('success', $msg)
+            ->with('import_errors', $errors);
+    }
+
+    public function downloadTemplate(Request $request)
+    {
+        $role = $request->get('role', 'siswa');
+        $isSiswa = $role === 'siswa';
+
+        $headers = $isSiswa
+            ? ['name', 'nis', 'nisn', 'email', 'phone']
+            : ['name', 'nip', 'email', 'phone'];
+
+        $examples = $isSiswa
+            ? [
+                ['Andika Wicaksono', '123456', '1234567890', 'andika@example.com', '08123456789'],
+                ['Ardi Nugroho', '123457', '1234567891', '', ''],
+                ['Ayu Lestari', '123458', '', '', ''],
+            ]
+            : [
+                ['Dewi Kusuma S.Pd', '197501012005012001', 'dewi@example.com', '08234567890'],
+                ['Ahmad Fauzi M.Pd', '', '', ''],
+            ];
+
+        $filename = "template_import_$role.csv";
+        $callback = function() use ($headers, $examples) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $headers);
+            foreach ($examples as $row) fputcsv($file, $row);
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
 }

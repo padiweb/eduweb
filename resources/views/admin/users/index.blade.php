@@ -14,12 +14,19 @@
                 </svg>
                 Kelola Jabatan
             </a>
+            <a href="{{ route('admin.users.import', ['role' => $tab]) }}"
+               class="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-white/10 text-gray-300 text-sm px-4 py-2 rounded-xl transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                </svg>
+                Import CSV
+            </a>
             <a href="{{ route('admin.users.create', ['role' => $tab]) }}"
                class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                 </svg>
-                Tambah {{ ucfirst(str_replace('_',' ',$tab)) }}
+                Tambah
             </a>
         </div>
     </div>
@@ -36,7 +43,7 @@
     @endif
 
     {{-- Tab role --}}
-    <div class="flex flex-wrap gap-1 mb-5 bg-gray-900 border border-white/5 rounded-xl p-1 w-fit">
+    <div class="flex flex-wrap gap-1 mb-4 bg-gray-900 border border-white/5 rounded-xl p-1 w-fit">
         @foreach(['siswa'=>'Siswa','guru'=>'Guru','wali_kelas'=>'Wali Kelas','kesiswaan'=>'Kesiswaan','admin'=>'Admin','bendahara'=>'Bendahara','kepala_sekolah'=>'Kepala Sekolah'] as $role => $label)
             <a href="{{ route('admin.users.index', ['tab' => $role]) }}"
                class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $tab === $role ? 'bg-emerald-500 text-white' : 'text-gray-400 hover:text-white' }}">
@@ -44,6 +51,30 @@
             </a>
         @endforeach
     </div>
+
+    {{-- Search & Filter --}}
+    <form method="GET" action="{{ route('admin.users.index') }}" class="flex flex-wrap gap-2 mb-4">
+        <input type="hidden" name="tab" value="{{ $tab }}">
+        <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama, NIS, email..."
+               class="flex-1 min-w-48 bg-gray-900 border border-white/10 text-white rounded-xl px-4 py-2 text-sm placeholder-gray-600 focus:outline-none focus:border-emerald-500/50">
+        @if($tab === 'siswa')
+        <select name="kelas_id" class="bg-gray-900 border border-white/10 text-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none">
+            <option value="">Semua Kelas</option>
+            @foreach($classrooms as $cls)
+                <option value="{{ $cls->id }}" {{ $kelasId == $cls->id ? 'selected' : '' }}>{{ $cls->name }}</option>
+            @endforeach
+        </select>
+        @endif
+        <select name="status" class="bg-gray-900 border border-white/10 text-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none">
+            <option value="">Semua Status</option>
+            <option value="aktif" {{ $status === 'aktif' ? 'selected' : '' }}>Aktif</option>
+            <option value="nonaktif" {{ $status === 'nonaktif' ? 'selected' : '' }}>Non-aktif</option>
+        </select>
+        <button type="submit" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-xl transition-colors">Cari</button>
+        @if($search || $kelasId || $status)
+            <a href="{{ route('admin.users.index', ['tab' => $tab]) }}" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-xl border border-white/10 transition-colors">Reset</a>
+        @endif
+    </form>
 
     <div class="bg-gray-900 border border-white/5 rounded-xl overflow-hidden">
         <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">

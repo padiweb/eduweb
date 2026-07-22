@@ -1,27 +1,74 @@
 <x-simans-layout title="Dashboard Kepala Sekolah">
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-white">Selamat datang, {{ auth()->user()->name }}</h1>
+        <h1 class="text-2xl font-bold text-white">Dashboard</h1>
         <p class="text-gray-400 text-sm mt-1">{{ now()->translatedFormat('l, d F Y') }} · {{ auth()->user()->school->name }}</p>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <x-stat-card label="Total Siswa"        :value="$stats['total_siswa']"       color="blue"   sub="Siswa aktif"/>
-        <x-stat-card label="Tagihan Bulan Ini"  :value="$stats['tagihan_bulan_ini']" color="purple" sub="Total dibuat"/>
-        <x-stat-card label="Sudah Bayar"        :value="$stats['sudah_bayar']"       color="green"  sub="Bulan ini"/>
-        <x-stat-card label="Tunggakan"          :value="$stats['tunggakan']"         color="red"    sub="Belum/cicilan"/>
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+        <div class="bg-gray-900 border border-white/5 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Total Siswa Aktif</p>
+            <p class="text-3xl font-bold text-white">{{ $stats['total_siswa'] }}</p>
+        </div>
+        <div class="bg-gray-900 border border-white/5 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Total Guru</p>
+            <p class="text-3xl font-bold text-white">{{ $stats['total_guru'] }}</p>
+        </div>
+        <div class="bg-gray-900 border border-emerald-500/20 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Hadir Hari Ini</p>
+            <p class="text-3xl font-bold text-emerald-400">{{ $stats['hadir_hari_ini'] }}</p>
+        </div>
+        <div class="bg-gray-900 border border-amber-500/15 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Pemasukan Bulan Ini</p>
+            <p class="text-2xl font-bold text-amber-400">Rp {{ number_format($pemasukanBulan, 0, ',', '.') }}</p>
+        </div>
+        <div class="bg-gray-900 border border-red-500/15 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Tunggakan</p>
+            <p class="text-3xl font-bold text-red-400">{{ $stats['tunggakan'] }}</p>
+            <p class="text-xs text-gray-600 mt-1">tagihan belum lunas</p>
+        </div>
+        <div class="bg-gray-900 border border-orange-500/15 rounded-2xl p-4">
+            <p class="text-xs text-gray-500 mb-1">Pelanggaran</p>
+            <p class="text-3xl font-bold text-orange-400">{{ $stats['pelanggaran_bulan'] }}</p>
+            <p class="text-xs text-gray-600 mt-1">Bulan ini</p>
+        </div>
     </div>
 
-    <div class="bg-gray-900 border border-white/5 rounded-xl p-5">
-        <h2 class="text-sm font-semibold text-white mb-3">Menu Kepala Sekolah</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <a href="{{ route('bendahara.bills.index') }}" class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 border border-white/5 rounded-xl p-4 transition-colors">
-                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span class="text-sm font-medium text-white">Lihat Tagihan</span>
-            </a>
-            <a href="{{ route('bendahara.bills.index', ['status' => 'unpaid']) }}" class="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 border border-white/5 rounded-xl p-4 transition-colors">
-                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
-                <span class="text-sm font-medium text-white">Daftar Tunggakan</span>
-            </a>
+    {{-- Rekap kelas hari ini --}}
+    <div class="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b border-white/5">
+            <h2 class="text-sm font-semibold text-white">Rekap Kelas Hari Ini</h2>
+        </div>
+        <div class="divide-y divide-white/5">
+            @forelse($classroomSummary as $classroom)
+                @php
+                    $session = $classroom->attendanceSessions->first();
+                    $hadir   = $session?->attendances->whereIn('status', ['hadir','terlambat'])->count() ?? 0;
+                    $total   = $classroom->students->count();
+                    $pct     = $total > 0 ? round($hadir / $total * 100) : 0;
+                @endphp
+                <div class="flex items-center gap-4 px-5 py-3">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white">{{ $classroom->name }}</p>
+                        <p class="text-xs text-gray-500">{{ $classroom->major->code ?? '' }} · {{ $total }} siswa</p>
+                    </div>
+                    <div class="w-24 hidden sm:block">
+                        <div class="w-full bg-gray-800 rounded-full h-1.5">
+                            <div class="h-1.5 rounded-full {{ $pct >= 80 ? 'bg-emerald-500' : ($pct >= 60 ? 'bg-amber-500' : 'bg-red-500') }}"
+                                 style="width:{{ $pct }}%"></div>
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-400 flex-shrink-0">{{ $hadir }}/{{ $total }}</span>
+                    @if(!$session)
+                        <span class="text-xs px-2 py-0.5 rounded-lg bg-gray-800 text-gray-600 border border-white/5 flex-shrink-0">Belum</span>
+                    @elseif($session->is_closed)
+                        <span class="text-xs px-2 py-0.5 rounded-lg bg-gray-800 text-gray-500 border border-white/5 flex-shrink-0">Selesai</span>
+                    @else
+                        <span class="text-xs px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0">Aktif</span>
+                    @endif
+                </div>
+            @empty
+                <div class="px-5 py-8 text-center text-gray-500 text-sm">Belum ada kelas aktif.</div>
+            @endforelse
         </div>
     </div>
 </x-simans-layout>
