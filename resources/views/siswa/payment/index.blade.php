@@ -13,11 +13,11 @@
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4">
             <p class="text-xs text-gray-500 mb-1">Sudah Dibayar</p>
-            <p class="text-lg font-bold text-green-400">Rp {{ number_format($summary['total_bayar'], 0, ',', '.') }}</p>
+            <p class="text-lg font-bold text-green-600">Rp {{ number_format($summary['total_bayar'], 0, ',', '.') }}</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4">
             <p class="text-xs text-gray-500 mb-1">Tunggakan</p>
-            <p class="text-lg font-bold text-red-400">Rp {{ number_format($summary['tunggakan'], 0, ',', '.') }}</p>
+            <p class="text-lg font-bold text-red-600">Rp {{ number_format($summary['tunggakan'], 0, ',', '.') }}</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4">
             <p class="text-xs text-gray-500 mb-1">Tagihan Lunas</p>
@@ -35,7 +35,7 @@
         </select>
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Filter</button>
         @if(request('status'))
-            <a href="{{ route('siswa.payment.index') }}" class="text-gray-500 hover:text-gray-900 text-sm px-3 py-2 rounded-lg">Reset</a>
+            <a href="{{ route('siswa.payment.index') }}" class="text-gray-500 hover:text-blue-600 text-sm px-3 py-2 rounded-lg">Reset</a>
         @endif
     </form>
 
@@ -51,19 +51,19 @@
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
                     <p class="text-sm font-medium text-gray-900">{{ $bill->paymentType->name }}</p>
-                    <span class="text-xs bg-{{ $c }}-500/10 text-{{ $c }}-400 border border-{{ $c }}-500/20 px-2 py-0.5 rounded-full">
+                    <span class="text-xs bg-{{ $c }}-50 text-{{ $c }}-700 border border-{{ $c }}-200 px-2 py-0.5 rounded-full">
                         {{ $labels[$bill->status] ?? $bill->status }}
                     </span>
                     {{-- Badge pending --}}
                     @if($bill->transactions->where('status','pending')->isNotEmpty())
-                        <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                        <span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
                             Menunggu konfirmasi
                         </span>
                     @endif
                 </div>
                 <p class="text-xs text-gray-500">{{ $bill->period_label }}</p>
                 @if($bill->due_date && $bill->status !== 'paid')
-                    <p class="text-xs {{ \Carbon\Carbon::parse($bill->due_date)->isPast() ? 'text-red-400' : 'text-gray-500' }} mt-0.5">
+                    <p class="text-xs {{ \Carbon\Carbon::parse($bill->due_date)->isPast() ? 'text-red-600' : 'text-gray-500' }} mt-0.5">
                         Jatuh tempo {{ \Carbon\Carbon::parse($bill->due_date)->format('d/m/Y') }}
                     </p>
                 @endif
@@ -71,10 +71,10 @@
             <div class="text-right shrink-0">
                 <p class="text-sm font-semibold text-gray-900">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</p>
                 @if($bill->amount_remaining > 0 && $bill->status !== 'waived')
-                    <p class="text-xs text-red-400">Sisa Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
+                    <p class="text-xs text-red-600">Sisa Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</p>
                 @endif
                 @if($bill->amount_discount > 0)
-                    <p class="text-xs text-green-400">Diskon Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
+                    <p class="text-xs text-green-600">Diskon Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
                 @endif
             </div>
             <a href="{{ route('siswa.payment.show', $bill) }}"

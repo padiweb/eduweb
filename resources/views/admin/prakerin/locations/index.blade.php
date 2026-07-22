@@ -18,11 +18,11 @@
 
     {{-- Sub-nav --}}
     <div class="flex gap-2 mb-5 flex-wrap">
-        <a href="{{ route('admin.prakerin.periods.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Periode</a>
+        <a href="{{ route('admin.prakerin.periods.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Periode</a>
         <a href="{{ route('admin.prakerin.locations.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">DU/DI</a>
-        <a href="{{ route('admin.prakerin.placements.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Penempatan Siswa</a>
-        <a href="{{ route('admin.prakerin.recap.absensi') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Absensi</a>
-        <a href="{{ route('admin.prakerin.recap.jurnal') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Jurnal</a>
+        <a href="{{ route('admin.prakerin.placements.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Penempatan Siswa</a>
+        <a href="{{ route('admin.prakerin.recap.absensi') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Rekap Absensi</a>
+        <a href="{{ route('admin.prakerin.recap.jurnal') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Rekap Jurnal</a>
     </div>
 
     {{-- Filter periode --}}
@@ -30,7 +30,7 @@
         @foreach ($periods as $p)
             <a href="{{ route('admin.prakerin.locations.index', ['period_id' => $p->id]) }}"
                class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2
-               {{ $periodId == $p->id ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-white' }}">
+               {{ $periodId == $p->id ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-700' }}">
                 {{ $p->name }}
                 @if ($p->isOngoing()) <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span> @endif
             </a>
@@ -38,10 +38,10 @@
     </div>
 
     @if (session('success'))
-        <div class="mb-4 p-3 rounded-xl bg-blue-600/10 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
     @endif
     @if (session('error'))
-        <div class="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ session('error') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{{ session('error') }}</div>
     @endif
 
     @if (! $activePeriod)
@@ -69,20 +69,20 @@
                             @endif
                             <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-gray-500">
                                 @if ($loc->checkin_time)
-                                    <span>Masuk: <span class="text-gray-400">{{ $loc->checkin_time }}</span>
-                                    @if ($loc->checkin_late_after) · Toleransi: <span class="text-gray-400">{{ $loc->checkin_late_after }}</span> @endif
+                                    <span>Masuk: <span class="text-gray-600">{{ $loc->checkin_time }}</span>
+                                    @if ($loc->checkin_late_after) · Toleransi: <span class="text-gray-600">{{ $loc->checkin_late_after }}</span> @endif
                                     </span>
                                 @endif
                                 @if ($loc->checkout_time)
-                                    <span>Pulang: <span class="text-gray-400">{{ $loc->checkout_time }}</span></span>
+                                    <span>Pulang: <span class="text-gray-600">{{ $loc->checkout_time }}</span></span>
                                 @endif
-                                <span>Radius: <span class="text-gray-400">{{ $loc->radius_meters }}m</span></span>
-                                <span>Siswa: <span class="text-gray-400">{{ $loc->placements->count() }}</span></span>
+                                <span>Radius: <span class="text-gray-600">{{ $loc->radius_meters }}m</span></span>
+                                <span>Siswa: <span class="text-gray-600">{{ $loc->placements->count() }}</span></span>
                             </div>
                             @if ($loc->supervisors->count() > 0)
                                 <div class="mt-2 flex flex-wrap gap-1">
                                     @foreach ($loc->supervisors as $s)
-                                        <span class="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs rounded-lg">
+                                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-lg">
                                             {{ $s->name }}
                                         </span>
                                     @endforeach
@@ -91,14 +91,14 @@
                         </div>
                         <div class="flex gap-2 flex-shrink-0">
                             <button onclick="openEditLoc({{ $loc->id }}, {{ json_encode($loc->toArray()) }}, {{ json_encode($loc->supervisors->pluck('id')) }})"
-                                    class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-xs rounded-lg transition-colors">
+                                    class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
                                 Edit
                             </button>
                             @if ($loc->placements->count() === 0)
                             <form action="{{ route('admin.prakerin.locations.destroy', $loc) }}" method="POST"
                                   onsubmit="return confirm('Hapus DU/DI ini?')">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="px-3 py-1.5 bg-red-600/10 hover:bg-red-600/20 border border-red-500/20 text-red-400 text-xs rounded-lg transition-colors">
+                                <button type="submit" class="px-3 py-1.5 bg-red-50 hover:bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg transition-colors">
                                     Hapus
                                 </button>
                             </form>
@@ -121,7 +121,7 @@
                 @include('admin.prakerin.locations._form')
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-tambah').classList.add('hidden')"
-                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-400 text-sm rounded-xl">Batal</button>
+                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-xl">Batal</button>
                     <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl">Simpan</button>
                 </div>
             </form>
@@ -140,11 +140,11 @@
                 <label class="flex items-center gap-2 cursor-pointer pt-1">
                     <input type="hidden" name="is_active" value="0">
                     <input type="checkbox" id="edit-is-active" name="is_active" value="1" class="w-4 h-4 rounded accent-emerald-500">
-                    <span class="text-sm text-gray-400">DU/DI Aktif</span>
+                    <span class="text-sm text-gray-600">DU/DI Aktif</span>
                 </label>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-400 text-sm rounded-xl">Batal</button>
+                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-xl">Batal</button>
                     <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl">Simpan</button>
                 </div>
             </form>
@@ -197,7 +197,7 @@
                     status.textContent = '✓ Lokasi terdeteksi (±' + Math.round(pos.coords.accuracy) + 'm)';
                     status.className = 'text-blue-600 text-xs';
                 },
-                () => { status.textContent = 'Gagal. Isi manual.'; status.className = 'text-red-400 text-xs'; },
+                () => { status.textContent = 'Gagal. Isi manual.'; status.className = 'text-red-600 text-xs'; },
                 { enableHighAccuracy: true, timeout: 15000 }
             );
         }

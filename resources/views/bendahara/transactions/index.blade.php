@@ -8,7 +8,7 @@
         <div class="flex gap-2">
             @foreach(['pending'=>'Menunggu','approved'=>'Diterima','rejected'=>'Ditolak'] as $s => $l)
                 <a href="{{ route('bendahara.transactions.index', ['status' => $s]) }}"
-                    class="text-xs px-3 py-1.5 rounded-lg border transition-colors {{ $status === $s ? 'bg-blue-600 border-purple-600 text-white' : 'bg-white border-gray-200 text-gray-500 hover:text-white' }}">
+                    class="text-xs px-3 py-1.5 rounded-lg border transition-colors {{ $status === $s ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-gray-200 text-gray-500 hover:text-gray-700' }}">
                     {{ $l }}
                 </a>
             @endforeach
@@ -16,7 +16,7 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
@@ -47,7 +47,7 @@
                     <div class="flex items-center gap-2 shrink-0">
                         @if($trx->receipt_path)
                             <a href="{{ route('bendahara.transactions.receipt', $trx) }}" target="_blank"
-                                class="text-xs bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 px-3 py-1.5 rounded-lg transition-colors">
+                                class="text-xs bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg transition-colors">
                                 Bukti
                             </a>
                         @endif
@@ -60,7 +60,7 @@
                                 </button>
                             </form>
                             <button onclick="openReject({{ $trx->id }})"
-                                class="text-xs bg-red-600/20 hover:bg-red-600/40 border border-red-500/30 text-red-400 px-3 py-1.5 rounded-lg transition-colors">
+                                class="text-xs bg-red-50 hover:bg-red-600/40 border border-red-200 text-red-600 px-3 py-1.5 rounded-lg transition-colors">
                                 Tolak
                             </button>
                         @else
@@ -93,7 +93,7 @@
                 </div>
                 <div class="flex gap-3">
                     <button type="button" onclick="document.getElementById('modal-reject').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
                         class="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Tolak</button>
                 </div>

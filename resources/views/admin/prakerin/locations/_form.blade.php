@@ -1,6 +1,6 @@
 {{-- Partial: form fields DU/DI, dipakai di modal tambah dan edit --}}
 <div>
-    <label class="block text-xs text-gray-500 mb-1">Nama DU/DI <span class="text-red-400">*</span></label>
+    <label class="block text-xs text-gray-500 mb-1">Nama DU/DI <span class="text-red-600">*</span></label>
     <input type="text" name="name" required maxlength="150" placeholder="PT. Contoh Maju Jaya"
            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 placeholder-gray-400">
 </div>
@@ -27,14 +27,14 @@
 </div>
 <div class="flex items-center gap-3">
     <div class="flex-1">
-        <label class="block text-xs text-gray-500 mb-1">Radius Check-in (meter) <span class="text-red-400">*</span></label>
+        <label class="block text-xs text-gray-500 mb-1">Radius Check-in (meter) <span class="text-red-600">*</span></label>
         <input type="number" name="radius_meters" value="300" min="50" max="2000" required
                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
     </div>
     <div class="flex-1 pt-5">
         <button type="button"
                 onclick="detectGps('{{ ($isEdit ?? false) ? 'edit-lat' : 'add-lat' }}', '{{ ($isEdit ?? false) ? 'edit-lng' : 'add-lng' }}', '{{ ($isEdit ?? false) ? 'edit-gps-status' : 'add-gps-status' }}')"
-                class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors">
+                class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors">
             📍 Deteksi Lokasi
         </button>
     </div>
@@ -84,7 +84,7 @@
             <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                 <input type="checkbox" name="teacher_ids[]" value="{{ $t->id }}"
                        class="w-4 h-4 rounded accent-emerald-500">
-                <span class="text-sm text-gray-400">{{ $t->name }}</span>
+                <span class="text-sm text-gray-600">{{ $t->name }}</span>
                 <span class="text-xs text-gray-500">{{ ucfirst(str_replace('_', ' ', $t->role)) }}</span>
             </label>
         @endforeach

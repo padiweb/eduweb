@@ -7,7 +7,7 @@
         </div>
         <div class="flex gap-2">
             <a href="{{ route('guru.journal.history') }}"
-               class="text-sm text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
+               class="text-sm text-gray-500 hover:text-blue-600 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
                 Riwayat Jurnal
             </a>
         </div>
@@ -21,7 +21,7 @@
 
     {{-- Stat bulan ini --}}
     <div class="bg-white border border-gray-200 rounded-xl p-4 mb-6 flex items-center gap-4">
-        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
             </svg>
@@ -66,11 +66,11 @@
                     {{-- Status & aksi --}}
                     @if($journal)
                         <div class="flex items-center gap-2 flex-shrink-0">
-                            <span class="text-xs text-blue-600 bg-blue-600/10 border border-blue-200 px-2.5 py-1 rounded-full font-semibold">
+                            <span class="text-xs text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full font-semibold">
                                 Sudah diisi
                             </span>
                             <a href="{{ route('guru.journal.create', ['schedule_id' => $schedule->id, 'date' => today()->format('Y-m-d')]) }}"
-                               class="text-xs text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
+                               class="text-xs text-gray-500 hover:text-blue-600 bg-white border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
                                 Edit
                             </a>
                         </div>

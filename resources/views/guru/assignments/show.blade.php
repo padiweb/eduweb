@@ -3,7 +3,7 @@
     <div class="flex items-start justify-between mb-6">
         <div>
             <a href="{{ route('guru.assignments.index') }}"
-               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors">
+               class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
@@ -18,7 +18,7 @@
                   onsubmit="return confirm('Tutup tugas? Siswa yang belum kumpul mendapat poin pelanggaran.')">
                 @csrf @method('PATCH')
                 <button type="submit"
-                        class="flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+                        class="flex items-center gap-2 bg-red-50 hover:bg-red-50 text-red-600 border border-red-200 text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                     </svg>
@@ -38,7 +38,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -59,7 +59,7 @@
                 @if($assignment->deadline)
                     <div>
                         <p class="text-xs text-gray-500 mb-1">Deadline</p>
-                        <p class="text-sm font-medium {{ $assignment->isPastDeadline() ? 'text-amber-400' : 'text-gray-900' }}">
+                        <p class="text-sm font-medium {{ $assignment->isPastDeadline() ? 'text-amber-600' : 'text-gray-900' }}">
                             {{ $assignment->deadline->translatedFormat('l, d F Y H:i') }}
                         </p>
                     </div>
@@ -67,7 +67,7 @@
                 @if($assignment->description)
                     <div>
                         <p class="text-xs text-gray-500 mb-1">Instruksi</p>
-                        <p class="text-sm text-gray-400 leading-relaxed">{{ $assignment->description }}</p>
+                        <p class="text-sm text-gray-600 leading-relaxed">{{ $assignment->description }}</p>
                     </div>
                 @endif
                 @if($assignment->attachment_path)
@@ -96,16 +96,16 @@
                     <p class="text-2xl font-bold text-blue-600">{{ $submittedCount }}</p>
                     <p class="text-xs text-gray-500 mt-1">Dikumpulkan</p>
                 </div>
-                <div class="bg-white border border-red-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-red-400">{{ $notSubmittedCount }}</p>
+                <div class="bg-white border border-red-200 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-red-600">{{ $notSubmittedCount }}</p>
                     <p class="text-xs text-gray-500 mt-1">Tidak Kumpul</p>
                 </div>
-                <div class="bg-white border border-blue-500/20 rounded-xl p-4 text-center">
+                <div class="bg-white border border-blue-200 rounded-xl p-4 text-center">
                     <p class="text-2xl font-bold text-blue-400">{{ $gradedCount }}</p>
                     <p class="text-xs text-gray-500 mt-1">Sudah Dinilai</p>
                 </div>
-                <div class="bg-white border border-amber-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-amber-400">{{ $avg ? number_format($avg,1) : '-' }}</p>
+                <div class="bg-white border border-amber-200 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-amber-600">{{ $avg ? number_format($avg,1) : '-' }}</p>
                     <p class="text-xs text-gray-500 mt-1">Rata-rata</p>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                         @php $sub = $submissions->get($student->id); @endphp
                         <div class="px-5 py-4 {{ $sub?->isNotSubmitted() ? 'bg-red-500/[0.03]' : '' }}">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-400 flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
                                     {{ substr($student->name, 0, 2) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
@@ -131,10 +131,10 @@
                                         @if(! $sub)
                                             Belum mengumpulkan
                                         @elseif($sub->isNotSubmitted())
-                                            <span class="text-red-400">Tidak mengumpulkan tugas</span>
+                                            <span class="text-red-600">Tidak mengumpulkan tugas</span>
                                         @elseif($sub->submitted_at && $sub->submitted_at instanceof \Carbon\Carbon)
                                             Dikumpulkan {{ $sub->submitted_at->translatedFormat('d M Y H:i') }}
-                                            @if($sub->isLate()) <span class="text-amber-400">&middot; Terlambat</span> @endif
+                                            @if($sub->isLate()) <span class="text-amber-600">&middot; Terlambat</span> @endif
                                         @elseif($sub->submitted_at)
                                             Dikumpulkan {{ \Carbon\Carbon::parse($sub->submitted_at)->translatedFormat('d M Y H:i') }}
                                         @else
@@ -145,7 +145,7 @@
 
                                 {{-- Badge status --}}
                                 @if($sub?->isNotSubmitted())
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-red-500/10 text-red-400 border-red-500/20 flex-shrink-0">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-red-50 text-red-700 border-red-200 flex-shrink-0">
                                         Tidak Kumpul
                                     </span>
                                 @elseif($sub)
@@ -154,18 +154,18 @@
                                         @php $subFiles = array_filter(explode(',', $sub->file_path)); @endphp
                                         @foreach($subFiles as $fi => $fp)
                                             <a href="{{ route('guru.assignments.view-file', [$assignment->id, $sub->id, 'index' => $fi]) }}" target="_blank"
-                                               class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 flex-shrink-0">
+                                               class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
                                                 File {{ count($subFiles) > 1 ? $fi+1 : '' }}
                                             </a>
                                         @endforeach
                                     @elseif($sub->link_url)
                                         <a href="{{ $sub->link_url }}" target="_blank"
-                                           class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 flex-shrink-0">
+                                           class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
                                             Link
                                         </a>
                                     @elseif($sub->content)
                                         <button onclick="showContent({{ json_encode(substr($sub->content, 0, 1000)) }})"
-                                                class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 flex-shrink-0">
+                                                class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
                                             Teks
                                         </button>
                                     @endif
@@ -180,7 +180,7 @@
                                            value="{{ $sub->score ?? '' }}"
                                            data-student-id="{{ $student->id }}"
                                            data-assignment-id="{{ $assignment->id }}">
-                                    <button class="btn-save-score text-xs text-blue-600 hover:text-blue-700 py-1.5 px-2 rounded-lg bg-blue-600/10 border border-blue-200 flex-shrink-0"
+                                    <button class="btn-save-score text-xs text-blue-600 hover:text-blue-700 py-1.5 px-2 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0"
                                             data-student-id="{{ $student->id }}">
                                         Simpan
                                     </button>
@@ -197,7 +197,7 @@
                                                value="{{ $sub->feedback ?? '' }}"
                                                data-student-id="{{ $student->id }}"
                                                data-assignment-id="{{ $assignment->id }}">
-                                        <button class="btn-save-comment text-xs text-blue-400 hover:text-blue-300 py-1.5 px-2 rounded-lg bg-blue-500/10 border border-blue-500/20 flex-shrink-0"
+                                        <button class="btn-save-comment text-xs text-blue-400 hover:text-blue-300 py-1.5 px-2 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0"
                                                 data-student-id="{{ $student->id }}">
                                             Kirim
                                         </button>
@@ -219,14 +219,14 @@
         <div class="bg-white border border-gray-200 rounded-xl w-full max-w-lg">
             <div class="flex items-center justify-between p-5 border-b border-gray-200">
                 <h3 class="font-semibold text-gray-900">Jawaban Siswa</h3>
-                <button id="close-content" class="text-gray-500 hover:text-gray-900 transition-colors">
+                <button id="close-content" class="text-gray-500 hover:text-blue-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
             <div class="p-5 max-h-96 overflow-y-auto">
-                <p id="content-text" class="text-sm text-gray-400 whitespace-pre-wrap leading-relaxed"></p>
+                <p id="content-text" class="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed"></p>
             </div>
         </div>
     </div>

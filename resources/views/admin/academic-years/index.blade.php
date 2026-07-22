@@ -13,7 +13,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -27,15 +27,15 @@
                 <form method="POST" action="{{ route('admin.academic-years.store') }}" class="space-y-3">
                     @csrf
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Tahun Ajaran <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Tahun Ajaran <span class="text-red-600">*</span></label>
                         <input type="text" name="name" required
                                placeholder="cth: 2025/2026"
                                value="{{ old('name') }}"
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                        @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Semester <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Semester <span class="text-red-600">*</span></label>
                         <select name="semester" required
                                 class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="1" {{ old('semester') == '1' ? 'selected' : '' }}>Semester 1 (Ganjil)</option>
@@ -43,12 +43,12 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Tanggal Mulai <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Tanggal Mulai <span class="text-red-600">*</span></label>
                         <input type="date" name="start_date" required value="{{ old('start_date') }}"
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Tanggal Selesai <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Tanggal Selesai <span class="text-red-600">*</span></label>
                         <input type="date" name="end_date" required value="{{ old('end_date') }}"
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
@@ -82,11 +82,11 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <p class="text-sm font-semibold text-gray-900">{{ $ay->name }}</p>
-                                        <span class="text-xs {{ $ay->semester == 1 ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' : 'text-blue-600 bg-blue-500/10 border-blue-200' }} border px-2 py-0.5 rounded-full">
+                                        <span class="text-xs {{ $ay->semester == 1 ? 'text-blue-400 bg-blue-50 border-blue-200' : 'text-blue-600 bg-blue-50 border-blue-200' }} border px-2 py-0.5 rounded-full">
                                             Semester {{ $ay->semester }} ({{ $ay->semester == 1 ? 'Ganjil' : 'Genap' }})
                                         </span>
                                         @if($ay->is_active)
-                                            <span class="text-xs text-blue-600 bg-blue-600/10 border border-blue-200 px-2 py-0.5 rounded-full font-semibold">
+                                            <span class="text-xs text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full font-semibold">
                                                 Aktif
                                             </span>
                                         @endif
@@ -102,7 +102,7 @@
                                         <form method="POST" action="{{ route('admin.academic-years.activate', $ay->id) }}">
                                             @csrf @method('PATCH')
                                             <button type="submit"
-                                                    class="text-xs text-blue-600 hover:text-blue-700 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
+                                                    class="text-xs text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
                                                 Aktifkan
                                             </button>
                                         </form>
@@ -110,7 +110,7 @@
                                               onsubmit="return confirm('Hapus tahun ajaran {{ addslashes($ay->label) }}?')">
                                             @csrf @method('DELETE')
                                             <button type="submit"
-                                                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-500/30 text-gray-500 hover:text-red-400 transition-colors">
+                                                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                                 </svg>

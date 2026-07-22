@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('admin.prakerin.placements.index') }}"
-           class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+           class="text-gray-500 text-sm hover:text-blue-600 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -13,7 +13,7 @@
     </div>
 
     @if ($errors->any())
-        <div class="mb-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+        <div class="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
             <ul class="space-y-0.5">
                 @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
             </ul>
@@ -29,7 +29,7 @@
             <div class="bg-white border border-gray-200 rounded-xl p-5">
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">Data Siswa</h2>
                 <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-700/50 flex items-center justify-center text-xs font-bold text-blue-600">
+                    <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-200 flex items-center justify-center text-xs font-bold text-blue-600">
                         {{ substr($placement->student->name, 0, 1) }}
                     </div>
                     <div>
@@ -57,7 +57,7 @@
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">Data DU/DI</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama DU/DI <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama DU/DI <span class="text-red-600">*</span></label>
                         <input type="text" name="company_name"
                                value="{{ old('company_name', $placement->company_name) }}"
                                required maxlength="150"
@@ -83,7 +83,7 @@
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Radius Check-in (meter) <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Radius Check-in (meter) <span class="text-red-600">*</span></label>
                         <input type="number" name="radius_meters"
                                value="{{ old('radius_meters', $placement->radius_meters) }}"
                                min="50" max="2000" required
@@ -91,7 +91,7 @@
                     </div>
                     <div class="flex items-end">
                         <button type="button" onclick="detectLocation()"
-                                class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors">
+                                class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors">
                             Deteksi Lokasi
                         </button>
                     </div>
@@ -125,13 +125,13 @@
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">Periode & Status</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Mulai <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Mulai <span class="text-red-600">*</span></label>
                         <input type="date" name="start_date"
                                value="{{ old('start_date', $placement->start_date->format('Y-m-d')) }}" required
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Selesai <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Selesai <span class="text-red-600">*</span></label>
                         <input type="date" name="end_date"
                                value="{{ old('end_date', $placement->end_date->format('Y-m-d')) }}" required
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
@@ -142,7 +142,7 @@
                             <input type="checkbox" name="is_active" value="1"
                                    {{ old('is_active', $placement->is_active) ? 'checked' : '' }}
                                    class="w-4 h-4 rounded accent-emerald-500">
-                            <span class="text-sm text-gray-400">Aktif</span>
+                            <span class="text-sm text-gray-600">Aktif</span>
                         </label>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
 
             <div class="flex gap-3 justify-end">
                 <a href="{{ route('admin.prakerin.placements.index') }}"
-                   class="px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors">
+                   class="px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors">
                     Batal
                 </a>
                 <button type="submit"
@@ -174,7 +174,7 @@
                 },
                 () => {
                     status.textContent = 'Gagal deteksi. Isi manual.';
-                    status.className = 'text-red-400 text-xs md:col-span-2';
+                    status.className = 'text-red-600 text-xs md:col-span-2';
                 },
                 { enableHighAccuracy: true, timeout: 15000 }
             );

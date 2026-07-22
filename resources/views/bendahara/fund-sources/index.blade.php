@@ -15,11 +15,11 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
     {{-- Info kenapa tidak ada hapus --}}
-    <div class="bg-blue-500/5 border border-blue-500/15 rounded-xl px-4 py-3 mb-5 text-xs text-blue-400">
+    <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-400">
         <strong>Catatan:</strong> Sumber dana tidak dapat dihapus karena menyimpan history keuangan. Gunakan tombol <strong>Nonaktifkan</strong> jika sumber dana tidak lagi digunakan.
     </div>
 
@@ -34,7 +34,7 @@
                             <span class="text-xs text-gray-500 bg-white px-2 py-0.5 rounded">{{ $source->code }}</span>
                         @endif
                         @if(!$source->is_active)
-                            <span class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full">Nonaktif</span>
+                            <span class="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">Nonaktif</span>
                         @endif
                     </div>
                     <p class="text-xs mt-1.5">
@@ -45,10 +45,10 @@
                 </div>
                 <div class="flex flex-col items-end gap-1.5">
                     <button onclick="openEdit({{ $source->id }}, '{{ addslashes($source->name) }}', '{{ $source->code }}', '{{ $source->type }}', '{{ addslashes($source->description ?? '') }}')"
-                        class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Edit</button>
+                        class="text-xs text-gray-500 hover:text-blue-600 transition-colors">Edit</button>
                     <form method="POST" action="{{ route('bendahara.fund-sources.toggle', $source) }}">
                         @csrf @method('PATCH')
-                        <button type="submit" class="text-xs {{ $source->is_active ? 'text-amber-500 hover:text-amber-400' : 'text-green-500 hover:text-green-400' }} transition-colors">
+                        <button type="submit" class="text-xs {{ $source->is_active ? 'text-amber-500 hover:text-amber-600' : 'text-green-500 hover:text-green-600' }} transition-colors">
                             {{ $source->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                         </button>
                     </form>
@@ -58,15 +58,15 @@
             <div class="space-y-1.5 text-sm border-t border-gray-200 pt-4 mb-4">
                 <div class="flex justify-between">
                     <span class="text-gray-500">Total pemasukan</span>
-                    <span class="text-green-400 font-medium">Rp {{ number_format($source->total_income, 0, ',', '.') }}</span>
+                    <span class="text-green-600 font-medium">Rp {{ number_format($source->total_income, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-500">Total pengeluaran</span>
-                    <span class="text-red-400 font-medium">Rp {{ number_format($source->total_expense, 0, ',', '.') }}</span>
+                    <span class="text-red-600 font-medium">Rp {{ number_format($source->total_expense, 0, ',', '.') }}</span>
                 </div>
                 <div class="flex justify-between border-t border-gray-200 pt-1.5 font-semibold">
-                    <span class="text-gray-400">Saldo</span>
-                    <span class="{{ $source->balance >= 0 ? 'text-gray-900' : 'text-red-400' }}">
+                    <span class="text-gray-600">Saldo</span>
+                    <span class="{{ $source->balance >= 0 ? 'text-gray-900' : 'text-red-600' }}">
                         Rp {{ number_format(abs($source->balance), 0, ',', '.') }}
                         {{ $source->balance < 0 ? '(Defisit)' : '' }}
                     </span>
@@ -129,7 +129,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit"
                         class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>
@@ -173,7 +173,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit"
                         class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>

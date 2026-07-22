@@ -7,11 +7,11 @@
 
     {{-- Sub-nav --}}
     <div class="flex gap-2 mb-5 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none">
-        <a href="{{ route('guru.prakerin.index') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Dashboard</a>
-        <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">DU/DI Saya</a>
-        <a href="{{ route('guru.prakerin.placements') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Penempatan Siswa</a>
-        <a href="{{ route('guru.prakerin.izin') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Izin/Sakit/Libur</a>
-        <a href="{{ route('guru.prakerin.recap.absensi') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Absensi</a>
+        <a href="{{ route('guru.prakerin.index') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Dashboard</a>
+        <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">DU/DI Saya</a>
+        <a href="{{ route('guru.prakerin.placements') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Penempatan Siswa</a>
+        <a href="{{ route('guru.prakerin.izin') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Izin/Sakit/Libur</a>
+        <a href="{{ route('guru.prakerin.recap.absensi') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Rekap Absensi</a>
         <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">Rekap Jurnal</a>
     </div>
 
@@ -20,7 +20,7 @@
         @foreach ($periods as $p)
             <a href="{{ route('guru.prakerin.recap.jurnal', ['period_id' => $p->id]) }}"
                class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors
-               {{ $period?->id == $p->id ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-white' }}">
+               {{ $period?->id == $p->id ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-700' }}">
                 {{ $p->name }}
             </a>
         @endforeach
@@ -70,9 +70,9 @@
                 @foreach ($placements as $p)
                     @php $pct = $p->total_days > 0 ? round($p->filled_days / $p->total_days * 100) : 0; @endphp
                     <a href="{{ route('guru.prakerin.recap.jurnal.detail', $p) }}"
-                       class="flex items-center gap-4 bg-white border border-gray-200 hover:border-amber-500/30 rounded-xl px-5 py-4 transition-colors group">
+                       class="flex items-center gap-4 bg-white border border-gray-200 hover:border-amber-200 rounded-xl px-5 py-4 transition-colors group">
                         <div class="flex-1 min-w-0">
-                            <p class="text-gray-900 font-semibold text-sm group-hover:text-amber-400 transition-colors">
+                            <p class="text-gray-900 font-semibold text-sm group-hover:text-amber-600 transition-colors">
                                 {{ $p->student->name }}
                             </p>
                             <div class="flex items-center gap-3 mt-1.5">
@@ -82,21 +82,21 @@
                                          style="width: {{ $pct }}%"></div>
                                 </div>
                                 <span class="text-xs text-gray-500">
-                                    <span class="text-gray-400 font-medium">{{ $p->filled_days }}</span>/{{ $p->total_days }} hari
+                                    <span class="text-gray-600 font-medium">{{ $p->filled_days }}</span>/{{ $p->total_days }} hari
                                 </span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             @if ($p->empty_days > 0)
-                                <span class="px-2.5 py-1 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-lg">
+                                <span class="px-2.5 py-1 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg">
                                     {{ $p->empty_days }} belum diisi
                                 </span>
                             @else
-                                <span class="px-2.5 py-1 bg-blue-600/10 border border-blue-200 text-blue-600 text-xs rounded-lg">
+                                <span class="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-600 text-xs rounded-lg">
                                     Lengkap
                                 </span>
                             @endif
-                            <svg class="w-4 h-4 text-gray-500 group-hover:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-gray-500 group-hover:text-amber-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
                         </div>

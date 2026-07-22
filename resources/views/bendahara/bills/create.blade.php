@@ -1,7 +1,7 @@
 <x-simans-layout title="Buat Tagihan">
 
     <div class="mb-6">
-        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-3 w-fit">
+        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-3 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
@@ -12,7 +12,7 @@
     </div>
 
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">
             <ul class="list-disc list-inside space-y-1">
                 @foreach($errors->all() as $e) <li>{{ $e }}</li> @endforeach
             </ul>
@@ -39,7 +39,7 @@
                                 @endforeach
                             </select>
                             @if($types->isEmpty())
-                                <p class="text-xs text-amber-400 mt-1">
+                                <p class="text-xs text-amber-600 mt-1">
                                     ⚠ Belum ada jenis pembayaran.
                                     <a href="{{ route('bendahara.payment-types.index') }}" class="underline">Tambah dulu →</a>
                                 </p>
@@ -103,7 +103,7 @@
                 </div>
 
                 {{-- Info tarif --}}
-                <div class="bg-blue-500/5 border border-blue-500/15 rounded-xl p-4 text-xs text-blue-300">
+                <div class="bg-blue-500/5 border border-blue-200 rounded-xl p-4 text-xs text-blue-300">
                     <p class="font-medium mb-1">Urutan penentuan tarif:</p>
                     <ol class="space-y-0.5 text-blue-400/80 list-decimal list-inside">
                         <li>Override per siswa (jika ada)</li>
@@ -183,22 +183,22 @@
                 <div x-show="rateChecked" x-cloak>
 
                     {{-- Warning: ada siswa tanpa tarif --}}
-                    <div x-show="noRateCount > 0" class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-3">
-                        <p class="text-sm font-semibold text-amber-400 mb-1">
+                    <div x-show="noRateCount > 0" class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-3">
+                        <p class="text-sm font-semibold text-amber-600 mb-1">
                             ⚠ <span x-text="noRateCount"></span> siswa belum punya tarif
                         </p>
-                        <p class="text-xs text-amber-400/70 mb-3">Isi nominal manual di bawah, atau
+                        <p class="text-xs text-amber-600/70 mb-3">Isi nominal manual di bawah, atau
                             <a href="{{ route('bendahara.payment-types.index') }}" class="underline" target="_blank">tambahkan tarif kelas</a>
                             terlebih dulu.
                         </p>
                         <template x-for="s in rateResults.filter(r => r.source === 'none')" :key="s.id">
                             <div class="flex items-center gap-2 mb-1.5">
-                                <span class="text-xs text-gray-400 flex-1" x-text="s.name"></span>
+                                <span class="text-xs text-gray-600 flex-1" x-text="s.name"></span>
                                 <input type="number"
                                     :name="'manual_amount[' + s.id + ']'"
                                     placeholder="0"
                                     min="0"
-                                    class="w-32 bg-white border border-amber-500/30 text-gray-900 text-xs rounded-lg px-2 py-1.5 focus:border-amber-500 focus:outline-none">
+                                    class="w-32 bg-white border border-amber-200 text-gray-900 text-xs rounded-lg px-2 py-1.5 focus:border-amber-500 focus:outline-none">
                                 <span class="text-xs text-gray-500">Rp</span>
                             </div>
                         </template>
@@ -218,7 +218,7 @@
                                     <span class="text-sm text-gray-900" x-text="s.name"></span>
                                     <div class="text-right">
                                         <span class="text-sm font-medium"
-                                            :class="s.amount > 0 ? 'text-green-400' : 'text-amber-400'"
+                                            :class="s.amount > 0 ? 'text-green-600' : 'text-amber-600'"
                                             x-text="s.amount > 0 ? 'Rp ' + s.amount.toLocaleString('id-ID') : 'Input manual'">
                                         </span>
                                         <p class="text-xs text-gray-500"
@@ -235,7 +235,7 @@
 
         <div class="flex gap-3 mt-5">
             <a href="{{ route('bendahara.bills.index') }}"
-                class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium rounded-lg transition-colors">Batal</a>
+                class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium rounded-lg transition-colors">Batal</a>
             <button type="submit"
                 class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
                 Buat Tagihan

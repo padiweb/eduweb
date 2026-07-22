@@ -4,7 +4,7 @@
             <h1 class="text-xl font-bold text-gray-900">Pengeluaran Menunggu Approval</h1>
             <p class="text-gray-500 text-sm mt-0.5">Persetujuan kepala sekolah diperlukan</p>
         </div>
-        <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-gray-900 text-sm">← Semua pengeluaran</a>
+        <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-blue-600 text-sm">← Semua pengeluaran</a>
     </div>
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
         @if($expenses->isEmpty())
@@ -21,7 +21,7 @@
                         </p>
                     </div>
                     <div class="text-right shrink-0">
-                        <p class="text-base font-bold text-amber-400">{{ $exp->amount_formatted }}</p>
+                        <p class="text-base font-bold text-amber-600">{{ $exp->amount_formatted }}</p>
                     </div>
                     <a href="{{ route('bendahara.expenses.show', $exp) }}"
                         class="shrink-0 text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition-colors">

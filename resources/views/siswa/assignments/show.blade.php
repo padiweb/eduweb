@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('siswa.assignments.index') }}"
-           class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors w-fit">
+           class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
             </svg>
@@ -18,7 +18,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -31,7 +31,7 @@
                 @if($assignment->deadline)
                     <div>
                         <p class="text-xs text-gray-500 mb-0.5">Deadline</p>
-                        <p class="text-sm font-semibold {{ $assignment->isPastDeadline() ? 'text-amber-400' : 'text-gray-900' }}">
+                        <p class="text-sm font-semibold {{ $assignment->isPastDeadline() ? 'text-amber-600' : 'text-gray-900' }}">
                             {{ $assignment->deadline->translatedFormat('l, d F Y H:i') }}
                         </p>
                         @if($assignment->isPastDeadline() && ! $assignment->is_closed)
@@ -50,14 +50,14 @@
                 @if($assignment->description)
                     <div class="border-t border-gray-200 pt-3">
                         <p class="text-xs text-gray-500 mb-1">Instruksi</p>
-                        <p class="text-sm text-gray-400 leading-relaxed whitespace-pre-wrap">{{ $assignment->description }}</p>
+                        <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">{{ $assignment->description }}</p>
                     </div>
                 @endif
                 @if($assignment->attachment_path)
                     <div class="border-t border-gray-200 pt-3">
                         <p class="text-xs text-gray-500 mb-1.5">Lampiran Soal</p>
                         <a href="{{ asset('storage/'.$assignment->attachment_path) }}" target="_blank"
-                           class="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2">
+                           class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 border border-blue-200 rounded-xl px-3 py-2">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/>
                             </svg>
@@ -69,13 +69,13 @@
 
             {{-- Nilai & komentar guru --}}
             @if($submission && ($submission->score !== null || $submission->feedback))
-                <div class="bg-white border border-{{ $submission->score !== null ? 'emerald' : 'blue' }}-500/20 rounded-xl p-5 space-y-3">
+                <div class="bg-white border border-{{ $submission->score !== null ? 'emerald' : 'blue' }}-200 rounded-xl p-5 space-y-3">
 
                     {{-- Nilai --}}
                     @if($submission->score !== null)
                         <div>
                             <p class="text-xs text-gray-500 mb-1">Nilaimu</p>
-                            <p class="text-4xl font-bold {{ $submission->score >= 80 ? 'text-blue-600' : ($submission->score >= 60 ? 'text-amber-400' : 'text-red-400') }}">
+                            <p class="text-4xl font-bold {{ $submission->score >= 80 ? 'text-blue-600' : ($submission->score >= 60 ? 'text-amber-600' : 'text-red-600') }}">
                                 {{ $submission->score }}
                                 <span class="text-sm text-gray-500 font-normal">/ {{ $assignment->max_score }}</span>
                             </p>
@@ -91,7 +91,7 @@
                     @if($submission->feedback)
                         <div class="{{ $submission->score !== null ? 'border-t border-gray-200 pt-3' : '' }}">
                             <p class="text-xs text-gray-500 mb-1">Komentar Guru</p>
-                            <p class="text-sm text-gray-400 leading-relaxed">{{ $submission->feedback }}</p>
+                            <p class="text-sm text-gray-600 leading-relaxed">{{ $submission->feedback }}</p>
                         </div>
                     @endif
                 </div>
@@ -117,7 +117,7 @@
                                     $label    = $short . ($ext ? '.'.$ext : '');
                                 @endphp
                                 <a href="{{ route('siswa.assignments.view-file', ['assignment' => $assignment->id, 'index' => $i]) }}" target="_blank"
-                                   class="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2 min-w-0">
+                                   class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 min-w-0">
                                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/>
                                     </svg>
@@ -129,11 +129,11 @@
                         </div>
                     @elseif($submission->link_url)
                         <a href="{{ $submission->link_url }}" target="_blank"
-                           class="text-sm text-blue-400 hover:text-blue-300 transition-colors break-all">
+                           class="text-sm text-blue-600 hover:text-blue-700 transition-colors break-all">
                             {{ $submission->link_url }}
                         </a>
                     @elseif($submission->content)
-                        <p class="text-sm text-gray-400 leading-relaxed whitespace-pre-wrap line-clamp-4">{{ $submission->content }}</p>
+                        <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap line-clamp-4">{{ $submission->content }}</p>
                     @endif
                 </div>
             @endif
@@ -150,8 +150,8 @@
                     <p class="text-gray-500 text-xs mt-1">Tidak bisa mengumpulkan atau merevisi jawaban.</p>
                 </div>
             @elseif($submission && $submission->isNotSubmitted())
-                <div class="bg-white border border-red-500/20 rounded-xl p-8 text-center">
-                    <p class="text-red-400 text-sm font-medium">Tidak Mengumpulkan Tugas</p>
+                <div class="bg-white border border-red-200 rounded-xl p-8 text-center">
+                    <p class="text-red-600 text-sm font-medium">Tidak Mengumpulkan Tugas</p>
                     <p class="text-gray-500 text-xs mt-1">Tugas ini sudah ditutup dan kamu tidak mengumpulkan.</p>
                 </div>
             @else
@@ -162,7 +162,7 @@
                     @if($submission)
                         <p class="text-xs text-gray-500 mb-4">
                             Dikumpulkan {{ $submission->submitted_at->translatedFormat('d M Y H:i') }}
-                            @if($submission->isLate()) <span class="text-amber-400">&middot; Terlambat</span> @endif
+                            @if($submission->isLate()) <span class="text-amber-600">&middot; Terlambat</span> @endif
                             &middot; Kamu bisa merevisi sebelum tugas ditutup.
                         </p>
                     @else
@@ -203,7 +203,7 @@
                                 <div id="file-inputs" class="space-y-2">
                                     <div class="file-input-row flex items-center gap-2">
                                         <input type="file" name="files[]"
-                                               class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
+                                               class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
                                     </div>
                                 </div>
 
@@ -261,8 +261,8 @@
             var container = document.getElementById('file-inputs');
             var row       = document.createElement('div');
             row.className = 'file-input-row flex items-center gap-2';
-            row.innerHTML = '<input type="file" name="files[]" class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">'
-                + '<button type="button" class="btn-remove-file text-gray-500 hover:text-red-400 transition-colors flex-shrink-0">'
+            row.innerHTML = '<input type="file" name="files[]" class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">'
+                + '<button type="button" class="btn-remove-file text-gray-500 hover:text-red-600 transition-colors flex-shrink-0">'
                 + '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
                 + '</button>';
             container.appendChild(row);

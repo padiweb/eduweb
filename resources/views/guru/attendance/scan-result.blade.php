@@ -20,7 +20,7 @@
             @endphp
             <div class="w-20 h-20 rounded-full bg-{{ $color }}-500/10 border-2 border-{{ $color }}-500/30 flex items-center justify-center mx-auto mb-5">
                 @if($isLate)
-                    <svg class="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
                     </svg>
                 @else
@@ -37,7 +37,7 @@
                 Tercatat pukul {{ $attendance?->scanned_at?->format('H:i:s') }} WIB
             </p>
             @if($isLate)
-                <div class="bg-amber-900/20 border border-amber-500/20 rounded-xl px-4 py-3 text-sm text-amber-300 mb-5">
+                <div class="bg-amber-900/20 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-700 mb-5">
                     Kamu tercatat terlambat. Harap lebih tepat waktu besok.
                 </div>
             @else
@@ -47,8 +47,8 @@
             @endif
         @else
             {{-- Gagal --}}
-            <div class="w-20 h-20 rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center mx-auto mb-5">
-                <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <div class="w-20 h-20 rounded-full bg-red-50 border-2 border-red-200 flex items-center justify-center mx-auto mb-5">
+                <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>

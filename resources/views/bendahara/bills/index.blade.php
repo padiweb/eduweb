@@ -15,7 +15,7 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
     <form method="GET" class="flex flex-wrap gap-3 mb-5">
@@ -30,7 +30,7 @@
         </select>
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Filter</button>
         @if(request()->hasAny(['search','year']))
-            <a href="{{ route('bendahara.bills.index') }}" class="text-gray-500 hover:text-gray-900 text-sm px-3 py-2">Reset</a>
+            <a href="{{ route('bendahara.bills.index') }}" class="text-gray-500 hover:text-blue-600 text-sm px-3 py-2">Reset</a>
         @endif
     </form>
 
@@ -52,7 +52,7 @@
                 @endphp
                 <a href="{{ route('bendahara.bills.student', $student) }}?year={{ $yearId }}"
                     class="flex items-center gap-4 px-5 py-4 hover:bg-white/2 transition-colors">
-                    <div class="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-sm font-semibold text-gray-400 flex-shrink-0">
+                    <div class="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-sm font-semibold text-gray-600 flex-shrink-0">
                         {{ strtoupper(substr($student->name, 0, 1)) }}
                     </div>
                     <div class="flex-1 min-w-0">
@@ -72,11 +72,11 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Dibayar</p>
-                            <p class="text-sm text-green-400">Rp {{ number_format($paid, 0, ',', '.') }}</p>
+                            <p class="text-sm text-green-600">Rp {{ number_format($paid, 0, ',', '.') }}</p>
                         </div>
                         <div class="min-w-28">
                             <p class="text-xs text-gray-500">Sisa</p>
-                            <p class="text-sm font-semibold {{ $remaining > 0 ? 'text-red-400' : 'text-gray-500' }}">
+                            <p class="text-sm font-semibold {{ $remaining > 0 ? 'text-red-600' : 'text-gray-500' }}">
                                 {{ $remaining > 0 ? 'Rp ' . number_format($remaining, 0, ',', '.') : 'Lunas' }}
                             </p>
                         </div>
@@ -84,9 +84,9 @@
                     @endif
                     <div class="flex items-center gap-2 shrink-0">
                         @if($remaining > 0)
-                            <span class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full">Tunggakan</span>
+                            <span class="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">Tunggakan</span>
                         @elseif($summary)
-                            <span class="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-full">Lunas</span>
+                            <span class="text-xs bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-full">Lunas</span>
                         @endif
                         <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>

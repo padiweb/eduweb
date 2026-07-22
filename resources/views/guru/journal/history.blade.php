@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <a href="{{ route('guru.journal.index') }}"
-               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors w-fit">
+               class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors w-fit">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
@@ -75,7 +75,7 @@
                                     <span class="text-xs text-blue-600" title="+1 poin reward">★</span>
                                 @endif
                                 <a href="{{ route('guru.journal.create', ['schedule_id' => $j->schedule_id, 'date' => $j->journal_date->format('Y-m-d')]) }}"
-                                   class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                                   class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                                     </svg>

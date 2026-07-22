@@ -7,12 +7,12 @@
 
     {{-- Sub-nav --}}
     <div class="flex gap-2 mb-5 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none">
-        <a href="{{ route('guru.prakerin.index') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Dashboard</a>
-        <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">DU/DI Saya</a>
-        <a href="{{ route('guru.prakerin.placements') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Penempatan Siswa</a>
+        <a href="{{ route('guru.prakerin.index') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Dashboard</a>
+        <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">DU/DI Saya</a>
+        <a href="{{ route('guru.prakerin.placements') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Penempatan Siswa</a>
         <a href="{{ route('guru.prakerin.izin') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-orange-600 text-white">Izin/Sakit/Libur</a>
-        <a href="{{ route('guru.prakerin.recap.absensi') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Absensi</a>
-        <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Jurnal</a>
+        <a href="{{ route('guru.prakerin.recap.absensi') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Rekap Absensi</a>
+        <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Rekap Jurnal</a>
     </div>
 
     {{-- Filter periode --}}
@@ -21,7 +21,7 @@
         @foreach ($periods as $p)
             <a href="{{ route('guru.prakerin.izin', ['period_id' => $p->id]) }}"
                class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors
-               {{ $period?->id == $p->id ? 'bg-orange-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900' }}">
+               {{ $period?->id == $p->id ? 'bg-orange-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-700' }}">
                 {{ $p->name }}
             </a>
         @endforeach
@@ -56,14 +56,14 @@
                                 <p class="text-gray-900 font-medium text-sm">{{ $abs->student->name }}</p>
                             </td>
                             <td class="px-5 py-3 text-gray-500 text-xs">{{ $abs->placement->location->name }}</td>
-                            <td class="px-5 py-3 text-gray-400 text-xs whitespace-nowrap">
+                            <td class="px-5 py-3 text-gray-600 text-xs whitespace-nowrap">
                                 {{ $abs->absence_date->translatedFormat('d M Y') }}
                             </td>
                             <td class="px-5 py-3">
                                 <span class="px-2.5 py-1 text-xs font-semibold rounded-lg
-                                    {{ $abs->type === 'sakit' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                                       ($abs->type === 'libur' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' :
-                                       'bg-orange-500/10 text-orange-400 border border-orange-500/20') }}">
+                                    {{ $abs->type === 'sakit' ? 'bg-red-50 text-red-600 border border-red-200' :
+                                       ($abs->type === 'libur' ? 'bg-blue-50 text-blue-400 border border-blue-200' :
+                                       'bg-orange-50 text-orange-600 border border-orange-200') }}">
                                     {{ $abs->type_label }}
                                 </span>
                             </td>

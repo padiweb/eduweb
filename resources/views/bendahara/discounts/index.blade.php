@@ -32,7 +32,7 @@
         </label>
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Filter</button>
         @if(request()->hasAny(['search','year','active']))
-            <a href="{{ route('bendahara.discounts.index') }}" class="text-gray-500 hover:text-gray-900 text-sm px-3 py-2">Reset</a>
+            <a href="{{ route('bendahara.discounts.index') }}" class="text-gray-500 hover:text-blue-600 text-sm px-3 py-2">Reset</a>
         @endif
     </form>
 
@@ -65,7 +65,7 @@
                                 <p class="text-xs text-gray-500">{{ $disc->student->nis ?? '-' }}</p>
                             </td>
                             <td class="px-4 py-3">
-                                <p class="text-gray-400">{{ $disc->name }}</p>
+                                <p class="text-gray-600">{{ $disc->name }}</p>
                                 @if($disc->notes)
                                     <p class="text-xs text-gray-500">{{ $disc->notes }}</p>
                                 @endif
@@ -74,7 +74,7 @@
                                 {{ $disc->paymentType->name ?? 'Semua jenis' }}
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <span class="text-green-400 font-semibold">{{ $disc->getDiscountLabel() }}</span>
+                                <span class="text-green-600 font-semibold">{{ $disc->getDiscountLabel() }}</span>
                                 <p class="text-xs text-gray-500">{{ $disc->discount_type === 'percent' ? 'Persen' : 'Nominal' }}</p>
                             </td>
                             <td class="px-4 py-3 text-xs text-gray-500">
@@ -88,16 +88,16 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if($active)
-                                    <span class="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2.5 py-0.5 rounded-full">Aktif</span>
+                                    <span class="text-xs bg-green-50 text-green-600 border border-green-200 px-2.5 py-0.5 rounded-full">Aktif</span>
                                 @else
-                                    <span class="text-xs bg-gray-500/10 text-gray-500 border border-gray-500/20 px-2.5 py-0.5 rounded-full">Tidak aktif</span>
+                                    <span class="text-xs bg-gray-50 text-gray-500 border border-gray-500/20 px-2.5 py-0.5 rounded-full">Tidak aktif</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <form method="POST" action="{{ route('bendahara.discounts.destroy', $disc) }}"
                                     onsubmit="return confirm('Hapus beasiswa ini?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors">
+                                    <button type="submit" class="text-gray-500 hover:text-red-600 transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                         </svg>
@@ -200,12 +200,12 @@
 
                         {{-- Siswa terpilih --}}
                         <div x-show="selectedId"
-                            class="bg-blue-500/10 border border-blue-200 rounded-lg px-3 py-2.5 flex items-center justify-between">
+                            class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2.5 flex items-center justify-between">
                             <div>
                                 <p class="text-sm text-gray-900 font-medium" x-text="selectedName"></p>
                                 <p class="text-xs text-gray-500" x-text="selectedNis + ' · ' + selectedClass"></p>
                             </div>
-                            <button type="button" @click="clearStudent()" class="text-gray-500 hover:text-red-400 ml-2">
+                            <button type="button" @click="clearStudent()" class="text-gray-500 hover:text-red-600 ml-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -289,7 +289,7 @@
 
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2.5 rounded-lg transition-colors">
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2.5 rounded-lg transition-colors">
                         Batal
                     </button>
                     <button type="submit" :disabled="!selectedId"

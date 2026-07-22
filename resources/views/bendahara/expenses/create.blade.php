@@ -1,7 +1,7 @@
 <x-simans-layout title="Catat Pengeluaran">
 
     <div class="mb-6">
-        <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-3 w-fit">
+        <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-3 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
@@ -12,7 +12,7 @@
     </div>
 
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">
             <ul class="list-disc list-inside space-y-1">
                 @foreach($errors->all() as $e) <li>{{ $e }}</li> @endforeach
             </ul>
@@ -115,8 +115,8 @@
                 </div>
 
                 {{-- Info approval --}}
-                <div class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5">
-                    <h3 class="text-sm font-semibold text-amber-400 mb-2">⚠ Informasi Approval</h3>
+                <div class="bg-amber-500/5 border border-amber-200 rounded-xl p-5">
+                    <h3 class="text-sm font-semibold text-amber-600 mb-2">⚠ Informasi Approval</h3>
                     <p class="text-xs text-gray-500 leading-relaxed">
                         Pengeluaran dengan kategori yang membutuhkan approval <strong>akan otomatis masuk ke antrian persetujuan kepala sekolah</strong>.
                         Pengeluaran kecil (di bawah batas nominal) langsung disetujui otomatis.
@@ -142,7 +142,7 @@
 
         <div class="flex gap-3 mt-5">
             <a href="{{ route('bendahara.expenses.index') }}"
-                class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium rounded-lg transition-colors">Batal</a>
+                class="px-6 py-2.5 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium rounded-lg transition-colors">Batal</a>
             <button type="submit"
                 class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
                 Simpan Pengeluaran

@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('bendahara.discount-programs.index') }}"
-            class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-3 w-fit">
+            class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-3 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
@@ -28,11 +28,11 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
     {{-- Info --}}
-    <div class="bg-blue-500/5 border border-blue-500/15 rounded-xl px-4 py-3 mb-5 text-xs text-blue-300">
+    <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-300">
         Nilai default program: <strong>{{ $program->default_value_formatted }}</strong>.
         Isi kolom Override jika siswa tertentu punya nominal berbeda — kosongkan untuk pakai nilai default.
         Setelah semua siswa ditambahkan, klik <strong>Terapkan</strong> di halaman program.
@@ -51,7 +51,7 @@
                     @csrf
                     <button type="submit"
                         onclick="return confirm('Terapkan ke semua {{ $program->members->count() }} siswa?')"
-                        class="text-xs bg-green-600/10 hover:bg-green-600/20 border border-green-500/20 text-green-400 px-3 py-1.5 rounded-lg transition-colors">
+                        class="text-xs bg-green-50 hover:bg-green-50 border border-green-200 text-green-600 px-3 py-1.5 rounded-lg transition-colors">
                         Terapkan Semua ke Tagihan
                     </button>
                 </form>
@@ -79,7 +79,7 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <div x-show="!editing">
-                                    <span class="text-xs {{ $member->override_value ? 'text-amber-400' : 'text-gray-500' }}">
+                                    <span class="text-xs {{ $member->override_value ? 'text-amber-600' : 'text-gray-500' }}">
                                         {{ $member->override_value
                                             ? ($program->discount_type === 'percent' ? $member->override_value.'%' : 'Rp '.number_format($member->override_value,0,',','.'))
                                             : '—' }}
@@ -93,7 +93,7 @@
                                             value="{{ $member->override_value }}"
                                             placeholder="{{ $program->default_value }}"
                                             class="w-24 bg-white border border-gray-200 text-gray-700 text-xs rounded px-2 py-1 focus:border-blue-500 focus:outline-none">
-                                        <button type="submit" class="text-xs text-green-400 hover:text-green-300 px-2">Simpan</button>
+                                        <button type="submit" class="text-xs text-green-600 hover:text-green-700 px-2">Simpan</button>
                                     </form>
                                 </div>
                             </td>
@@ -103,13 +103,13 @@
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center gap-2 justify-end">
                                     <button type="button" @click="editing = !editing"
-                                        class="text-xs text-gray-500 hover:text-gray-900 transition-colors">
+                                        class="text-xs text-gray-500 hover:text-blue-600 transition-colors">
                                         <span x-text="editing ? 'Batal' : 'Override'"></span>
                                     </button>
                                     <form method="POST" action="{{ route('bendahara.discount-programs.member.remove', $member) }}"
                                         onsubmit="return confirm('Hapus {{ $member->student->name }} dari program?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="text-xs text-gray-500 hover:text-red-400 transition-colors">Hapus</button>
+                                        <button type="submit" class="text-xs text-gray-500 hover:text-red-600 transition-colors">Hapus</button>
                                     </form>
                                 </div>
                             </td>
@@ -144,7 +144,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-gray-900 font-semibold">Tambah Siswa ke Program</h3>
                 <button onclick="document.getElementById('modal-add-member').style.display='none'"
-                    class="text-gray-500 hover:text-gray-900">
+                    class="text-gray-500 hover:text-blue-600">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -160,10 +160,10 @@
             <div x-show="results.length > 0" class="border border-gray-200 rounded-lg overflow-hidden mb-3 max-h-48 overflow-y-auto">
                 <template x-for="s in results" :key="s.id">
                     <div @click="toggle(s)"
-                        :class="selected[s.id] ? 'bg-blue-500/10 border-l-2 border-purple-500' : 'hover:bg-gray-50'"
+                        :class="selected[s.id] ? 'bg-blue-50 border-l-2 border-blue-500' : 'hover:bg-gray-50'"
                         class="flex items-center gap-3 px-3 py-2.5 cursor-pointer border-b border-gray-200 last:border-0">
                         <div class="w-5 h-5 rounded border flex items-center justify-center flex-shrink-0"
-                            :class="selected[s.id] ? 'bg-blue-600 border-purple-600' : 'border-gray-600'">
+                            :class="selected[s.id] ? 'bg-blue-600 border-blue-600' : 'border-gray-600'">
                             <svg x-show="selected[s.id]" class="w-3 h-3 text-gray-900" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
@@ -198,7 +198,7 @@
                     </div>
                     <div class="flex gap-3">
                         <button type="button" onclick="document.getElementById('modal-add-member').style.display='none'"
-                            class="flex-1 bg-white text-gray-400 text-sm py-2 rounded-lg">Batal</button>
+                            class="flex-1 bg-white text-gray-600 text-sm py-2 rounded-lg">Batal</button>
                         <button type="submit"
                             class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">
                             Tambahkan

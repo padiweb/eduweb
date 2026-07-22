@@ -14,7 +14,7 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
@@ -42,7 +42,7 @@
                         <td class="px-4 py-3 text-gray-500">{{ $cat->getTypeLabel() }}</td>
                         <td class="px-4 py-3 text-center">
                             @if($cat->requires_approval)
-                                <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">Ya</span>
+                                <span class="text-xs bg-amber-50 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">Ya</span>
                             @else
                                 <span class="text-xs text-gray-500">Tidak</span>
                             @endif
@@ -61,7 +61,7 @@
                         <td class="px-4 py-3 text-right text-gray-500">{{ $cat->expenses_count }}x</td>
                         <td class="px-4 py-3 text-right">
                             <button onclick="openEdit({{ $cat->id }}, '{{ addslashes($cat->name) }}', '{{ $cat->code }}', '{{ $cat->type }}', {{ $cat->requires_approval ? 1:0 }}, {{ $cat->approval_threshold }})"
-                                class="text-xs text-gray-500 hover:text-gray-900">Edit</button>
+                                class="text-xs text-gray-500 hover:text-blue-600">Edit</button>
                         </td>
                     </tr>
                     @endforeach
@@ -113,7 +113,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>
             </form>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>
             </form>

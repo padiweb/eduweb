@@ -6,7 +6,7 @@
             <p class="text-gray-500 text-sm mt-1">Daftar siswa diurutkan berdasarkan poin pelanggaran tertinggi</p>
         </div>
         <a href="{{ route('kesiswaan.violations.categories') }}"
-           class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
+           class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/>
@@ -29,7 +29,7 @@
                 <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors">
 
                     {{-- Avatar --}}
-                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-400 flex-shrink-0">
+                    <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0">
                         {{ substr($student->name, 0, 2) }}
                     </div>
 

@@ -3,7 +3,7 @@
     <div class="flex items-start justify-between mb-6">
         <div>
             <a href="{{ route('guru.attendance.index') }}"
-               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors">
+               class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
@@ -130,11 +130,11 @@
                     <h3 class="text-sm font-semibold text-gray-900 mr-auto">Daftar Absensi Siswa</h3>
                     @if(! $session->is_closed)
                         <button type="button" id="btn-check-all"
-                                class="text-xs text-gray-500 hover:text-gray-900 py-1.5 px-3 rounded-lg bg-white border border-gray-200 transition-colors">
+                                class="text-xs text-gray-500 hover:text-blue-600 py-1.5 px-3 rounded-lg bg-white border border-gray-200 transition-colors">
                             Centang Semua
                         </button>
                         <button type="button" id="btn-uncheck-all"
-                                class="text-xs text-gray-500 hover:text-gray-900 py-1.5 px-3 rounded-lg bg-white border border-gray-200 transition-colors">
+                                class="text-xs text-gray-500 hover:text-blue-600 py-1.5 px-3 rounded-lg bg-white border border-gray-200 transition-colors">
                             Hapus Semua
                         </button>
                         <button type="button" id="btn-bulk-edit"
@@ -159,10 +159,10 @@
                                 $status   = $att?->status ?? null;
                                 $colorMap = [
                                     'hadir'     => 'bg-blue-600/10 text-blue-600 border-blue-200',
-                                    'terlambat' => 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-                                    'izin'      => 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                                    'terlambat' => 'bg-amber-50 text-amber-700 border-amber-200',
+                                    'izin'      => 'bg-blue-50 text-blue-700 border-blue-200',
                                     'sakit'     => 'bg-blue-500/10 text-blue-600 border-blue-200',
-                                    'alfa'      => 'bg-red-500/10 text-red-400 border-red-500/20',
+                                    'alfa'      => 'bg-red-50 text-red-700 border-red-200',
                                 ];
                                 $labelMap  = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
                                 $isPresent = $status && in_array($status, ['hadir','terlambat','izin','sakit']);
@@ -201,7 +201,7 @@
                                 @endif
 
                                 <button type="button"
-                                        class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0"
+                                        class="btn-edit w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0"
                                         data-student-id="{{ $student->id }}"
                                         data-student-name="{{ $student->name }}"
                                         data-current-status="{{ $status ?? '' }}">
@@ -240,7 +240,7 @@
         <div class="bg-white border border-gray-200 rounded-xl w-full max-w-sm">
             <div class="flex items-center justify-between p-5 border-b border-gray-200">
                 <h3 class="font-semibold text-gray-900">Edit Status Absensi</h3>
-                <button id="btn-close-modal" class="text-gray-500 hover:text-gray-900 transition-colors">
+                <button id="btn-close-modal" class="text-gray-500 hover:text-blue-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -257,7 +257,7 @@
                         <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="hadir"     data-color="emerald">Hadir</button>
                         <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="terlambat" data-color="amber">Terlambat</button>
                         <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="izin"      data-color="blue">Izin</button>
-                        <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="sakit"     data-color="purple">Sakit</button>
+                        <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="sakit"     data-color="blue">Sakit</button>
                         <button type="button" class="status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="alfa"      data-color="red">Alfa</button>
                     </div>
                 </div>
@@ -283,7 +283,7 @@
                     <h3 class="font-semibold text-gray-900">Edit Massal Absensi</h3>
                     <p class="text-xs text-gray-500 mt-0.5">Ubah status banyak siswa sekaligus</p>
                 </div>
-                <button id="btn-close-bulk" class="text-gray-500 hover:text-gray-900 transition-colors">
+                <button id="btn-close-bulk" class="text-gray-500 hover:text-blue-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -294,8 +294,8 @@
                     <div class="flex items-center justify-between mb-2">
                         <p class="text-xs text-gray-500">Pilih Siswa</p>
                         <div class="flex gap-3">
-                            <button type="button" id="btn-bulk-check-all"   class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Pilih Semua</button>
-                            <button type="button" id="btn-bulk-uncheck-all" class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Hapus Semua</button>
+                            <button type="button" id="btn-bulk-check-all"   class="text-xs text-gray-500 hover:text-blue-600 transition-colors">Pilih Semua</button>
+                            <button type="button" id="btn-bulk-uncheck-all" class="text-xs text-gray-500 hover:text-blue-600 transition-colors">Hapus Semua</button>
                         </div>
                     </div>
                     <div class="bg-white rounded-xl divide-y divide-gray-100 max-h-48 overflow-y-auto">
@@ -317,7 +317,7 @@
                         <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="hadir"     data-color="emerald">Hadir</button>
                         <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="terlambat" data-color="amber">Terlambat</button>
                         <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="izin"      data-color="blue">Izin</button>
-                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="sakit"     data-color="purple">Sakit</button>
+                        <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="sakit"     data-color="blue">Sakit</button>
                         <button type="button" class="bulk-status-btn py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-semibold transition-all" data-value="alfa"      data-color="red">Alfa</button>
                     </div>
                 </div>
@@ -351,7 +351,7 @@
         function resetBtns(sel) {
             document.querySelectorAll(sel).forEach(function(b) {
                 b.classList.remove('border-emerald-500','text-blue-600','border-amber-500','text-amber-400',
-                    'border-blue-500','text-blue-400','border-purple-500','text-blue-600','border-red-500','text-red-400');
+                    'border-blue-500','text-blue-400','border-blue-500','text-blue-600','border-red-500','text-red-400');
                 b.classList.add('border-gray-200','text-gray-500');
             });
         }

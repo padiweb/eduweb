@@ -1,7 +1,7 @@
 <x-simans-layout title="Detail Pengeluaran">
 
     <div class="mb-6">
-        <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-3 w-fit">
+        <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-3 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
@@ -23,10 +23,10 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -88,7 +88,7 @@
                     @if($expense->rejection_reason)
                     <div class="flex justify-between">
                         <span class="text-gray-500">Alasan ditolak</span>
-                        <span class="text-red-400">{{ $expense->rejection_reason }}</span>
+                        <span class="text-red-600">{{ $expense->rejection_reason }}</span>
                     </div>
                     @endif
                 </div>
@@ -100,7 +100,7 @@
                     <h2 class="text-sm font-semibold text-gray-900">Riwayat Approval</h2>
                 </div>
                 @if($expense->approvals->isEmpty())
-                    <div class="px-5 py-6 text-center text-gray-400 text-sm">Belum ada riwayat.</div>
+                    <div class="px-5 py-6 text-center text-gray-600 text-sm">Belum ada riwayat.</div>
                 @else
                     <div class="divide-y divide-gray-100">
                         @foreach($expense->approvals as $log)
@@ -128,8 +128,8 @@
 
             {{-- Approval (Kepala Sekolah) --}}
             @if($expense->is_pending && auth()->user()->role === 'kepala_sekolah')
-            <div class="bg-white border border-amber-500/20 rounded-xl p-5">
-                <h2 class="text-sm font-semibold text-amber-400 mb-4">Tindakan Approval</h2>
+            <div class="bg-white border border-amber-200 rounded-xl p-5">
+                <h2 class="text-sm font-semibold text-amber-600 mb-4">Tindakan Approval</h2>
                 <div class="space-y-3">
                     <form method="POST" action="{{ route('bendahara.expenses.approve', $expense) }}">
                         @csrf @method('PATCH')
@@ -147,7 +147,7 @@
 
                     <div x-data="{ open: false }">
                         <button @click="open = !open"
-                            class="w-full bg-red-600/10 hover:bg-red-600/20 border border-red-500/20 text-red-400 text-sm font-medium py-2.5 rounded-lg transition-colors">
+                            class="w-full bg-red-50 hover:bg-red-50 border border-red-200 text-red-600 text-sm font-medium py-2.5 rounded-lg transition-colors">
                             ✕ Tolak
                         </button>
                         <div x-show="open" x-cloak class="mt-3">
@@ -182,9 +182,9 @@
 
             {{-- Hapus (hanya jika belum approved) --}}
             @if($expense->status !== 'approved' && auth()->user()->role === 'bendahara')
-            <div class="bg-white border border-red-500/10 rounded-xl p-5" x-data="{ open: false }">
+            <div class="bg-white border border-red-200 rounded-xl p-5" x-data="{ open: false }">
                 <button @click="open = !open"
-                    class="text-sm text-red-400 hover:text-red-300 flex items-center gap-1.5">
+                    class="text-sm text-red-600 hover:text-red-700 flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                     </svg>
@@ -196,7 +196,7 @@
                         onsubmit="return confirm('Yakin hapus pengeluaran ini? Tindakan tidak dapat dibatalkan.')">
                         @csrf @method('DELETE')
                         <button type="submit"
-                            class="w-full bg-red-600/20 hover:bg-red-600/40 border border-red-500/30 text-red-400 text-sm font-medium py-2 rounded-lg transition-colors">
+                            class="w-full bg-red-50 hover:bg-red-600/40 border border-red-200 text-red-600 text-sm font-medium py-2 rounded-lg transition-colors">
                             Hapus
                         </button>
                     </form>

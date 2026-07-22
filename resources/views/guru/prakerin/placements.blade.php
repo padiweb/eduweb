@@ -18,18 +18,18 @@
 
     {{-- Sub-nav --}}
     <div class="flex gap-2 mb-5 flex-wrap">
-        <a href="{{ route('guru.prakerin.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Dashboard</a>
-        <a href="{{ route('guru.prakerin.locations') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">DU/DI Saya</a>
+        <a href="{{ route('guru.prakerin.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Dashboard</a>
+        <a href="{{ route('guru.prakerin.locations') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">DU/DI Saya</a>
         <a href="{{ route('guru.prakerin.placements') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">Penempatan Siswa</a>
-        <a href="{{ route('guru.prakerin.recap.absensi') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Absensi</a>
-        <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">Rekap Jurnal</a>
+        <a href="{{ route('guru.prakerin.recap.absensi') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Rekap Absensi</a>
+        <a href="{{ route('guru.prakerin.recap.jurnal') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Rekap Jurnal</a>
     </div>
 
     @if (session('success'))
-        <div class="mb-4 p-3 rounded-xl bg-blue-600/10 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
     @endif
     @if (session('error'))
-        <div class="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ session('error') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{{ session('error') }}</div>
     @endif
 
     @if (! $period)
@@ -37,8 +37,8 @@
             <p class="text-gray-500">Anda belum ditunjuk sebagai koordinator di periode manapun.</p>
         </div>
     @elseif ($locations->isEmpty())
-        <div class="bg-amber-500/5 border border-amber-500/20 rounded-xl p-5">
-            <p class="text-amber-400 text-sm">Belum ada DU/DI yang Anda bimbing. <a href="{{ route('guru.prakerin.locations') }}" class="underline">Tambah DU/DI dulu</a>.</p>
+        <div class="bg-amber-500/5 border border-amber-200 rounded-xl p-5">
+            <p class="text-amber-600 text-sm">Belum ada DU/DI yang Anda bimbing. <a href="{{ route('guru.prakerin.locations') }}" class="underline">Tambah DU/DI dulu</a>.</p>
         </div>
     @elseif ($placements->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
@@ -62,7 +62,7 @@
                             <td class="px-5 py-3">
                                 <p class="text-gray-900 font-medium">{{ $p->student->name }}</p>
                             </td>
-                            <td class="px-5 py-3 text-gray-400">{{ $p->location->name }}</td>
+                            <td class="px-5 py-3 text-gray-600">{{ $p->location->name }}</td>
                             <td class="px-5 py-3 hidden md:table-cell text-gray-500 text-xs">
                                 @if ($p->start_date || $p->end_date)
                                     {{ $p->start_date?->format('d M') ?? '—' }} – {{ $p->end_date?->format('d M Y') ?? '—' }}
@@ -72,9 +72,9 @@
                             </td>
                             <td class="px-5 py-3">
                                 @if ($p->isActiveToday())
-                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-600/10 text-blue-600 border border-blue-200">Aktif</span>
+                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200">Aktif</span>
                                 @elseif ($p->is_active)
-                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">Terjadwal</span>
+                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-400 border border-blue-200">Terjadwal</span>
                                 @else
                                     <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-gray-50 text-gray-500">Nonaktif</span>
                                 @endif
@@ -82,13 +82,13 @@
                             <td class="px-5 py-3">
                                 <div class="flex items-center gap-2 justify-end">
                                     <a href="{{ route('guru.prakerin.placements.show', $p) }}"
-                                       class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-xs rounded-lg transition-colors">
+                                       class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
                                         Rekap
                                     </a>
                                     <form action="{{ route('guru.prakerin.placements.destroy', $p) }}" method="POST"
                                           onsubmit="return confirm('Hapus penempatan {{ $p->student->name }}?')">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="px-3 py-1.5 bg-red-600/10 hover:bg-red-600/20 border border-red-500/20 text-red-400 text-xs rounded-lg transition-colors">
+                                        <button type="submit" class="px-3 py-1.5 bg-red-50 hover:bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg transition-colors">
                                             Hapus
                                         </button>
                                     </form>
@@ -110,7 +110,7 @@
                 @csrf
                 <input type="hidden" name="period_id" value="{{ $period?->id }}">
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">Siswa <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1">Siswa <span class="text-red-600">*</span></label>
                     <select name="student_id" required class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
                         <option value="">— Pilih Siswa —</option>
                         @foreach ($students as $s)
@@ -127,7 +127,7 @@
                     @endif
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1">DU/DI <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1">DU/DI <span class="text-red-600">*</span></label>
                     <select name="location_id" required class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500">
                         <option value="">— Pilih DU/DI —</option>
                         @foreach ($locations as $loc)
@@ -148,7 +148,7 @@
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-tambah').classList.add('hidden')"
-                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-400 text-sm rounded-xl">Batal</button>
+                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-xl">Batal</button>
                     <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl">Simpan</button>
                 </div>
             </form>

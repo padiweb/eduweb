@@ -7,7 +7,7 @@
         </div>
         <div class="flex gap-2">
             <a href="{{ route('admin.users.positions') }}"
-               class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
+               class="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/>
@@ -15,7 +15,7 @@
                 Kelola Jabatan
             </a>
             <a href="{{ route('admin.users.import', ['role' => $tab]) }}"
-               class="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm px-4 py-2 rounded-xl transition-colors">
+               class="flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
                 </svg>
@@ -37,7 +37,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -58,21 +58,21 @@
         <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama, NIS, email..."
                class="flex-1 min-w-48 bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-blue-300">
         @if($tab === 'siswa')
-        <select name="kelas_id" class="bg-white border border-gray-200 text-gray-400 rounded-xl px-3 py-2 text-sm focus:outline-none">
+        <select name="kelas_id" class="bg-white border border-gray-200 text-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none">
             <option value="">Semua Kelas</option>
             @foreach($classrooms as $cls)
                 <option value="{{ $cls->id }}" {{ $kelasId == $cls->id ? 'selected' : '' }}>{{ $cls->name }}</option>
             @endforeach
         </select>
         @endif
-        <select name="status" class="bg-white border border-gray-200 text-gray-400 rounded-xl px-3 py-2 text-sm focus:outline-none">
+        <select name="status" class="bg-white border border-gray-200 text-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none">
             <option value="">Semua Status</option>
             <option value="aktif" {{ $status === 'aktif' ? 'selected' : '' }}>Aktif</option>
             <option value="nonaktif" {{ $status === 'nonaktif' ? 'selected' : '' }}>Non-aktif</option>
         </select>
         <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors">Cari</button>
         @if($search || $kelasId || $status)
-            <a href="{{ route('admin.users.index', ['tab' => $tab]) }}" class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-400 text-sm rounded-xl border border-gray-200 transition-colors">Reset</a>
+            <a href="{{ route('admin.users.index', ['tab' => $tab]) }}" class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-600 text-sm rounded-xl border border-gray-200 transition-colors">Reset</a>
         @endif
     </form>
 
@@ -101,7 +101,7 @@
                             <div class="flex items-center gap-2 flex-wrap">
                                 <p class="text-sm font-semibold text-gray-900 truncate">{{ $user->name }}</p>
                                 @if(! $user->is_active)
-                                    <span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded-full">Nonaktif</span>
+                                    <span class="text-xs text-red-600 bg-red-50 border border-red-200 px-1.5 py-0.5 rounded-full">Nonaktif</span>
                                 @endif
                             </div>
                             <p class="text-xs text-gray-500 mt-0.5">
@@ -133,14 +133,14 @@
                         {{-- Aksi --}}
                         <div class="flex items-center gap-1 flex-shrink-0">
                             <a href="{{ route('admin.users.edit', $user->id) }}"
-                               class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                               class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                                 </svg>
                             </a>
                             <form method="POST" action="{{ route('admin.users.toggle', $user->id) }}">
                                 @csrf @method('PATCH')
-                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 transition-colors {{ $user->is_active ? 'text-amber-400' : 'text-blue-600' }}"
+                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 transition-colors {{ $user->is_active ? 'text-amber-600' : 'text-blue-600' }}"
                                         title="{{ $user->is_active ? 'Nonaktifkan' : 'Aktifkan' }}">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         @if($user->is_active)
@@ -154,7 +154,7 @@
                             <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}"
                                   onsubmit="return confirm('Hapus {{ addslashes($user->name) }}?')">
                                 @csrf @method('DELETE')
-                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-500/30 text-gray-500 hover:text-red-400 transition-colors">
+                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                     </svg>
@@ -167,7 +167,7 @@
             <div class="px-5 py-4 border-t border-gray-200">{{ $users->links() }}</div>
         @else
             <div class="px-5 py-12 text-center">
-                <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
                 </svg>
                 <p class="text-gray-500 text-sm">Belum ada {{ str_replace('_',' ',$tab) }}.</p>

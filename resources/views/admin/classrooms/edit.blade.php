@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('admin.classrooms.index') }}"
-           class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors w-fit">
+           class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
             </svg>
@@ -21,7 +21,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -37,7 +37,7 @@
                 <form method="POST" action="{{ route('admin.classrooms.update', $classroom->id) }}" class="space-y-3">
                     @csrf @method('PUT')
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Nama Kelas <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Nama Kelas <span class="text-red-600">*</span></label>
                         <input type="text" name="name" required value="{{ $classroom->name }}"
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
@@ -104,7 +104,7 @@
                       enctype="multipart/form-data" class="space-y-3">
                     @csrf
                     <input type="file" name="csv_file" accept=".csv,.txt" required
-                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
+                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none transition-colors file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
                     <button type="submit"
                             class="w-full bg-gray-100 hover:bg-gray-600 text-gray-900 text-sm font-semibold py-2.5 rounded-xl transition-colors">
                         Upload & Import
@@ -141,10 +141,10 @@
                                     {{-- Status badge --}}
                                     @php
                                         $statusColors = [
-                                            'aktif'   => 'text-blue-600 bg-blue-600/10 border-blue-200',
-                                            'alumni'  => 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-                                            'keluar'  => 'text-red-400 bg-red-500/10 border-red-500/20',
-                                            'pindah'  => 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+                                            'aktif'   => 'text-blue-600 bg-blue-50 border-blue-200',
+                                            'alumni'  => 'text-blue-400 bg-blue-50 border-blue-200',
+                                            'keluar'  => 'text-red-600 bg-red-50 border-red-200',
+                                            'pindah'  => 'text-amber-600 bg-amber-50 border-amber-200',
                                         ];
                                         $statusLabels = ['aktif'=>'Aktif','alumni'=>'Alumni','keluar'=>'Keluar','pindah'=>'Pindah'];
                                         $sc = $statusColors[$student->student_status ?? 'aktif'] ?? $statusColors['aktif'];
@@ -156,7 +156,7 @@
 
                                     {{-- Toggle aksi --}}
                                     <button type="button" @click="showActions = !showActions"
-                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors flex-shrink-0">
+                                            class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors flex-shrink-0">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
                                         </svg>
@@ -168,7 +168,7 @@
                                           onsubmit="return confirm('Keluarkan {{ addslashes($student->name) }} dari kelas ini?')">
                                         @csrf @method('DELETE')
                                         <button type="submit"
-                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-500/30 text-gray-500 hover:text-red-400 transition-colors flex-shrink-0"
+                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors flex-shrink-0"
                                                 title="Keluarkan dari kelas">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -193,7 +193,7 @@
                                             @endforeach
                                         </select>
                                         <button type="submit"
-                                                class="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+                                                class="text-xs text-blue-400 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
                                             Pindah Kelas
                                         </button>
                                     </form>
@@ -214,7 +214,7 @@
                                                placeholder="Keterangan (opsional)"
                                                class="flex-1 bg-white border border-gray-200 text-gray-900 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:border-amber-500 transition-colors min-w-0">
                                         <button type="submit"
-                                                class="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+                                                class="text-xs text-amber-600 bg-amber-50 border border-amber-200 hover:bg-amber-50 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
                                             Update Status
                                         </button>
                                     </form>

@@ -16,10 +16,10 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
     @endif
 
     {{-- Ringkasan kas --}}
@@ -39,8 +39,8 @@
                         <span class="text-gray-500">- Rp {{ number_format($sudahSetorTunai, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-xs mt-0.5">
-                        <span class="{{ $sisaTunai > 0 ? 'text-amber-400' : 'text-green-400' }}">Sisa belum disetor</span>
-                        <span class="{{ $sisaTunai > 0 ? 'text-amber-400 font-semibold' : 'text-green-400' }}">
+                        <span class="{{ $sisaTunai > 0 ? 'text-amber-600' : 'text-green-600' }}">Sisa belum disetor</span>
+                        <span class="{{ $sisaTunai > 0 ? 'text-amber-600 font-semibold' : 'text-green-600' }}">
                             Rp {{ number_format($sisaTunai, 0, ',', '.') }}
                         </span>
                     </div>
@@ -57,21 +57,21 @@
                         <span class="text-gray-500">- Rp {{ number_format($sudahSetorTransfer, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between text-xs mt-0.5">
-                        <span class="{{ $sisaTransfer > 0 ? 'text-amber-400' : 'text-green-400' }}">Sisa belum disetor</span>
-                        <span class="{{ $sisaTransfer > 0 ? 'text-amber-400 font-semibold' : 'text-green-400' }}">
+                        <span class="{{ $sisaTransfer > 0 ? 'text-amber-600' : 'text-green-600' }}">Sisa belum disetor</span>
+                        <span class="{{ $sisaTransfer > 0 ? 'text-amber-600 font-semibold' : 'text-green-600' }}">
                             Rp {{ number_format($sisaTransfer, 0, ',', '.') }}
                         </span>
                     </div>
                 </div>
                 <div class="border-t border-gray-200 pt-1 flex justify-between text-sm font-semibold">
                     <span class="text-gray-900">Total diterima</span>
-                    <span class="text-green-400">Rp {{ number_format($totalDiterima, 0, ',', '.') }}</span>
+                    <span class="text-green-600">Rp {{ number_format($totalDiterima, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
 
         {{-- Kanan: saldo siap setor --}}
-        <div class="bg-white border {{ $sisaBelumSetor > 0 ? 'border-amber-500/20' : 'border-gray-200' }} rounded-xl p-4">
+        <div class="bg-white border {{ $sisaBelumSetor > 0 ? 'border-amber-200' : 'border-gray-200' }} rounded-xl p-4">
             <p class="text-xs text-gray-500 font-medium uppercase tracking-wide mb-3">Status Setoran</p>
             <div class="space-y-2">
                 <div class="flex justify-between text-sm">
@@ -80,18 +80,18 @@
                 </div>
                 <div class="border-t border-gray-200 pt-2">
                     <p class="text-xs text-gray-500 mb-1">Saldo belum disetor</p>
-                    <p class="text-2xl font-bold {{ $sisaBelumSetor > 0 ? 'text-amber-400' : 'text-gray-500' }}">
+                    <p class="text-2xl font-bold {{ $sisaBelumSetor > 0 ? 'text-amber-600' : 'text-gray-500' }}">
                         Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}
                     </p>
                     @if($sisaBelumSetor <= 0)
-                        <p class="text-xs text-green-400 mt-1">✓ Semua kas sudah disetor</p>
+                        <p class="text-xs text-green-600 mt-1">✓ Semua kas sudah disetor</p>
                     @else
                         <div class="mt-2 space-y-1">
                             @if($sisaTunai > 0)
-                            <p class="text-xs text-amber-400/80">· Tunai belum disetor: Rp {{ number_format($sisaTunai, 0, ',', '.') }}</p>
+                            <p class="text-xs text-amber-600/80">· Tunai belum disetor: Rp {{ number_format($sisaTunai, 0, ',', '.') }}</p>
                             @endif
                             @if($sisaTransfer > 0)
-                            <p class="text-xs text-amber-400/80">· Transfer belum disetor: Rp {{ number_format($sisaTransfer, 0, ',', '.') }}</p>
+                            <p class="text-xs text-amber-600/80">· Transfer belum disetor: Rp {{ number_format($sisaTransfer, 0, ',', '.') }}</p>
                             @endif
                         </div>
                     @endif
@@ -157,9 +157,9 @@
                             <td class="px-4 py-3 text-gray-500 text-xs">{{ $s->fundSource->name ?? '-' }}</td>
                             <td class="px-4 py-3 text-center">
                                 @if($s->status === 'setor')
-                                    <span class="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-full">Disetor</span>
+                                    <span class="text-xs bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-full">Disetor</span>
                                 @else
-                                    <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">Draft</span>
+                                    <span class="text-xs bg-amber-50 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">Draft</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right">
@@ -169,14 +169,14 @@
                                             onsubmit="return confirm('Konfirmasi setoran Rp {{ number_format($s->total_setoran,0,',','.') }}?')">
                                             @csrf @method('PATCH')
                                             <button type="submit"
-                                                class="text-xs bg-green-600/10 hover:bg-green-600/20 border border-green-500/20 text-green-400 px-3 py-1 rounded-lg transition-colors">
+                                                class="text-xs bg-green-50 hover:bg-green-50 border border-green-200 text-green-600 px-3 py-1 rounded-lg transition-colors">
                                                 Konfirmasi
                                             </button>
                                         </form>
                                         <form method="POST" action="{{ route('bendahara.setoran.destroy', $s) }}"
                                             onsubmit="return confirm('Hapus draft ini?')">
                                             @csrf @method('DELETE')
-                                            <button type="submit" class="text-xs text-gray-500 hover:text-red-400 transition-colors">Hapus</button>
+                                            <button type="submit" class="text-xs text-gray-500 hover:text-red-600 transition-colors">Hapus</button>
                                         </form>
                                     @else
                                         <span class="text-xs text-gray-500">{{ $s->disetor_at?->format('d/m H:i') }}</span>
@@ -197,17 +197,17 @@
         <div class="bg-white border border-gray-200 rounded-xl w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-gray-900 font-semibold">Catat Setoran Kas</h3>
-                <button onclick="document.getElementById('modal-setoran').style.display='none'" class="text-gray-500 hover:text-gray-900">
+                <button onclick="document.getElementById('modal-setoran').style.display='none'" class="text-gray-500 hover:text-blue-600">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
 
-            <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mb-4 text-xs">
-                <p class="text-amber-400 font-semibold mb-1">Saldo siap disetor</p>
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 text-xs">
+                <p class="text-amber-600 font-semibold mb-1">Saldo siap disetor</p>
                 <p class="text-2xl font-bold text-gray-900">Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}</p>
-                <p class="text-amber-400/70 mt-1">Maksimal yang bisa disetor sekarang</p>
+                <p class="text-amber-600/70 mt-1">Maksimal yang bisa disetor sekarang</p>
             </div>
 
             <form method="POST" action="{{ route('bendahara.setoran.store') }}">
@@ -254,7 +254,7 @@
                                     <span>Sudah disetor</span>
                                     <span>- Rp {{ number_format($sudahSetorTunai, 0, ',', '.') }}</span>
                                 </div>
-                                <div class="flex justify-between font-semibold {{ $sisaTunai > 0 ? 'text-amber-400' : 'text-green-400' }}">
+                                <div class="flex justify-between font-semibold {{ $sisaTunai > 0 ? 'text-amber-600' : 'text-green-600' }}">
                                     <span>Sisa</span>
                                     <span>Rp {{ number_format($sisaTunai, 0, ',', '.') }}</span>
                                 </div>
@@ -265,11 +265,11 @@
                                 class="w-full bg-white border border-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTunai <= 0 ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 focus:border-blue-500' }}"
                                 oninput="inputKas(this, maxTunai, 'err-tunai')"
                                 placeholder="0">
-                            <p id="err-tunai" class="text-xs text-red-400 mt-1 hidden">
+                            <p id="err-tunai" class="text-xs text-red-600 mt-1 hidden">
                                 ⚠ Maks Rp {{ number_format($sisaTunai, 0, ',', '.') }}
                             </p>
                             @if($sisaTunai <= 0)
-                                <p class="text-xs text-green-400 mt-1">✓ Sudah disetor semua</p>
+                                <p class="text-xs text-green-600 mt-1">✓ Sudah disetor semua</p>
                             @endif
                         </div>
 
@@ -285,7 +285,7 @@
                                     <span>Sudah disetor</span>
                                     <span>- Rp {{ number_format($sudahSetorTransfer, 0, ',', '.') }}</span>
                                 </div>
-                                <div class="flex justify-between font-semibold {{ $sisaTransfer > 0 ? 'text-amber-400' : 'text-green-400' }}">
+                                <div class="flex justify-between font-semibold {{ $sisaTransfer > 0 ? 'text-amber-600' : 'text-green-600' }}">
                                     <span>Sisa</span>
                                     <span>Rp {{ number_format($sisaTransfer, 0, ',', '.') }}</span>
                                 </div>
@@ -296,11 +296,11 @@
                                 class="w-full bg-white border border-gray-200 text-sm rounded-lg px-3 py-2 focus:outline-none transition-colors {{ $sisaTransfer <= 0 ? 'text-gray-500 cursor-not-allowed opacity-50' : 'text-gray-900 focus:border-blue-500' }}"
                                 oninput="inputKas(this, maxTransfer, 'err-transfer')"
                                 placeholder="0">
-                            <p id="err-transfer" class="text-xs text-red-400 mt-1 hidden">
+                            <p id="err-transfer" class="text-xs text-red-600 mt-1 hidden">
                                 ⚠ Maks Rp {{ number_format($sisaTransfer, 0, ',', '.') }}
                             </p>
                             @if($sisaTransfer <= 0)
-                                <p class="text-xs text-green-400 mt-1">✓ Sudah disetor semua</p>
+                                <p class="text-xs text-green-600 mt-1">✓ Sudah disetor semua</p>
                             @endif
                         </div>
                     </div>
@@ -316,7 +316,7 @@
                                 Maks: <strong class="text-gray-900">Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}</strong> (saldo belum disetor)
                             </p>
                         </div>
-                        <p id="error-saldo" class="text-xs text-red-400 mt-1 hidden">
+                        <p id="error-saldo" class="text-xs text-red-600 mt-1 hidden">
                             ⚠ Melebihi saldo! Maks Rp {{ number_format($sisaBelumSetor, 0, ',', '.') }}
                         </p>
                     </div>
@@ -335,7 +335,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-setoran').style.display='none'"
-                        class="flex-1 bg-white text-gray-400 text-sm py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white text-gray-600 text-sm py-2 rounded-lg">Batal</button>
                     <button type="submit" id="btn-simpan-setoran" class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium py-2 rounded-lg">
                         Simpan Draft
                     </button>

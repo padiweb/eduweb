@@ -498,6 +498,58 @@
 
         /* ── ANIMASI PULSE ── */
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        /* ── FAILSAFE: tombol berwarna SELALU teks putih ── */
+        a[class*="bg-blue-6"], a[class*="bg-blue-5"],
+        button[class*="bg-blue-6"], button[class*="bg-blue-5"],
+        a[class*="bg-red-6"], a[class*="bg-red-5"],
+        button[class*="bg-red-6"], button[class*="bg-red-5"],
+        a[class*="bg-emerald-6"], a[class*="bg-emerald-5"],
+        button[class*="bg-emerald-6"], button[class*="bg-emerald-5"],
+        a[class*="bg-green-6"], a[class*="bg-green-5"],
+        button[class*="bg-green-6"], button[class*="bg-green-5"],
+        a[class*="bg-amber-6"], a[class*="bg-amber-5"],
+        button[class*="bg-amber-6"], button[class*="bg-amber-5"],
+        a[class*="bg-orange-6"], a[class*="bg-orange-5"],
+        button[class*="bg-orange-6"], button[class*="bg-orange-5"],
+        a[class*="bg-indigo-6"], a[class*="bg-indigo-5"],
+        button[class*="bg-indigo-6"], button[class*="bg-indigo-5"],
+        a[class*="bg-violet-6"], a[class*="bg-violet-5"],
+        button[class*="bg-violet-6"], button[class*="bg-violet-5"] {
+            color: #ffffff !important;
+        }
+
+        /* ── FAILSAFE: badge/pill /10 opacity → solid ── */
+        [class*="bg-blue-50"] { background-color: #eff6ff !important; }
+        [class*="bg-emerald-50"] { background-color: #ecfdf5 !important; }
+        [class*="bg-green-50"] { background-color: #f0fdf4 !important; }
+        [class*="bg-red-50"] { background-color: #fff1f2 !important; }
+        [class*="bg-amber-50"] { background-color: #fffbeb !important; }
+        [class*="bg-orange-50"] { background-color: #fff7ed !important; }
+        [class*="bg-yellow-50"] { background-color: #fefce8 !important; }
+
+        /* ── TAB AKTIF: jelas terlihat ── */
+        a.bg-blue-50, button.bg-blue-50 { 
+            background-color: #eff6ff !important; 
+            color: #1d4ed8 !important;
+            border-color: #bfdbfe !important;
+        }
+
+        /* ── TEKS WARNA: cukup gelap ── */
+        .text-blue-600   { color: #2563eb !important; }
+        .text-emerald-600 { color: #059669 !important; }
+        .text-green-600  { color: #16a34a !important; }
+        .text-red-600    { color: #dc2626 !important; }
+        .text-amber-600  { color: #d97706 !important; }
+        .text-orange-600 { color: #ea580c !important; }
+
+        /* ── TEKS 700: untuk dalam badge/bg berwarna ── */
+        .text-blue-700    { color: #1d4ed8 !important; }
+        .text-emerald-700 { color: #047857 !important; }
+        .text-green-700   { color: #15803d !important; }
+        .text-red-700     { color: #b91c1c !important; }
+        .text-amber-700   { color: #b45309 !important; }
+        .text-orange-700  { color: #c2410c !important; }
     </style>
 </head>
 <body>

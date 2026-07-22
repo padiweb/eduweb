@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between mb-6">
         <div>
             <a href="{{ route('admin.promotions.index') }}"
-               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors w-fit">
+               class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors w-fit">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
@@ -18,7 +18,7 @@
             {{-- Tombol set semua naik kelas --}}
             <button type="button"
                     onclick="setAllStudents('naik')"
-                    class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-200 px-4 py-2 rounded-xl transition-colors">
+                    class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-50 border border-blue-200 px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"/>
                 </svg>
@@ -44,11 +44,11 @@
         <div class="flex items-center gap-3 mb-4 p-4 bg-white border border-gray-200 rounded-xl">
             <span class="text-xs text-gray-500 font-semibold">Set semua siswa:</span>
             <button type="button" onclick="setAllStudents('naik')"
-                    class="text-xs text-blue-600 bg-blue-600/10 border border-blue-200 hover:bg-blue-600/20 px-3 py-1.5 rounded-lg transition-colors">
+                    class="text-xs text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
                 ⬆ Semua Naik Kelas
             </button>
             <button type="button" onclick="setAllStudents('lulus')"
-                    class="text-xs text-blue-400 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                    class="text-xs text-blue-400 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
                 🎓 Semua Lulus
             </button>
         </div>
@@ -74,13 +74,13 @@
                         <div class="flex items-center gap-2">
                             <button type="button"
                                     onclick="setAllInClass('{{ $classroom->id }}', 'naik', {{ $classroom->grade }})"
-                                    class="text-xs text-blue-600 hover:text-blue-700 bg-blue-600/10 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
+                                    class="text-xs text-blue-600 hover:text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
                                 ⬆ Semua Naik Kelas
                             </button>
                             @if($classroom->grade >= ($school->school_program_years * 2 / 2 + 9))
                                 <button type="button"
                                         onclick="setAllInClass('{{ $classroom->id }}', 'lulus', {{ $classroom->grade }})"
-                                        class="text-xs text-blue-400 hover:text-blue-300 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-lg transition-colors">
+                                        class="text-xs text-blue-400 hover:text-blue-300 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
                                     🎓 Semua Lulus
                                 </button>
                             @endif

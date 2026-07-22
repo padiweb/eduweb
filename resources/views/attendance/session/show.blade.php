@@ -1,7 +1,7 @@
 <x-simans-layout title="Sesi Absensi Aktif">
     <div class="flex items-center justify-between mb-6">
         <div>
-            <a href="{{ route('guru.attendance.index') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-2 transition-colors">
+            <a href="{{ route('guru.attendance.index') }}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                 Kembali
             </a>
@@ -184,7 +184,7 @@
         <div class="bg-white border border-gray-200 rounded-xl p-6 w-full max-w-md mx-4">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-semibold text-gray-900">Koreksi Absensi</h3>
-                <button id="close-modal" class="text-gray-500 hover:text-gray-900 transition-colors">
+                <button id="close-modal" class="text-gray-500 hover:text-blue-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>

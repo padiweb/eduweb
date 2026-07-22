@@ -2,7 +2,7 @@
 
     <div class="flex items-center justify-between mb-6">
         <div>
-            <a href="{{ route('bendahara.bills.create') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-2 w-fit">
+            <a href="{{ route('bendahara.bills.create') }}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-2 w-fit">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
                 </svg>
@@ -21,14 +21,14 @@
     </div>
 
     {{-- Info --}}
-    <div class="bg-blue-500/5 border border-blue-500/15 rounded-xl px-4 py-3 mb-5 text-xs text-blue-300">
+    <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-300">
         Override tarif berlaku <strong>lebih utama</strong> dari tarif kelas/jurusan.
         Jika siswa punya override, tarif override yang dipakai saat membuat tagihan.
         Beasiswa/potongan tetap dihitung setelah override.
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
@@ -57,7 +57,7 @@
                                 <p class="text-gray-900 font-medium">{{ $ov->student->name ?? '-' }}</p>
                                 <p class="text-xs text-gray-500">{{ $ov->student->nis ?? '-' }}</p>
                             </td>
-                            <td class="px-4 py-3 text-gray-400">{{ $ov->paymentType->name ?? '-' }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ $ov->paymentType->name ?? '-' }}</td>
                             <td class="px-4 py-3 text-gray-500">{{ $ov->academicYear->name ?? '-' }}</td>
                             <td class="px-4 py-3 text-right font-semibold text-blue-600">{{ $ov->amount_formatted }}</td>
                             <td class="px-4 py-3 text-xs text-gray-500">{{ $ov->reason ?? '-' }}</td>
@@ -65,7 +65,7 @@
                                 <form method="POST" action="{{ route('bendahara.bills.overrides.destroy', $ov) }}"
                                     onsubmit="return confirm('Hapus override tarif ini?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors">
+                                    <button type="submit" class="text-gray-500 hover:text-red-600 transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                         </svg>
@@ -129,12 +129,12 @@
                                 </template>
                             </div>
                         </div>
-                        <div x-show="selectedId" class="bg-blue-500/10 border border-blue-200 rounded-lg px-3 py-2 flex items-center justify-between">
+                        <div x-show="selectedId" class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 flex items-center justify-between">
                             <div>
                                 <p class="text-sm text-gray-900" x-text="selectedName"></p>
                                 <p class="text-xs text-gray-500" x-text="selectedNis"></p>
                             </div>
-                            <button type="button" @click="clearStudent()" class="text-gray-500 hover:text-red-400 ml-2">
+                            <button type="button" @click="clearStudent()" class="text-gray-500 hover:text-red-600 ml-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -180,7 +180,7 @@
 
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg">Batal</button>
                     <button type="submit" :disabled="!selectedId"
                         :class="selectedId ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-100 cursor-not-allowed'"
                         class="flex-1 text-gray-900 text-sm font-medium py-2 rounded-lg transition-colors">

@@ -50,7 +50,7 @@
                     ['label' => 'Hadir',     'value' => $semesterRecap['hadir'],                        'color' => 'emerald'],
                     ['label' => 'Terlambat', 'value' => $semesterRecap['terlambat'],                    'color' => 'amber'],
                     ['label' => 'Izin',      'value' => $semesterRecap['izin'],                         'color' => 'blue'],
-                    ['label' => 'Sakit',     'value' => $semesterRecap['sakit'],                        'color' => 'purple'],
+                    ['label' => 'Sakit',     'value' => $semesterRecap['sakit'],                        'color' => 'blue'],
                     ['label' => 'Alfa',      'value' => $semesterRecap['alfa'],                         'color' => 'red'],
                     ['label' => 'Kehadiran', 'value' => $semesterRecap['attendance_rate'] . '%',        'color' => 'emerald'],
                 ] as $s)
@@ -69,7 +69,7 @@
             ['label' => 'Hadir',     'value' => $recap['hadir'],     'color' => 'emerald'],
             ['label' => 'Terlambat', 'value' => $recap['terlambat'], 'color' => 'amber'],
             ['label' => 'Izin',      'value' => $recap['izin'],      'color' => 'blue'],
-            ['label' => 'Sakit',     'value' => $recap['sakit'],     'color' => 'purple'],
+            ['label' => 'Sakit',     'value' => $recap['sakit'],     'color' => 'blue'],
             ['label' => 'Alfa',      'value' => $recap['alfa'],      'color' => 'red'],
         ] as $s)
             <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
@@ -95,11 +95,11 @@
                 @foreach($recap['records']->sortByDesc(fn($att) => $att->session->session_date) as $att)
                     @php
                         $colorMap = [
-                            'hadir'     => 'text-blue-600 bg-blue-600/10 border-blue-200',
-                            'terlambat' => 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-                            'izin'      => 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-                            'sakit'     => 'text-blue-600 bg-blue-500/10 border-blue-200',
-                            'alfa'      => 'text-red-400 bg-red-500/10 border-red-500/20',
+                            'hadir'     => 'text-blue-600 bg-blue-50 border-blue-200',
+                            'terlambat' => 'text-amber-600 bg-amber-50 border-amber-200',
+                            'izin'      => 'text-blue-400 bg-blue-50 border-blue-200',
+                            'sakit'     => 'text-blue-600 bg-blue-50 border-blue-200',
+                            'alfa'      => 'text-red-600 bg-red-50 border-red-200',
                         ];
                         $labelMap = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
                         $isToday  = $att->session->session_date->isToday();
@@ -145,7 +145,7 @@
             </div>
         @else
             <div class="px-5 py-12 text-center">
-                <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
                 </svg>
                 <p class="text-gray-500 text-sm">Tidak ada data absensi untuk bulan ini.</p>

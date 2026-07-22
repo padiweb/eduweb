@@ -8,14 +8,14 @@
                 <h3 class="text-gray-900 font-semibold">Generate SPP Otomatis</h3>
                 <p class="text-xs text-gray-500 mt-0.5">Buat tagihan untuk semua siswa aktif sekaligus</p>
             </div>
-            <button onclick="document.getElementById('modal-generate-spp').style.display='none'" class="text-gray-500 hover:text-gray-900">
+            <button onclick="document.getElementById('modal-generate-spp').style.display='none'" class="text-gray-500 hover:text-blue-600">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
 
-        <div class="bg-blue-500/5 border border-blue-500/15 rounded-xl px-3 py-2 mb-4 text-xs text-blue-300">
+        <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-3 py-2 mb-4 text-xs text-blue-300">
             Sistem akan membuat tagihan untuk <strong>semua siswa aktif</strong> berdasarkan tarif yang sudah diatur.
             Siswa yang sudah punya tagihan untuk periode ini akan dilewati otomatis.
         </div>
@@ -69,7 +69,7 @@
             </div>
             <div class="flex gap-3 mt-5">
                 <button type="button" onclick="document.getElementById('modal-generate-spp').style.display='none'"
-                    class="flex-1 bg-white text-gray-400 text-sm py-2 rounded-lg">Batal</button>
+                    class="flex-1 bg-white text-gray-600 text-sm py-2 rounded-lg">Batal</button>
                 <button type="submit"
                     onclick="return confirm('Generate tagihan untuk semua siswa aktif?')"
                     class="flex-1 bg-emerald-700 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">

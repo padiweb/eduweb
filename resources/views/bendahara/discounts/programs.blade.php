@@ -15,19 +15,19 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
     @endif
 
     {{-- Info jenis beasiswa --}}
     <div class="grid grid-cols-2 gap-3 mb-5">
-        <div class="bg-blue-500/5 border border-blue-500/15 rounded-xl px-4 py-3 text-xs text-blue-300">
+        <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 text-xs text-blue-300">
             <p class="font-semibold mb-1">Beasiswa Dana (Cash)</p>
             <p>Uang beasiswa diterima sekolah → masuk pemasukan kas. Contoh: PIP, beasiswa perusahaan.</p>
         </div>
-        <div class="bg-blue-500/5 border border-purple-500/15 rounded-xl px-4 py-3 text-xs text-blue-500">
+        <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 text-xs text-blue-500">
             <p class="font-semibold mb-1">Beasiswa Potongan (Waiver)</p>
             <p>Tagihan dikurangi → tidak masuk pemasukan. Contoh: keringanan sekolah, beasiswa prestasi.</p>
         </div>
@@ -46,8 +46,8 @@
                 @php $stype = $program->scholarship_type ?? 'cash'; @endphp
                 <div class="w-14 h-14 rounded-xl flex-shrink-0 flex flex-col items-center justify-center gap-0.5
                     {{ $stype === 'waiver'
-                        ? 'bg-blue-500/10 border border-blue-200'
-                        : 'bg-blue-500/10 border border-blue-500/20' }}">
+                        ? 'bg-blue-50 border border-blue-200'
+                        : 'bg-blue-50 border border-blue-200' }}">
                     <span class="text-xs font-bold {{ $stype === 'waiver' ? 'text-blue-600' : 'text-blue-400' }}">
                         {{ $program->code ?? strtoupper(substr($program->name, 0, 3)) }}
                     </span>
@@ -65,15 +65,15 @@
                         @if($memberCount === 0)
                             <span class="text-xs bg-white text-gray-500 px-2 py-0.5 rounded-full">Belum ada siswa</span>
                         @elseif($appliedCount >= $memberCount)
-                            <span class="text-xs bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-full">
+                            <span class="text-xs bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-full">
                                 Sudah diterapkan ({{ $appliedCount }} siswa)
                             </span>
                         @elseif($appliedCount > 0)
-                            <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                            <span class="text-xs bg-amber-50 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">
                                 Sebagian ({{ $appliedCount }}/{{ $memberCount }})
                             </span>
                         @else
-                            <span class="text-xs bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded-full">
+                            <span class="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full">
                                 Belum diterapkan
                             </span>
                         @endif
@@ -106,7 +106,7 @@
                         @csrf
                         <button type="submit"
                             onclick="return confirm('Terapkan {{ addslashes($program->name) }} ke {{ $memberCount }} siswa?')"
-                            class="text-xs bg-green-600/10 hover:bg-green-600/20 border border-green-500/20 text-green-400 px-3 py-1.5 rounded-lg transition-colors">
+                            class="text-xs bg-green-50 hover:bg-green-50 border border-green-200 text-green-600 px-3 py-1.5 rounded-lg transition-colors">
                             Terapkan
                         </button>
                     </form>
@@ -114,14 +114,14 @@
 
                     {{-- Kelola siswa --}}
                     <a href="{{ route('bendahara.discount-programs.members', $program) }}"
-                        class="text-xs bg-white hover:bg-gray-50 text-gray-400 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
+                        class="text-xs bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">
                         Kelola Siswa ({{ $memberCount }})
                     </a>
 
                     {{-- Edit nominal --}}
                     <button type="button"
                         onclick="openEdit({{ $program->id }}, '{{ addslashes($program->name) }}', {{ $program->default_value }}, '{{ $program->discount_type }}', '{{ $program->scholarship_type ?? 'cash' }}')"
-                        class="text-xs text-gray-500 hover:text-gray-900 transition-colors px-2 py-1.5">
+                        class="text-xs text-gray-500 hover:text-blue-600 transition-colors px-2 py-1.5">
                         Edit
                     </button>
 
@@ -129,7 +129,7 @@
                     <form method="POST" action="{{ route('bendahara.discount-programs.toggle', $program) }}">
                         @csrf @method('PATCH')
                         <button type="submit"
-                            class="text-xs {{ $program->is_active ? 'text-green-400' : 'text-gray-500 hover:text-green-400' }} transition-colors px-2 py-1.5">
+                            class="text-xs {{ $program->is_active ? 'text-green-600' : 'text-gray-500 hover:text-green-600' }} transition-colors px-2 py-1.5">
                             {{ $program->is_active ? 'Aktif' : 'Nonaktif' }}
                         </button>
                     </form>
@@ -139,7 +139,7 @@
                     <form method="POST" action="{{ route('bendahara.discount-programs.destroy', $program) }}"
                         onsubmit="return confirm('Hapus program {{ addslashes($program->name) }}?')">
                         @csrf @method('DELETE')
-                        <button type="submit" class="text-xs text-gray-500 hover:text-red-400 transition-colors px-1 py-1.5">
+                        <button type="submit" class="text-xs text-gray-500 hover:text-red-600 transition-colors px-1 py-1.5">
                             Hapus
                         </button>
                     </form>
@@ -161,7 +161,7 @@
         <div class="bg-white border border-gray-200 rounded-xl w-full max-w-md p-6 overflow-y-auto max-h-screen">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-gray-900 font-semibold">Buat Program Beasiswa</h3>
-                <button onclick="document.getElementById('modal-add').style.display='none'" class="text-gray-500 hover:text-gray-900">
+                <button onclick="document.getElementById('modal-add').style.display='none'" class="text-gray-500 hover:text-blue-600">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -174,7 +174,7 @@
                     <div>
                         <label class="text-xs text-gray-500 mb-1 block">Jenis Beasiswa *</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2.5 cursor-pointer hover:border-blue-500/40">
+                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2.5 cursor-pointer hover:border-blue-200">
                                 <input type="radio" name="scholarship_type" value="cash" checked class="text-blue-500">
                                 <div>
                                     <p class="text-xs font-medium text-gray-900">Dana (Cash)</p>
@@ -261,7 +261,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add').style.display='none'"
-                        class="flex-1 bg-white text-gray-400 text-sm py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white text-gray-600 text-sm py-2 rounded-lg">Batal</button>
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">Buat</button>
                 </div>
             </form>
@@ -273,7 +273,7 @@
         <div class="bg-white border border-gray-200 rounded-xl w-full max-w-sm p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-gray-900 font-semibold">Edit Program</h3>
-                <button onclick="document.getElementById('modal-edit').style.display='none'" class="text-gray-500 hover:text-gray-900">
+                <button onclick="document.getElementById('modal-edit').style.display='none'" class="text-gray-500 hover:text-blue-600">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -306,7 +306,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-edit').style.display='none'"
-                        class="flex-1 bg-white text-gray-400 text-sm py-2 rounded-lg">Batal</button>
+                        class="flex-1 bg-white text-gray-600 text-sm py-2 rounded-lg">Batal</button>
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg">Simpan</button>
                 </div>
             </form>

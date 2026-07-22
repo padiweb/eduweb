@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('admin.prakerin.placements.index', ['period_id' => $placement->period_id]) }}"
-           class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+           class="text-gray-500 text-sm hover:text-blue-600 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg> Kembali
@@ -34,11 +34,11 @@
             <p class="text-gray-500 text-xs mt-0.5">Hadir Masuk</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-amber-400">{{ $jurnalCount }}</p>
+            <p class="text-2xl font-bold text-amber-600">{{ $jurnalCount }}</p>
             <p class="text-gray-500 text-xs mt-0.5">Jurnal Terisi</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-red-400">{{ $alfaCount }}</p>
+            <p class="text-2xl font-bold text-red-600">{{ $alfaCount }}</p>
             <p class="text-gray-500 text-xs mt-0.5">Tidak Hadir</p>
         </div>
     </div>
@@ -110,11 +110,11 @@
                                         <a href="{{ Storage::url($day['checkin']->selfie_path) }}" target="_blank">
                                             <img src="{{ Storage::url($day['checkin']->selfie_path) }}" alt="selfie masuk"
                                                  style="width:48px;height:48px;object-fit:cover"
-                                                 class="rounded-lg mt-1 border border-gray-200 hover:border-emerald-400/50 transition-colors"/>
+                                                 class="rounded-lg mt-1 border border-gray-200 hover:border-emerald-200 transition-colors"/>
                                         </a>
                                     @endif
                                 @else
-                                    <span class="text-red-400 text-xs">Tidak absen</span>
+                                    <span class="text-red-600 text-xs">Tidak absen</span>
                                 @endif
                             </td>
 
@@ -125,11 +125,11 @@
                                         <a href="{{ Storage::url($day['checkout']->selfie_path) }}" target="_blank">
                                             <img src="{{ Storage::url($day['checkout']->selfie_path) }}" alt="selfie pulang"
                                                  style="width:48px;height:48px;object-fit:cover"
-                                                 class="rounded-lg mt-1 border border-gray-200 hover:border-blue-400/50 transition-colors"/>
+                                                 class="rounded-lg mt-1 border border-gray-200 hover:border-blue-200 transition-colors"/>
                                         </a>
                                     @endif
                                 @else
-                                    <span class="text-red-400 text-xs">Tidak absen</span>
+                                    <span class="text-red-600 text-xs">Tidak absen</span>
                                 @endif
                             </td>
 
@@ -137,7 +137,7 @@
                                 @if ($day['journal'])
                                     <div x-data="{ open: false }">
                                         <button @click="open = !open"
-                                                class="text-amber-400 text-xs font-semibold hover:text-amber-300 flex items-center gap-1">
+                                                class="text-amber-600 text-xs font-semibold hover:text-amber-700 flex items-center gap-1">
                                             Terisi
                                             <svg class="w-3 h-3 transition-transform" :class="open?'rotate-180':''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -145,7 +145,7 @@
                                         </button>
                                         <p class="text-gray-500 text-xs">{{ $day['journal']->submitted_at?->format('H:i') ?? $day['journal']->updated_at->format('H:i') }}</p>
                                         <div x-show="open" x-cloak class="mt-2 p-3 bg-white rounded-xl max-w-sm">
-                                            <p class="text-gray-400 text-xs leading-relaxed">{{ Str::limit($day['journal']->content, 250) }}</p>
+                                            <p class="text-gray-600 text-xs leading-relaxed">{{ Str::limit($day['journal']->content, 250) }}</p>
                                             @if ($day['journal']->teacher_note)
                                                 <div class="mt-2 pt-2 border-t border-gray-200">
                                                     <p class="text-blue-400 text-xs font-semibold">Catatan guru:</p>
@@ -158,7 +158,7 @@
                                                     <textarea name="teacher_note" rows="2" placeholder="Tambah catatan..."
                                                               class="w-full bg-gray-100 border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-xs resize-none focus:outline-none focus:border-blue-400 placeholder-gray-400"></textarea>
                                                     <button type="submit"
-                                                            class="mt-1 px-3 py-1 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 text-xs rounded-lg border border-blue-500/20 transition-colors">
+                                                            class="mt-1 px-3 py-1 bg-blue-50 hover:bg-blue-600/40 text-blue-400 text-xs rounded-lg border border-blue-200 transition-colors">
                                                         Simpan Catatan
                                                     </button>
                                                 </form>
@@ -166,7 +166,7 @@
                                         </div>
                                     </div>
                                 @else
-                                    <span class="text-red-400 text-xs">Tidak diisi</span>
+                                    <span class="text-red-600 text-xs">Tidak diisi</span>
                                 @endif
                             </td>
 
@@ -177,7 +177,7 @@
                                             <a href="{{ Storage::url($photo->photo_path) }}" target="_blank">
                                                 <img src="{{ Storage::url($photo->photo_path) }}" alt="foto"
                                                      style="width:36px;height:36px;object-fit:cover"
-                                                     class="rounded-lg border border-gray-200 hover:border-amber-400/50 transition-colors"/>
+                                                     class="rounded-lg border border-gray-200 hover:border-amber-200 transition-colors"/>
                                             </a>
                                         @endforeach
                                     </div>

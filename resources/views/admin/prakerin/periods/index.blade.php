@@ -21,33 +21,33 @@
             Periode
         </a>
         <a href="{{ route('admin.prakerin.locations.index') }}"
-           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
             DU/DI
         </a>
         <a href="{{ route('admin.prakerin.placements.index') }}"
-           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
             Penempatan Siswa
         </a>
         <a href="{{ route('admin.prakerin.recap.absensi') }}"
-           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
             Rekap Absensi
         </a>
         <a href="{{ route('admin.prakerin.recap.jurnal') }}"
-           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+           class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
             Rekap Jurnal
         </a>
     </div>
 
     @if (session('success'))
-        <div class="mb-4 p-3 rounded-xl bg-blue-600/10 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
     @endif
     @if (session('error'))
-        <div class="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ session('error') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{{ session('error') }}</div>
     @endif
 
     @if ($periods->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
             </svg>
             <p class="text-gray-500">Belum ada periode prakerin.</p>
@@ -63,8 +63,8 @@
                                 <h3 class="text-gray-900 font-semibold">{{ $period->name }}</h3>
                                 @php
                                     $statusColor = match($period->status_label) {
-                                        'Berlangsung' => 'bg-blue-600/10 text-blue-600 border-blue-200',
-                                        'Belum Mulai' => 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                                        'Berlangsung' => 'bg-blue-50 text-blue-600 border-blue-200',
+                                        'Belum Mulai' => 'bg-blue-50 text-blue-700 border-blue-200',
                                         'Selesai'     => 'bg-gray-50 text-gray-500 border-gray-200',
                                         default       => 'bg-gray-50 text-gray-500 border-gray-200',
                                     };
@@ -96,7 +96,7 @@
                             @if ($period->coordinators->count() > 0)
                                 <div class="flex flex-wrap gap-1 mt-2">
                                     @foreach ($period->coordinators as $coord)
-                                        <span class="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs rounded-lg">
+                                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-lg">
                                             {{ $coord->name }}
                                         </span>
                                     @endforeach
@@ -105,11 +105,11 @@
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <button onclick="openKoordinator({{ $period->id }}, {{ json_encode($period->coordinators->pluck('id')) }})"
-                                    class="px-3 py-1.5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 text-blue-400 text-xs rounded-lg transition-colors">
+                                    class="px-3 py-1.5 bg-blue-50 hover:bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-lg transition-colors">
                                 Koordinator
                             </button>
                             <button onclick="openEdit({{ $period->id }}, '{{ addslashes($period->name) }}', '{{ $period->start_date->format('Y-m-d') }}', '{{ $period->end_date->format('Y-m-d') }}', '{{ addslashes($period->description ?? '') }}', {{ $period->is_active ? 'true' : 'false' }}, {{ json_encode($period->coordinators->pluck('id')) }})"
-                                    class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-xs rounded-lg transition-colors">
+                                    class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
                                 Edit
                             </button>
                             @if ($period->placements()->count() === 0)
@@ -117,7 +117,7 @@
                                       onsubmit="return confirm('Hapus periode ini?')">
                                     @csrf @method('DELETE')
                                     <button type="submit"
-                                            class="px-3 py-1.5 bg-red-600/10 hover:bg-red-600/20 border border-red-500/20 text-red-400 text-xs rounded-lg transition-colors">
+                                            class="px-3 py-1.5 bg-red-50 hover:bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg transition-colors">
                                         Hapus
                                     </button>
                                 </form>
@@ -171,7 +171,7 @@
                             <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                                 <input type="checkbox" name="coordinator_ids[]" value="{{ $t->id }}"
                                        class="w-4 h-4 rounded accent-blue-500">
-                                <span class="text-sm text-gray-400">{{ $t->name }}</span>
+                                <span class="text-sm text-gray-600">{{ $t->name }}</span>
                                 <span class="text-xs text-gray-500">{{ ucfirst(str_replace('_', ' ', $t->role)) }}</span>
                             </label>
                         @endforeach
@@ -179,7 +179,7 @@
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-tambah').classList.add('hidden')"
-                            class="flex-1 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors">
+                            class="flex-1 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors">
                         Batal
                     </button>
                     <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors">
@@ -218,7 +218,7 @@
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="hidden" name="is_active" value="0">
                     <input type="checkbox" id="edit-active" name="is_active" value="1" class="w-4 h-4 rounded accent-emerald-500">
-                    <span class="text-sm text-gray-400">Aktif</span>
+                    <span class="text-sm text-gray-600">Aktif</span>
                 </label>
                 <div>
                     <label class="block text-xs text-gray-500 mb-2">Koordinator Prakerin</label>
@@ -227,7 +227,7 @@
                             <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                                 <input type="checkbox" name="coordinator_ids[]" value="{{ $t->id }}"
                                        class="edit-coord-cb w-4 h-4 rounded accent-blue-500">
-                                <span class="text-sm text-gray-400">{{ $t->name }}</span>
+                                <span class="text-sm text-gray-600">{{ $t->name }}</span>
                                 <span class="text-xs text-gray-500">{{ ucfirst(str_replace('_', ' ', $t->role)) }}</span>
                             </label>
                         @endforeach
@@ -235,7 +235,7 @@
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="document.getElementById('modal-edit').classList.add('hidden')"
-                            class="flex-1 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors">
+                            class="flex-1 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors">
                         Batal
                     </button>
                     <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors">
@@ -267,7 +267,7 @@
                 </div>
                 <div class="flex gap-3 pt-3 border-t border-gray-200">
                     <button type="button" onclick="document.getElementById('modal-koordinator').classList.add('hidden')"
-                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-400 text-sm rounded-xl">
+                            class="flex-1 py-2.5 bg-white border border-gray-200 text-gray-600 text-sm rounded-xl">
                         Batal
                     </button>
                     <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-colors">

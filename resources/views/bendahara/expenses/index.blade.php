@@ -8,7 +8,7 @@
         <div class="flex gap-2">
             @if($totalPending > 0)
                 <a href="{{ route('bendahara.expenses.pending') }}"
-                    class="flex items-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                    class="flex items-center gap-2 bg-amber-50 hover:bg-amber-50 border border-amber-200 text-amber-600 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                     {{ $totalPending }} Menunggu Approval
                 </a>
             @endif
@@ -25,11 +25,11 @@
     <div class="grid grid-cols-2 gap-4 mb-5">
         <div class="bg-white border border-gray-200 rounded-xl px-4 py-3">
             <p class="text-xs text-gray-500 mb-1">Total Disetujui</p>
-            <p class="text-lg font-bold text-red-400">Rp {{ number_format($totalApproved, 0, ',', '.') }}</p>
+            <p class="text-lg font-bold text-red-600">Rp {{ number_format($totalApproved, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-white border border-amber-500/20 rounded-xl px-4 py-3">
+        <div class="bg-white border border-amber-200 rounded-xl px-4 py-3">
             <p class="text-xs text-gray-500 mb-1">Menunggu Approval</p>
-            <p class="text-lg font-bold text-amber-400">{{ $totalPending }} pengeluaran</p>
+            <p class="text-lg font-bold text-amber-600">{{ $totalPending }} pengeluaran</p>
         </div>
     </div>
 
@@ -58,7 +58,7 @@
         </select>
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg">Filter</button>
         @if(request()->hasAny(['search','status','source','category','year']))
-            <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-gray-900 text-sm px-3 py-2">Reset</a>
+            <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-blue-600 text-sm px-3 py-2">Reset</a>
         @endif
     </form>
 
@@ -91,10 +91,10 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3">
-                                <p class="text-gray-400 text-xs">{{ $exp->fundSource->name ?? '-' }}</p>
+                                <p class="text-gray-600 text-xs">{{ $exp->fundSource->name ?? '-' }}</p>
                                 <p class="text-gray-500 text-xs">{{ $exp->category->name ?? '-' }}</p>
                             </td>
-                            <td class="px-4 py-3 text-right font-semibold text-red-400 whitespace-nowrap">{{ $exp->amount_formatted }}</td>
+                            <td class="px-4 py-3 text-right font-semibold text-red-600 whitespace-nowrap">{{ $exp->amount_formatted }}</td>
                             <td class="px-4 py-3 text-center">
                                 <span class="text-xs bg-{{ $exp->status_color }}-500/10 text-{{ $exp->status_color }}-400 border border-{{ $exp->status_color }}-500/20 px-2.5 py-0.5 rounded-full">
                                     {{ $exp->status_label }}

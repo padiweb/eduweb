@@ -1,7 +1,7 @@
 <x-simans-layout title="Detail Tagihan">
 
     <div class="mb-6">
-        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-3 w-fit">
+        <a href="{{ route('bendahara.bills.index') }}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-3 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
@@ -12,7 +12,7 @@
                 <div class="flex items-center gap-3">
                     <h1 class="text-xl font-bold text-gray-900">{{ $bill->paymentType->name }} — {{ $bill->period_label }}</h1>
                     <a href="{{ route('bendahara.bills.edit', $bill) }}"
-                        class="text-xs bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 px-3 py-1 rounded-lg transition-colors">
+                        class="text-xs bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1 rounded-lg transition-colors">
                         Edit
                     </a>
                 </div>
@@ -30,10 +30,10 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -52,21 +52,21 @@
                     @if($bill->amount_discount > 0)
                     <div class="flex justify-between">
                         <span class="text-gray-500">Diskon/beasiswa</span>
-                        <span class="text-green-400">- Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</span>
+                        <span class="text-green-600">- Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</span>
                     </div>
                     @endif
                     <div class="flex justify-between border-t border-gray-200 pt-2 font-medium">
-                        <span class="text-gray-400">Total tagihan</span>
+                        <span class="text-gray-600">Total tagihan</span>
                         <span class="text-gray-900">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-500">Sudah dibayar</span>
-                        <span class="text-green-400">Rp {{ number_format($bill->amount_paid, 0, ',', '.') }}</span>
+                        <span class="text-green-600">Rp {{ number_format($bill->amount_paid, 0, ',', '.') }}</span>
                     </div>
                     @if($bill->amount_remaining > 0 && $bill->status !== 'waived')
                     <div class="flex justify-between font-semibold">
-                        <span class="text-red-400">Sisa</span>
-                        <span class="text-red-400">Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</span>
+                        <span class="text-red-600">Sisa</span>
+                        <span class="text-red-600">Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }}</span>
                     </div>
                     @endif
                 </div>
@@ -88,7 +88,7 @@
                             <div class="text-right">
                                 <p class="text-sm text-gray-900">Rp {{ number_format($inst->amount_due, 0, ',', '.') }}</p>
                                 @if($inst->amount_paid > 0)
-                                    <p class="text-xs text-green-400">Bayar Rp {{ number_format($inst->amount_paid, 0, ',', '.') }}</p>
+                                    <p class="text-xs text-green-600">Bayar Rp {{ number_format($inst->amount_paid, 0, ',', '.') }}</p>
                                 @endif
                             </div>
                             <span class="text-xs bg-{{ $ic }}-500/10 text-{{ $ic }}-400 border border-{{ $ic }}-500/20 px-2 py-0.5 rounded-full">
@@ -135,7 +135,7 @@
                                 <p class="text-xs text-gray-500 mt-0.5">
                                     {{ $trx->created_at->format('d/m/Y H:i') }}
                                     @if($trx->confirmedBy) · {{ $trx->confirmedBy->name }} @endif
-                                    @if($trx->rejection_reason) · <span class="text-red-400">{{ $trx->rejection_reason }}</span> @endif
+                                    @if($trx->rejection_reason) · <span class="text-red-600">{{ $trx->rejection_reason }}</span> @endif
                                 </p>
                             </div>
                             <span class="text-xs bg-{{ $tc }}-500/10 text-{{ $tc }}-400 border border-{{ $tc }}-500/20 px-2.5 py-0.5 rounded-full">
@@ -169,7 +169,7 @@
                             </button>
                             <button type="button" id="btn-full"
                                 onclick="setPayType('full')"
-                                class="flex-1 text-xs font-medium py-2 rounded-lg border bg-white border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                                class="flex-1 text-xs font-medium py-2 rounded-lg border bg-white border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
                                 Lunas (Rp {{ number_format($bill->amount_remaining, 0, ',', '.') }})
                             </button>
                         </div>
@@ -217,7 +217,7 @@
 
             {{-- Bebaskan tagihan --}}
             <div class="bg-white border border-gray-200 rounded-xl p-5" x-data="{ open: false }">
-                <button @click="open = !open" class="text-sm text-red-400 hover:text-red-300 flex items-center gap-1.5">
+                <button @click="open = !open" class="text-sm text-red-600 hover:text-red-700 flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
                     </svg>
@@ -229,7 +229,7 @@
                         <input type="text" name="reason" required placeholder="Alasan pembebasan (wajib)..."
                             class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-red-500 focus:outline-none mb-2">
                         <button type="submit" onclick="return confirm('Yakin bebaskan tagihan ini?')"
-                            class="w-full bg-red-600/20 hover:bg-red-600/40 border border-red-500/30 text-red-400 text-sm font-medium py-2 rounded-lg transition-colors">
+                            class="w-full bg-red-50 hover:bg-red-600/40 border border-red-200 text-red-600 text-sm font-medium py-2 rounded-lg transition-colors">
                             Konfirmasi Pembebasan
                         </button>
                     </form>

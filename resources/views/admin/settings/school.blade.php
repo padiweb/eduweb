@@ -46,7 +46,7 @@
                                 @endif
                             </div>
                             <div>
-                                <label for="logo-input" class="cursor-pointer inline-flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-xs font-medium px-4 py-2 rounded-lg transition-colors">
+                                <label for="logo-input" class="cursor-pointer inline-flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium px-4 py-2 rounded-lg transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
                                     </svg>
@@ -75,10 +75,10 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="sm:col-span-2">
-                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Sekolah <span class="text-red-400">*</span></label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama Sekolah <span class="text-red-600">*</span></label>
                             <input type="text" name="name" value="{{ old('name', $school->name) }}"
                                    class="w-full bg-white border {{ $errors->has('name') ? 'border-red-500' : 'border-gray-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                            @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
@@ -137,7 +137,7 @@
                 {{-- Pengaturan Jam Absensi --}}
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <h2 class="text-sm font-semibold text-gray-900 mb-1 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         Jam Absensi Siswa
@@ -146,25 +146,25 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Jam Buka <span class="text-red-400">*</span></label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Jam Buka <span class="text-red-600">*</span></label>
                             <input type="time" name="school_start_time"
                                    value="{{ old('school_start_time', substr($school->school_start_time, 0, 5)) }}"
                                    class="w-full bg-white border {{ $errors->has('school_start_time') ? 'border-red-500' : 'border-gray-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                            @error('school_start_time') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('school_start_time') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Batas Terlambat <span class="text-red-400">*</span></label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Batas Terlambat <span class="text-red-600">*</span></label>
                             <input type="time" name="late_threshold_time"
                                    value="{{ old('late_threshold_time', substr($school->late_threshold_time, 0, 5)) }}"
                                    class="w-full bg-white border {{ $errors->has('late_threshold_time') ? 'border-red-500' : 'border-gray-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                            @error('late_threshold_time') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('late_threshold_time') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Jam Tutup <span class="text-red-400">*</span></label>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Jam Tutup <span class="text-red-600">*</span></label>
                             <input type="time" name="attendance_close_time"
                                    value="{{ old('attendance_close_time', substr($school->attendance_close_time, 0, 5)) }}"
                                    class="w-full bg-white border {{ $errors->has('attendance_close_time') ? 'border-red-500' : 'border-gray-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                            @error('attendance_close_time') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('attendance_close_time') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@
                 {{-- ── Pengaturan Pelanggaran & Peringatan ── --}}
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <h2 class="text-sm font-semibold text-gray-900 mb-1 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
                         </svg>
                         Pelanggaran &amp; Peringatan
@@ -185,33 +185,33 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1.5">
-                                Batas Peringatan 1 <span class="text-red-400">*</span>
+                                Batas Peringatan 1 <span class="text-red-600">*</span>
                             </label>
                             <input type="number" name="violation_warning1" min="1" max="999"
                                    value="{{ old('violation_warning1', $school->violation_warning1 ?? 10) }}"
-                                   class="w-full bg-white border {{ $errors->has('violation_warning1') ? 'border-red-500' : 'border-amber-500/40' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-amber-500 transition-colors">
+                                   class="w-full bg-white border {{ $errors->has('violation_warning1') ? 'border-red-500' : 'border-amber-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-amber-500 transition-colors">
                             <p class="text-xs text-amber-600 mt-1">poin · Peringatan 1</p>
-                            @error('violation_warning1') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('violation_warning1') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1.5">
-                                Batas Peringatan 2 <span class="text-red-400">*</span>
+                                Batas Peringatan 2 <span class="text-red-600">*</span>
                             </label>
                             <input type="number" name="violation_warning2" min="1" max="999"
                                    value="{{ old('violation_warning2', $school->violation_warning2 ?? 20) }}"
-                                   class="w-full bg-white border {{ $errors->has('violation_warning2') ? 'border-red-500' : 'border-orange-500/40' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-orange-500 transition-colors">
+                                   class="w-full bg-white border {{ $errors->has('violation_warning2') ? 'border-red-500' : 'border-orange-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-orange-500 transition-colors">
                             <p class="text-xs text-orange-600 mt-1">poin · Peringatan 2</p>
-                            @error('violation_warning2') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('violation_warning2') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1.5">
-                                Batas Peringatan 3 <span class="text-red-400">*</span>
+                                Batas Peringatan 3 <span class="text-red-600">*</span>
                             </label>
                             <input type="number" name="violation_warning3" min="1" max="999"
                                    value="{{ old('violation_warning3', $school->violation_warning3 ?? 30) }}"
-                                   class="w-full bg-white border {{ $errors->has('violation_warning3') ? 'border-red-500' : 'border-red-500/40' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-red-500 transition-colors">
+                                   class="w-full bg-white border {{ $errors->has('violation_warning3') ? 'border-red-500' : 'border-red-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-red-500 transition-colors">
                             <p class="text-xs text-red-600 mt-1">poin · Peringatan 3</p>
-                            @error('violation_warning3') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('violation_warning3') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
@@ -228,7 +228,7 @@
                                 <p class="text-gray-500 text-xs mt-1">
                                     hari · Isi 0 untuk menonaktifkan batas
                                 </p>
-                                @error('alfa_limit_per_semester') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                                @error('alfa_limit_per_semester') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div class="bg-white border border-gray-200 rounded-xl p-3 text-xs text-gray-500">
                                 <p class="font-semibold text-gray-900 mb-1">Cara kerja alfa:</p>
@@ -279,8 +279,8 @@
                     <h2 class="text-sm font-semibold text-gray-900 mb-3">Paket Aktif</h2>
                     <div class="flex items-center gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-bold
-                            {{ $school->package === 'enterprise' ? 'bg-blue-500/20 text-blue-600 border border-purple-500/30' :
-                               ($school->package === 'pro' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                            {{ $school->package === 'enterprise' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
+                               ($school->package === 'pro' ? 'bg-blue-50 text-blue-400 border border-blue-200' :
                                'bg-gray-50 text-gray-500 border border-gray-200') }}">
                             {{ strtoupper($school->package) }}
                         </span>
@@ -310,7 +310,7 @@
                             GPS sudah diatur
                         </div>
                     @else
-                        <div class="flex items-center gap-2 mb-3 text-xs text-red-400">
+                        <div class="flex items-center gap-2 mb-3 text-xs text-red-600">
                             <span class="w-2 h-2 rounded-full bg-red-400"></span>
                             GPS belum diatur
                         </div>
@@ -333,19 +333,19 @@
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-500 mb-1.5">
-                                Radius Absensi (meter) <span class="text-red-400">*</span>
+                                Radius Absensi (meter) <span class="text-red-600">*</span>
                             </label>
                             <input type="number" name="attendance_radius_meters"
                                    value="{{ old('attendance_radius_meters', $school->attendance_radius_meters) }}"
                                    min="50" max="1000"
                                    class="w-full bg-white border {{ $errors->has('attendance_radius_meters') ? 'border-red-500' : 'border-gray-200' }} text-gray-900 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <p class="text-gray-500 text-xs mt-1">Minimal 50m, maksimal 1000m. Rekomendasi: 200m</p>
-                            @error('attendance_radius_meters') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                            @error('attendance_radius_meters') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
                     <button type="button" id="btn-detect-location"
-                            class="w-full flex items-center justify-center gap-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 text-sm font-medium py-2.5 rounded-xl transition-colors mb-3">
+                            class="w-full flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-50 border border-blue-200 text-blue-400 text-sm font-medium py-2.5 rounded-xl transition-colors mb-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
@@ -401,7 +401,7 @@
                 <div class="flex items-end">
                     <a href="{{ route('admin.teacher-attendance.qr') }}"
                        target="_blank"
-                       class="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm px-4 py-2.5 rounded-xl transition-colors">
+                       class="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm px-4 py-2.5 rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/>
@@ -413,7 +413,7 @@
                 {{-- Refresh QR — pakai JS fetch agar tidak nested form --}}
                 <div class="sm:col-span-3 mt-2">
                     <button type="button" id="btn-refresh-qr"
-                            class="flex items-center gap-2 text-sm text-amber-400 hover:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-xl transition-colors">
+                            class="flex items-center gap-2 text-sm text-amber-600 hover:text-amber-700 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
                         </svg>
@@ -427,7 +427,7 @@
         {{-- Tombol simpan --}}
         <div class="mt-6 flex justify-end gap-3">
             <a href="{{ route('admin.dashboard') }}"
-               class="px-6 py-2.5 text-sm font-medium rounded-xl bg-white hover:bg-gray-50 text-gray-400 border border-gray-200 transition-colors">
+               class="px-6 py-2.5 text-sm font-medium rounded-xl bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 transition-colors">
                 Batal
             </a>
             <button type="submit"
@@ -471,7 +471,7 @@
             function(err) {
                 var msgs = { 1: 'Izinkan akses lokasi di browser.', 2: 'GPS tidak tersedia.', 3: 'GPS timeout. Coba lagi.' };
                 statusEl.textContent = msgs[err.code] || 'Gagal deteksi lokasi.';
-                statusEl.className   = 'text-xs text-center text-red-400';
+                statusEl.className   = 'text-xs text-center text-red-600';
                 document.getElementById('btn-detect-location').disabled = false;
             },
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }

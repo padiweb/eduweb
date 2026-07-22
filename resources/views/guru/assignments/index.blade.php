@@ -7,7 +7,7 @@
         </div>
         <div class="flex gap-2">
             <a href="{{ route('guru.assignments.scores') }}"
-               class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
+               class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
                 </svg>
@@ -29,14 +29,14 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
 
     @if($assignments->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
             </svg>
             <p class="text-gray-500 text-sm">Belum ada tugas. Klik Buat Tugas untuk memulai.</p>
@@ -86,8 +86,8 @@
                                     </p>
                                 </div>
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold border flex-shrink-0
-                                    {{ $statusColor === 'emerald' ? 'bg-blue-600/10 text-blue-600 border-blue-200' :
-                                       ($statusColor === 'amber'  ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
+                                    {{ $statusColor === 'emerald' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                       ($statusColor === 'amber'  ? 'bg-amber-50 text-amber-700 border-amber-200' :
                                        'bg-white text-gray-500 border-gray-200') }}">
                                     {{ $statusLabel }}
                                 </span>
@@ -108,7 +108,7 @@
         <div class="bg-white border border-gray-200 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between p-5 border-b border-gray-200 sticky top-0 bg-white z-10">
                 <h3 class="font-semibold text-gray-900">Buat Tugas Baru</h3>
-                <button id="btn-close-modal" class="text-gray-500 hover:text-gray-900 transition-colors">
+                <button id="btn-close-modal" class="text-gray-500 hover:text-blue-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -117,7 +117,7 @@
             <form method="POST" action="{{ route('guru.assignments.store') }}" enctype="multipart/form-data" class="p-5 space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1.5">Kelas <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1.5">Kelas <span class="text-red-600">*</span></label>
                     <select name="classroom_id" id="select-classroom" required
                             class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="">Pilih kelas...</option>
@@ -127,7 +127,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1.5">Mata Pelajaran <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1.5">Mata Pelajaran <span class="text-red-600">*</span></label>
                     <select name="subject_id" id="select-subject" required
                             class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <option value="">Pilih kelas dulu...</option>
@@ -177,7 +177,7 @@
                 });
                 </script>
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1.5">Judul Tugas <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1.5">Judul Tugas <span class="text-red-600">*</span></label>
                     <input type="text" name="title" required placeholder="cth: Tugas 1 - Persamaan Linear"
                            class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                 </div>
@@ -191,12 +191,12 @@
                 <div>
                     <label class="block text-xs text-gray-500 mb-1.5">Lampiran Soal (opsional)</label>
                     <input type="file" name="attachment_path"
-                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-400">
+                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors file:mr-3 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100 file:text-gray-600">
                     <p class="text-xs text-gray-500 mt-1">Semua jenis file. Maks 10MB.</p>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Metode Pengumpulan <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Metode Pengumpulan <span class="text-red-600">*</span></label>
                         <select name="submission_type" required
                                 class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="any">Semua (file/teks/link)</option>
@@ -206,7 +206,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Nilai Maksimal <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Nilai Maksimal <span class="text-red-600">*</span></label>
                         <input type="number" name="max_score" value="100" min="1" max="100" required
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
@@ -231,7 +231,7 @@
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" id="btn-cancel-modal"
-                            class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
+                            class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2.5 rounded-xl border border-gray-200 transition-colors">Batal</button>
                     <button type="submit"
                             class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">Buat Tugas</button>
                 </div>

@@ -8,9 +8,9 @@
     @foreach (['success','error','info'] as $msg)
         @if (session($msg))
             <div class="mb-4 p-3 rounded-xl text-sm border
-                {{ $msg === 'success' ? 'bg-blue-600/10 border-blue-200 text-blue-600' :
-                   ($msg === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' :
-                   'bg-blue-500/10 border-blue-500/20 text-blue-400') }}">
+                {{ $msg === 'success' ? 'bg-blue-50 border-blue-200 text-blue-600' :
+                   ($msg === 'error' ? 'bg-red-50 border-red-200 text-red-600' :
+                   'bg-blue-50 border-blue-200 text-blue-400') }}">
                 {{ session($msg) }}
             </div>
         @endif
@@ -25,7 +25,7 @@
         {{-- Info DU/DI --}}
         <div class="bg-white border border-gray-200 rounded-xl p-4 mb-4">
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-200 flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                               d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"/>
@@ -59,7 +59,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
             {{-- Card Masuk --}}
             <div class="bg-white border {{ $checkin ? 'border-blue-200' : ($absence ? 'border-gray-200' : 'border-gray-200') }} rounded-xl p-4 text-center">
-                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $checkin ? 'bg-blue-600/15' : 'bg-white' }}">
+                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $checkin ? 'bg-blue-50' : 'bg-white' }}">
                     <svg class="w-5 h-5 {{ $checkin ? 'text-blue-600' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                     </svg>
@@ -79,8 +79,8 @@
             </div>
 
             {{-- Card Pulang --}}
-            <div class="bg-white border {{ $checkout ? 'border-blue-500/30' : 'border-gray-200' }} rounded-xl p-4 text-center">
-                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $checkout ? 'bg-blue-500/15' : 'bg-white' }}">
+            <div class="bg-white border {{ $checkout ? 'border-blue-200' : 'border-gray-200' }} rounded-xl p-4 text-center">
+                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $checkout ? 'bg-blue-50' : 'bg-white' }}">
                     <svg class="w-5 h-5 {{ $checkout ? 'text-blue-400' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
@@ -99,16 +99,16 @@
             </div>
 
             {{-- Card Jurnal --}}
-            <div class="bg-white border {{ $journal ? 'border-amber-500/30' : 'border-gray-200' }} rounded-xl p-4 text-center">
-                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $journal ? 'bg-amber-500/15' : 'bg-white' }}">
-                    <svg class="w-5 h-5 {{ $journal ? 'text-amber-400' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white border {{ $journal ? 'border-amber-200' : 'border-gray-200' }} rounded-xl p-4 text-center">
+                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $journal ? 'bg-amber-50' : 'bg-white' }}">
+                    <svg class="w-5 h-5 {{ $journal ? 'text-amber-600' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                 </div>
                 <p class="text-xs text-gray-500 mb-1">Jurnal</p>
                 @if ($journal)
-                    <p class="text-amber-400 text-xs font-bold">{{ $journal->submitted_at?->format('H:i') ?? $journal->updated_at->format('H:i') }}</p>
-                    <a href="{{ route('siswa.prakerin.jurnal') }}" class="text-gray-500 text-xs hover:text-amber-400 transition-colors">Edit</a>
+                    <p class="text-amber-600 text-xs font-bold">{{ $journal->submitted_at?->format('H:i') ?? $journal->updated_at->format('H:i') }}</p>
+                    <a href="{{ route('siswa.prakerin.jurnal') }}" class="text-gray-500 text-xs hover:text-amber-600 transition-colors">Edit</a>
                 @else
                     <a href="{{ route('siswa.prakerin.jurnal') }}"
                        class="inline-block mt-1 px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs rounded-lg font-semibold transition-colors">
@@ -119,15 +119,15 @@
 
             {{-- Card Tidak Hadir --}}
             @php $absence = \App\Models\PrakerinAbsence::where('placement_id', $placement->id)->where('absence_date', $today)->first(); @endphp
-            <div class="bg-white border {{ $absence ? 'border-orange-500/30' : 'border-gray-200' }} rounded-xl p-4 text-center">
-                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $absence ? 'bg-orange-500/15' : 'bg-white' }}">
-                    <svg class="w-5 h-5 {{ $absence ? 'text-orange-400' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white border {{ $absence ? 'border-orange-200' : 'border-gray-200' }} rounded-xl p-4 text-center">
+                <div class="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center {{ $absence ? 'bg-orange-50' : 'bg-white' }}">
+                    <svg class="w-5 h-5 {{ $absence ? 'text-orange-600' : 'text-gray-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/>
                     </svg>
                 </div>
                 <p class="text-xs text-gray-500 mb-1">Tidak Hadir</p>
                 @if ($absence)
-                    <p class="text-orange-400 text-xs font-bold">{{ $absence->type_label }}</p>
+                    <p class="text-orange-600 text-xs font-bold">{{ $absence->type_label }}</p>
                     <p class="text-blue-600 text-xs">Tercatat</p>
                 @else
                     @if (! $checkin)
@@ -143,11 +143,11 @@
         </div>
 
         @if (! $journal)
-            <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15 flex items-center gap-3">
-                <svg class="w-4 h-4 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-200 flex items-center gap-3">
+                <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
-                <p class="text-amber-300 text-xs">Jangan lupa isi jurnal harian! Batas waktu sampai <strong>23:59 malam ini</strong>.</p>
+                <p class="text-amber-700 text-xs">Jangan lupa isi jurnal harian! Batas waktu sampai <strong>23:59 malam ini</strong>.</p>
             </div>
         @endif
 
@@ -160,10 +160,10 @@
                         <div class="w-20 flex-shrink-0">
                             <p class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($date)->translatedFormat('D, d M') }}</p>
                         </div>
-                        <span class="px-2 py-0.5 rounded-md text-xs {{ $ci ? 'bg-blue-600/10 text-blue-600' : 'bg-white text-gray-500' }}">
+                        <span class="px-2 py-0.5 rounded-md text-xs {{ $ci ? 'bg-blue-50 text-blue-600' : 'bg-white text-gray-500' }}">
                             {{ $ci ? 'Masuk '.($ci->selfie_taken_at?->format('H:i') ?? $ci->created_at->format('H:i')) : '— Masuk' }}
                         </span>
-                        <span class="px-2 py-0.5 rounded-md text-xs {{ $co ? 'bg-blue-500/10 text-blue-400' : 'bg-white text-gray-500' }}">
+                        <span class="px-2 py-0.5 rounded-md text-xs {{ $co ? 'bg-blue-50 text-blue-400' : 'bg-white text-gray-500' }}">
                             {{ $co ? 'Pulang '.($co->selfie_taken_at?->format('H:i') ?? $co->created_at->format('H:i')) : '— Pulang' }}
                         </span>
                     </div>
@@ -172,7 +172,7 @@
         @endif
 
         <div class="mt-4 text-center">
-            <a href="{{ route('siswa.prakerin.jurnal.history') }}" class="text-gray-500 text-sm hover:text-gray-900 transition-colors">
+            <a href="{{ route('siswa.prakerin.jurnal.history') }}" class="text-gray-500 text-sm hover:text-blue-600 transition-colors">
                 Lihat semua jurnal →
             </a>
         </div>

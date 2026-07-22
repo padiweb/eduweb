@@ -1,6 +1,6 @@
 <x-simans-layout title="Import User">
     <div class="mb-6">
-        <a href="{{ route('admin.users.index') }}" class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+        <a href="{{ route('admin.users.index') }}" class="text-gray-500 text-sm hover:text-blue-600 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
@@ -9,16 +9,16 @@
     </div>
 
     @if(session('success'))
-        <div class="mb-4 p-3 rounded-xl bg-blue-600/10 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div class="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ session('error') }}</div>
+        <div class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{{ session('error') }}</div>
     @endif
     @if(session('import_errors') && count(session('import_errors')) > 0)
-        <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
-            <p class="text-amber-400 text-sm font-semibold mb-2">Beberapa baris dilewati:</p>
+        <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-200">
+            <p class="text-amber-600 text-sm font-semibold mb-2">Beberapa baris dilewati:</p>
             @foreach(session('import_errors') as $err)
-                <p class="text-amber-400/70 text-xs">{{ $err }}</p>
+                <p class="text-amber-600/70 text-xs">{{ $err }}</p>
             @endforeach
         </div>
     @endif
@@ -31,7 +31,7 @@
                 @csrf
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs text-gray-500 font-medium mb-1.5">Role <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 font-medium mb-1.5">Role <span class="text-red-600">*</span></label>
                         <select name="role" id="role-select" onchange="updateTemplate()"
                                 class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-300">
                             <option value="siswa" {{ request('role') === 'siswa' ? 'selected' : '' }}>Siswa</option>
@@ -46,7 +46,7 @@
                     <div id="kelas-field">
                         <label class="block text-xs text-gray-500 font-medium mb-1.5">Masukkan ke Kelas <span class="text-gray-500">(opsional, untuk siswa)</span></label>
                         <select name="kelas_id"
-                                class="w-full bg-white border border-gray-200 text-gray-400 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-300">
+                                class="w-full bg-white border border-gray-200 text-gray-600 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-300">
                             <option value="">— Tidak ditambahkan ke kelas —</option>
                             @foreach($classrooms as $cls)
                                 <option value="{{ $cls->id }}">{{ $cls->name }}</option>
@@ -55,7 +55,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-500 font-medium mb-1.5">File CSV <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 font-medium mb-1.5">File CSV <span class="text-red-600">*</span></label>
                         <input type="file" name="file" accept=".csv"
                                class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-700 file:text-white hover:file:bg-blue-600 cursor-pointer"/>
                         <p class="text-xs text-gray-500 mt-1">Hanya file .csv, maksimal 5MB</p>
@@ -79,7 +79,7 @@
                 <p class="text-gray-500 text-xs mb-3">Download template CSV sesuai role, isi data, lalu upload.</p>
                 <div class="flex gap-2 flex-wrap">
                     <a id="template-link" href="{{ route('admin.users.import.template', ['role' => 'siswa']) }}"
-                       class="flex items-center gap-2 px-3 py-2 bg-blue-600/20 border border-blue-500/20 text-blue-400 text-xs rounded-xl hover:bg-blue-600/30 transition-colors">
+                       class="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-xl hover:bg-blue-50 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                         Download Template
                     </a>
@@ -88,16 +88,16 @@
 
             <div class="bg-white border border-gray-200 rounded-xl p-5">
                 <h2 class="text-sm font-semibold text-gray-900 mb-3">Format CSV Siswa</h2>
-                <div class="bg-white rounded-xl p-3 font-mono text-xs text-gray-400 overflow-x-auto">
+                <div class="bg-white rounded-xl p-3 font-mono text-xs text-gray-600 overflow-x-auto">
                     <p class="text-gray-500 mb-1"># Baris pertama adalah header (wajib)</p>
                     <p class="text-blue-600">name,nis,nisn,email,phone</p>
                     <p>Andika Wicaksono,123456,1234567890,,</p>
                     <p>Ardi Nugroho,123457,,,</p>
                 </div>
                 <ul class="mt-3 space-y-1 text-xs text-gray-500">
-                    <li>• <span class="text-gray-400">name</span> — Nama lengkap (wajib)</li>
-                    <li>• <span class="text-gray-400">nis</span> — NIS siswa (jika kosong, NIS tidak diset)</li>
-                    <li>• <span class="text-gray-400">email</span> — Jika kosong, dibuat otomatis</li>
+                    <li>• <span class="text-gray-600">name</span> — Nama lengkap (wajib)</li>
+                    <li>• <span class="text-gray-600">nis</span> — NIS siswa (jika kosong, NIS tidak diset)</li>
+                    <li>• <span class="text-gray-600">email</span> — Jika kosong, dibuat otomatis</li>
                     <li>• Password default = NIS (atau nama jika NIS kosong)</li>
                     <li>• Siswa dengan NIS yang sudah ada akan dilewati</li>
                 </ul>
@@ -105,7 +105,7 @@
 
             <div class="bg-white border border-gray-200 rounded-xl p-5">
                 <h2 class="text-sm font-semibold text-gray-900 mb-3">Format CSV Guru</h2>
-                <div class="bg-white rounded-xl p-3 font-mono text-xs text-gray-400 overflow-x-auto">
+                <div class="bg-white rounded-xl p-3 font-mono text-xs text-gray-600 overflow-x-auto">
                     <p class="text-blue-600">name,nip,email,phone</p>
                     <p>Dewi Kusuma S.Pd,197501012005012001,,</p>
                 </div>

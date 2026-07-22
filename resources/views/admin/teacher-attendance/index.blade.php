@@ -7,12 +7,12 @@
         </div>
         <div class="flex gap-2">
             <a href="{{ route('admin.teacher-attendance.rewards') }}"
-               class="text-sm text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
+               class="text-sm text-gray-500 hover:text-blue-600 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
                 Rekap Poin
             </a>
             <form method="POST" action="{{ route('admin.teacher-attendance.refresh-qr') }}">
                 @csrf
-                <button class="text-sm text-gray-500 hover:text-gray-900 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
+                <button class="text-sm text-gray-500 hover:text-blue-600 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
                     Refresh QR
                 </button>
             </form>
@@ -59,11 +59,11 @@
                     </div>
                     <div class="flex items-center gap-3 text-xs">
                         <span class="text-blue-600">{{ $sum['hadir'] }} hadir</span>
-                        @if($sum['terlambat'] > 0) <span class="text-amber-400">{{ $sum['terlambat'] }} terlambat</span> @endif
+                        @if($sum['terlambat'] > 0) <span class="text-amber-600">{{ $sum['terlambat'] }} terlambat</span> @endif
                         @if($sum['izin'] > 0)      <span class="text-blue-400">{{ $sum['izin'] }} izin</span> @endif
                         @if($sum['sakit'] > 0)     <span class="text-blue-600">{{ $sum['sakit'] }} sakit</span> @endif
-                        @if($sum['dinas'] > 0)     <span class="text-cyan-400">{{ $sum['dinas'] }} dinas</span> @endif
-                        @if($sum['alfa'] > 0)      <span class="text-red-400">{{ $sum['alfa'] }} alfa</span> @endif
+                        @if($sum['dinas'] > 0)     <span class="text-cyan-600">{{ $sum['dinas'] }} dinas</span> @endif
+                        @if($sum['alfa'] > 0)      <span class="text-red-600">{{ $sum['alfa'] }} alfa</span> @endif
                     </div>
                 </div>
 
@@ -72,7 +72,7 @@
                     <div class="divide-y divide-gray-100">
                         @foreach($session->attendances->sortBy('teacher.name') as $att)
                             @php
-                                $colors = ['hadir'=>'emerald','terlambat'=>'amber','izin'=>'blue','sakit'=>'purple','dinas'=>'cyan','alfa'=>'red'];
+                                $colors = ['hadir'=>'emerald','terlambat'=>'amber','izin'=>'blue','sakit'=>'blue','dinas'=>'cyan','alfa'=>'red'];
                                 $c = $colors[$att->status] ?? 'gray';
                             @endphp
                             <div class="flex items-center gap-3 px-5 py-3.5">
@@ -102,7 +102,7 @@
                 {{-- Guru yang belum absen --}}
                 @if($sum['not_attended']->count() > 0)
                     <div class="px-5 py-3 border-t border-gray-200 bg-red-500/5">
-                        <p class="text-xs font-semibold text-red-400 mb-2">Belum absen ({{ $sum['not_attended']->count() }}):</p>
+                        <p class="text-xs font-semibold text-red-600 mb-2">Belum absen ({{ $sum['not_attended']->count() }}):</p>
                         <div class="flex flex-wrap gap-2">
                             @foreach($sum['not_attended'] as $t)
                                 <span class="text-xs text-gray-500 bg-white border border-gray-200 px-2.5 py-1 rounded-lg">
@@ -116,7 +116,7 @@
                 {{-- Form input manual --}}
                 <div class="px-5 py-4 border-t border-gray-200" x-data="{ showManual: false }">
                     <button type="button" @click="showManual=!showManual"
-                            class="text-xs text-gray-500 hover:text-gray-900 transition-colors">
+                            class="text-xs text-gray-500 hover:text-blue-600 transition-colors">
                         + Input Manual
                     </button>
                     <div x-show="showManual" x-cloak class="mt-3">

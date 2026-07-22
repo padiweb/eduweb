@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('guru.assignments.index') }}"
-           class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors w-fit">
+           class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
             </svg>
@@ -47,7 +47,7 @@
                                     </span>
                                 </th>
                             @endforeach
-                            <th class="px-5 py-3.5 text-center text-xs font-semibold text-amber-400 min-w-[80px]">Rata-rata</th>
+                            <th class="px-5 py-3.5 text-center text-xs font-semibold text-amber-600 min-w-[80px]">Rata-rata</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -67,7 +67,7 @@
                                         @if($status === 'not_submitted')
                                             <span class="text-xs text-red-500" title="Tidak Dikumpulkan">TK</span>
                                         @elseif($score !== null)
-                                            <span class="font-semibold {{ $score >= 80 ? 'text-blue-600' : ($score >= 70 ? 'text-blue-400' : ($score >= 60 ? 'text-amber-400' : 'text-red-400')) }}">
+                                            <span class="font-semibold {{ $score >= 80 ? 'text-blue-600' : ($score >= 70 ? 'text-blue-400' : ($score >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
                                                 {{ $score }}
                                             </span>
                                         @else
@@ -77,7 +77,7 @@
                                 @endforeach
                                 <td class="px-5 py-3 text-center">
                                     @if($row['average'] !== null)
-                                        <span class="font-bold text-lg {{ $row['average'] >= 80 ? 'text-blue-600' : ($row['average'] >= 70 ? 'text-blue-400' : ($row['average'] >= 60 ? 'text-amber-400' : 'text-red-400')) }}">
+                                        <span class="font-bold text-lg {{ $row['average'] >= 80 ? 'text-blue-600' : ($row['average'] >= 70 ? 'text-blue-400' : ($row['average'] >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
                                             {{ $row['average'] }}
                                         </span>
                                     @else

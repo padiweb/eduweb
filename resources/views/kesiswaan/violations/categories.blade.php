@@ -3,7 +3,7 @@
     <div class="flex items-start justify-between mb-6">
         <div>
             <a href="{{ route('kesiswaan.violations.index') }}"
-               class="flex items-center gap-1 text-gray-500 hover:text-gray-900 text-sm mb-2 transition-colors">
+               class="flex items-center gap-1 text-gray-500 hover:text-blue-600 text-sm mb-2 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
                 </svg>
@@ -20,7 +20,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -36,16 +36,16 @@
                     @csrf
 
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Nama Kategori <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Nama Kategori <span class="text-red-600">*</span></label>
                         <input type="text" name="name" required
                                value="{{ old('name') }}"
                                placeholder="cth: Perkelahian, Bolos, dll"
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                        @error('name') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('name') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Tingkat Keparahan <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Tingkat Keparahan <span class="text-red-600">*</span></label>
                         <select name="severity" required
                                 class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">Pilih tingkat...</option>
@@ -53,16 +53,16 @@
                             <option value="sedang"  {{ old('severity') === 'sedang'  ? 'selected' : '' }}>Sedang</option>
                             <option value="berat"   {{ old('severity') === 'berat'   ? 'selected' : '' }}>Berat</option>
                         </select>
-                        @error('severity') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('severity') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1.5">Poin Default <span class="text-red-400">*</span></label>
+                        <label class="block text-xs text-gray-500 mb-1.5">Poin Default <span class="text-red-600">*</span></label>
                         <input type="number" name="default_points" required min="1" max="100"
                                value="{{ old('default_points', 5) }}"
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                         <p class="text-xs text-gray-500 mt-1">Bisa diubah saat input pelanggaran</p>
-                        @error('default_points') <p class="text-red-400 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('default_points') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <button type="submit"
@@ -86,9 +86,9 @@
                         @foreach($categories as $cat)
                             @php
                                 $severityMap = [
-                                    'ringan' => ['bg-blue-600/10 text-blue-600 border-blue-200', 'Ringan'],
-                                    'sedang' => ['bg-amber-500/10 text-amber-400 border-amber-500/20',   'Sedang'],
-                                    'berat'  => ['bg-red-500/10 text-red-400 border-red-500/20',         'Berat'],
+                                    'ringan' => ['bg-blue-50 text-blue-600 border-blue-200', 'Ringan'],
+                                    'sedang' => ['bg-amber-50 text-amber-700 border-amber-200',   'Sedang'],
+                                    'berat'  => ['bg-red-50 text-red-700 border-red-200',         'Berat'],
                                 ];
                                 [$badgeClass, $severityLabel] = $severityMap[$cat->severity] ?? ['bg-white text-gray-500 border-gray-200', $cat->severity];
                             @endphp
@@ -110,7 +110,7 @@
                     </div>
                 @else
                     <div class="px-5 py-12 text-center">
-                        <svg class="w-12 h-12 text-gray-900 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/>
                         </svg>

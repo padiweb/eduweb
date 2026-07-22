@@ -25,7 +25,7 @@
         {{-- Info sesi --}}
         <div class="bg-white border border-gray-200 rounded-xl p-5 mb-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-600/10 border border-blue-200 flex items-center justify-center flex-shrink-0">
+                <div class="w-10 h-10 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -43,7 +43,7 @@
         </div>
 
         @if(session('error'))
-            <div class="bg-red-900/30 border border-red-500/30 text-red-300 px-4 py-3 rounded-xl text-sm mb-4">
+            <div class="bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">
                 {{ session('error') }}
             </div>
         @endif
@@ -54,7 +54,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
             </svg>
-            <p id="gps-status" class="text-sm text-gray-400">Mendeteksi lokasi GPS...</p>
+            <p id="gps-status" class="text-sm text-gray-600">Mendeteksi lokasi GPS...</p>
         </div>
 
         <form id="form-absen" method="POST" action="{{ route('teacher.attendance.confirm') }}">
@@ -70,7 +70,7 @@
         </form>
 
         <a href="{{ route('guru.teacher-attendance.index') }}"
-           class="block text-center text-sm text-gray-500 hover:text-gray-400 mt-4 transition-colors">
+           class="block text-center text-sm text-gray-500 hover:text-gray-600 mt-4 transition-colors">
             Kembali ke halaman absensi
         </a>
     </div>
@@ -100,8 +100,8 @@
             },
             function(err) {
                 gpsStatus.textContent = 'GPS tidak terdeteksi. Klik absen untuk lanjut.';
-                gpsStatus.className = 'text-sm text-amber-400';
-                gpsBox.className = 'flex items-center gap-3 bg-amber-900/20 border border-amber-500/20 rounded-xl p-4 mb-4';
+                gpsStatus.className = 'text-sm text-amber-600';
+                gpsBox.className = 'flex items-center gap-3 bg-amber-900/20 border border-amber-200 rounded-xl p-4 mb-4';
                 btnAbsen.disabled = false;
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }

@@ -24,13 +24,13 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">
             {{ session('success') }}
         </div>
     @endif
 
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">
             {{ $errors->first() }}
         </div>
     @endif
@@ -45,7 +45,7 @@
                         <span class="text-xs text-gray-500 bg-white px-2 py-0.5 rounded">{{ $type->code }}</span>
                     @endif
                     @if(!$type->is_active)
-                        <span class="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">Nonaktif</span>
+                        <span class="text-xs text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded">Nonaktif</span>
                     @endif
                 </div>
                 <p class="text-xs text-gray-500 mt-0.5">
@@ -55,12 +55,12 @@
             <div class="flex items-center gap-3">
                 <form method="POST" action="{{ route('bendahara.payment-types.toggle', $type) }}" onclick="event.stopPropagation()">
                     @csrf @method('PATCH')
-                    <button type="submit" class="text-xs {{ $type->is_active ? 'text-green-400 hover:text-red-400' : 'text-gray-500 hover:text-green-400' }} transition-colors">
+                    <button type="submit" class="text-xs {{ $type->is_active ? 'text-green-600 hover:text-red-600' : 'text-gray-500 hover:text-green-600' }} transition-colors">
                         {{ $type->is_active ? 'Aktif' : 'Nonaktif' }}
                     </button>
                 </form>
                 <button onclick="event.stopPropagation(); openEditType({{ $type->id }}, '{{ addslashes($type->name) }}', '{{ $type->code }}', '{{ $type->category }}', '{{ $type->period_type }}', '{{ addslashes($type->description ?? '') }}')"
-                    class="text-gray-500 hover:text-gray-900 transition-colors">
+                    class="text-gray-500 hover:text-blue-600 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                     </svg>
@@ -70,7 +70,7 @@
                     onclick="event.stopPropagation()"
                     onsubmit="return confirm('Hapus jenis pembayaran {{ addslashes($type->name) }}? Tarif yang terkait juga akan dihapus.')">
                     @csrf @method('DELETE')
-                    <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors">
+                    <button type="submit" class="text-gray-500 hover:text-red-600 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                         </svg>
@@ -106,11 +106,11 @@
                             <span class="text-xs text-gray-500 ml-2">{{ $rate->academicYear->name ?? '-' }} Sem {{ $rate->academicYear->semester ?? '' }}</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-medium text-green-400">Rp {{ number_format($rate->amount, 0, ',', '.') }}</span>
+                            <span class="text-sm font-medium text-green-600">Rp {{ number_format($rate->amount, 0, ',', '.') }}</span>
                             <form method="POST" action="{{ route('bendahara.payment-rates.destroy', $rate) }}"
                                 onsubmit="return confirm('Hapus tarif ini?')">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors">
+                                <button type="submit" class="text-gray-500 hover:text-red-600 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                     </svg>
@@ -176,7 +176,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add-type').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
                         class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
                 </div>
@@ -231,7 +231,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-edit-type').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
                         class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
                 </div>
@@ -287,7 +287,7 @@
                 </div>
                 <div class="flex gap-3 mt-5">
                     <button type="button" onclick="document.getElementById('modal-add-rate').classList.add('hidden')"
-                        class="flex-1 bg-white hover:bg-gray-50 text-gray-400 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
+                        class="flex-1 bg-white hover:bg-gray-50 text-gray-600 text-sm font-medium py-2 rounded-lg transition-colors">Batal</button>
                     <button type="submit"
                         class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">Simpan</button>
                 </div>

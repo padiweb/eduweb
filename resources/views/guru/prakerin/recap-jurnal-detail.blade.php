@@ -2,7 +2,7 @@
 
     <div class="mb-4">
         <a href="{{ route('guru.prakerin.recap.jurnal', ['period_id' => $placement->period_id, 'location_id' => $placement->location_id]) }}"
-           class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+           class="text-gray-500 text-sm hover:text-blue-600 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -14,14 +14,14 @@
                 <p class="text-gray-500 text-xs mt-0.5">{{ $placement->location->name }} · {{ $placement->period->name }}</p>
             </div>
             <div class="text-right">
-                <p class="text-xl font-bold {{ $filled < $total ? 'text-red-400' : 'text-blue-600' }}">{{ $filled }}/{{ $total }}</p>
+                <p class="text-xl font-bold {{ $filled < $total ? 'text-red-600' : 'text-blue-600' }}">{{ $filled }}/{{ $total }}</p>
                 <p class="text-gray-500 text-xs">jurnal terisi</p>
             </div>
         </div>
     </div>
 
     @if (session('success'))
-        <div class="mb-3 p-3 rounded-xl bg-blue-600/10 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
+        <div class="mb-3 p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 text-sm">{{ session('success') }}</div>
     @endif
 
     {{-- Progress --}}
@@ -31,7 +31,7 @@
             <div class="h-1.5 rounded-full {{ $pct >= 80 ? 'bg-blue-600' : ($pct >= 50 ? 'bg-amber-500' : 'bg-red-500') }}"
                  style="width:{{ $pct }}%"></div>
         </div>
-        <span class="text-xs font-semibold flex-shrink-0 {{ $pct >= 80 ? 'text-blue-600' : ($pct >= 50 ? 'text-amber-400' : 'text-red-400') }}">{{ $pct }}%</span>
+        <span class="text-xs font-semibold flex-shrink-0 {{ $pct >= 80 ? 'text-blue-600' : ($pct >= 50 ? 'text-amber-600' : 'text-red-600') }}">{{ $pct }}%</span>
     </div>
 
     {{-- Daftar hari — terbaru di atas, accordion --}}
@@ -54,23 +54,23 @@
             @php
                 // Warna border & badge
                 if ($journal) {
-                    $border = 'border-amber-500/25';
-                    $badgeClass = 'bg-amber-500/10 border-amber-500/20 text-amber-400';
+                    $border = 'border-amber-200';
+                    $badgeClass = 'bg-amber-50 border-amber-200 text-amber-600';
                     $badgeText  = 'Terisi';
                     $dotColor   = 'bg-amber-500';
                 } elseif ($absence) {
-                    $border = 'border-orange-400/20';
-                    $badgeClass = 'bg-orange-500/10 border-orange-400/20 text-orange-400';
+                    $border = 'border-orange-200';
+                    $badgeClass = 'bg-orange-50 border-orange-200 text-orange-600';
                     $badgeText  = $absence->type_label;
                     $dotColor   = 'bg-orange-400';
                 } elseif ($isPast) {
-                    $border = 'border-red-500/20';
-                    $badgeClass = 'bg-red-500/10 border-red-500/20 text-red-400';
+                    $border = 'border-red-200';
+                    $badgeClass = 'bg-red-50 border-red-200 text-red-600';
                     $badgeText  = 'Tidak Diisi';
                     $dotColor   = 'bg-red-500';
                 } else {
-                    $border = 'border-blue-500/20';
-                    $badgeClass = 'bg-blue-500/10 border-blue-500/20 text-blue-400';
+                    $border = 'border-blue-200';
+                    $badgeClass = 'bg-blue-50 border-blue-200 text-blue-400';
                     $badgeText  = 'Hari Ini';
                     $dotColor   = 'bg-blue-500';
                 }
@@ -96,7 +96,7 @@
                                     @endif
                                 </p>
                             @elseif ($absence)
-                                <p class="text-orange-400/70 text-xs">{{ $absence->reason }}</p>
+                                <p class="text-orange-600/70 text-xs">{{ $absence->reason }}</p>
                             @endif
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                                                 <img src="{{ Storage::url($photo->photo_path) }}"
                                                      alt="{{ $photo->caption ?? 'foto' }}"
                                                      style="width:80px;height:80px;object-fit:cover"
-                                                     class="rounded-xl border border-gray-200 hover:border-amber-400/50 transition-colors"/>
+                                                     class="rounded-xl border border-gray-200 hover:border-amber-200 transition-colors"/>
                                             </a>
                                         @endforeach
                                     </div>
@@ -145,7 +145,7 @@
                             <div class="pt-3 border-t border-gray-200">
                                 @if ($journal->teacher_note)
                                     <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1.5">Catatan Pembimbing</p>
-                                    <div class="p-3 bg-blue-500/5 border border-blue-500/15 rounded-xl">
+                                    <div class="p-3 bg-blue-500/5 border border-blue-200 rounded-xl">
                                         <p class="text-blue-300 text-sm">{{ $journal->teacher_note }}</p>
                                         <p class="text-gray-500 text-xs mt-1">{{ $journal->noted_at?->translatedFormat('d M Y, H:i') }}</p>
                                     </div>
@@ -156,7 +156,7 @@
                                                placeholder="Tulis catatan untuk jurnal ini..."
                                                class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400 placeholder-gray-400 min-w-0">
                                         <button type="submit"
-                                                class="px-3 py-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 text-sm rounded-xl border border-blue-500/20 transition-colors whitespace-nowrap">
+                                                class="px-3 py-2 bg-blue-50 hover:bg-blue-600/40 text-blue-400 text-sm rounded-xl border border-blue-200 transition-colors whitespace-nowrap">
                                             Simpan
                                         </button>
                                     </form>
@@ -167,7 +167,7 @@
                     @elseif ($absence)
                         <div class="px-4 py-4">
                             <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1.5">Keterangan</p>
-                            <p class="text-gray-400 text-sm">{{ $absence->reason }}</p>
+                            <p class="text-gray-600 text-sm">{{ $absence->reason }}</p>
                             <p class="text-gray-500 text-xs mt-2">Jurnal tidak wajib diisi saat {{ strtolower($absence->type_label) }}.</p>
                         </div>
 

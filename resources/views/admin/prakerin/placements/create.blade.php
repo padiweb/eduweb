@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('admin.prakerin.placements.index') }}"
-           class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+           class="text-gray-500 text-sm hover:text-blue-600 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -13,7 +13,7 @@
     </div>
 
     @if ($errors->any())
-        <div class="mb-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+        <div class="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
             <ul class="space-y-0.5">
                 @foreach ($errors->all() as $e) <li>{{ $e }}</li> @endforeach
             </ul>
@@ -30,7 +30,7 @@
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">Data Siswa</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Siswa <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Siswa <span class="text-red-600">*</span></label>
                         <select name="student_id" required
                                 class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">— Pilih Siswa —</option>
@@ -43,7 +43,7 @@
                         <p class="text-gray-500 text-xs mt-1">Hanya siswa tanpa penempatan aktif yang tampil</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tahun Ajaran <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tahun Ajaran <span class="text-red-600">*</span></label>
                         <select name="academic_year_id" required
                                 class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                             <option value="">— Pilih Tahun Ajaran —</option>
@@ -74,7 +74,7 @@
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">Data DU/DI (Tempat Praktik)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama DU/DI <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Nama DU/DI <span class="text-red-600">*</span></label>
                         <input type="text" name="company_name" value="{{ old('company_name') }}"
                                placeholder="Contoh: PT. Sumber Makmur Abadi"
                                required maxlength="150"
@@ -101,7 +101,7 @@
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-400">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Radius Check-in (meter) <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Radius Check-in (meter) <span class="text-red-600">*</span></label>
                         <input type="number" name="radius_meters" value="{{ old('radius_meters', 300) }}"
                                min="50" max="2000" required
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
@@ -110,7 +110,7 @@
                     <div class="flex items-end">
                         <button type="button" onclick="detectLocation()"
                                 id="btn-detect"
-                                class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors flex items-center justify-center gap-2">
+                                class="w-full py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                       d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -148,12 +148,12 @@
                 <h2 class="text-sm font-semibold text-gray-900 mb-4">Periode Prakerin</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Mulai <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Mulai <span class="text-red-600">*</span></label>
                         <input type="date" name="start_date" value="{{ old('start_date') }}" required
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Selesai <span class="text-red-400">*</span></label>
+                        <label class="block text-xs font-medium text-gray-500 mb-1.5">Tanggal Selesai <span class="text-red-600">*</span></label>
                         <input type="date" name="end_date" value="{{ old('end_date') }}" required
                                class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
                     </div>
@@ -162,7 +162,7 @@
 
             <div class="flex gap-3 justify-end">
                 <a href="{{ route('admin.prakerin.placements.index') }}"
-                   class="px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-400 text-sm rounded-xl transition-colors">
+                   class="px-5 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-sm rounded-xl transition-colors">
                     Batal
                 </a>
                 <button type="submit"
@@ -191,7 +191,7 @@
                 },
                 (err) => {
                     status.textContent = 'Gagal deteksi lokasi. Isi koordinat manual.';
-                    status.className = 'text-red-400 text-xs';
+                    status.className = 'text-red-600 text-xs';
                     btn.disabled = false;
                 },
                 { enableHighAccuracy: true, timeout: 15000 }

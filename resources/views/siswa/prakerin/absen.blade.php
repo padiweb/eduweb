@@ -1,6 +1,6 @@
 <x-simans-layout title="{{ $type === 'check_in' ? 'Absen Masuk' : 'Absen Pulang' }} Prakerin">
     <div class="mb-5">
-        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-blue-600 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
@@ -62,7 +62,7 @@
 
     @if ($placement->location->latitude && $placement->location->longitude)
         <div class="bg-white border border-gray-200 rounded-xl p-3 text-center">
-            <p class="text-gray-500 text-xs">Radius check-in: <span class="text-gray-400">{{ $placement->location->radius_meters ?? 300 }}m</span> dari {{ $placement->location->name }}</p>
+            <p class="text-gray-500 text-xs">Radius check-in: <span class="text-gray-600">{{ $placement->location->radius_meters ?? 300 }}m</span> dari {{ $placement->location->name }}</p>
         </div>
     @endif
 
@@ -86,12 +86,12 @@
         function setGpsStatus(s,t,d) {
             const icon=document.getElementById('gps-icon'), txt=document.getElementById('gps-text'), det=document.getElementById('gps-detail');
             txt.textContent=t; det.textContent=d;
-            if(s==='ok') { icon.className='w-8 h-8 rounded-lg bg-blue-600/10 flex items-center justify-center flex-shrink-0';
+            if(s==='ok') { icon.className='w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0';
                 icon.innerHTML='<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
                 txt.className='text-blue-600 text-sm'; }
-            else { icon.className='w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0';
-                icon.innerHTML='<svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
-                txt.className='text-red-400 text-sm'; }
+            else { icon.className='w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0';
+                icon.innerHTML='<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+                txt.className='text-red-600 text-sm'; }
         }
         async function initCamera() {
             try { stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
@@ -139,9 +139,9 @@
         function showAlert(type,msg) {
             const el=document.getElementById('alert');
             el.className='mt-4 p-3 rounded-xl text-sm border';
-            if(type==='success') el.classList.add('bg-blue-600/10','text-blue-600','border-blue-200');
-            else if(type==='warning') el.classList.add('bg-amber-500/10','text-amber-400','border-amber-500/20');
-            else el.classList.add('bg-red-500/10','text-red-400','border-red-500/20');
+            if(type==='success') el.classList.add('bg-blue-50','text-blue-600','border-blue-200');
+            else if(type==='warning') el.classList.add('bg-amber-50','text-amber-600','border-amber-200');
+            else el.classList.add('bg-red-50','text-red-600','border-red-200');
             el.textContent=msg; el.classList.remove('hidden'); el.scrollIntoView({behavior:'smooth'});
         }
         document.addEventListener('DOMContentLoaded',()=>{ initGps(); initCamera(); });

@@ -1,6 +1,6 @@
 <x-simans-layout title="Riwayat Jurnal Prakerin">
     <div class="mb-5">
-        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-gray-900 flex items-center gap-1 mb-3 transition-colors">
+        <a href="{{ route('siswa.prakerin.index') }}" class="text-gray-500 text-sm hover:text-blue-600 flex items-center gap-1 mb-3 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Kembali
         </a>
@@ -18,14 +18,14 @@
                 <div class="flex items-center gap-2">
                     @if ($journal->journal_date->gte(today()->subDays(7)))
                         <a href="{{ route('siswa.prakerin.jurnal', ['date' => $journal->journal_date->format('Y-m-d')]) }}"
-                           class="px-2.5 py-1 bg-amber-600/20 border border-amber-500/20 text-amber-400 text-xs rounded-lg hover:bg-amber-600/40 transition-colors">
+                           class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-600 text-xs rounded-lg hover:bg-amber-600/40 transition-colors">
                             Edit
                         </a>
                     @endif
-                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">Terkirim</span>
+                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-600 border border-amber-200">Terkirim</span>
                 </div>
             </div>
-            <p class="text-gray-400 text-sm leading-relaxed mb-3">{{ Str::limit($journal->content, 200) }}</p>
+            <p class="text-gray-600 text-sm leading-relaxed mb-3">{{ Str::limit($journal->content, 200) }}</p>
             @if ($journal->photos->count() > 0)
                 <div class="flex gap-2 mb-3 overflow-x-auto pb-1">
                     @foreach ($journal->photos as $photo)
@@ -37,7 +37,7 @@
                 </div>
             @endif
             @if ($journal->teacher_note)
-                <div class="p-3 bg-blue-500/5 border border-blue-500/15 rounded-xl">
+                <div class="p-3 bg-blue-500/5 border border-blue-200 rounded-xl">
                     <p class="text-blue-400 text-xs font-semibold mb-0.5">Catatan Pembimbing:</p>
                     <p class="text-blue-300 text-xs">{{ $journal->teacher_note }}</p>
                 </div>

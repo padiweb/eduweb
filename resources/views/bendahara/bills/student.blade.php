@@ -2,7 +2,7 @@
 
     <div class="mb-6">
         <a href="{{ route('bendahara.bills.index') }}?year={{ $yearId }}"
-            class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-4 w-fit">
+            class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-4 w-fit">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>
             </svg>
@@ -14,17 +14,17 @@
                 <p class="text-gray-500 text-sm mt-0.5">{{ $student->nis ?? '-' }}</p>
             </div>
             <a href="{{ route('bendahara.bills.create') }}"
-                class="text-xs bg-white hover:bg-gray-50 text-gray-400 border border-gray-200 px-3 py-2 rounded-lg transition-colors">
+                class="text-xs bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 px-3 py-2 rounded-lg transition-colors">
                 Buat Tagihan Baru
             </a>
         </div>
     </div>
 
     @if(session('success'))
-        <div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
+        <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
     @if($errors->any())
-        <div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
+        <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-4">{{ $errors->first() }}</div>
     @endif
 
     {{-- Ringkasan --}}
@@ -35,11 +35,11 @@
         </div>
         <div class="bg-white border border-gray-200 rounded-xl px-4 py-3">
             <p class="text-xs text-gray-500 mb-1">Sudah Dibayar</p>
-            <p class="text-base font-bold text-green-400">Rp {{ number_format($totalPaid, 0, ',', '.') }}</p>
+            <p class="text-base font-bold text-green-600">Rp {{ number_format($totalPaid, 0, ',', '.') }}</p>
         </div>
-        <div class="bg-white border {{ $totalRemaining > 0 ? 'border-red-500/20' : 'border-gray-200' }} rounded-xl px-4 py-3">
+        <div class="bg-white border {{ $totalRemaining > 0 ? 'border-red-200' : 'border-gray-200' }} rounded-xl px-4 py-3">
             <p class="text-xs text-gray-500 mb-1">Sisa Tagihan</p>
-            <p class="text-base font-bold {{ $totalRemaining > 0 ? 'text-red-400' : 'text-gray-500' }}">
+            <p class="text-base font-bold {{ $totalRemaining > 0 ? 'text-red-600' : 'text-gray-500' }}">
                 {{ $totalRemaining > 0 ? 'Rp ' . number_format($totalRemaining, 0, ',', '.') : 'Lunas semua' }}
             </p>
         </div>
@@ -85,7 +85,7 @@
                     <div class="text-right">
                         <p class="text-sm font-bold text-gray-900">Rp {{ number_format($bill->amount_billed, 0, ',', '.') }}</p>
                         @if($remaining > 0 && $bill->status !== 'waived')
-                            <p class="text-xs text-red-400">Sisa Rp {{ number_format($remaining, 0, ',', '.') }}</p>
+                            <p class="text-xs text-red-600">Sisa Rp {{ number_format($remaining, 0, ',', '.') }}</p>
                         @endif
                         @if($bill->amount_discount > 0)
                             <p class="text-xs text-blue-400">Disc Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
@@ -113,9 +113,9 @@
                             @if($trx->cashier_notes) · {{ $trx->cashier_notes }} @endif
                         </span>
                         <div class="flex items-center gap-3">
-                            <span class="text-green-400 font-medium">+ Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
+                            <span class="text-green-600 font-medium">+ Rp {{ number_format($trx->amount, 0, ',', '.') }}</span>
                             <a href="{{ route('bendahara.transactions.struk', $trx) }}" target="_blank"
-                                class="text-gray-500 hover:text-gray-900 transition-colors" title="Cetak struk pembayaran ini">
+                                class="text-gray-500 hover:text-blue-600 transition-colors" title="Cetak struk pembayaran ini">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659"/>
                                 </svg>
@@ -136,22 +136,22 @@
                     </button>
                     <button type="button"
                         onclick="bukaModalKeringanan({{ $bill->id }}, {{ $remaining }}, '{{ addslashes($bill->paymentType->name) }}')"
-                        class="text-xs bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-lg transition-colors">
+                        class="text-xs bg-amber-50 hover:bg-amber-50 border border-amber-200 text-amber-600 px-3 py-1.5 rounded-lg transition-colors">
                         Keringanan
                     </button>
                     <a href="{{ route('bendahara.bills.edit', $bill) }}"
-                        class="text-sm text-gray-500 hover:text-gray-900 transition-colors">Edit</a>
+                        class="text-sm text-gray-500 hover:text-blue-600 transition-colors">Edit</a>
                     <form method="POST" action="{{ route('bendahara.bills.destroy', $bill) }}"
                         onsubmit="return confirm('Hapus tagihan ini?')" class="ml-auto">
                         @csrf @method('DELETE')
-                        <button type="submit" class="text-xs text-gray-900 hover:text-red-400 transition-colors">Hapus</button>
+                        <button type="submit" class="text-xs text-gray-900 hover:text-red-600 transition-colors">Hapus</button>
                     </form>
                 </div>
                 @else
                 <div class="border-t border-gray-200 px-5 py-2.5 flex items-center justify-between">
                     <a href="{{ route('bendahara.bills.receipt', $bill) }}" target="_blank"
-                        class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Cetak Kwitansi</a>
-                    <a href="{{ route('bendahara.bills.edit', $bill) }}" class="text-xs text-gray-500 hover:text-gray-900 transition-colors">Edit</a>
+                        class="text-xs text-gray-500 hover:text-blue-600 transition-colors">Cetak Kwitansi</a>
+                    <a href="{{ route('bendahara.bills.edit', $bill) }}" class="text-xs text-gray-500 hover:text-blue-600 transition-colors">Edit</a>
                 </div>
                 @endif
             </div>
@@ -169,7 +169,7 @@
                     <p id="modal-nama" class="text-xs text-gray-500 mt-0.5"></p>
                 </div>
                 <button type="button" onclick="tutupModal()"
-                    class="text-gray-500 hover:text-gray-900 transition-colors">
+                    class="text-gray-500 hover:text-blue-600 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -186,12 +186,12 @@
                     Lunas
                 </button>
                 <button type="button" onclick="gantiTab('partial')" id="tab-partial"
-                    class="flex-1 text-xs font-medium py-2 rounded-lg border bg-white border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                    class="flex-1 text-xs font-medium py-2 rounded-lg border bg-white border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
                     Cicilan
                 </button>
                 @if($discounts->isNotEmpty())
                 <button type="button" onclick="gantiTab('scholarship')" id="tab-scholarship"
-                    class="flex-1 text-xs font-medium py-2 rounded-lg border bg-white border-gray-200 text-gray-500 hover:text-gray-900 transition-colors">
+                    class="flex-1 text-xs font-medium py-2 rounded-lg border bg-white border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">
                     Beasiswa
                 </button>
                 @endif
@@ -242,7 +242,7 @@
                     </select>
                     {{-- Info setelah pilih beasiswa --}}
                     <div id="info-discount" class="mt-2 hidden">
-                        <div id="info-waiver" class="hidden bg-blue-500/10 border border-blue-200 rounded-lg px-3 py-2 text-xs">
+                        <div id="info-waiver" class="hidden bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs">
                             <p class="text-blue-600">Tagihan otomatis dipotong sebesar:</p>
                             <p class="text-gray-900 font-semibold text-sm mt-0.5" id="info-waiver-nominal"></p>
                             <p class="text-blue-600/60 mt-0.5">Potongan ini tidak masuk pemasukan kas</p>
@@ -409,7 +409,7 @@
                 <p class="text-xs text-gray-500 mt-0.5" id="ket-keringanan-nama"></p>
             </div>
             <button onclick="document.getElementById('modal-keringanan').style.display='none'"
-                class="text-gray-500 hover:text-gray-900">
+                class="text-gray-500 hover:text-blue-600">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -417,10 +417,10 @@
         </div>
 
         {{-- Info sisa tagihan --}}
-        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-4">
-            <p class="text-xs text-amber-400 mb-1">Sisa tagihan yang belum dibayar</p>
+        <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-4">
+            <p class="text-xs text-amber-600 mb-1">Sisa tagihan yang belum dibayar</p>
             <p class="text-xl font-bold text-gray-900" id="sisa-keringanan"></p>
-            <p class="text-xs text-amber-400/70 mt-1">Jumlah keringanan tidak boleh melebihi sisa ini</p>
+            <p class="text-xs text-amber-600/70 mt-1">Jumlah keringanan tidak boleh melebihi sisa ini</p>
         </div>
 
         <form id="form-keringanan" method="POST" action="">
@@ -436,9 +436,9 @@
                     <p class="text-xs text-gray-500 mt-1">
                         Kosongkan tagihan: <button type="button" id="btn-waive-all"
                             onclick="isiWaiveAll()"
-                            class="text-amber-400 hover:text-amber-300 underline">Bebaskan semua sisa</button>
+                            class="text-amber-600 hover:text-amber-700 underline">Bebaskan semua sisa</button>
                     </p>
-                    <p id="err-waive" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="err-waive" class="text-xs text-red-600 mt-1 hidden"></p>
                 </div>
                 <div>
                     <label class="text-xs text-gray-500 mb-1 block">Alasan / Keterangan *</label>
@@ -447,7 +447,7 @@
                         class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-amber-500 focus:outline-none resize-none"></textarea>
                     <p class="text-xs text-gray-500 mt-1">Alasan wajib diisi untuk keperluan audit keuangan</p>
                 </div>
-                <div class="bg-blue-500/5 border border-blue-500/15 rounded-lg px-3 py-2 text-xs text-blue-300">
+                <div class="bg-blue-500/5 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-300">
                     Jumlah yang dibebaskan <strong>tidak akan masuk ke pemasukan kas sekolah</strong>.
                     Sisa tagihan akan berkurang sesuai jumlah keringanan.
                 </div>
@@ -455,7 +455,7 @@
             <div class="flex gap-3 mt-5">
                 <button type="button"
                     onclick="document.getElementById('modal-keringanan').style.display='none'"
-                    class="flex-1 bg-white text-gray-400 text-sm py-2 rounded-lg">Batal</button>
+                    class="flex-1 bg-white text-gray-600 text-sm py-2 rounded-lg">Batal</button>
                 <button type="submit" id="btn-submit-keringanan"
                     class="flex-1 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium py-2 rounded-lg">
                     Berikan Keringanan

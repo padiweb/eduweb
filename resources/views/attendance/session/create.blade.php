@@ -1,7 +1,7 @@
 <x-simans-layout title="Buka Sesi Absensi">
     <div class="max-w-lg mx-auto">
         <div class="mb-6">
-            <a href="{{ route('guru.attendance.index') }}" class="text-gray-500 hover:text-gray-900 text-sm flex items-center gap-1 mb-4 transition-colors">
+            <a href="{{ route('guru.attendance.index') }}" class="text-gray-500 hover:text-blue-600 text-sm flex items-center gap-1 mb-4 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
                 Kembali
             </a>
