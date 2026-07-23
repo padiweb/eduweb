@@ -33,7 +33,7 @@
         <div class="space-y-4">
             @foreach($days as $dayNum => $dayName)
                 @if($schedules->has($dayNum))
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="tbl-card">
                         <div class="px-5 py-3 border-b border-gray-200">
                             <h3 class="text-sm font-semibold text-gray-900">{{ $dayName }}</h3>
                         </div>

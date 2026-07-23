@@ -145,7 +145,7 @@
                     <div class="space-y-4">
                         @foreach($days as $dayNum => $dayName)
                             @if($schedules->has($dayNum))
-                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                                <div class="tbl-card">
                                     <div class="px-4 py-3 border-b border-gray-200">
                                         <h3 class="text-sm font-bold text-gray-900">{{ $dayName }}</h3>
                                     </div>
@@ -271,7 +271,7 @@
 
     @if($activeTab === 'mapping')
     {{-- ══════════════════════ TAB: PERUNTUKAN MAPEL ══════════════════════ --}}
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         <div class="px-5 py-4 border-b border-gray-200">
             <h2 class="text-sm font-semibold text-gray-900">Mapel → Kelas yang Mengajarkan</h2>
             <p class="text-xs text-gray-500 mt-0.5">Daftar setiap mata pelajaran dan kelas aktif yang memiliki jadwal mapel tersebut</p>

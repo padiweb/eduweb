@@ -35,7 +35,7 @@
 </div>
 
 {{-- Stats bulan ini --}}
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+<div id="stat-row-siswa" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px;text-align:center;box-shadow:0 1px 3px rgba(15,23,42,0.05)">
         <div style="font-size:24px;font-weight:800;color:#1e40af;letter-spacing:-1px">{{ $rate }}%</div>
         <div style="font-size:11px;font-weight:600;color:#64748b;margin-top:4px">Kehadiran</div>

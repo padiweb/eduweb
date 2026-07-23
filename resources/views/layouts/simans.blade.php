@@ -310,13 +310,131 @@
         /* ── MOBILE ── */
         @media (max-width: 1023px) {
             .simans-sidebar { transform: translateX(-100%); }
-            .simans-sidebar.open { transform: translateX(0); }
+            .simans-sidebar.open { transform: translateX(0); box-shadow: 8px 0 32px rgba(15,23,42,.18); }
             .simans-main { padding-left: 0; }
-            .simans-hamburger { display: flex; }
+            .simans-hamburger { display: flex !important; }
+        }
+        @media (max-width: 767px) {
+            .simans-content { padding: 16px 14px; }
+            .simans-topbar  { padding: 0 14px; }
         }
 
         /* Alpine cloak */
         [x-cloak] { display: none !important; }
+
+        /* ════════════════════════════════════════════════════
+           1. TAB NAV — scroll horizontal, TIDAK flex-wrap
+        ════════════════════════════════════════════════════ */
+        .tab-nav-scroll {
+            display: flex;
+            flex-wrap: nowrap !important;   /* tab TIDAK turun baris */
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 4px;
+            margin-bottom: 20px;
+        }
+        .tab-nav-scroll::-webkit-scrollbar { display: none; }
+        /* Extend ke tepi di mobile agar tidak terasa ada padding kanan */
+        @media (max-width: 1023px) {
+            .tab-nav-scroll {
+                margin-left: -14px;
+                margin-right: -14px;
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+        }
+        .tab-nav-scroll > a,
+        .tab-nav-scroll > button {
+            flex-shrink: 0 !important;  /* tab tidak boleh menyempit */
+            white-space: nowrap;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1.5px solid #e2e8f0;
+            color: #64748b;
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+        }
+        .tab-nav-scroll > a.bg-blue-600,
+        .tab-nav-scroll > a[class*="bg-blue-6"] {
+            background: linear-gradient(135deg,#3b82f6,#2563eb) !important;
+            color: #fff !important; border-color: transparent !important;
+            box-shadow: 0 2px 6px rgba(59,130,246,.3);
+        }
+        .tab-nav-scroll > a.bg-orange-600 {
+            background: linear-gradient(135deg,#f97316,#ea580c) !important;
+            color: #fff !important; border-color: transparent !important;
+        }
+        .tab-nav-scroll > a.bg-amber-600 {
+            background: linear-gradient(135deg,#f59e0b,#d97706) !important;
+            color: #fff !important; border-color: transparent !important;
+        }
+        .tab-nav-scroll > a:not([class*="bg-blue-6"]):not(.bg-orange-600):not(.bg-amber-600):hover {
+            border-color: #bfdbfe; color: #2563eb; background: #eff6ff;
+        }
+
+        /* ════════════════════════════════════════════════════
+           2. TABEL SCROLL — HANYA tabel yang geser, bukan halaman
+           
+           KUNCI: .tbl-card pakai overflow:visible (bukan hidden)
+           Rounded corner ada di .tbl-wrap, bukan di .tbl-card
+           Sehingga overflow-x:auto di .tbl-wrap bisa bekerja bebas
+        ════════════════════════════════════════════════════ */
+        .tbl-card {
+            /* Card container - tidak punya overflow apapun */
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 1px 4px rgba(15,23,42,.06);
+            overflow: visible !important;  /* KRITIS: jangan hidden */
+        }
+        .tbl-wrap {
+            /* Yang punya scroll */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            /* Rounded corner ada di sini supaya tidak perlu parent overflow:hidden */
+            border-radius: 14px;
+            width: 100%;
+        }
+        .tbl-wrap::-webkit-scrollbar { height: 3px; }
+        .tbl-wrap::-webkit-scrollbar-thumb {
+            background: #cbd5e1; border-radius: 99px;
+        }
+
+        /* ════════════════════════════════════════════════════
+           3. MOBILE RESPONSIVE
+        ════════════════════════════════════════════════════ */
+        @media (max-width: 767px) {
+            #stat-grid  { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+            #panel-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+            #stat-row-siswa { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        }
+
+        /* ════════════════════════════════════════════════════
+           4. DUAL MODE: Tabel desktop / Card mobile
+        ════════════════════════════════════════════════════ */
+        .mobile-hidden { display: block; }
+        .mobile-cards  { display: none; }
+        @media (max-width: 767px) {
+            .mobile-hidden { display: none !important; }
+            .mobile-cards  { display: block !important; }
+        }
+        .m-card {
+            background: #fff; border: 1px solid #e2e8f0;
+            border-radius: 12px; padding: 14px 16px;
+            margin-bottom: 10px; box-shadow: 0 1px 3px rgba(15,23,42,.05);
+        }
+        .m-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+        .m-card-title  { font-size: 14px; font-weight: 700; color: #1e293b; }
+        .m-card-meta   { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+        .m-card-meta-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #64748b; }
+        .m-card-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
 
         /* ─────────────────────────────────────────────
            GLOBAL DESIGN SYSTEM — override Tailwind

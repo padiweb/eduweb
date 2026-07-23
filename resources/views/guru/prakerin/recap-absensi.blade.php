@@ -6,7 +6,7 @@
     </div>
 
     {{-- Sub-nav --}}
-    <div class="flex gap-2 mb-5 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-none">
+    <div class="tab-nav-scroll">
         <a href="{{ route('guru.prakerin.index') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Dashboard</a>
         <a href="{{ route('guru.prakerin.locations') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">DU/DI Saya</a>
         <a href="{{ route('guru.prakerin.placements') }}" class="flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Penempatan Siswa</a>
@@ -16,7 +16,7 @@
     </div>
 
     {{-- Filter periode --}}
-    <div class="flex flex-wrap gap-2 mb-4">
+    <div class="tab-nav-scroll">
         @foreach ($periods as $p)
             <a href="{{ route('guru.prakerin.recap.absensi', ['period_id' => $p->id]) }}"
                class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors
@@ -40,7 +40,7 @@
             <p class="text-gray-500">Tidak ada data untuk filter ini.</p>
         </div>
     @else
-        <div class="bg-white border border-gray-200 rounded-xl overflow-x-auto">
+        <div class="tbl-card"><div class="tbl-wrap">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">

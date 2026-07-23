@@ -70,7 +70,7 @@
                 $cl = ['unpaid'=>'red','partial'=>'amber','paid'=>'green','waived'=>'blue'][$bill->status] ?? 'gray';
                 $lb = ['unpaid'=>'Belum bayar','partial'=>'Cicilan','paid'=>'Lunas','waived'=>'Dibebaskan'][$bill->status] ?? '-';
             @endphp
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div class="tbl-card">
                 {{-- Header --}}
                 <div class="px-5 py-4 flex items-center justify-between">
                     <div>

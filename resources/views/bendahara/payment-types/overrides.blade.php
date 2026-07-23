@@ -31,14 +31,14 @@
         <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         @if($overrides->isEmpty())
             <div class="px-5 py-12 text-center">
                 <p class="text-gray-500">Belum ada override tarif.</p>
                 <p class="text-gray-500 text-xs mt-1">Override hanya diperlukan jika ada siswa dengan tarif berbeda dari kelasnya.</p>
             </div>
         @else
-            <div class="overflow-x-auto">
+            <div class="tbl-wrap">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-gray-200">

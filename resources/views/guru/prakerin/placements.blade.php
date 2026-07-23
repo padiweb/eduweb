@@ -17,7 +17,7 @@
     </div>
 
     {{-- Sub-nav --}}
-    <div class="flex gap-2 mb-5 flex-wrap">
+    <div class="tab-nav-scroll">
         <a href="{{ route('guru.prakerin.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Dashboard</a>
         <a href="{{ route('guru.prakerin.locations') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">DU/DI Saya</a>
         <a href="{{ route('guru.prakerin.placements') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">Penempatan Siswa</a>
@@ -45,7 +45,8 @@
             <p class="text-gray-500">Belum ada siswa yang ditempatkan di lokasi Anda.</p>
         </div>
     @else
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div class="tbl-card">
+            <div class="tbl-wrap">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">

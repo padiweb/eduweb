@@ -74,11 +74,11 @@
     </div>
 
     {{-- Tabel rekap --}}
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         <div class="px-5 py-3 border-b border-gray-200">
             <p class="text-sm font-semibold text-gray-900">Rekap Harian</p>
         </div>
-        <div class="overflow-x-auto">
+        <div class="tbl-wrap">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">

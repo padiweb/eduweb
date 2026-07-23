@@ -6,7 +6,7 @@
 </div>
 
 {{-- Stat cards --}}
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+<div id="stat-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
 
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:18px;box-shadow:0 1px 4px rgba(15,23,42,0.06);position:relative;overflow:hidden">
         <div style="position:absolute;top:-14px;right:-14px;width:70px;height:70px;background:#eff6ff;border-radius:50%;opacity:.6"></div>
@@ -49,7 +49,7 @@
     </div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div id="panel-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
 
     {{-- Status kelas hari ini --}}
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(15,23,42,0.06)">

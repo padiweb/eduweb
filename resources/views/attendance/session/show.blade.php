@@ -117,7 +117,7 @@
             </div>
 
             {{-- Daftar hadir --}}
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div class="tbl-card">
                 <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
                     <h3 class="text-sm font-semibold text-gray-900">Sudah Absen</h3>
                     <span class="text-xs text-gray-500" id="present-count">{{ $recap['hadir'] + $recap['terlambat'] }} siswa</span>
@@ -153,7 +153,7 @@
 
             {{-- Belum absen --}}
             @if($recap['belum'] > 0)
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div class="tbl-card">
                 <div class="px-4 py-3 border-b border-gray-200">
                     <h3 class="text-sm font-semibold text-gray-900">Belum Absen</h3>
                 </div>

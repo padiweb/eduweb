@@ -103,7 +103,7 @@
                 @foreach($groups->sortBy('sort_order') as $group)
                     @php $mapels = $subjects->get($group->id, collect()); @endphp
                     @if($mapels->count() > 0)
-                        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                        <div class="tbl-card">
                             <div class="px-5 py-3 border-b border-gray-200 bg-white/[0.02] flex items-center justify-between">
                                 <span class="text-xs font-bold text-gray-900 uppercase tracking-wide">
                                     {{ $group->code ? '['.$group->code.'] ' : '' }}{{ $group->name }}
@@ -127,7 +127,7 @@
                     $tanpaKelompok = $tanpaKelompok->unique('id');
                 @endphp
                 @if($tanpaKelompok->count() > 0)
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="tbl-card">
                         <div class="px-5 py-3 border-b border-gray-200 bg-white/[0.02]">
                             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tanpa Kelompok</span>
                         </div>
@@ -207,7 +207,7 @@
         </div>
 
         <div class="lg:col-span-2">
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div class="tbl-card">
                 <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                     <h2 class="text-sm font-semibold text-gray-900">Daftar Kelompok</h2>
                     <span class="text-xs text-gray-500">{{ $groups->count() }} kelompok</span>

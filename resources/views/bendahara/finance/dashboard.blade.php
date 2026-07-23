@@ -37,7 +37,7 @@
 
     {{-- Saldo per sumber dana --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div class="tbl-card">
             <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-gray-900">Saldo per Sumber Dana</h2>
                 <a href="{{ route('bendahara.fund-sources.index') }}" class="text-xs text-blue-400 hover:text-blue-300">Kelola</a>
@@ -78,7 +78,7 @@
         </div>
 
         {{-- Menunggu Approval --}}
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div class="tbl-card">
             <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-gray-900">Menunggu Approval</h2>
                 @if($pendingExpenses->isNotEmpty())
@@ -114,7 +114,7 @@
     </div>
 
     {{-- Pengeluaran terbaru --}}
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-gray-900">Pengeluaran Terbaru</h2>
             <a href="{{ route('bendahara.expenses.index') }}" class="text-xs text-blue-400 hover:text-blue-300">Lihat semua →</a>

@@ -30,7 +30,7 @@
     </div>
 
     @if($selectedSchedule)
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div class="tbl-card">
             <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div>
                     <h2 class="text-sm font-semibold text-gray-900">

@@ -40,7 +40,7 @@
             $memberCount  = $program->members_count;
             $canDelete    = $memberCount === 0;
         @endphp
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div class="tbl-card">
             <div class="px-5 py-4 flex items-center gap-4">
                 {{-- Badge kode --}}
                 @php $stype = $program->scholarship_type ?? 'cash'; @endphp

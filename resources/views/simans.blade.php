@@ -238,7 +238,7 @@
         {{-- User card --}}
         <div class="p-3 border-t border-gray-200">
             <div class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-colors">
-                <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-700/50 flex items-center justify-center text-xs font-bold text-blue-600 flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-200 flex items-center justify-center text-xs font-bold text-blue-600 flex-shrink-0">
                     {{ auth()->user()->initials }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -247,7 +247,7 @@
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-gray-400 hover:text-red-400 transition-colors" title="Keluar">
+                    <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors" title="Keluar">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/>
                         </svg>
@@ -302,7 +302,7 @@
             @endif
 
             @if(session('error'))
-                <div class="mb-5 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+                <div class="mb-5 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
                     </svg>
@@ -311,7 +311,7 @@
             @endif
 
             @if($errors->any())
-                <div class="mb-5 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+                <div class="mb-5 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
                     <ul class="space-y-1">
                         @foreach($errors->all() as $error)
                             <li class="flex items-center gap-2">

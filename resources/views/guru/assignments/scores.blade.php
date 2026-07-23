@@ -12,7 +12,7 @@
         <p class="text-gray-500 text-sm mt-1">Rata-rata nilai tugas per siswa per mata pelajaran</p>
     </div>
 
-    <form method="GET" class="flex flex-wrap gap-3 mb-6">
+    <form method="GET" class="tab-nav-scroll">
         <select name="classroom_id"
                 class="bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors">
             <option value="">Pilih Kelas...</option>

@@ -6,7 +6,7 @@
         </div>
         <a href="{{ route('bendahara.expenses.index') }}" class="text-gray-500 hover:text-blue-600 text-sm">← Semua pengeluaran</a>
     </div>
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         @if($expenses->isEmpty())
             <div class="px-5 py-12 text-center"><p class="text-gray-500">Tidak ada pengeluaran yang menunggu approval.</p></div>
         @else

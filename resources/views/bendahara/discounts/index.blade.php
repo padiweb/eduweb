@@ -15,7 +15,7 @@
     </div>
 
     {{-- Filter --}}
-    <form method="GET" class="flex flex-wrap gap-3 mb-5">
+    <form method="GET" class="tab-nav-scroll">
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / NIS siswa..."
             class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 w-48 focus:border-blue-500 focus:outline-none">
         <select name="year" class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
@@ -37,13 +37,13 @@
     </form>
 
     {{-- Tabel --}}
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         @if($discounts->isEmpty())
             <div class="px-5 py-12 text-center">
                 <p class="text-gray-500">Belum ada data beasiswa/keringanan.</p>
             </div>
         @else
-            <div class="overflow-x-auto">
+            <div class="tbl-wrap">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-gray-200">

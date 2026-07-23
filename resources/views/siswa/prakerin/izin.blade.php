@@ -58,7 +58,7 @@
         @endif
 
         <form action="{{ route('siswa.prakerin.izin.store') }}" method="POST" enctype="multipart/form-data"
-              class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              class="tbl-card">
             @csrf
 
             {{-- Pilih jenis --}}

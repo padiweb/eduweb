@@ -5,7 +5,7 @@
         <p class="text-gray-500 text-sm mt-1">{{ now()->translatedFormat('l, d F Y') }}</p>
     </div>
 
-    <div class="flex gap-3 mb-5">
+    <div class="tab-nav-scroll">
         <a href="{{ route('siswa.assignments.index') }}"
            class="text-sm font-semibold text-blue-600 bg-blue-50 border border-blue-200 px-4 py-2 rounded-xl">
             Tugas

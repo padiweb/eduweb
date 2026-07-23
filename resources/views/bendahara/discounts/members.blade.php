@@ -38,7 +38,7 @@
         Setelah semua siswa ditambahkan, klik <strong>Terapkan</strong> di halaman program.
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         @if($program->members->isEmpty())
             <div class="px-5 py-12 text-center">
                 <p class="text-gray-500">Belum ada siswa dalam program ini.</p>
@@ -56,7 +56,7 @@
                     </button>
                 </form>
             </div>
-            <div class="overflow-x-auto">
+            <div class="tbl-wrap">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-gray-200">

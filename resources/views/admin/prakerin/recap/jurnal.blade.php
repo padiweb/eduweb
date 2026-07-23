@@ -6,7 +6,7 @@
     </div>
 
     {{-- Sub-nav --}}
-    <div class="flex gap-2 mb-5 flex-wrap">
+    <div class="tab-nav-scroll">
         <a href="{{ route('admin.prakerin.periods.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Periode</a>
         <a href="{{ route('admin.prakerin.locations.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">DU/DI</a>
         <a href="{{ route('admin.prakerin.placements.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Penempatan Siswa</a>
@@ -15,7 +15,7 @@
     </div>
 
     {{-- Filter --}}
-    <div class="flex flex-wrap gap-3 mb-5">
+    <div class="tab-nav-scroll">
         <div class="flex flex-wrap gap-2">
             @foreach ($periods as $p)
                 <a href="{{ route('admin.prakerin.recap.jurnal', ['period_id' => $p->id]) }}"

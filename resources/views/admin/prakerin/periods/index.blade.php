@@ -15,7 +15,7 @@
     </div>
 
     {{-- Sub-nav Prakerin --}}
-    <div class="flex gap-2 mb-6 flex-wrap">
+    <div class="tab-nav-scroll">
         <a href="{{ route('admin.prakerin.periods.index') }}"
            class="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">
             Periode

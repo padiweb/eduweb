@@ -30,7 +30,7 @@
                 $session = $todaySessions->get($classroom->id);
             @endphp
 
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden" id="card-{{ $classroom->id }}">
+            <div class="tbl-card" id="card-{{ $classroom->id }}">
 
                 {{-- Header --}}
                 <div class="flex items-start justify-between p-5 pb-4">

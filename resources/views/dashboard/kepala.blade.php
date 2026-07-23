@@ -5,7 +5,7 @@
     <p style="font-size:13px;color:#64748b;margin:0">{{ now()->translatedFormat('l, d F Y') }} &middot; {{ auth()->user()->school->name ?? '' }}</p>
 </div>
 
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+<div id="stat-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
 
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;box-shadow:0 1px 4px rgba(15,23,42,0.06);position:relative;overflow:hidden">
         <div style="position:absolute;top:-16px;right:-16px;width:80px;height:80px;background:#eff6ff;border-radius:50%;opacity:.6"></div>

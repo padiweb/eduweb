@@ -120,13 +120,13 @@
         </select>
     </form>
 
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         @if($setorans->isEmpty())
             <div class="px-5 py-12 text-center">
                 <p class="text-gray-500">Belum ada catatan setoran.</p>
             </div>
         @else
-            <div class="overflow-x-auto">
+            <div class="tbl-wrap">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-gray-200">

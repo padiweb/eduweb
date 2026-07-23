@@ -5,7 +5,7 @@
         <p class="text-gray-500 text-sm mt-1">Rata-rata nilai tugas per mata pelajaran</p>
     </div>
 
-    <div class="flex gap-3 mb-5">
+    <div class="tab-nav-scroll">
         <a href="{{ route('siswa.assignments.index') }}"
            class="text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-200 bg-white border border-gray-200 px-4 py-2 rounded-xl transition-colors">
             Tugas
@@ -19,7 +19,7 @@
     @if($subjectScores->count() > 0)
         <div class="space-y-4">
             @foreach($subjectScores as $row)
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <div class="tbl-card">
                     <div class="flex items-center justify-between px-5 py-4 border-b border-gray-200">
                         <div>
                             <h3 class="text-sm font-semibold text-gray-900">{{ $row['subject']->name }}</h3>

@@ -123,7 +123,7 @@
 
         {{-- Kolom Kanan: Tabel siswa --}}
         <div class="lg:col-span-2">
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div class="tbl-card">
 
                 {{-- Toolbar --}}
                 <div class="flex flex-wrap items-center gap-2 px-5 py-4 border-b border-gray-200">

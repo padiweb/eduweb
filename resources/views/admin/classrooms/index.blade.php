@@ -36,7 +36,7 @@
     @endif
 
     {{-- Filter tahun ajaran --}}
-    <div class="flex flex-wrap gap-2 mb-5">
+    <div class="tab-nav-scroll">
         <a href="{{ route('admin.classrooms.index') }}"
            class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors {{ ! request('year') ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-700' }}">
             Semua

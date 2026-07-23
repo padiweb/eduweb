@@ -205,7 +205,7 @@
                     </div>
 
                     {{-- Siswa dengan tarif --}}
-                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <div class="tbl-card">
                         <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
                             <p class="text-xs font-semibold text-gray-900">Preview Tagihan</p>
                             <p class="text-xs text-gray-500">

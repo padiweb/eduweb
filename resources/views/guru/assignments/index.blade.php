@@ -52,7 +52,7 @@
                     $aktif     = $groupItems->where('is_closed', false)->count();
                     $tutup     = $groupItems->where('is_closed', true)->count();
                 @endphp
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <div class="tbl-card">
                     {{-- Header grup: Kelas + Mapel --}}
                     <div class="px-5 py-3.5 border-b border-gray-200 bg-white/[0.02] flex items-center justify-between">
                         <div class="flex items-center gap-3">

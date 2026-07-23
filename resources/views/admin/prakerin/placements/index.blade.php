@@ -17,7 +17,7 @@
     </div>
 
     {{-- Sub-nav --}}
-    <div class="flex gap-2 mb-5 flex-wrap">
+    <div class="tab-nav-scroll">
         <a href="{{ route('admin.prakerin.periods.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">Periode</a>
         <a href="{{ route('admin.prakerin.locations.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-500 hover:text-blue-600 transition-colors">DU/DI</a>
         <a href="{{ route('admin.prakerin.placements.index') }}" class="px-4 py-2 rounded-xl text-sm font-medium bg-blue-600 text-white">Penempatan Siswa</a>
@@ -26,7 +26,7 @@
     </div>
 
     {{-- Filter periode --}}
-    <div class="flex flex-wrap gap-2 mb-5">
+    <div class="tab-nav-scroll">
         @foreach ($periods as $p)
             <a href="{{ route('admin.prakerin.placements.index', ['period_id' => $p->id]) }}"
                class="px-4 py-1.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2
@@ -57,7 +57,8 @@
             <p class="text-gray-500">Belum ada siswa yang ditempatkan di periode ini.</p>
         </div>
     @else
-        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div class="tbl-card">
+            <div class="tbl-wrap">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">

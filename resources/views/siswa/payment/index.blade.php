@@ -26,7 +26,7 @@
     </div>
 
     {{-- Filter --}}
-    <form method="GET" class="flex flex-wrap gap-3 mb-4">
+    <form method="GET" class="tab-nav-scroll">
         <select name="status" class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
             <option value="">Semua status</option>
             <option value="unpaid"  {{ request('status') == 'unpaid'  ? 'selected' : '' }}>Belum bayar</option>

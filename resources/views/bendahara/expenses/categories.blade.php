@@ -17,11 +17,11 @@
         <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         @if($categories->isEmpty())
             <div class="px-5 py-12 text-center"><p class="text-gray-500">Belum ada kategori.</p></div>
         @else
-            <table class="w-full text-sm">
+            <div class="tbl-card"><div class="tbl-wrap"><table class="w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200">
                         <th class="text-left text-xs text-gray-500 font-medium px-4 py-3">Nama</th>

@@ -5,7 +5,7 @@
     <p style="font-size:13px;color:#64748b;margin:0">{{ now()->translatedFormat('l, d F Y') }} &middot; {{ auth()->user()->school->name ?? '' }}</p>
 </div>
 
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+<div id="stat-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
 
     <div style="background:linear-gradient(135deg,#10b981 0%,#059669 100%);border-radius:16px;padding:20px;box-shadow:0 4px 14px rgba(16,185,129,0.35);position:relative;overflow:hidden">
         <div style="position:absolute;top:-18px;right:-18px;width:80px;height:80px;background:rgba(255,255,255,0.12);border-radius:50%"></div>
@@ -48,7 +48,7 @@
     </div>
 </div>
 
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div id="panel-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
     <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(15,23,42,0.06)">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f1f5f9">
             <div style="display:flex;align-items:center;gap:8px">

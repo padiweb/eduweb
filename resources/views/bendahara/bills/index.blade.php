@@ -18,7 +18,7 @@
         <div class="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg px-4 py-3 mb-4">{{ session('success') }}</div>
     @endif
 
-    <form method="GET" class="flex flex-wrap gap-3 mb-5">
+    <form method="GET" class="tab-nav-scroll">
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / NIS siswa..."
             class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 w-44 focus:border-blue-500 focus:outline-none">
         <select name="year" class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-blue-500 focus:outline-none">
@@ -34,7 +34,7 @@
         @endif
     </form>
 
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         @if($students->isEmpty())
             <div class="px-5 py-12 text-center">
                 <p class="text-gray-500">Belum ada siswa dengan tagihan di tahun ajaran ini.</p>

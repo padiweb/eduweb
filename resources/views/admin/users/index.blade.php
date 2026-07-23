@@ -53,7 +53,7 @@
     </div>
 
     {{-- Search & Filter --}}
-    <form method="GET" action="{{ route('admin.users.index') }}" class="flex flex-wrap gap-2 mb-4">
+    <form method="GET" action="{{ route('admin.users.index') }}" class="tab-nav-scroll">
         <input type="hidden" name="tab" value="{{ $tab }}">
         <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama, NIS, email..."
                class="flex-1 min-w-48 bg-white border border-gray-200 text-gray-900 rounded-xl px-4 py-2 text-sm placeholder-gray-400 focus:outline-none focus:border-blue-300">
@@ -76,7 +76,7 @@
         @endif
     </form>
 
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-gray-900">{{ ucfirst(str_replace('_',' ',$tab)) }}</h2>
             <span class="text-xs text-gray-500">{{ $users->total() }} user</span>

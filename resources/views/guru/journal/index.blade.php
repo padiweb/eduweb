@@ -89,7 +89,7 @@
     @endif
 
     {{-- Isi jurnal untuk hari lain / jadwal lain --}}
-    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div class="tbl-card">
         <div class="px-5 py-4 border-b border-gray-200">
             <h2 class="text-sm font-semibold text-gray-900">Isi Jurnal Hari Lain</h2>
             <p class="text-xs text-gray-500 mt-0.5">Bisa isi jurnal untuk tanggal selain hari ini</p>

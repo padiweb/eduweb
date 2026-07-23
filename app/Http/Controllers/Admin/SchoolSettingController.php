@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\School;
+use App\Models\TeacherAttendanceSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SchoolSettingController extends Controller
 {
@@ -33,7 +35,6 @@ class SchoolSettingController extends Controller
             'attendance_close_time'    => ['required', 'date_format:H:i'],
             'school_program_years'     => ['required', 'in:3,4'],
             'timezone'                 => ['required', 'in:Asia/Jakarta,Asia/Makassar,Asia/Jayapura'],
-            // Pelanggaran & peringatan
             'logo'                     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'violation_warning1'       => ['required', 'integer', 'min:1', 'max:999'],
             'violation_warning2'       => ['required', 'integer', 'min:1', 'max:999'],
@@ -42,7 +43,6 @@ class SchoolSettingController extends Controller
             'prakerin_points_no_checkin'    => ['nullable', 'integer', 'min:0', 'max:99'],
             'prakerin_points_no_checkout'   => ['nullable', 'integer', 'min:0', 'max:99'],
             'prakerin_points_no_journal'    => ['nullable', 'integer', 'min:0', 'max:99'],
-            // Jam absensi guru
             'teacher_checkin_open'     => ['required', 'date_format:H:i'],
             'teacher_checkin_late'     => ['required', 'date_format:H:i'],
             'teacher_checkin_close'    => ['required', 'date_format:H:i'],
@@ -50,29 +50,27 @@ class SchoolSettingController extends Controller
             'teacher_checkout_close'   => ['required', 'date_format:H:i'],
         ]);
 
-        // Validasi urutan jam
+        // Validasi urutan jam siswa
         if ($validated['school_start_time'] >= $validated['late_threshold_time']) {
             return back()->withErrors([
-                'late_threshold_time' => 'Batas terlambat harus setelah jam buka absensi.'
+                'late_threshold_time' => 'Batas terlambat harus setelah jam buka absensi.',
             ])->withInput();
         }
-
         if ($validated['late_threshold_time'] >= $validated['attendance_close_time']) {
             return back()->withErrors([
-                'attendance_close_time' => 'Jam tutup absensi harus setelah batas terlambat.'
+                'attendance_close_time' => 'Jam tutup absensi harus setelah batas terlambat.',
             ])->withInput();
         }
 
         // Validasi urutan batas peringatan
         if ($validated['violation_warning1'] >= $validated['violation_warning2']) {
             return back()->withErrors([
-                'violation_warning2' => 'Batas Peringatan 2 harus lebih besar dari Peringatan 1.'
+                'violation_warning2' => 'Batas Peringatan 2 harus lebih besar dari Peringatan 1.',
             ])->withInput();
         }
-
         if ($validated['violation_warning2'] >= $validated['violation_warning3']) {
             return back()->withErrors([
-                'violation_warning3' => 'Batas Peringatan 3 harus lebih besar dari Peringatan 2.'
+                'violation_warning3' => 'Batas Peringatan 3 harus lebih besar dari Peringatan 2.',
             ])->withInput();
         }
 
@@ -86,19 +84,17 @@ class SchoolSettingController extends Controller
         $validated['teacher_checkout_open'] .= ':00';
         $validated['teacher_checkout_close'].= ':00';
 
-        // Handle upload logo sekolah
+        // Handle upload logo
         if ($request->hasFile('logo')) {
-            // Hapus logo lama jika ada
             if ($school->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($school->logo_path)) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($school->logo_path);
             }
-            $path = $request->file('logo')->store('school-logos', 'public');
-            $validated['logo_path'] = $path;
+            $validated['logo_path'] = $request->file('logo')->store('school-logos', 'public');
         }
 
         $school->update($validated);
 
-        // Update sesi siswa yang sedang aktif hari ini
+        // Update sesi siswa aktif hari ini
         \App\Models\AttendanceSession::where('school_id', $school->id)
             ->whereDate('session_date', today())
             ->where('is_closed', false)
@@ -108,14 +104,12 @@ class SchoolSettingController extends Controller
                 'close_time' => $validated['attendance_close_time'],
             ]);
 
-        // Update ATAU buat sesi guru hari ini dengan jam baru
+        // Sinkronisasi sesi guru — dengan token unik per sesi
         $this->syncTeacherSessions($school, $validated);
 
-        // Set timezone langsung setelah disimpan
         config(['app.timezone' => $validated['timezone']]);
         date_default_timezone_set($validated['timezone']);
 
-        // Log perubahan
         ActivityLog::create([
             'school_id'  => $school->id,
             'user_id'    => auth()->id(),
@@ -129,33 +123,73 @@ class SchoolSettingController extends Controller
         return back()->with('success', 'Pengaturan sekolah berhasil disimpan.');
     }
 
-    private function syncTeacherSessions($school, array $validated): void
+    private function syncTeacherSessions(School $school, array $validated): void
     {
-        $token = $school->fresh()->teacher_qr_token ?? \Illuminate\Support\Str::random(32);
+        // ── Sesi MASUK ──
+        $existingMasuk = TeacherAttendanceSession::where('school_id', $school->id)
+            ->whereDate('session_date', today())
+            ->where('session_type', 'masuk')
+            ->first();
 
-        // Sesi masuk — update jika sudah ada, buat jika belum
-        \App\Models\TeacherAttendanceSession::updateOrCreate(
-            ['school_id' => $school->id, 'session_date' => today(), 'session_type' => 'masuk'],
-            [
+        if ($existingMasuk) {
+            // Update saja — jangan ganti qr_token agar guru yang sudah scan tidak bermasalah
+            $existingMasuk->update([
                 'open_time'  => $validated['teacher_checkin_open'],
                 'close_time' => $validated['teacher_checkin_close'],
                 'late_after' => $validated['teacher_checkin_late'],
-                'qr_token'   => $token,
                 'is_active'  => true,
-            ]
-        );
+            ]);
+        } else {
+            // Buat baru dengan token unik (pastikan tidak duplicate)
+            TeacherAttendanceSession::create([
+                'school_id'    => $school->id,
+                'session_date' => today(),
+                'session_type' => 'masuk',
+                'open_time'    => $validated['teacher_checkin_open'],
+                'close_time'   => $validated['teacher_checkin_close'],
+                'late_after'   => $validated['teacher_checkin_late'],
+                'qr_token'     => $this->generateUniqueToken(),
+                'is_active'    => true,
+            ]);
+        }
 
-        // Sesi pulang — update jika sudah ada, buat jika belum
-        \App\Models\TeacherAttendanceSession::updateOrCreate(
-            ['school_id' => $school->id, 'session_date' => today(), 'session_type' => 'pulang'],
-            [
+        // ── Sesi PULANG ──
+        $existingPulang = TeacherAttendanceSession::where('school_id', $school->id)
+            ->whereDate('session_date', today())
+            ->where('session_type', 'pulang')
+            ->first();
+
+        if ($existingPulang) {
+            $existingPulang->update([
                 'open_time'  => $validated['teacher_checkout_open'],
                 'close_time' => $validated['teacher_checkout_close'],
                 'late_after' => null,
-                'qr_token'   => $token,
                 'is_active'  => true,
-            ]
-        );
+            ]);
+        } else {
+            TeacherAttendanceSession::create([
+                'school_id'    => $school->id,
+                'session_date' => today(),
+                'session_type' => 'pulang',
+                'open_time'    => $validated['teacher_checkout_open'],
+                'close_time'   => $validated['teacher_checkout_close'],
+                'late_after'   => null,
+                'qr_token'     => $this->generateUniqueToken(),
+                'is_active'    => true,
+            ]);
+        }
+    }
+
+    /**
+     * Generate token unik yang dipastikan tidak ada di database.
+     */
+    private function generateUniqueToken(): string
+    {
+        do {
+            $token = Str::random(32);
+        } while (TeacherAttendanceSession::where('qr_token', $token)->exists());
+
+        return $token;
     }
 
     public function updateGps(Request $request)
@@ -166,14 +200,12 @@ class SchoolSettingController extends Controller
         ]);
 
         $school = auth()->user()->school;
-        // Handle upload logo sekolah
+
         if ($request->hasFile('logo')) {
-            // Hapus logo lama jika ada
             if ($school->logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($school->logo_path)) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($school->logo_path);
             }
-            $path = $request->file('logo')->store('school-logos', 'public');
-            $validated['logo_path'] = $path;
+            $validated['logo_path'] = $request->file('logo')->store('school-logos', 'public');
         }
 
         $school->update($validated);
