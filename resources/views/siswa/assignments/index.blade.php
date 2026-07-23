@@ -57,7 +57,7 @@
                             <span class="text-xs text-gray-500">Belum dikumpulkan</span>
                         @endif
                         <a href="{{ route('siswa.assignments.show', $a->id) }}"
-                           class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold {{ $submitted ? 'bg-white hover:bg-gray-50 text-gray-600 border border-gray-200' : 'bg-blue-600 hover:bg-blue-700 text-white' }} transition-colors">
+                           class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold {{ $submitted ? 'bg-gray-100 text-gray-500 border border-gray-200 cursor-default' : 'bg-blue-600 hover:bg-blue-700 text-white' }} transition-colors">
                             {{ $submitted ? 'Lihat / Revisi' : 'Kumpulkan' }}
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>

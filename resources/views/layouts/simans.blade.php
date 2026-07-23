@@ -342,7 +342,7 @@
         }
 
         /* ── TOMBOL PRIMER ── */
-        .bg-blue-600, .bg-blue-500 {
+        .bg-blue-600, .bg-blue-500, .bg-blue-700 {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
             color: #ffffff !important;
             border-radius: var(--radius-btn) !important;
@@ -351,14 +351,47 @@
             transition: all 0.18s ease !important;
             border: none !important;
         }
-        .bg-blue-600:hover, .bg-blue-500:hover,
-        .hover\:bg-blue-700:hover, .hover\:bg-blue-600:hover {
+        .bg-blue-600:hover, .bg-blue-500:hover, .bg-blue-700:hover,
+        .hover\:bg-blue-700:hover, .hover\:bg-blue-600:hover, .hover\:bg-blue-500:hover {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
             box-shadow: 0 4px 14px rgba(59,130,246,0.45) !important;
             transform: translateY(-1px) !important;
             color: #ffffff !important;
         }
-        button.bg-blue-600, a.bg-blue-600 { cursor: pointer; }
+        button.bg-blue-600, a.bg-blue-600,
+        button.bg-blue-700, a.bg-blue-700 { cursor: pointer; }
+
+        /* amber / orange tombol */
+        .bg-amber-600, .bg-amber-700 {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            color: #ffffff !important;
+            border-radius: var(--radius-btn) !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 6px rgba(245,158,11,0.28) !important;
+            transition: all 0.18s ease !important;
+        }
+        .bg-amber-600:hover, .bg-amber-700:hover,
+        .hover\:bg-amber-500:hover, .hover\:bg-amber-600:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.40) !important;
+            transform: translateY(-1px) !important;
+            color: #ffffff !important;
+        }
+
+        .bg-orange-600, .bg-orange-700 {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+            color: #ffffff !important;
+            border-radius: var(--radius-btn) !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 6px rgba(249,115,22,0.28) !important;
+            transition: all 0.18s ease !important;
+        }
+        .bg-orange-600:hover, .bg-orange-700:hover,
+        .hover\:bg-orange-500:hover, .hover\:bg-orange-600:hover {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px) !important;
+        }
 
         /* ── TOMBOL SEKUNDER / OUTLINE ── */
         .border-gray-200.bg-white,
@@ -499,23 +532,40 @@
         /* ── ANIMASI PULSE ── */
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-        /* ── FAILSAFE: tombol berwarna SELALU teks putih ── */
-        a[class*="bg-blue-6"], a[class*="bg-blue-5"],
-        button[class*="bg-blue-6"], button[class*="bg-blue-5"],
-        a[class*="bg-red-6"], a[class*="bg-red-5"],
-        button[class*="bg-red-6"], button[class*="bg-red-5"],
-        a[class*="bg-emerald-6"], a[class*="bg-emerald-5"],
-        button[class*="bg-emerald-6"], button[class*="bg-emerald-5"],
-        a[class*="bg-green-6"], a[class*="bg-green-5"],
-        button[class*="bg-green-6"], button[class*="bg-green-5"],
-        a[class*="bg-amber-6"], a[class*="bg-amber-5"],
-        button[class*="bg-amber-6"], button[class*="bg-amber-5"],
-        a[class*="bg-orange-6"], a[class*="bg-orange-5"],
-        button[class*="bg-orange-6"], button[class*="bg-orange-5"],
-        a[class*="bg-indigo-6"], a[class*="bg-indigo-5"],
-        button[class*="bg-indigo-6"], button[class*="bg-indigo-5"],
-        a[class*="bg-violet-6"], a[class*="bg-violet-5"],
-        button[class*="bg-violet-6"], button[class*="bg-violet-5"] {
+        /* ── FAILSAFE: semua tombol/link berwarna → teks putih ── */
+        /* Cover bg-500 sampai bg-900 semua warna */
+        a[class*="bg-blue-5"], a[class*="bg-blue-6"], a[class*="bg-blue-7"], a[class*="bg-blue-8"],
+        a[class*="bg-red-5"], a[class*="bg-red-6"], a[class*="bg-red-7"],
+        a[class*="bg-emerald-5"], a[class*="bg-emerald-6"], a[class*="bg-emerald-7"],
+        a[class*="bg-green-5"], a[class*="bg-green-6"], a[class*="bg-green-7"],
+        a[class*="bg-amber-5"], a[class*="bg-amber-6"], a[class*="bg-amber-7"],
+        a[class*="bg-orange-5"], a[class*="bg-orange-6"], a[class*="bg-orange-7"],
+        a[class*="bg-yellow-5"], a[class*="bg-yellow-6"],
+        a[class*="bg-indigo-5"], a[class*="bg-indigo-6"], a[class*="bg-indigo-7"],
+        a[class*="bg-violet-5"], a[class*="bg-violet-6"], a[class*="bg-violet-7"],
+        a[class*="bg-teal-5"], a[class*="bg-teal-6"],
+        a[class*="bg-cyan-5"], a[class*="bg-cyan-6"],
+        a[class*="bg-sky-5"], a[class*="bg-sky-6"],
+        button[class*="bg-blue-5"], button[class*="bg-blue-6"], button[class*="bg-blue-7"], button[class*="bg-blue-8"],
+        button[class*="bg-red-5"], button[class*="bg-red-6"], button[class*="bg-red-7"],
+        button[class*="bg-emerald-5"], button[class*="bg-emerald-6"], button[class*="bg-emerald-7"],
+        button[class*="bg-green-5"], button[class*="bg-green-6"], button[class*="bg-green-7"],
+        button[class*="bg-amber-5"], button[class*="bg-amber-6"], button[class*="bg-amber-7"],
+        button[class*="bg-orange-5"], button[class*="bg-orange-6"], button[class*="bg-orange-7"],
+        button[class*="bg-yellow-5"], button[class*="bg-yellow-6"],
+        button[class*="bg-indigo-5"], button[class*="bg-indigo-6"], button[class*="bg-indigo-7"],
+        button[class*="bg-violet-5"], button[class*="bg-violet-6"], button[class*="bg-violet-7"],
+        button[class*="bg-teal-5"], button[class*="bg-teal-6"],
+        button[class*="bg-cyan-5"], button[class*="bg-cyan-6"],
+        button[class*="bg-sky-5"], button[class*="bg-sky-6"] {
+            color: #ffffff !important;
+        }
+
+        /* ── FAILSAFE: bg gradient → bg biru juga teks putih ── */
+        .bg-blue-700, .bg-blue-800,
+        .bg-amber-700, .bg-orange-700,
+        .bg-red-700, .bg-emerald-700, .bg-green-700,
+        .bg-indigo-700, .bg-violet-700 {
             color: #ffffff !important;
         }
 

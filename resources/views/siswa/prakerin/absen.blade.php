@@ -43,7 +43,7 @@
         </div>
         <div class="p-4">
             <button id="btn-capture" onclick="capturePhoto()"
-                    class="w-full py-3 bg-blue-700 hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+                    style="width:100%;padding:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;box-shadow:0 3px 10px rgba(59,130,246,0.35)">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -51,7 +51,7 @@
                 Ambil Foto Selfie
             </button>
             <button id="btn-submit" onclick="submitAbsen()" disabled
-                    class="hidden w-full py-3 bg-blue-700 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+                    style="display:none;width:100%;padding:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;gap:8px;font-size:14px;box-shadow:0 3px 10px rgba(16,185,129,0.35)" class="hidden">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                 </svg>

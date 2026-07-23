@@ -104,7 +104,7 @@
                         $labelMap = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
                         $isToday  = $att->session->session_date->isToday();
                     @endphp
-                    <div class="flex items-center gap-4 px-5 py-3.5 {{ $isToday ? 'bg-blue-600/5' : '' }}">
+                    <div class="flex items-center gap-4 px-5 py-3.5 {{ $isToday ? 'bg-blue-50' : '' }}">
 
                         {{-- Tanggal --}}
                         <div class="text-center w-12 flex-shrink-0">

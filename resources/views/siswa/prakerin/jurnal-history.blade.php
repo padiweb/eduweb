@@ -18,7 +18,7 @@
                 <div class="flex items-center gap-2">
                     @if ($journal->journal_date->gte(today()->subDays(7)))
                         <a href="{{ route('siswa.prakerin.jurnal', ['date' => $journal->journal_date->format('Y-m-d')]) }}"
-                           class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-600 text-xs rounded-lg hover:bg-amber-600/40 transition-colors">
+                           class="px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-600 text-xs rounded-lg hover:bg-amber-50 transition-colors">
                             Edit
                         </a>
                     @endif
@@ -37,9 +37,9 @@
                 </div>
             @endif
             @if ($journal->teacher_note)
-                <div class="p-3 bg-blue-500/5 border border-blue-200 rounded-xl">
+                <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
                     <p class="text-blue-400 text-xs font-semibold mb-0.5">Catatan Pembimbing:</p>
-                    <p class="text-blue-300 text-xs">{{ $journal->teacher_note }}</p>
+                    <p class="text-blue-700 text-xs">{{ $journal->teacher_note }}</p>
                 </div>
             @endif
         </div>

@@ -28,7 +28,7 @@
     @if($myAttendance)
         @php $color = $colorMap[$myAttendance->status] ?? 'gray'; @endphp
         <div class="bg-white border border-{{ $color }}-200 rounded-xl p-6 mb-5 text-center">
-            <div class="w-16 h-16 rounded-full bg-{{ $color }}-500/10 border-2 border-{{ $color }}-200 flex items-center justify-center mx-auto mb-4">
+            <div class="w-16 h-16 rounded-full bg-{{ $color }}-50 border-2 border-{{ $color }}-200 flex items-center justify-center mx-auto mb-4">
                 @if($myAttendance->status === 'hadir')
                     <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -107,7 +107,7 @@
                             <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-400 rounded-tr-lg"></div>
                             <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-400 rounded-bl-lg"></div>
                             <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-400 rounded-br-lg"></div>
-                            <div id="scan-line" class="absolute left-2 right-2 h-0.5 bg-blue-500/80 rounded-full top-1/2"></div>
+                            <div id="scan-line" class="absolute left-2 right-2 h-0.5 bg-blue-50 rounded-full top-1/2"></div>
                         </div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                 </div>
                 <button id="btn-absen"
                         disabled
-                        class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-all">
+                        style="width:100%;padding:14px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:15px;box-shadow:0 3px 10px rgba(59,130,246,0.35)">
                     Absen Sekarang
                 </button>
                 <p id="absen-error" class="text-red-600 text-xs text-center mt-2 hidden"></p>

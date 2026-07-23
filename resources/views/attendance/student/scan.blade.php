@@ -122,7 +122,7 @@
         </div>
 
         {{-- Peringatan terlambat --}}
-        <div id="late-warning" class="hidden mb-4 bg-amber-900/30 border border-amber-200 text-amber-700 px-4 py-3 rounded-xl text-sm text-left">
+        <div id="late-warning" class="hidden mb-4 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-xl text-sm text-left">
             <p class="font-semibold mb-0.5">⚠️ Kamu terlambat!</p>
             <p class="text-amber-600/80 text-xs">Keterlambatan ini tercatat. Usahakan hadir tepat waktu berikutnya.</p>
         </div>

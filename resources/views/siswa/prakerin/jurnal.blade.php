@@ -20,7 +20,7 @@
     @endif
 
     @if ($isLate)
-        <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-200 flex items-start gap-2">
+        <div class="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-2">
             <svg class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
             </svg>
@@ -30,12 +30,12 @@
             </div>
         </div>
     @elseif ($journal)
-        <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-200 flex items-center gap-2">
+        <div class="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-2">
             <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             <p class="text-amber-700 text-xs">Jurnal sudah diisi pukul {{ $journal->submitted_at?->format('H:i') ?? $journal->updated_at->format('H:i') }}. Anda bisa memperbarui isinya.</p>
         </div>
     @else
-        <div class="mb-4 p-3 rounded-xl bg-blue-500/5 border border-blue-200 flex items-start gap-2">
+        <div class="mb-4 p-3 rounded-xl bg-blue-50 border border-blue-200 flex items-start gap-2">
             <svg class="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <p class="text-blue-700 text-xs">Isi jurnal setiap hari. Batas waktu sampai <strong>23:59 malam ini</strong>. Jurnal yang tidak diisi akan menghasilkan poin pelanggaran.</p>
         </div>
@@ -67,7 +67,7 @@
                             <form action="{{ route('siswa.prakerin.jurnal.photo.delete', $photo) }}" method="POST" class="absolute top-1 right-1">
                                 @csrf @method('DELETE')
                                 <button type="submit" onclick="return confirm('Hapus foto?')"
-                                        class="w-6 h-6 bg-red-600/80 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        class="w-6 h-6 bg-red-50 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
                             </form>

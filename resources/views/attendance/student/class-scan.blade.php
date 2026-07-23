@@ -16,7 +16,7 @@
 
     {{-- Logo --}}
     <div class="text-center mb-8">
-        <div class="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-emerald-500/20">
+        <div class="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/20">
             <svg class="w-7 h-7 text-gray-900" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342"/>
             </svg>
@@ -41,7 +41,7 @@
     @elseif($session->is_closed)
         {{-- Sesi sudah ditutup --}}
         <div class="text-center">
-            <div class="w-20 h-20 rounded-full bg-gray-50 border-2 border-gray-500/20 flex items-center justify-center mx-auto mb-5">
+            <div class="w-20 h-20 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center mx-auto mb-5">
                 <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                 </svg>
@@ -123,7 +123,7 @@
                     <p class="text-xs text-gray-500 mb-0.5">Buka</p>
                     <p class="text-gray-900 font-semibold text-sm">{{ substr($session->open_time, 0, 5) }}</p>
                 </div>
-                <div class="bg-amber-900/30 border border-amber-200 rounded-xl p-2.5 text-center">
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-center">
                     <p class="text-xs text-amber-600 mb-0.5">Batas</p>
                     <p class="text-amber-600 font-semibold text-sm">{{ substr($session->late_after, 0, 5) }}</p>
                 </div>
@@ -134,7 +134,7 @@
             </div>
 
             <button id="btn-absen"
-                    class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all text-lg shadow-lg shadow-emerald-500/20">
+                    class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-4 rounded-xl transition-all text-lg shadow-lg shadow-blue-500/20">
                 ✓ Absen Sekarang
             </button>
             <p class="text-center text-gray-500 text-xs mt-3">{{ now()->format('H:i') }} WIB · {{ now()->translatedFormat('l, d F Y') }}</p>
@@ -179,7 +179,7 @@
                 </div>
             </div>
 
-            <div id="late-warning" class="hidden mb-4 bg-amber-900/30 border border-amber-200 text-amber-700 px-4 py-3 rounded-xl text-sm text-left">
+            <div id="late-warning" class="hidden mb-4 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded-xl text-sm text-left">
                 <p class="font-semibold mb-0.5">Kamu terlambat!</p>
                 <p class="text-amber-600/80 text-xs">Keterlambatan ini tercatat. Usahakan hadir tepat waktu!</p>
             </div>

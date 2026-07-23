@@ -123,7 +123,7 @@
                                     @endif
                                 </p>
                             </div>
-                            <span class="text-xs bg-{{ $tc }}-500/10 text-{{ $tc }}-400 border border-{{ $tc }}-500/20 px-2.5 py-0.5 rounded-full">
+                            <span class="text-xs bg-{{ $tc }}-50 text-{{ $tc }}-700 border border-{{ $tc }}-200 px-2.5 py-0.5 rounded-full">
                                 {{ ['pending'=>'Menunggu konfirmasi','approved'=>'Diterima','rejected'=>'Ditolak'][$trx->status] ?? '-' }}
                             </span>
                         </div>

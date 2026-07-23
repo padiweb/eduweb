@@ -72,7 +72,7 @@
                             <div class="p-3 rounded-xl border text-center transition-all"
                                  :class="selected === '{{ $val }}'
                                     ? 'border-orange-200 bg-orange-50'
-                                    : 'border-gray-200 bg-white hover:border-white/20'">
+                                    : 'border-gray-200 bg-white hover:border-orange-300 hover:bg-orange-50'">
                                 <p class="text-sm font-medium transition-colors"
                                    :class="selected === '{{ $val }}' ? 'text-orange-600' : 'text-gray-600'">
                                     {{ $label }}
