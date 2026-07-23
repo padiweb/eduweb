@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\AttendanceSession;
 use App\Models\Classroom;
 use App\Models\PaymentBill;
 use App\Models\PaymentTransaction;
 use App\Models\PrakerinPlacement;
+use App\Models\TeachingJournal;
 use App\Models\User;
-use App\Models\Attendance;
 use App\Models\Violation;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -18,78 +19,91 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         return match ($user->role) {
-            'admin'          => redirect()->route('admin.dashboard'),
+            'admin'             => redirect()->route('admin.dashboard'),
             'guru','wali_kelas' => redirect()->route('guru.dashboard'),
-            'kesiswaan'      => redirect()->route('kesiswaan.dashboard'),
-            'siswa'          => redirect()->route('siswa.siswa.dashboard'),
-            'bendahara'      => redirect()->route('bendahara.dashboard'),
-            'kepala_sekolah' => redirect()->route('kepala.dashboard'),
-            default          => abort(403, 'Role tidak dikenali.'),
+            'kesiswaan'         => redirect()->route('kesiswaan.dashboard'),
+            'siswa'             => redirect()->route('siswa.siswa.dashboard'),
+            'bendahara'         => redirect()->route('bendahara.dashboard'),
+            'kepala_sekolah'    => redirect()->route('kepala.dashboard'),
+            default             => abort(403, 'Role tidak dikenali.'),
         };
     }
 
     public function admin()
     {
-        $school = auth()->user()->school;
+        $school   = auth()->user()->school;
+        $schoolId = $school->id;
+        $today    = today();
+
+        $userStats = User::where('school_id', $schoolId)
+            ->where('is_active', true)
+            ->selectRaw("SUM(role='siswa') as siswa, SUM(role IN ('guru','wali_kelas')) as guru")
+            ->first();
+
+        $kelasCount = Classroom::where('school_id', $schoolId)
+            ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
+            ->count();
+
+        $absensiHariIni = Attendance::where('school_id', $schoolId)
+            ->whereHas('session', fn($q) => $q->whereDate('session_date', $today))
+            ->selectRaw("status, COUNT(*) as total")
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
         $stats = [
-            'siswa'         => User::where('school_id', $school->id)->where('role', 'siswa')->where('is_active', true)->count(),
-            'guru'          => User::where('school_id', $school->id)->whereIn('role', ['guru', 'wali_kelas'])->where('is_active', true)->count(),
-            'kelas'         => Classroom::where('school_id', $school->id)->whereHas('academicYear', fn($q) => $q->where('is_active', true))->count(),
-            'hadir_hari_ini'=> Attendance::where('school_id', $school->id)->whereIn('status', ['hadir','terlambat'])
-                                ->whereHas('session', fn($q) => $q->whereDate('session_date', today()))->count(),
-            'alfa_hari_ini' => Attendance::where('school_id', $school->id)->where('status', 'alfa')
-                                ->whereHas('session', fn($q) => $q->whereDate('session_date', today()))->count(),
-            'tunggakan'     => PaymentBill::where('school_id', $school->id)->whereIn('status', ['unpaid','partial'])->count(),
+            'siswa'          => (int) ($userStats->siswa ?? 0),
+            'guru'           => (int) ($userStats->guru ?? 0),
+            'kelas'          => $kelasCount,
+            'hadir_hari_ini' => ($absensiHariIni['hadir'] ?? 0) + ($absensiHariIni['terlambat'] ?? 0),
+            'alfa_hari_ini'  => $absensiHariIni['alfa'] ?? 0,
+            'tunggakan'      => PaymentBill::where('school_id', $schoolId)
+                ->whereIn('status', ['unpaid', 'partial'])->count(),
         ];
 
-        $recentSessions = AttendanceSession::where('school_id', $school->id)
-            ->whereDate('session_date', today())
+        $recentSessions = AttendanceSession::where('school_id', $schoolId)
+            ->whereDate('session_date', $today)
             ->with(['classroom', 'openedBy', 'attendances'])
             ->latest()->take(10)->get();
 
-        // Rekap kehadiran 7 hari
-        $attendanceChart = collect(range(6, 0))->map(function($daysAgo) use ($school) {
-            $date = today()->subDays($daysAgo);
-            $total = Attendance::where('school_id', $school->id)
-                ->whereHas('session', fn($q) => $q->whereDate('session_date', $date))->count();
-            $hadir = Attendance::where('school_id', $school->id)
-                ->whereIn('status', ['hadir','terlambat'])
-                ->whereHas('session', fn($q) => $q->whereDate('session_date', $date))->count();
-            return ['date' => $date->format('d/m'), 'hadir' => $hadir, 'total' => $total];
-        });
-
-        return view('dashboard.admin', compact('stats', 'recentSessions', 'attendanceChart'));
+        return view('dashboard.admin', compact('stats', 'recentSessions'));
     }
 
     public function guru()
     {
         $teacher = auth()->user();
         $school  = $teacher->school;
+        $today   = today();
 
+        // Hanya kelas yang diampu guru ini
         $classrooms = Classroom::where('school_id', $school->id)
             ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
-            ->with(['major','students'])->get();
+            ->whereHas('schedules', fn($q) => $q->where('teacher_id', $teacher->id))
+            ->with(['major', 'students'])
+            ->get();
 
+        $classroomIds = $classrooms->pluck('id');
+
+        // keyBy classroom_id agar view bisa akses: $todaySessions[$classroom->id]
         $todaySessions = AttendanceSession::where('school_id', $school->id)
-            ->whereDate('session_date', today())
-            ->with(['classroom','attendances'])->get();
+            ->whereIn('classroom_id', $classroomIds)
+            ->whereDate('session_date', $today)
+            ->with(['classroom', 'attendances'])
+            ->get()
+            ->keyBy('classroom_id');
+
+        $allAttendances = $todaySessions->flatMap->attendances;
 
         $stats = [
-            'total_kelas'  => $classrooms->count(),
-            'sesi_aktif'   => $todaySessions->where('is_closed', false)->count(),
-            'total_hadir'  => $todaySessions->flatMap->attendances->whereIn('status', ['hadir','terlambat'])->count(),
-            'total_alfa'   => $todaySessions->flatMap->attendances->where('status', 'alfa')->count(),
-            'total_siswa'  => $classrooms->sum(fn($c) => $c->students->count()),
+            'total_kelas' => $classrooms->count(),
+            'total_hadir' => $allAttendances->whereIn('status', ['hadir', 'terlambat'])->count(),
+            'total_alfa'  => $allAttendances->where('status', 'alfa')->count(),
         ];
 
-        // Jurnal mengajar bulan ini
-        $jurnalBulanIni = \App\Models\TeachingJournal::where('teacher_id', $teacher->id)
+        $jurnalBulanIni = TeachingJournal::where('teacher_id', $teacher->id)
             ->whereMonth('journal_date', now()->month)->count();
 
-        // Prakerin koordinator - pivot pakai teacher_id
-        $prakerinCount = PrakerinPlacement::whereHas('location', fn($q) =>
-            $q->whereHas('supervisors', fn($q2) => $q2->where('prakerin_loc_supervisors.teacher_id', $teacher->id))
+        $prakerinCount = PrakerinPlacement::whereHas('location.supervisors', fn($q) =>
+            $q->where('prakerin_loc_supervisors.teacher_id', $teacher->id)
         )->where('is_active', true)->count();
 
         return view('dashboard.guru', compact(
@@ -99,21 +113,33 @@ class DashboardController extends Controller
 
     public function kesiswaan()
     {
-        $school = auth()->user()->school;
+        $school   = auth()->user()->school;
+        $schoolId = $school->id;
+        $today    = today();
+
+        $absensiHariIni = Attendance::where('school_id', $schoolId)
+            ->whereHas('session', fn($q) => $q->whereDate('session_date', $today))
+            ->selectRaw("status, COUNT(*) as total")
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $siswabermasalah = DB::table('violations')
+            ->where('school_id', $schoolId)
+            ->where('is_archived', false)
+            ->groupBy('student_id')
+            ->havingRaw('SUM(points) >= 50')
+            ->count();
 
         $stats = [
-            'pelanggaran_bulan_ini' => Violation::where('school_id', $school->id)->whereMonth('created_at', now()->month)->count(),
-            'alfa_hari_ini'         => Attendance::where('school_id', $school->id)->where('status', 'alfa')
-                                        ->whereHas('session', fn($q) => $q->whereDate('session_date', today()))->count(),
-            'terlambat_hari_ini'    => Attendance::where('school_id', $school->id)->where('status', 'terlambat')
-                                        ->whereHas('session', fn($q) => $q->whereDate('session_date', today()))->count(),
-            'siswa_bermasalah'      => Violation::where('school_id', $school->id)->where('is_archived', false)
-                                        ->selectRaw('student_id')->groupBy('student_id')
-                                        ->havingRaw('SUM(points) >= 50')->get()->count(),
+            'pelanggaran_bulan_ini' => Violation::where('school_id', $schoolId)
+                ->whereMonth('created_at', now()->month)->count(),
+            'alfa_hari_ini'         => $absensiHariIni['alfa'] ?? 0,
+            'terlambat_hari_ini'    => $absensiHariIni['terlambat'] ?? 0,
+            'siswa_bermasalah'      => $siswabermasalah,
         ];
 
-        $recentViolations = Violation::where('school_id', $school->id)
-            ->with(['student','category'])->latest()->take(8)->get();
+        $recentViolations = Violation::where('school_id', $schoolId)
+            ->with(['student', 'category'])->latest()->take(8)->get();
 
         return view('dashboard.kesiswaan', compact('stats', 'recentViolations'));
     }
@@ -121,60 +147,88 @@ class DashboardController extends Controller
     public function siswa()
     {
         $student = auth()->user();
+        $today   = today();
 
         $todayAttendance = Attendance::where('student_id', $student->id)
-            ->whereHas('session', fn($q) => $q->whereDate('session_date', today()))->first();
+            ->whereHas('session', fn($q) => $q->whereDate('session_date', $today))
+            ->first();
 
         $monthStats = Attendance::where('student_id', $student->id)
-            ->whereHas('session', fn($q) => $q->whereMonth('session_date', now()->month)->whereYear('session_date', now()->year))
-            ->selectRaw('status, COUNT(*) as total')->groupBy('status')
-            ->pluck('total', 'status')->toArray();
+            ->whereHas('session', fn($q) =>
+                $q->whereMonth('session_date', now()->month)
+                  ->whereYear('session_date', now()->year)
+            )
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
 
         $hadirCount = ($monthStats['hadir'] ?? 0) + ($monthStats['terlambat'] ?? 0);
         $totalCount = array_sum($monthStats);
         $rate       = $totalCount > 0 ? round(($hadirCount / $totalCount) * 100, 1) : 0;
 
-        $violationPoints = Violation::where('student_id', $student->id)->where('is_archived', false)->sum('points');
+        $violationPoints = Violation::where('student_id', $student->id)
+            ->where('is_archived', false)->sum('points');
 
-        // Tagihan aktif - kolom user_id bukan student_id
         $activeBills = PaymentBill::where('user_id', $student->id)
-            ->whereIn('status', ['unpaid','partial'])->count();
+            ->whereIn('status', ['unpaid', 'partial'])->count();
 
-        // Prakerin aktif
-        $prakerinActive = PrakerinPlacement::where('student_id', $student->id)->where('is_active', true)->with('location')->first();
+        $prakerinActive = PrakerinPlacement::where('student_id', $student->id)
+            ->where('is_active', true)->with('location')->first();
 
         return view('dashboard.siswa', compact(
-            'todayAttendance', 'monthStats', 'rate', 'violationPoints', 'activeBills', 'prakerinActive'
+            'todayAttendance', 'monthStats', 'rate',
+            'violationPoints', 'activeBills', 'prakerinActive'
         ));
     }
 
     public function bendahara()
     {
-        $school = auth()->user()->school;
+        $school   = auth()->user()->school;
+        $schoolId = $school->id;
+
+        $billStats = PaymentBill::where('school_id', $schoolId)
+            ->selectRaw("
+                SUM(MONTH(created_at) = MONTH(NOW()) AND YEAR(created_at) = YEAR(NOW())) as tagihan_bulan_ini,
+                SUM(status IN ('unpaid','partial')) as total_tunggakan
+            ")->first();
+
+        $txStats = PaymentTransaction::where('school_id', $schoolId)
+            ->selectRaw("
+                SUM(status = 'pending' AND channel = 'transfer') as menunggu_konfirmasi
+            ")->first();
+
+        $pemasukanBulanIni = PaymentTransaction::where('school_id', $schoolId)
+            ->where('status', 'verified')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('amount');
 
         $stats = [
-            'tagihan_bulan_ini'   => PaymentBill::where('school_id', $school->id)->whereMonth('created_at', now()->month)->count(),
-            'lunas_bulan_ini'     => PaymentBill::where('school_id', $school->id)->where('status', 'paid')->whereMonth('updated_at', now()->month)->count(),
-            'menunggu_konfirmasi' => PaymentTransaction::where('school_id', $school->id)->where('status', 'pending')->where('channel', 'transfer')->count(),
-            'total_tunggakan'     => PaymentBill::where('school_id', $school->id)->whereIn('status', ['unpaid','partial'])->count(),
+            'tagihan_bulan_ini'   => (int) ($billStats->tagihan_bulan_ini ?? 0),
+            'menunggu_konfirmasi' => (int) ($txStats->menunggu_konfirmasi ?? 0),
+            'total_tunggakan'     => (int) ($billStats->total_tunggakan ?? 0),
         ];
 
-        // Pemasukan bulan ini
-        $pemasukanBulanIni = PaymentTransaction::where('school_id', $school->id)
-            ->where('status', 'verified')->whereMonth('created_at', now()->month)->sum('amount');
-
-        $pendingTransfers = PaymentTransaction::where('school_id', $school->id)
+        $pendingTransfers = PaymentTransaction::where('school_id', $schoolId)
             ->where('status', 'pending')->where('channel', 'transfer')
-            ->with(['bill.student','bill.paymentType'])->latest()->take(10)->get();
+            ->with(['bill.student', 'bill.paymentType'])
+            ->latest()->take(10)->get();
 
-        // Tunggakan per kelas
-        $tunggakanPerKelas = PaymentBill::where('school_id', $school->id)
-            ->whereIn('status', ['unpaid','partial'])
-            ->with('student.classrooms')
-            ->get()
-            ->groupBy(fn($b) => $b->student?->classrooms->first()?->name ?? 'Tanpa Kelas')
-            ->map->count()
-            ->sortDesc()->take(5);
+        // Tunggakan per kelas via JOIN (bukan N+1)
+        $tunggakanPerKelas = DB::table('payment_bills as pb')
+            ->join('users as u', 'pb.user_id', '=', 'u.id')
+            ->join('classroom_student as cs', 'u.id', '=', 'cs.student_id')
+            ->join('classrooms as c', 'cs.classroom_id', '=', 'c.id')
+            ->join('academic_years as ay', 'c.academic_year_id', '=', 'ay.id')
+            ->where('pb.school_id', $schoolId)
+            ->whereIn('pb.status', ['unpaid', 'partial'])
+            ->where('ay.is_active', true)
+            ->groupBy('c.name')
+            ->orderByRaw('COUNT(*) DESC')
+            ->limit(5)
+            ->select('c.name', DB::raw('COUNT(*) as total'))
+            ->pluck('total', 'name');
 
         return view('dashboard.bendahara', compact(
             'stats', 'pendingTransfers', 'pemasukanBulanIni', 'tunggakanPerKelas'
@@ -183,28 +237,48 @@ class DashboardController extends Controller
 
     public function kepala()
     {
-        $school = auth()->user()->school;
+        $school   = auth()->user()->school;
+        $schoolId = $school->id;
+        $today    = today();
+
+        $userStats = User::where('school_id', $schoolId)->where('is_active', true)
+            ->selectRaw("SUM(role='siswa') as total_siswa, SUM(role IN ('guru','wali_kelas')) as total_guru")
+            ->first();
+
+        $absensiHariIni = Attendance::where('school_id', $schoolId)
+            ->whereHas('session', fn($q) => $q->whereDate('session_date', $today))
+            ->selectRaw("status, COUNT(*) as total")
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $billStats = PaymentBill::where('school_id', $schoolId)
+            ->selectRaw("
+                SUM(MONTH(created_at) = MONTH(NOW())) as tagihan_bulan_ini,
+                SUM(status IN ('unpaid','partial')) as tunggakan
+            ")->first();
 
         $stats = [
-            'total_siswa'       => User::where('school_id', $school->id)->where('role', 'siswa')->where('is_active', true)->count(),
-            'total_guru'        => User::where('school_id', $school->id)->whereIn('role', ['guru','wali_kelas'])->where('is_active', true)->count(),
-            'tagihan_bulan_ini' => PaymentBill::where('school_id', $school->id)->whereMonth('created_at', now()->month)->count(),
-            'tunggakan'         => PaymentBill::where('school_id', $school->id)->whereIn('status', ['unpaid','partial'])->count(),
-            'hadir_hari_ini'    => Attendance::where('school_id', $school->id)->whereIn('status', ['hadir','terlambat'])
-                                    ->whereHas('session', fn($q) => $q->whereDate('session_date', today()))->count(),
-            'pelanggaran_bulan' => Violation::where('school_id', $school->id)->whereMonth('created_at', now()->month)->count(),
+            'total_siswa'       => (int) ($userStats->total_siswa ?? 0),
+            'total_guru'        => (int) ($userStats->total_guru ?? 0),
+            'hadir_hari_ini'    => ($absensiHariIni['hadir'] ?? 0) + ($absensiHariIni['terlambat'] ?? 0),
+            'tagihan_bulan_ini' => (int) ($billStats->tagihan_bulan_ini ?? 0),
+            'tunggakan'         => (int) ($billStats->tunggakan ?? 0),
+            'pelanggaran_bulan' => Violation::where('school_id', $schoolId)
+                ->whereMonth('created_at', now()->month)->count(),
         ];
 
-        // Rekap kelas hari ini
-        $classroomSummary = Classroom::where('school_id', $school->id)
-            ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
-            ->with(['major', 'students',
-                'attendanceSessions' => fn($q) => $q->whereDate('session_date', today())->with('attendances')
-            ])->get();
+        $pemasukanBulan = PaymentTransaction::where('school_id', $schoolId)
+            ->where('status', 'verified')
+            ->whereMonth('created_at', now()->month)->sum('amount');
 
-        // Pemasukan bulan ini
-        $pemasukanBulan = PaymentTransaction::where('school_id', $school->id)
-            ->where('status', 'verified')->whereMonth('created_at', now()->month)->sum('amount');
+        $classroomSummary = Classroom::where('school_id', $schoolId)
+            ->whereHas('academicYear', fn($q) => $q->where('is_active', true))
+            ->with([
+                'major',
+                'students:id',
+                'attendanceSessions' => fn($q) =>
+                    $q->whereDate('session_date', $today)->with('attendances:id,session_id,status'),
+            ])->get();
 
         return view('dashboard.kepala', compact('stats', 'classroomSummary', 'pemasukanBulan'));
     }

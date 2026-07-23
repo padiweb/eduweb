@@ -6,25 +6,7 @@
     </div>
 
     @php
-        $student     = auth()->user();
-        $school      = $student->school;
-        $violations  = \App\Models\Violation::where('student_id', $student->id)
-            ->where('is_archived', false)
-            ->with(['category'])
-            ->orderByDesc('incident_date')
-            ->orderByDesc('created_at')
-            ->get();
-        $totalPoints = $violations->sum('points');
-
-        // Level peringatan
-        $w1 = $school->violation_warning1 ?? 10;
-        $w2 = $school->violation_warning2 ?? 20;
-        $w3 = $school->violation_warning3 ?? 30;
-
-        $warningLevel = 0;
-        if ($totalPoints >= $w3)      $warningLevel = 3;
-        elseif ($totalPoints >= $w2)  $warningLevel = 2;
-        elseif ($totalPoints >= $w1)  $warningLevel = 1;
+        // Data dari App\Http\Controllers\Siswa\ViolationController
 
         $sourceColors = [
             'manual'             => ['bg-red-50 border-red-200 text-red-600',       'Manual'],

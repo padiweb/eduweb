@@ -75,7 +75,7 @@ class AssignmentService
                     'student_id'        => $student->id,
                     'status'            => 'not_submitted',
                     'submitted_at'      => null, // tidak ada tanggal submit
-                    'violation_created' => false,
+                    'violation_created' => true,  // langsung true karena pelanggaran sudah dibuat
                 ]);
 
                 $this->createViolation($assignment, $student);

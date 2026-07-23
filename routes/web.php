@@ -265,7 +265,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/absensi/riwayat', [StudentScanController::class, 'history'])->name('attendance.history');
 
         // Pelanggaran
-        Route::get('/pelanggaran', fn() => view('siswa.violations'))->name('violations');
+        Route::get('/pelanggaran', [\App\Http\Controllers\Siswa\ViolationController::class, 'index'])->name('violations');
 
         // Tugas & Nilai — /nilai HARUS di atas /{assignment}
         Route::prefix('tugas')->name('assignments.')->group(function () {
