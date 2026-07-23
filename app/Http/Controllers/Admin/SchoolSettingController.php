@@ -40,6 +40,11 @@ class SchoolSettingController extends Controller
             'violation_warning2'       => ['required', 'integer', 'min:1', 'max:999'],
             'violation_warning3'       => ['required', 'integer', 'min:1', 'max:999'],
             'alfa_limit_per_semester'       => ['required', 'integer', 'min:0', 'max:999'],
+            'bank_name'                    => ['nullable', 'string', 'max:100'],
+            'bank_account_number'          => ['nullable', 'string', 'max:50'],
+            'bank_account_name'            => ['nullable', 'string', 'max:100'],
+            'bank_logo'                    => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
+            'payment_instructions'         => ['nullable', 'string', 'max:500'],
             'prakerin_points_no_checkin'    => ['nullable', 'integer', 'min:0', 'max:99'],
             'prakerin_points_no_checkout'   => ['nullable', 'integer', 'min:0', 'max:99'],
             'prakerin_points_no_journal'    => ['nullable', 'integer', 'min:0', 'max:99'],
@@ -90,6 +95,14 @@ class SchoolSettingController extends Controller
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($school->logo_path);
             }
             $validated['logo_path'] = $request->file('logo')->store('school-logos', 'public');
+        }
+
+        // Upload logo bank
+        if ($request->hasFile('bank_logo')) {
+            if ($school->bank_logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($school->bank_logo_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($school->bank_logo_path);
+            }
+            $validated['bank_logo_path'] = $request->file('bank_logo')->store('bank-logos', 'public');
         }
 
         $school->update($validated);
@@ -206,6 +219,14 @@ class SchoolSettingController extends Controller
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($school->logo_path);
             }
             $validated['logo_path'] = $request->file('logo')->store('school-logos', 'public');
+        }
+
+        // Upload logo bank
+        if ($request->hasFile('bank_logo')) {
+            if ($school->bank_logo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($school->bank_logo_path)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($school->bank_logo_path);
+            }
+            $validated['bank_logo_path'] = $request->file('bank_logo')->store('bank-logos', 'public');
         }
 
         $school->update($validated);

@@ -325,6 +325,49 @@
         [x-cloak] { display: none !important; }
 
         /* ══════════════════════════════════════════════
+           MODAL GLOBAL — scroll dan body lock
+        ══════════════════════════════════════════════ */
+
+        /* Modal overlay: semua yang fixed/inset jadi flex column */
+        .fixed.inset-0[class*="z-50"] {
+            /* Saat modal terbuka, body lock via JS */
+        }
+        body.modal-open {
+            overflow: hidden !important;
+        }
+
+        /* Inner modal box: selalu punya max-height dan overflow-y:auto */
+        .fixed.inset-0[class*="z-50"] > div {
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        /* Untuk modal yang pakai class hidden/flex pattern (Tailwind) */
+        .fixed.inset-0.flex > div,
+        [class*="fixed inset-0"][class*="flex"] > div {
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Modal inner container yang punya scroll sendiri */
+        .modal-body {
+            overflow-y: auto;
+            max-height: calc(90vh - 140px);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Touch scroll untuk overlay di mobile */
+        @media (max-width: 767px) {
+            .fixed.inset-0[class*="z-50"] > div {
+                max-height: 95vh !important;
+                margin: 0 8px !important;
+                border-radius: 16px !important;
+            }
+        }
+
+        /* ══════════════════════════════════════════════
            DESIGN SYSTEM PREMIUM — semua tombol & badge
         ══════════════════════════════════════════════ */
 

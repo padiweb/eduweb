@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
+use App\Models\Assignment;
+use App\Models\AssignmentSubmission;
 use App\Models\AttendanceSession;
 use App\Models\Classroom;
 use App\Models\PaymentBill;
@@ -106,8 +108,42 @@ class DashboardController extends Controller
             $q->where('prakerin_loc_supervisors.teacher_id', $teacher->id)
         )->where('is_active', true)->count();
 
+        // KPI Guru: jurnal per bulan (6 bulan terakhir)
+        $kpiJurnal = collect(range(5, 0))->map(function ($monthsAgo) use ($teacher) {
+            $date = now()->subMonths($monthsAgo);
+            return [
+                'bulan' => $date->translatedFormat('M'),
+                'total' => \App\Models\TeachingJournal::where('teacher_id', $teacher->id)
+                    ->whereMonth('journal_date', $date->month)
+                    ->whereYear('journal_date', $date->year)
+                    ->count(),
+            ];
+        });
+
+        // KPI: rata-rata nilai yang sudah dinilai
+        $kpiNilai = \App\Models\AssignmentSubmission::whereHas('assignment', fn($q) =>
+                $q->where('teacher_id', $teacher->id)
+            )
+            ->where('status', 'graded')
+            ->whereNotNull('score')
+            ->avg('score');
+
+        // KPI: total tugas bulan ini
+        $tugasBulanIni = \App\Models\Assignment::where('teacher_id', $teacher->id)
+            ->whereMonth('created_at', now()->month)
+            ->count();
+
+        // KPI: absensi guru sendiri bulan ini
+        $kpiAbsenGuru = \App\Models\TeacherAttendance::where('teacher_id', $teacher->id)
+            ->whereMonth('attendance_date', now()->month)
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
         return view('dashboard.guru', compact(
-            'stats', 'todaySessions', 'classrooms', 'jurnalBulanIni', 'prakerinCount'
+            'stats', 'todaySessions', 'classrooms', 'jurnalBulanIni', 'prakerinCount',
+            'kpiJurnal', 'kpiNilai', 'tugasBulanIni', 'kpiAbsenGuru'
         ));
     }
 
@@ -176,9 +212,38 @@ class DashboardController extends Controller
         $prakerinActive = PrakerinPlacement::where('student_id', $student->id)
             ->where('is_active', true)->with('location')->first();
 
+        // Grafik kehadiran 7 hari terakhir
+        $attendanceChart = collect(range(6, 0))->map(function ($daysAgo) use ($student) {
+            $date   = today()->subDays($daysAgo);
+            $status = Attendance::where('student_id', $student->id)
+                ->whereHas('session', fn($q) => $q->whereDate('session_date', $date))
+                ->value('status');
+            return [
+                'date'   => $date->format('d/m'),
+                'day'    => $date->translatedFormat('D'),
+                'status' => $status ?? 'none',
+                'hadir'  => in_array($status, ['hadir','terlambat']) ? 1 : 0,
+            ];
+        });
+
+        // Grafik nilai rata-rata per mapel
+        $scoreChart = AssignmentSubmission::where('student_id', $student->id)
+            ->where('status', 'graded')->whereNotNull('score')
+            ->with('assignment.subject')
+            ->orderBy('graded_at', 'desc')->take(30)->get()
+            ->groupBy(fn($s) => $s->assignment->subject->name ?? 'Lainnya')
+            ->map(fn($subs) => round($subs->avg('score'), 1))
+            ->sortByDesc(fn($v) => $v)->take(6);
+
+        // Nilai terbaru
+        $recentScores = AssignmentSubmission::where('student_id', $student->id)
+            ->where('status', 'graded')->whereNotNull('score')
+            ->with('assignment.subject')->orderBy('graded_at', 'desc')->take(8)->get();
+
         return view('dashboard.siswa', compact(
             'todayAttendance', 'monthStats', 'rate',
-            'violationPoints', 'activeBills', 'prakerinActive'
+            'violationPoints', 'activeBills', 'prakerinActive',
+            'attendanceChart', 'scoreChart', 'recentScores'
         ));
     }
 

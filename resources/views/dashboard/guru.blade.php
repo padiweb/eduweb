@@ -129,4 +129,72 @@
     </div>
 </div>
 <style>@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style>
+
+{{-- ═══ KPI GURU ═══ --}}
+<div style="margin-top:16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:3px;height:16px;background:linear-gradient(180deg,#6366f1,#4f46e5);border-radius:2px"></div>
+        <h2 style="font-size:14px;font-weight:700;color:#0f172a;margin:0">KPI — Kinerja Bulan Ini</h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px" id="kpi-grid">
+        {{-- Jurnal bulan ini --}}
+        <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid #6366f1;border-radius:14px;padding:14px 16px;text-align:center">
+            <div style="font-size:28px;font-weight:800;color:#4f46e5;letter-spacing:-1px">{{ $jurnalBulanIni }}</div>
+            <div style="font-size:11.5px;font-weight:600;color:#334155;margin-top:4px">Jurnal</div>
+            <div style="font-size:10px;color:#94a3b8">Bulan ini</div>
+        </div>
+        {{-- Tugas bulan ini --}}
+        <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid #3b82f6;border-radius:14px;padding:14px 16px;text-align:center">
+            <div style="font-size:28px;font-weight:800;color:#2563eb;letter-spacing:-1px">{{ $tugasBulanIni }}</div>
+            <div style="font-size:11.5px;font-weight:600;color:#334155;margin-top:4px">Tugas</div>
+            <div style="font-size:10px;color:#94a3b8">Dibuat bulan ini</div>
+        </div>
+        {{-- Rata-rata nilai --}}
+        <div style="background:#fff;border:1px solid #e2e8f0;border-top:3px solid #10b981;border-radius:14px;padding:14px 16px;text-align:center">
+            <div style="font-size:28px;font-weight:800;color:#059669;letter-spacing:-1px">{{ $kpiNilai ? round($kpiNilai,1) : '—' }}</div>
+            <div style="font-size:11.5px;font-weight:600;color:#334155;margin-top:4px">Rata Nilai</div>
+            <div style="font-size:10px;color:#94a3b8">Semua tugas</div>
+        </div>
+    </div>
+
+    {{-- Grafik jurnal 6 bulan --}}
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px;margin-bottom:14px">
+        <p style="font-size:12px;font-weight:600;color:#64748b;margin:0 0 12px">Jurnal Mengajar — 6 Bulan Terakhir</p>
+        @php $maxJurnal = max($kpiJurnal->pluck('total')->max(), 1); @endphp
+        <div style="display:flex;align-items:flex-end;gap:8px;height:72px">
+            @foreach ($kpiJurnal as $k)
+                @php $h = max(8, round(($k['total'] / $maxJurnal) * 72)); @endphp
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                    <span style="font-size:10px;color:#64748b;font-weight:600">{{ $k['total'] ?: '' }}</span>
+                    <div style="width:100%;border-radius:4px 4px 0 0;height:{{ $h }}px;background:{{ $k['total'] > 0 ? 'linear-gradient(180deg,#6366f1,#4f46e5)' : '#f1f5f9' }};transition:height .3s"></div>
+                    <span style="font-size:10px;color:#94a3b8">{{ $k['bulan'] }}</span>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Kehadiran guru bulan ini --}}
+    @if(!empty($kpiAbsenGuru))
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 16px">
+        <p style="font-size:12px;font-weight:600;color:#64748b;margin:0 0 10px">Kehadiran Saya — Bulan Ini</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+            @foreach ([['hadir','#10b981','Hadir'],['terlambat','#f59e0b','Terlambat'],['izin','#8b5cf6','Izin'],['sakit','#06b6d4','Sakit'],['alfa','#ef4444','Tidak Hadir']] as [$st,$col,$lbl])
+                @if(isset($kpiAbsenGuru[$st]) && $kpiAbsenGuru[$st] > 0)
+                <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#f8fafc;border-radius:20px">
+                    <span style="width:8px;height:8px;border-radius:50%;background:{{ $col }};flex-shrink:0"></span>
+                    <span style="font-size:12px;font-weight:700;color:#334155">{{ $kpiAbsenGuru[$st] }}</span>
+                    <span style="font-size:11px;color:#64748b">{{ $lbl }}</span>
+                </div>
+                @endif
+            @endforeach
+        </div>
+    </div>
+    @endif
+</div>
+
+<style>
+@media(max-width:767px){#kpi-grid{grid-template-columns:1fr 1fr!important}}
+</style>
+
 </x-simans-layout>

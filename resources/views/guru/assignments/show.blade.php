@@ -149,23 +149,28 @@
                                         Tidak Kumpul
                                     </span>
                                 @elseif($sub)
-                                    {{-- Tombol lihat jawaban --}}
+                                    {{-- Tombol lihat jawaban (SEMUA jenis ditampilkan) --}}
                                     @if($sub->file_path)
                                         @php $subFiles = array_filter(explode(',', $sub->file_path)); @endphp
                                         @foreach($subFiles as $fi => $fp)
                                             <a href="{{ route('guru.assignments.view-file', [$assignment->id, $sub->id, 'index' => $fi]) }}" target="_blank"
-                                               class="text-xs text-blue-600 hover:text-blue-600 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
-                                                File {{ count($subFiles) > 1 ? $fi+1 : '' }}
+                                               style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;text-decoration:none;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:3px">
+                                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                                File{{ count($subFiles) > 1 ? ' '.($fi+1) : '' }}
                                             </a>
                                         @endforeach
-                                    @elseif($sub->link_url)
+                                    @endif
+                                    @if($sub->link_url)
                                         <a href="{{ $sub->link_url }}" target="_blank"
-                                           class="text-xs text-blue-600 hover:text-blue-600 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                                           style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;background:#f5f3ff;border:1px solid #ddd6fe;color:#7c3aed;text-decoration:none;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:3px">
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101"/><path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 015.656 0l4-4a4 4 0 01-5.656-5.656l-1.1 1.1"/></svg>
                                             Link
                                         </a>
-                                    @elseif($sub->content)
-                                        <button onclick="showContent({{ json_encode(substr($sub->content, 0, 1000)) }})"
-                                                class="text-xs text-blue-600 hover:text-blue-600 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                                    @endif
+                                    @if($sub->content)
+                                        <button onclick="showContent({{ json_encode($sub->student->name) }}, {{ json_encode($sub->content) }})"
+                                               style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;background:#ecfdf5;border:1px solid #bbf7d0;color:#059669;cursor:pointer;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:3px">
+                                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
                                             Teks
                                         </button>
                                     @endif
@@ -215,18 +220,24 @@
     </div>
 
     {{-- Modal lihat konten teks --}}
-    <div id="modal-content" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
-        <div class="bg-white border border-gray-200 rounded-xl w-full max-w-lg">
-            <div class="flex items-center justify-between p-5 border-b border-gray-200">
-                <h3 class="font-semibold text-gray-900">Jawaban Siswa</h3>
-                <button id="close-content" class="text-gray-500 hover:text-blue-600 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <div id="modal-content" style="display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;background:rgba(15,23,42,0.6);padding:16px">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;width:100%;max-width:560px;box-shadow:0 20px 60px rgba(15,23,42,0.25);max-height:85vh;display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f1f5f9;flex-shrink:0">
+                <div>
+                    <h3 style="font-size:14px;font-weight:700;color:#0f172a;margin:0">Jawaban Siswa</h3>
+                    <p id="content-student" style="font-size:12px;color:#64748b;margin:2px 0 0"></p>
+                </div>
+                <button onclick="closeContent()" style="width:30px;height:30px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;cursor:pointer">
+                    <svg width="16" height="16" fill="none" stroke="#64748b" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
-            <div class="p-5 max-h-96 overflow-y-auto">
-                <p id="content-text" class="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed"></p>
+            <div style="padding:20px;overflow-y:auto;flex:1">
+                <pre id="content-text" style="font-size:13.5px;color:#334155;white-space:pre-wrap;line-height:1.7;font-family:inherit;margin:0"></pre>
+            </div>
+            <div style="padding:12px 20px;border-top:1px solid #f1f5f9;display:flex;justify-content:flex-end;flex-shrink:0">
+                <button onclick="closeContent()" style="padding:8px 20px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;color:#475569;cursor:pointer">Tutup</button>
             </div>
         </div>
     </div>
@@ -235,14 +246,19 @@
     (function() {
         var CSRF = document.querySelector('meta[name="csrf-token"]').content;
 
-        window.showContent = function(text) {
-            document.getElementById('content-text').textContent = text;
+        window.showContent = function(studentName, text) {
+            document.getElementById('content-text').textContent = text || '';
+            document.getElementById('content-student').textContent = studentName || '';
             var m = document.getElementById('modal-content');
-            m.classList.remove('hidden'); m.classList.add('flex');
+            m.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         };
-        document.getElementById('close-content')?.addEventListener('click', function() {
-            var m = document.getElementById('modal-content');
-            m.classList.add('hidden'); m.classList.remove('flex');
+        window.closeContent = function() {
+            document.getElementById('modal-content').style.display = 'none';
+            document.body.style.overflow = '';
+        };
+        document.getElementById('modal-content')?.addEventListener('click', function(e) {
+            if (e.target === this) window.closeContent();
         });
 
         async function saveGrade(studentId, score, feedback) {

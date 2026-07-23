@@ -246,7 +246,7 @@ class AttendanceService
             $teacher, $subjectName, $notes
         ) {
             foreach ($absentStudentIds as $studentId) {
-                Attendance::updateOrCreate(
+                $att = Attendance::updateOrCreate(
                     ['session_id' => $session->id, 'student_id' => $studentId],
                     [
                         'school_id'       => $session->school_id,
@@ -258,6 +258,10 @@ class AttendanceService
                         'entry_at'        => now(),
                     ]
                 );
+                // Buat poin pelanggaran alfa
+                if (! $att->violation_created) {
+                    $this->createAlfaViolation($att, $session);
+                }
             }
 
             $enrolledIds  = $session->classroom->students()->pluck('users.id');
@@ -265,7 +269,7 @@ class AttendanceService
             $stillMissing = $enrolledIds->diff($recordedIds)->diff(collect($presentStudentIds));
 
             foreach ($stillMissing as $studentId) {
-                Attendance::create([
+                $att = Attendance::create([
                     'school_id'       => $session->school_id,
                     'session_id'      => $session->id,
                     'student_id'      => $studentId,
@@ -276,6 +280,8 @@ class AttendanceService
                     'entry_reason'    => 'Tidak hadir saat roll call oleh ' . $teacher->name,
                     'entry_at'        => now(),
                 ]);
+                // Buat poin pelanggaran alfa
+                $this->createAlfaViolation($att, $session);
             }
 
             AttendanceValidation::create([
@@ -306,7 +312,7 @@ class AttendanceService
 
         DB::transaction(function () use ($session, $missingIds) {
             foreach ($missingIds as $studentId) {
-                Attendance::create([
+                $att = Attendance::create([
                     'school_id'       => $session->school_id,
                     'session_id'      => $session->id,
                     'student_id'      => $studentId,
@@ -316,6 +322,8 @@ class AttendanceService
                     'entry_reason'    => 'Otomatis alfa saat sesi ditutup',
                     'entry_at'        => now(),
                 ]);
+                // Buat poin pelanggaran untuk alfa
+                $this->createAlfaViolation($att, $session);
             }
         });
     }
@@ -367,6 +375,34 @@ class AttendanceService
     }
 
     // ── PRIVATE HELPERS ────────────────────────────────────────────────────
+
+    private function createAlfaViolation(Attendance $attendance, AttendanceSession $session): void
+    {
+        try {
+            $category = ViolationCategory::firstOrCreate(
+                ['school_id' => $session->school_id, 'name' => 'Tidak Hadir Tanpa Keterangan (Alfa)'],
+                ['severity' => 'sedang', 'default_points' => 3]
+            );
+
+            Violation::create([
+                'school_id'     => $session->school_id,
+                'student_id'    => $attendance->student_id,
+                'category_id'   => $category->id,
+                'reported_by'   => $session->opened_by ?? auth()->id() ?? 1,
+                'attendance_id' => $attendance->id,
+                'incident_date' => $session->session_date,
+                'description'   => 'Tidak hadir (alfa) pada ' . $session->session_date->translatedFormat('l, d F Y') .
+                                   ' — ' . $session->classroom->name,
+                'points'        => $category->default_points,
+                'source'        => 'auto_attendance',
+            ]);
+
+            $attendance->update(['violation_created' => true]);
+
+        } catch (\Throwable $e) {
+            Log::warning('Gagal buat pelanggaran alfa: ' . $e->getMessage());
+        }
+    }
 
     private function createLateViolation(Attendance $attendance, AttendanceSession $session): void
     {

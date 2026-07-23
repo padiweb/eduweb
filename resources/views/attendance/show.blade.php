@@ -377,6 +377,7 @@
                     if (b) { highlightBtn(b, '.status-btn'); activeSingleSt = this.dataset.currentStatus; }
                 }
                 modalEdit.classList.remove('hidden'); modalEdit.classList.add('flex');
+                document.body.style.overflow = 'hidden';
             });
         });
 
@@ -384,7 +385,7 @@
             btn.addEventListener('click', function() { highlightBtn(this,'.status-btn'); activeSingleSt = this.dataset.value; });
         });
 
-        function closeEdit() { modalEdit.classList.add('hidden'); modalEdit.classList.remove('flex'); activeSingleId=null; activeSingleSt=null; }
+        function closeEdit() { modalEdit.classList.add('hidden'); modalEdit.classList.remove('flex'); document.body.style.overflow = ''; activeSingleId=null; activeSingleSt=null; document.body.style.overflow = ''; }
         document.getElementById('btn-close-modal').addEventListener('click', closeEdit);
         document.getElementById('btn-cancel-modal').addEventListener('click', closeEdit);
         modalEdit.addEventListener('click', function(e) { if(e.target===modalEdit) closeEdit(); });
@@ -414,7 +415,7 @@
             document.getElementById('bulk-count').textContent =
                 document.querySelectorAll('.bulk-student-cb:checked').length;
         }
-        function closeBulk() { modalBulk.classList.add('hidden'); modalBulk.classList.remove('flex'); activeBulkSt=null; }
+        function closeBulk() { modalBulk.classList.add('hidden'); modalBulk.classList.remove('flex'); document.body.style.overflow = ''; activeBulkSt=null; document.body.style.overflow = ''; }
 
         document.getElementById('btn-bulk-edit')?.addEventListener('click', function() {
             activeBulkSt = null;
@@ -423,6 +424,7 @@
             document.querySelectorAll('.bulk-student-cb').forEach(function(c) { c.checked=false; });
             updateBulkCount();
             modalBulk.classList.remove('hidden'); modalBulk.classList.add('flex');
+            document.body.style.overflow = 'hidden';
         });
 
         document.getElementById('btn-close-bulk').addEventListener('click', closeBulk);

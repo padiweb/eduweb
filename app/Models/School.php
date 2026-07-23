@@ -14,6 +14,8 @@ class School extends Model
         'school_program_years',
         'feature_attendance', 'feature_assignments', 'feature_grades',
         'feature_violations', 'feature_journal', 'feature_prakerin',
+        'bank_name','bank_account_number','bank_account_name',
+        'bank_logo_path','payment_instructions',
         'feature_payment_info', 'feature_cbt_integration',
         'package', 'active_until', 'is_active',
         'timezone',

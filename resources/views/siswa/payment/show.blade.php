@@ -138,31 +138,89 @@
 
             @if(!in_array($bill->status, ['paid','waived']))
 
-            {{-- Info rekening sekolah --}}
-            @if($school->bank_name || $school->bank_account)
-            <div class="bg-white border border-amber-200 rounded-xl p-5">
-                <h2 class="text-sm font-semibold text-amber-600 mb-3">Rekening Pembayaran</h2>
-                <div class="space-y-2 text-sm">
+            {{-- Info rekening sekolah - Premium Design --}}
+            @if($school->bank_name || $school->bank_account_number)
+            <div style="background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:1.5px solid #fde68a;border-radius:14px;padding:16px 18px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+                    <div style="width:32px;height:32px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:8px;display:flex;align-items:center;justify-content:center">
+                        <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+                        </svg>
+                    </div>
+                    <h2 style="font-size:13.5px;font-weight:700;color:#b45309;margin:0">Rekening Tujuan Transfer</h2>
+                </div>
+
+                @if($school->bank_logo_path)
+                    <img src="{{ Storage::url($school->bank_logo_path) }}"
+                         alt="{{ $school->bank_name }}"
+                         style="height:32px;object-fit:contain;margin-bottom:12px;border-radius:4px">
+                @endif
+
+                <div style="background:#fff;border-radius:10px;padding:14px;margin-bottom:12px">
                     @if($school->bank_name)
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Bank</span>
-                        <span class="text-gray-900 font-medium">{{ $school->bank_name }}</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9">
+                        <span style="font-size:12px;color:#64748b">Bank</span>
+                        <span style="font-size:13px;font-weight:700;color:#1e293b">{{ $school->bank_name }}</span>
                     </div>
                     @endif
-                    @if($school->bank_account)
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">No. Rekening</span>
-                        <span class="text-gray-900 font-bold text-base">{{ $school->bank_account }}</span>
+                    @if($school->bank_account_number)
+                    <div style="padding:10px 0;border-bottom:1px solid #f1f5f9">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <span style="font-size:12px;color:#64748b">No. Rekening</span>
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <span id="norek" style="font-size:16px;font-weight:800;color:#1d4ed8;letter-spacing:1px">{{ $school->bank_account_number }}</span>
+                                <button onclick="copyNorek()" style="padding:4px 8px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;color:#2563eb;font-weight:600;cursor:pointer">Salin</button>
+                            </div>
+                        </div>
                     </div>
                     @endif
                     @if($school->bank_account_name)
-                    <div class="flex justify-between">
-                        <span class="text-gray-500">Atas Nama</span>
-                        <span class="text-gray-900">{{ $school->bank_account_name }}</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+                        <span style="font-size:12px;color:#64748b">Atas Nama</span>
+                        <span style="font-size:13px;font-weight:600;color:#1e293b">{{ $school->bank_account_name }}</span>
                     </div>
                     @endif
                 </div>
+
+                @if($school->payment_instructions)
+                <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 12px">
+                    <p style="font-size:11.5px;color:#b45309;margin:0;line-height:1.6">
+                        📋 {{ $school->payment_instructions }}
+                    </p>
+                </div>
+                @else
+                <p style="font-size:11.5px;color:#b45309;margin:0">
+                    📋 Transfer sejumlah tagihan lalu upload bukti transfer di bawah. 
+                    Tulis nama siswa dan kelas di keterangan transfer.
+                </p>
+                @endif
             </div>
+            <script>
+            function copyNorek() {
+                var t = document.getElementById('norek').textContent.trim();
+                navigator.clipboard.writeText(t).then(function() {
+                    var btn = event.target;
+                    btn.textContent = '✓ Disalin';
+                    btn.style.background = '#ecfdf5';
+                    btn.style.borderColor = '#bbf7d0';
+                    btn.style.color = '#059669';
+                    setTimeout(function() {
+                        btn.textContent = 'Salin';
+                        btn.style.background = '#eff6ff';
+                        btn.style.borderColor = '#bfdbfe';
+                        btn.style.color = '#2563eb';
+                    }, 2000);
+                }).catch(function() {
+                    // Fallback
+                    var range = document.createRange();
+                    range.selectNode(document.getElementById('norek'));
+                    window.getSelection().removeAllRanges();
+                    window.getSelection().addRange(range);
+                    document.execCommand('copy');
+                    window.getSelection().removeAllRanges();
+                });
+            }
+            </script>
             @endif
 
             {{-- Form upload --}}

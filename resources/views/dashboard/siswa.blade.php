@@ -99,4 +99,107 @@
     Riwayat absensi lengkap
     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
 </a>
+
+{{-- ═══ GRAFIK AKADEMIK ═══ --}}
+<style>
+@media(max-width:767px){#chart-grid{grid-template-columns:1fr!important}}
+</style>
+<div id="chart-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px">
+
+    {{-- Grafik Kehadiran 7 Hari --}}
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px;box-shadow:0 1px 4px rgba(15,23,42,.06)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <div style="width:3px;height:16px;background:linear-gradient(180deg,#3b82f6,#1d4ed8);border-radius:2px"></div>
+            <h3 style="font-size:13px;font-weight:700;color:#0f172a;margin:0">Kehadiran 7 Hari</h3>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:6px;height:80px">
+            @foreach ($attendanceChart as $day)
+                @php
+                    $color = match($day['status']) {
+                        'hadir'     => '#3b82f6',
+                        'terlambat' => '#f59e0b',
+                        'izin'      => '#8b5cf6',
+                        'sakit'     => '#06b6d4',
+                        'alfa'      => '#ef4444',
+                        default     => '#e2e8f0',
+                    };
+                    $height = $day['status'] === 'none' ? 12 : ($day['hadir'] ? 80 : 40);
+                    $opacity = $day['status'] === 'none' ? '0.4' : '1';
+                @endphp
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+                    <div style="width:100%;border-radius:4px 4px 0 0;height:{{ $height }}px;background:{{ $color }};opacity:{{ $opacity }};transition:height .3s"
+                         title="{{ $day['date'] }} - {{ $day['status'] }}"></div>
+                    <span style="font-size:10px;color:#94a3b8;white-space:nowrap">{{ $day['day'] }}</span>
+                </div>
+            @endforeach
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+            @foreach ([['#3b82f6','Hadir'],['#f59e0b','Terlambat'],['#ef4444','Alfa'],['#8b5cf6','Izin'],['#e2e8f0','–']] as [$col,$lbl])
+            <span style="display:flex;align-items:center;gap:3px;font-size:10px;color:#64748b">
+                <span style="width:8px;height:8px;border-radius:2px;background:{{ $col }};flex-shrink:0"></span>{{ $lbl }}
+            </span>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Grafik Nilai Per Mapel --}}
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:16px 18px;box-shadow:0 1px 4px rgba(15,23,42,.06)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <div style="width:3px;height:16px;background:linear-gradient(180deg,#10b981,#059669);border-radius:2px"></div>
+            <h3 style="font-size:13px;font-weight:700;color:#0f172a;margin:0">Nilai Per Mapel</h3>
+        </div>
+        @if($scoreChart->isEmpty())
+            <div style="text-align:center;padding:20px 0">
+                <p style="font-size:12px;color:#94a3b8">Belum ada nilai</p>
+            </div>
+        @else
+            <div style="display:flex;flex-direction:column;gap:8px">
+                @foreach ($scoreChart as $mapel => $avg)
+                    @php
+                        $pct   = min(100, $avg);
+                        $color = $avg >= 80 ? '#10b981' : ($avg >= 65 ? '#3b82f6' : '#f59e0b');
+                    @endphp
+                    <div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+                            <span style="font-size:11px;color:#475569;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%">{{ Str::limit($mapel, 18) }}</span>
+                            <span style="font-size:11px;font-weight:700;color:{{ $color }}">{{ $avg }}</span>
+                        </div>
+                        <div style="height:6px;background:#f1f5f9;border-radius:20px">
+                            <div style="height:6px;border-radius:20px;background:{{ $color }};width:{{ $pct }}%;transition:width .5s ease"></div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+</div>
+
+{{-- Nilai Terbaru Timeline --}}
+@if($recentScores->isNotEmpty())
+<div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;margin-top:14px;overflow:hidden;box-shadow:0 1px 4px rgba(15,23,42,.06)">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #f1f5f9">
+        <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:3px;height:16px;background:linear-gradient(180deg,#6366f1,#4f46e5);border-radius:2px"></div>
+            <h3 style="font-size:13px;font-weight:700;color:#0f172a;margin:0">Nilai Terbaru</h3>
+        </div>
+        <a href="{{ route('siswa.assignments.scores') }}" style="font-size:12px;color:#3b82f6;font-weight:600;text-decoration:none">Lihat semua →</a>
+    </div>
+    @foreach ($recentScores as $sub)
+        @php
+            $scoreColor = $sub->score >= 80 ? '#059669' : ($sub->score >= 65 ? '#2563eb' : '#d97706');
+            $scoreBg    = $sub->score >= 80 ? '#ecfdf5' : ($sub->score >= 65 ? '#eff6ff' : '#fffbeb');
+        @endphp
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid #f8fafc">
+            <div style="flex:1;min-width:0">
+                <p style="font-size:13px;font-weight:600;color:#1e293b;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ $sub->assignment->title }}</p>
+                <p style="font-size:11px;color:#94a3b8;margin:2px 0 0">{{ $sub->assignment->subject->name ?? '' }} · {{ $sub->graded_at?->diffForHumans() }}</p>
+            </div>
+            <div style="width:40px;height:40px;border-radius:10px;background:{{ $scoreBg }};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="font-size:14px;font-weight:800;color:{{ $scoreColor }}">{{ $sub->score }}</span>
+            </div>
+        </div>
+    @endforeach
+</div>
+@endif
+
 </x-simans-layout>

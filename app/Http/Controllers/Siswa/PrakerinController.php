@@ -99,6 +99,20 @@ class PrakerinController extends Controller
                 ->with('info', 'Anda sudah ' . ($type === 'check_in' ? 'absen masuk' : 'absen pulang') . ' hari ini.');
         }
 
+        // Lock: absen pulang hanya bisa jika sudah absen masuk
+        if ($type === 'check_out') {
+            $checkin = PrakerinAttendance::where('placement_id', $placement->id)
+                ->where('attendance_date', $today)
+                ->where('type', 'check_in')
+                ->whereIn('status', ['hadir', 'terlambat'])
+                ->first();
+
+            if (! $checkin) {
+                return redirect()->route('siswa.prakerin.index')
+                    ->with('error', 'Anda belum absen masuk hari ini. Silakan absen masuk terlebih dahulu.');
+            }
+        }
+
         return view('siswa.prakerin.absen', compact('placement', 'type'));
     }
 
