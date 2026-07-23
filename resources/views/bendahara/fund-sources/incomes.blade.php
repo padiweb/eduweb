@@ -89,7 +89,7 @@
                                         '{{ addslashes($income->period_label ?? '') }}',
                                         '{{ addslashes($income->reference_number ?? '') }}',
                                         '{{ addslashes($income->notes ?? '') }}'
-                                    )" class="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                                    )" class="text-xs text-blue-600 hover:text-blue-600 transition-colors">
                                         Edit
                                     </button>
                                     <form method="POST" action="{{ route('bendahara.fund-sources.incomes.destroy', $income) }}"

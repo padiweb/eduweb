@@ -18,7 +18,7 @@
                   onsubmit="return confirm('Tutup tugas? Siswa yang belum kumpul mendapat poin pelanggaran.')">
                 @csrf @method('PATCH')
                 <button type="submit"
-                        class="flex items-center gap-2 bg-red-50 hover:bg-red-50 text-red-600 border border-red-200 text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+                        class="flex items-center gap-2 bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                     </svg>
@@ -38,7 +38,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -74,7 +74,7 @@
                     <div>
                         <p class="text-xs text-gray-500 mb-1">Lampiran Soal</p>
                         <a href="{{ asset('storage/'.$assignment->attachment_path) }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                           class="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-600 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/>
                             </svg>
@@ -101,7 +101,7 @@
                     <p class="text-xs text-gray-500 mt-1">Tidak Kumpul</p>
                 </div>
                 <div class="bg-white border border-blue-200 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-blue-400">{{ $gradedCount }}</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ $gradedCount }}</p>
                     <p class="text-xs text-gray-500 mt-1">Sudah Dinilai</p>
                 </div>
                 <div class="bg-white border border-amber-200 rounded-xl p-4 text-center">
@@ -154,18 +154,18 @@
                                         @php $subFiles = array_filter(explode(',', $sub->file_path)); @endphp
                                         @foreach($subFiles as $fi => $fp)
                                             <a href="{{ route('guru.assignments.view-file', [$assignment->id, $sub->id, 'index' => $fi]) }}" target="_blank"
-                                               class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                                               class="text-xs text-blue-600 hover:text-blue-600 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
                                                 File {{ count($subFiles) > 1 ? $fi+1 : '' }}
                                             </a>
                                         @endforeach
                                     @elseif($sub->link_url)
                                         <a href="{{ $sub->link_url }}" target="_blank"
-                                           class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                                           class="text-xs text-blue-600 hover:text-blue-600 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
                                             Link
                                         </a>
                                     @elseif($sub->content)
                                         <button onclick="showContent({{ json_encode(substr($sub->content, 0, 1000)) }})"
-                                                class="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
+                                                class="text-xs text-blue-600 hover:text-blue-600 px-2 py-1 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0">
                                             Teks
                                         </button>
                                     @endif
@@ -197,7 +197,7 @@
                                                value="{{ $sub->feedback ?? '' }}"
                                                data-student-id="{{ $student->id }}"
                                                data-assignment-id="{{ $assignment->id }}">
-                                        <button class="btn-save-comment text-xs text-blue-400 hover:text-blue-300 py-1.5 px-2 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0"
+                                        <button class="btn-save-comment text-xs text-blue-600 hover:text-blue-600 py-1.5 px-2 rounded-lg bg-blue-50 border border-blue-200 flex-shrink-0"
                                                 data-student-id="{{ $student->id }}">
                                             Kirim
                                         </button>

@@ -19,7 +19,7 @@
             <form method="POST" action="{{ route('guru.attendance.close', $session->id) }}">
                 @csrf @method('PATCH')
                 <button onclick="return confirm('Tutup sesi? Siswa yang belum absen akan ditandai Alfa.')"
-                        class="flex items-center gap-2 bg-white hover:bg-red-900/40 text-gray-500 hover:text-red-400 border border-gray-200 hover:border-red-500/30 text-sm font-medium px-4 py-2.5 rounded-xl transition-all">
+                        class="flex items-center gap-2 bg-white hover:bg-red-50 text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-200 text-sm font-medium px-4 py-2.5 rounded-xl transition-all">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -35,7 +35,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -76,9 +76,9 @@
                         <p class="text-xs text-gray-500 mb-0.5">Buka</p>
                         <p class="text-gray-900 font-semibold text-sm">{{ substr($session->open_time, 0, 5) }}</p>
                     </div>
-                    <div class="bg-amber-900/30 border border-amber-500/20 rounded-xl p-2.5 text-center">
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-center">
                         <p class="text-xs text-amber-600 mb-0.5">Batas</p>
-                        <p class="text-amber-400 font-semibold text-sm">{{ substr($session->late_after, 0, 5) }}</p>
+                        <p class="text-amber-700 font-semibold text-sm">{{ substr($session->late_after, 0, 5) }}</p>
                     </div>
                     <div class="bg-white rounded-xl p-2.5 text-center">
                         <p class="text-xs text-gray-500 mb-0.5">Tutup</p>
@@ -97,12 +97,12 @@
                     <p class="text-2xl font-bold text-gray-500" id="stat-belum">{{ $recap['belum'] }}</p>
                     <p class="text-xs text-gray-500 mt-1">Belum</p>
                 </div>
-                <div class="bg-white border border-amber-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-amber-400" id="stat-terlambat">{{ $recap['terlambat'] }}</p>
+                <div class="bg-white border border-amber-200 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-amber-700" id="stat-terlambat">{{ $recap['terlambat'] }}</p>
                     <p class="text-xs text-gray-500 mt-1">Terlambat</p>
                 </div>
-                <div class="bg-white border border-red-500/20 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-red-400" id="stat-alfa">{{ $recap['alfa'] }}</p>
+                <div class="bg-white border border-red-200 rounded-xl p-4 text-center">
+                    <p class="text-2xl font-bold text-red-600" id="stat-alfa">{{ $recap['alfa'] }}</p>
                     <p class="text-xs text-gray-500 mt-1">Alfa</p>
                 </div>
             </div>
@@ -138,7 +138,7 @@
                             Hapus Semua
                         </button>
                         <button type="button" id="btn-bulk-edit"
-                                class="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 py-1.5 px-3 rounded-lg bg-amber-500/10 border border-amber-500/20 transition-colors">
+                                class="flex items-center gap-1.5 text-xs text-amber-700 hover:text-amber-700 py-1.5 px-3 rounded-lg bg-amber-50 border border-amber-200 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/>
                             </svg>
@@ -158,10 +158,10 @@
                                 $att      = $recap['attendances']->firstWhere('student_id', $student->id);
                                 $status   = $att?->status ?? null;
                                 $colorMap = [
-                                    'hadir'     => 'bg-blue-600/10 text-blue-600 border-blue-200',
+                                    'hadir'     => 'bg-blue-50 text-blue-600 border-blue-200',
                                     'terlambat' => 'bg-amber-50 text-amber-700 border-amber-200',
                                     'izin'      => 'bg-blue-50 text-blue-700 border-blue-200',
-                                    'sakit'     => 'bg-blue-500/10 text-blue-600 border-blue-200',
+                                    'sakit'     => 'bg-blue-50 text-blue-600 border-blue-200',
                                     'alfa'      => 'bg-red-50 text-red-700 border-red-200',
                                 ];
                                 $labelMap  = ['hadir'=>'Hadir','terlambat'=>'Terlambat','izin'=>'Izin','sakit'=>'Sakit','alfa'=>'Alfa'];
@@ -262,7 +262,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-600">*</span></label>
                     <textarea id="modal-reason" rows="3"
                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors"
                               placeholder="Wajib diisi. Dicatat dalam audit log..."></textarea>
@@ -322,7 +322,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-400">*</span></label>
+                    <label class="block text-xs text-gray-500 mb-1.5">Alasan / Keterangan <span class="text-red-600">*</span></label>
                     <textarea id="bulk-reason" rows="2"
                               class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors"
                               placeholder="cth: Tidak hadir saat roll call..."></textarea>
@@ -350,8 +350,8 @@
         // ── Helpers ───────────────────────────────────────────────────────
         function resetBtns(sel) {
             document.querySelectorAll(sel).forEach(function(b) {
-                b.classList.remove('border-emerald-500','text-blue-600','border-amber-500','text-amber-400',
-                    'border-blue-500','text-blue-400','border-blue-500','text-blue-600','border-red-500','text-red-400');
+                b.classList.remove('border-emerald-500','text-blue-600','border-amber-500','text-amber-700',
+                    'border-blue-500','text-blue-600','border-blue-500','text-blue-600','border-red-500','text-red-600');
                 b.classList.add('border-gray-200','text-gray-500');
             });
         }

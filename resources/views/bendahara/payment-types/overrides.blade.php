@@ -21,7 +21,7 @@
     </div>
 
     {{-- Info --}}
-    <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-300">
+    <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-600">
         Override tarif berlaku <strong>lebih utama</strong> dari tarif kelas/jurusan.
         Jika siswa punya override, tarif override yang dipakai saat membuat tagihan.
         Beasiswa/potongan tetap dihitung setelah override.

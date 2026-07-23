@@ -36,7 +36,7 @@
         </div>
     @else
         <div class="mb-4 p-3 rounded-xl bg-blue-50 border border-blue-200 flex items-start gap-2">
-            <svg class="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <p class="text-blue-700 text-xs">Isi jurnal setiap hari. Batas waktu sampai <strong>23:59 malam ini</strong>. Jurnal yang tidak diisi akan menghasilkan poin pelanggaran.</p>
         </div>
     @endif

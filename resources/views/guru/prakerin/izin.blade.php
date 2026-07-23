@@ -63,7 +63,7 @@
                             <td class="px-5 py-3">
                                 <span class="px-2.5 py-1 text-xs font-semibold rounded-lg
                                     {{ $abs->type === 'sakit' ? 'bg-red-50 text-red-600 border border-red-200' :
-                                       ($abs->type === 'libur' ? 'bg-blue-50 text-blue-400 border border-blue-200' :
+                                       ($abs->type === 'libur' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
                                        'bg-orange-50 text-orange-600 border border-orange-200') }}">
                                     {{ $abs->type_label }}
                                 </span>
@@ -74,7 +74,7 @@
                             <td class="px-5 py-3">
                                 @if ($abs->attachment_path)
                                     <a href="{{ Storage::url($abs->attachment_path) }}" target="_blank"
-                                       class="text-blue-400 hover:text-blue-300 text-xs transition-colors">
+                                       class="text-blue-600 hover:text-blue-600 text-xs transition-colors">
                                         Lihat
                                     </a>
                                 @else

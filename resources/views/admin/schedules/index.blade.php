@@ -23,7 +23,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -32,11 +32,11 @@
     @php $activeTab = request('tab', 'schedule'); @endphp
     <div class="flex gap-1 mb-5 bg-white border border-gray-200 rounded-xl p-1 w-fit">
         <a href="{{ route('admin.schedules.index', ['classroom_id' => request('classroom_id'), 'tab' => 'schedule']) }}"
-           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'schedule' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
+           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'schedule' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-blue-600' }}">
             Jadwal per Kelas
         </a>
         <a href="{{ route('admin.schedules.index', ['tab' => 'mapping']) }}"
-           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'mapping' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
+           class="px-4 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $activeTab === 'mapping' ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-blue-600' }}">
             Peruntukan Mapel
         </a>
     </div>
@@ -176,7 +176,7 @@
                                                         <form method="POST" action="{{ route('admin.schedules.destroy', $schedule->id) }}"
                                                               onsubmit="return confirm('Hapus jadwal ini?')">
                                                             @csrf @method('DELETE')
-                                                            <button class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors">
+                                                            <button class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-red-50 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors">
                                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                                                 </svg>
@@ -261,7 +261,7 @@
         </div>
     @else
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="w-12 h-12 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5"/>
             </svg>
             <p class="text-gray-500 text-sm">Pilih kelas di atas untuk lihat dan mengatur jadwal.</p>
@@ -299,7 +299,7 @@
                         <div class="mt-2 flex flex-wrap gap-1.5">
                             @foreach($item['classes'] as $cls)
                                 <a href="{{ route('admin.schedules.index', ['classroom_id' => $cls->id, 'tab' => 'schedule']) }}"
-                                   class="text-xs text-blue-400 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-2.5 py-1 rounded-lg transition-colors">
+                                   class="text-xs text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-2.5 py-1 rounded-lg transition-colors">
                                     {{ $cls->name }}
                                     @if($cls->major) ({{ $cls->major->code ?? $cls->major->name }}) @endif
                                 </a>

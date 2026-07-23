@@ -87,7 +87,7 @@
                         </div>
 
                         <button onclick="openEdit({{ $loc->id }})"
-                                class="flex-shrink-0 px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
+                                class="flex-shrink-0 px-3 py-1.5 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 text-gray-600 hover:text-blue-600 text-xs rounded-lg transition-all font-medium">
                             Edit
                         </button>
                     </div>

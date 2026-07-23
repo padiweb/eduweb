@@ -49,7 +49,7 @@
                                             @if($s->room) &middot; {{ $s->room }} @endif
                                         </p>
                                     </div>
-                                    <span class="text-xs text-blue-400 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full flex-shrink-0">
+                                    <span class="text-xs text-blue-600 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full flex-shrink-0">
                                         {{ $s->subject->code ?? $s->subject->category }}
                                     </span>
                                 </div>

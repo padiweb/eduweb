@@ -129,7 +129,7 @@
                                     <span class="text-xs text-gray-500">{{ $cl }}</span>
                                     @if($trx->channel === 'transfer' && $trx->receipt_path)
                                         <a href="{{ route('bendahara.transactions.receipt', $trx) }}" target="_blank"
-                                            class="text-xs text-blue-400 hover:text-blue-300">Lihat bukti</a>
+                                            class="text-xs text-blue-600 hover:text-blue-600">Lihat bukti</a>
                                     @endif
                                 </div>
                                 <p class="text-xs text-gray-500 mt-0.5">
@@ -229,7 +229,7 @@
                         <input type="text" name="reason" required placeholder="Alasan pembebasan (wajib)..."
                             class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-red-500 focus:outline-none mb-2">
                         <button type="submit" onclick="return confirm('Yakin bebaskan tagihan ini?')"
-                            class="w-full bg-red-50 hover:bg-red-600/40 border border-red-200 text-red-600 text-sm font-medium py-2 rounded-lg transition-colors">
+                            class="w-full bg-red-50 hover:bg-red-50 border border-red-200 text-red-600 text-sm font-medium py-2 rounded-lg transition-colors">
                             Konfirmasi Pembebasan
                         </button>
                     </form>

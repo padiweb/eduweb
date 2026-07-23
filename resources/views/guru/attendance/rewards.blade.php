@@ -19,7 +19,7 @@
             <p class="text-xs text-gray-500 mt-1">Bulan Ini</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
-            <p class="text-2xl font-bold text-blue-400">{{ $summary['this_year'] }}</p>
+            <p class="text-2xl font-bold text-blue-600">{{ $summary['this_year'] }}</p>
             <p class="text-xs text-gray-500 mt-1">Tahun Ini</p>
         </div>
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">

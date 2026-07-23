@@ -280,7 +280,7 @@
                     <div class="flex items-center gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-bold
                             {{ $school->package === 'enterprise' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
-                               ($school->package === 'pro' ? 'bg-blue-50 text-blue-400 border border-blue-200' :
+                               ($school->package === 'pro' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
                                'bg-gray-50 text-gray-500 border border-gray-200') }}">
                             {{ strtoupper($school->package) }}
                         </span>
@@ -297,7 +297,7 @@
             <div class="space-y-5">
                 <div class="bg-white border border-gray-200 rounded-xl p-5">
                     <h2 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
                         </svg>
@@ -345,7 +345,7 @@
                     </div>
 
                     <button type="button" id="btn-detect-location"
-                            class="w-full flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-50 border border-blue-200 text-blue-400 text-sm font-medium py-2.5 rounded-xl transition-colors mb-3">
+                            class="w-full flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-50 border border-blue-200 text-blue-600 text-sm font-medium py-2.5 rounded-xl transition-colors mb-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>

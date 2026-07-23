@@ -15,7 +15,7 @@
             </button>
         </div>
 
-        <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-3 py-2 mb-4 text-xs text-blue-300">
+        <div class="bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 mb-4 text-xs text-blue-600">
             Sistem akan membuat tagihan untuk <strong>semua siswa aktif</strong> berdasarkan tarif yang sudah diatur.
             Siswa yang sudah punya tagihan untuk periode ini akan dilewati otomatis.
         </div>

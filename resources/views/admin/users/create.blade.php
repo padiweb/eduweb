@@ -22,7 +22,7 @@
     </div>
 
     @if($errors->any())
-        <div class="mb-5 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-5 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             <ul class="space-y-1">
                 @foreach($errors->all() as $err)
                     <li>&bull; {{ $err }}</li>

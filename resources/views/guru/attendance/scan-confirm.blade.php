@@ -43,14 +43,14 @@
         </div>
 
         @if(session('error'))
-            <div class="bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">
                 {{ session('error') }}
             </div>
         @endif
 
         {{-- GPS status --}}
         <div id="gps-box" class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-4 mb-4">
-            <svg id="gps-icon" class="w-5 h-5 text-blue-400 animate-pulse flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg id="gps-icon" class="w-5 h-5 text-blue-600 animate-pulse flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
             </svg>
@@ -95,13 +95,13 @@
                 inpLng.value = pos.coords.longitude;
                 gpsStatus.textContent = 'Lokasi terdeteksi (\u00b1' + Math.round(pos.coords.accuracy) + 'm) \u2014 siap absen';
                 gpsStatus.className = 'text-sm text-blue-600';
-                gpsBox.className = 'flex items-center gap-3 bg-emerald-900/20 border border-blue-200 rounded-xl p-4 mb-4';
+                gpsBox.className = 'flex items-center gap-3 bg-emerald-50 border border-blue-200 rounded-xl p-4 mb-4';
                 btnAbsen.disabled = false;
             },
             function(err) {
                 gpsStatus.textContent = 'GPS tidak terdeteksi. Klik absen untuk lanjut.';
                 gpsStatus.className = 'text-sm text-amber-600';
-                gpsBox.className = 'flex items-center gap-3 bg-amber-900/20 border border-amber-200 rounded-xl p-4 mb-4';
+                gpsBox.className = 'flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4';
                 btnAbsen.disabled = false;
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }

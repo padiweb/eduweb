@@ -20,7 +20,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -40,7 +40,7 @@
     {{-- Sesi absensi hari ini --}}
     @if($sessions->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-10 text-center mb-5">
-            <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="w-12 h-12 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
             </svg>
             <h2 class="text-lg font-semibold text-gray-900 mb-1">Belum Ada Sesi Hari Ini</h2>
@@ -165,7 +165,7 @@
                         <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-400 rounded-tr-lg"></div>
                         <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-400 rounded-bl-lg"></div>
                         <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-400 rounded-br-lg"></div>
-                        <div id="scan-line" class="absolute left-2 right-2 h-0.5 bg-blue-500/80 rounded-full top-1/2"></div>
+                        <div id="scan-line" class="absolute left-2 right-2 h-0.5 bg-blue-100 rounded-full top-1/2"></div>
                     </div>
                 </div>
             </div>
@@ -179,7 +179,7 @@
     <div id="gps-area" class="hidden mb-5">
         <div class="bg-white border border-blue-200 rounded-xl p-4">
             <div class="flex items-center gap-3 mb-4 p-3 rounded-xl bg-white border border-gray-200" id="gps-box">
-                <svg class="w-4 h-4 text-blue-400 animate-pulse flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-blue-600 animate-pulse flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
                 </svg>

@@ -82,7 +82,7 @@
                             @if ($loc->supervisors->count() > 0)
                                 <div class="mt-2 flex flex-wrap gap-1">
                                     @foreach ($loc->supervisors as $s)
-                                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-lg">
+                                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-600 text-xs rounded-lg">
                                             {{ $s->name }}
                                         </span>
                                     @endforeach
@@ -91,7 +91,7 @@
                         </div>
                         <div class="flex gap-2 flex-shrink-0">
                             <button onclick="openEditLoc({{ $loc->id }}, {{ json_encode($loc->toArray()) }}, {{ json_encode($loc->supervisors->pluck('id')) }})"
-                                    class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
+                                    class="px-3 py-1.5 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 text-gray-600 hover:text-blue-600 text-xs rounded-lg transition-all font-medium">
                                 Edit
                             </button>
                             @if ($loc->placements->count() === 0)

@@ -27,7 +27,7 @@
                         </div>
                         @if($row['average'] !== null)
                             <div class="text-center">
-                                <p class="text-2xl font-bold {{ $row['average'] >= 80 ? 'text-blue-600' : ($row['average'] >= 70 ? 'text-blue-400' : ($row['average'] >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
+                                <p class="text-2xl font-bold {{ $row['average'] >= 80 ? 'text-blue-600' : ($row['average'] >= 70 ? 'text-blue-600' : ($row['average'] >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
                                     {{ $row['average'] }}
                                 </p>
                                 <p class="text-xs text-gray-500">rata-rata</p>
@@ -60,7 +60,7 @@
                                     </p>
                                     {{-- Komentar guru --}}
                                     @if($sub?->feedback)
-                                        <p class="text-xs text-blue-400 mt-0.5 italic">"{{ $sub->feedback }}"</p>
+                                        <p class="text-xs text-blue-600 mt-0.5 italic">"{{ $sub->feedback }}"</p>
                                     @endif
                                 </div>
                                 @if($sub && $sub->score !== null)
@@ -82,7 +82,7 @@
         </div>
     @else
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="w-12 h-12 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
             </svg>
             <p class="text-gray-500 text-sm">Belum ada nilai. Kumpulkan tugas terlebih dahulu.</p>

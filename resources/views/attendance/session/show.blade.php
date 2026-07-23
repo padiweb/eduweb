@@ -46,7 +46,7 @@
                 @if($session->isActive())
                     <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                     <span class="text-sm font-semibold text-blue-600">Sesi Aktif</span>
-                    <span class="ml-auto text-sm font-mono text-amber-400" id="countdown"
+                    <span class="ml-auto text-sm font-mono text-amber-700" id="countdown"
                           data-expires="{{ $session->token_expires_at->toISOString() }}">--:--</span>
                 @else
                     <span class="w-2 h-2 rounded-full bg-gray-500"></span>
@@ -93,11 +93,11 @@
                     <p class="text-xs text-gray-500 mt-0.5">Hadir</p>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-amber-400" id="stat-belum">{{ $recap['belum'] }}</p>
+                    <p class="text-2xl font-bold text-amber-700" id="stat-belum">{{ $recap['belum'] }}</p>
                     <p class="text-xs text-gray-500 mt-0.5">Belum</p>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
-                    <p class="text-2xl font-bold text-red-400" id="stat-alfa">{{ $recap['alfa'] }}</p>
+                    <p class="text-2xl font-bold text-red-600" id="stat-alfa">{{ $recap['alfa'] }}</p>
                     <p class="text-xs text-gray-500 mt-0.5">Alfa</p>
                 </div>
             </div>
@@ -202,7 +202,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-400 mb-1.5">Alasan Koreksi <span class="text-red-400">*</span></label>
+                <label class="block text-sm font-medium text-gray-400 mb-1.5">Alasan Koreksi <span class="text-red-600">*</span></label>
                 <textarea id="override-reason" rows="3" placeholder="Wajib diisi — tercatat di audit log..."
                           class="w-full bg-white border border-gray-200 text-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none transition-colors"></textarea>
             </div>
@@ -235,7 +235,7 @@
             const m = String(Math.floor(diff / 60)).padStart(2, '0');
             const s = String(diff % 60).padStart(2, '0');
             countdownEl.textContent = m + ':' + s;
-            if (diff === 0) countdownEl.classList.add('text-red-400');
+            if (diff === 0) countdownEl.classList.add('text-red-600');
         };
         tick();
         setInterval(tick, 1000);

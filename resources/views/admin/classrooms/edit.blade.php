@@ -21,7 +21,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -142,7 +142,7 @@
                                     @php
                                         $statusColors = [
                                             'aktif'   => 'text-blue-600 bg-blue-50 border-blue-200',
-                                            'alumni'  => 'text-blue-400 bg-blue-50 border-blue-200',
+                                            'alumni'  => 'text-blue-600 bg-blue-50 border-blue-200',
                                             'keluar'  => 'text-red-600 bg-red-50 border-red-200',
                                             'pindah'  => 'text-amber-600 bg-amber-50 border-amber-200',
                                         ];
@@ -168,7 +168,7 @@
                                           onsubmit="return confirm('Keluarkan {{ addslashes($student->name) }} dari kelas ini?')">
                                         @csrf @method('DELETE')
                                         <button type="submit"
-                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors flex-shrink-0"
+                                                class="w-7 h-7 flex items-center justify-center rounded-lg bg-white hover:bg-red-50 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors flex-shrink-0"
                                                 title="Keluarkan dari kelas">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -193,7 +193,7 @@
                                             @endforeach
                                         </select>
                                         <button type="submit"
-                                                class="text-xs text-blue-400 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
+                                                class="text-xs text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0">
                                             Pindah Kelas
                                         </button>
                                     </form>

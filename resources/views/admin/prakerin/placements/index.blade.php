@@ -49,7 +49,7 @@
             <p class="text-gray-500">Pilih periode di atas atau <a href="{{ route('admin.prakerin.periods.index') }}" class="text-blue-600 hover:underline">buat periode baru</a>.</p>
         </div>
     @elseif ($locations->isEmpty())
-        <div class="bg-amber-500/5 border border-amber-200 rounded-xl p-5 mb-4">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-4">
             <p class="text-amber-600 text-sm">Belum ada DU/DI untuk periode ini. <a href="{{ route('admin.prakerin.locations.index', ['period_id' => $periodId]) }}" class="underline">Tambah DU/DI dulu</a>.</p>
         </div>
     @elseif ($placements->isEmpty())
@@ -92,7 +92,7 @@
                                 @if ($p->isActiveToday())
                                     <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200">Aktif</span>
                                 @elseif ($p->is_active)
-                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-400 border border-blue-200">Terjadwal</span>
+                                    <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200">Terjadwal</span>
                                 @else
                                     <span class="px-2 py-0.5 rounded-lg text-xs font-semibold bg-gray-50 text-gray-500">Nonaktif</span>
                                 @endif
@@ -100,7 +100,7 @@
                             <td class="px-5 py-3">
                                 <div class="flex items-center gap-2 justify-end">
                                     <a href="{{ route('admin.prakerin.placements.show', $p) }}"
-                                       class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
+                                       class="px-3 py-1.5 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 text-gray-600 hover:text-blue-600 text-xs rounded-lg transition-all font-medium">
                                         Rekap
                                     </a>
                                     <form action="{{ route('admin.prakerin.placements.destroy', $p) }}" method="POST"

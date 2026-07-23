@@ -60,7 +60,7 @@
                     <div class="flex items-center gap-3 text-xs">
                         <span class="text-blue-600">{{ $sum['hadir'] }} hadir</span>
                         @if($sum['terlambat'] > 0) <span class="text-amber-600">{{ $sum['terlambat'] }} terlambat</span> @endif
-                        @if($sum['izin'] > 0)      <span class="text-blue-400">{{ $sum['izin'] }} izin</span> @endif
+                        @if($sum['izin'] > 0)      <span class="text-blue-600">{{ $sum['izin'] }} izin</span> @endif
                         @if($sum['sakit'] > 0)     <span class="text-blue-600">{{ $sum['sakit'] }} sakit</span> @endif
                         @if($sum['dinas'] > 0)     <span class="text-cyan-600">{{ $sum['dinas'] }} dinas</span> @endif
                         @if($sum['alfa'] > 0)      <span class="text-red-600">{{ $sum['alfa'] }} alfa</span> @endif
@@ -101,7 +101,7 @@
 
                 {{-- Guru yang belum absen --}}
                 @if($sum['not_attended']->count() > 0)
-                    <div class="px-5 py-3 border-t border-gray-200 bg-red-500/5">
+                    <div class="px-5 py-3 border-t border-gray-200 bg-red-50">
                         <p class="text-xs font-semibold text-red-600 mb-2">Belum absen ({{ $sum['not_attended']->count() }}):</p>
                         <div class="flex flex-wrap gap-2">
                             @foreach($sum['not_attended'] as $t)

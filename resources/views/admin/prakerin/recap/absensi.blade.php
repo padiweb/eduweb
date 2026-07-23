@@ -52,7 +52,7 @@
                         <th class="text-center text-xs text-amber-500 font-medium px-3 py-3">Terlambat</th>
                         <th class="text-center text-xs text-orange-600 font-medium px-3 py-3">Izin</th>
                         <th class="text-center text-xs text-red-600 font-medium px-3 py-3">Sakit</th>
-                        <th class="text-center text-xs text-blue-400 font-medium px-3 py-3">Libur</th>
+                        <th class="text-center text-xs text-blue-600 font-medium px-3 py-3">Libur</th>
                         <th class="text-center text-xs text-red-500 font-medium px-3 py-3">Alfa</th>
                         <th class="text-center text-xs text-amber-600 font-medium px-3 py-3">Jurnal</th>
                         <th class="text-center text-xs text-gray-500 font-medium px-3 py-3">%</th>
@@ -77,7 +77,7 @@
                             <td class="px-3 py-3 text-center text-amber-600">{{ $s['terlambat'] }}</td>
                             <td class="px-3 py-3 text-center text-orange-600">{{ $izin }}</td>
                             <td class="px-3 py-3 text-center text-red-600">{{ $sakit }}</td>
-                            <td class="px-3 py-3 text-center text-blue-400">{{ $libur }}</td>
+                            <td class="px-3 py-3 text-center text-blue-600">{{ $libur }}</td>
                             <td class="px-3 py-3 text-center text-red-500 font-semibold">{{ $alfa }}</td>
                             <td class="px-3 py-3 text-center text-amber-600">{{ $s['jurnal'] }}</td>
                             <td class="px-3 py-3 text-center">
@@ -87,7 +87,7 @@
                             </td>
                             <td class="px-3 py-3">
                                 <a href="{{ route('admin.prakerin.placements.show', $p) }}"
-                                   class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
+                                   class="px-3 py-1.5 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 text-gray-600 hover:text-blue-600 text-xs rounded-lg transition-all font-medium">
                                     Detail
                                 </a>
                             </td>

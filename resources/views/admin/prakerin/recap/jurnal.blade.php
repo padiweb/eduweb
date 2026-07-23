@@ -49,7 +49,7 @@
                 </div>
                 <div class="flex items-center gap-2 flex-shrink-0">
                     @if ($journal->teacher_note)
-                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-lg">Ada catatan</span>
+                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-600 text-xs rounded-lg">Ada catatan</span>
                     @endif
                     <span class="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-xs rounded-lg">Terkirim</span>
                 </div>
@@ -70,9 +70,9 @@
             @endif
 
             @if ($journal->teacher_note)
-                <div class="p-3 bg-blue-500/5 border border-blue-200 rounded-xl">
-                    <p class="text-blue-400 text-xs font-semibold mb-0.5">Catatan Guru:</p>
-                    <p class="text-blue-300 text-xs">{{ $journal->teacher_note }}</p>
+                <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                    <p class="text-blue-600 text-xs font-semibold mb-0.5">Catatan Guru:</p>
+                    <p class="text-blue-600 text-xs">{{ $journal->teacher_note }}</p>
                 </div>
             @else
                 <div x-data="{ open: false }">
@@ -84,7 +84,7 @@
                             @csrf
                             <input type="text" name="teacher_note" placeholder="Catatan untuk jurnal ini..."
                                    class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-400 placeholder-gray-400">
-                            <button type="submit" class="px-4 py-2 bg-blue-50 hover:bg-blue-600/40 text-blue-400 text-xs rounded-xl border border-blue-200 transition-colors">
+                            <button type="submit" class="px-4 py-2 bg-blue-50 hover:bg-blue-50 text-blue-600 text-xs rounded-xl border border-blue-200 transition-colors">
                                 Simpan
                             </button>
                         </form>

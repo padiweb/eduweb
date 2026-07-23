@@ -40,12 +40,12 @@
         <div class="tbl-card">
             <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-gray-900">Saldo per Sumber Dana</h2>
-                <a href="{{ route('bendahara.fund-sources.index') }}" class="text-xs text-blue-400 hover:text-blue-300">Kelola</a>
+                <a href="{{ route('bendahara.fund-sources.index') }}" class="text-xs text-blue-600 hover:text-blue-600">Kelola</a>
             </div>
             @if($sources->isEmpty())
                 <div class="px-5 py-8 text-center">
                     <p class="text-gray-600 text-sm">Belum ada sumber dana.</p>
-                    <a href="{{ route('bendahara.fund-sources.index') }}" class="text-xs text-blue-400 mt-2 inline-block">+ Tambah Sumber Dana</a>
+                    <a href="{{ route('bendahara.fund-sources.index') }}" class="text-xs text-blue-600 mt-2 inline-block">+ Tambah Sumber Dana</a>
                 </div>
             @else
                 <div class="divide-y divide-gray-100">
@@ -104,7 +104,7 @@
                         </div>
                         <div class="ml-4 text-right shrink-0">
                             <p class="text-sm font-semibold text-amber-600">{{ $exp->amount_formatted }}</p>
-                            <a href="{{ route('bendahara.expenses.show', $exp) }}" class="text-xs text-blue-400 hover:text-blue-300">Detail</a>
+                            <a href="{{ route('bendahara.expenses.show', $exp) }}" class="text-xs text-blue-600 hover:text-blue-600">Detail</a>
                         </div>
                     </div>
                     @endforeach
@@ -117,7 +117,7 @@
     <div class="tbl-card">
         <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-sm font-semibold text-gray-900">Pengeluaran Terbaru</h2>
-            <a href="{{ route('bendahara.expenses.index') }}" class="text-xs text-blue-400 hover:text-blue-300">Lihat semua →</a>
+            <a href="{{ route('bendahara.expenses.index') }}" class="text-xs text-blue-600 hover:text-blue-600">Lihat semua →</a>
         </div>
         @if($recentExpenses->isEmpty())
             <div class="px-5 py-8 text-center">
@@ -145,7 +145,7 @@
     {{-- Menu cepat --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
         <a href="{{ route('bendahara.fund-sources.index') }}" class="flex items-center gap-3 bg-white hover:bg-white border border-gray-200 rounded-xl p-4 transition-colors">
-            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75"/></svg>
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75"/></svg>
             <span class="text-sm font-medium text-gray-900">Sumber Dana</span>
         </a>
         <a href="{{ route('bendahara.expenses.index') }}" class="flex items-center gap-3 bg-white hover:bg-white border border-gray-200 rounded-xl p-4 transition-colors">
@@ -153,7 +153,7 @@
             <span class="text-sm font-medium text-gray-900">Pengeluaran</span>
         </a>
         <a href="{{ route('bendahara.expenses.categories') }}" class="flex items-center gap-3 bg-white hover:bg-white border border-gray-200 rounded-xl p-4 transition-colors">
-            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
             <span class="text-sm font-medium text-gray-900">Kategori</span>
         </a>
         <a href="{{ route('bendahara.payroll.index') }}" class="flex items-center gap-3 bg-white hover:bg-white border border-gray-200 rounded-xl p-4 transition-colors">

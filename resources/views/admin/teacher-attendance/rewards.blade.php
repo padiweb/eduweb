@@ -105,7 +105,7 @@
                         <p class="text-xs text-gray-500 mt-0.5">
                             <span class="text-blue-600">{{ $item['absen_tepat_waktu'] }} absen</span>
                             &middot;
-                            <span class="text-blue-400">{{ $item['isi_jurnal'] }} jurnal</span>
+                            <span class="text-blue-600">{{ $item['isi_jurnal'] }} jurnal</span>
                             @if($item['bonus'] > 0) &middot; <span class="text-amber-600">+{{ $item['bonus'] }} bonus</span> @endif
                             @if($item['pengurang'] < 0) &middot; <span class="text-red-600">{{ $item['pengurang'] }} pengurang</span> @endif
                         </p>

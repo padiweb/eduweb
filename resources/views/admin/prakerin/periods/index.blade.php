@@ -47,7 +47,7 @@
 
     @if ($periods->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
-            <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <svg class="w-12 h-12 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/>
             </svg>
             <p class="text-gray-500">Belum ada periode prakerin.</p>
@@ -96,7 +96,7 @@
                             @if ($period->coordinators->count() > 0)
                                 <div class="flex flex-wrap gap-1 mt-2">
                                     @foreach ($period->coordinators as $coord)
-                                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-lg">
+                                        <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-600 text-xs rounded-lg">
                                             {{ $coord->name }}
                                         </span>
                                     @endforeach
@@ -105,11 +105,11 @@
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             <button onclick="openKoordinator({{ $period->id }}, {{ json_encode($period->coordinators->pluck('id')) }})"
-                                    class="px-3 py-1.5 bg-blue-50 hover:bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-lg transition-colors">
+                                    class="px-3 py-1.5 bg-blue-50 hover:bg-blue-50 border border-blue-200 text-blue-600 text-xs rounded-lg transition-colors">
                                 Koordinator
                             </button>
                             <button onclick="openEdit({{ $period->id }}, '{{ addslashes($period->name) }}', '{{ $period->start_date->format('Y-m-d') }}', '{{ $period->end_date->format('Y-m-d') }}', '{{ addslashes($period->description ?? '') }}', {{ $period->is_active ? 'true' : 'false' }}, {{ json_encode($period->coordinators->pluck('id')) }})"
-                                    class="px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg transition-colors">
+                                    class="px-3 py-1.5 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 text-gray-600 hover:text-blue-600 text-xs rounded-lg transition-all font-medium">
                                 Edit
                             </button>
                             @if ($period->placements()->count() === 0)

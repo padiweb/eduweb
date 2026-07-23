@@ -38,7 +38,7 @@
             @endif
             @if ($journal->teacher_note)
                 <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                    <p class="text-blue-400 text-xs font-semibold mb-0.5">Catatan Pembimbing:</p>
+                    <p class="text-blue-600 text-xs font-semibold mb-0.5">Catatan Pembimbing:</p>
                     <p class="text-blue-700 text-xs">{{ $journal->teacher_note }}</p>
                 </div>
             @endif

@@ -60,7 +60,7 @@
                                 </button>
                             </form>
                             <button onclick="openReject({{ $trx->id }})"
-                                class="text-xs bg-red-50 hover:bg-red-600/40 border border-red-200 text-red-600 px-3 py-1.5 rounded-lg transition-colors">
+                                class="text-xs bg-red-50 hover:bg-red-50 border border-red-200 text-red-600 px-3 py-1.5 rounded-lg transition-colors">
                                 Tolak
                             </button>
                         @else

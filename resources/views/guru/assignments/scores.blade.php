@@ -67,7 +67,7 @@
                                         @if($status === 'not_submitted')
                                             <span class="text-xs text-red-500" title="Tidak Dikumpulkan">TK</span>
                                         @elseif($score !== null)
-                                            <span class="font-semibold {{ $score >= 80 ? 'text-blue-600' : ($score >= 70 ? 'text-blue-400' : ($score >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
+                                            <span class="font-semibold {{ $score >= 80 ? 'text-blue-600' : ($score >= 70 ? 'text-blue-600' : ($score >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
                                                 {{ $score }}
                                             </span>
                                         @else
@@ -77,7 +77,7 @@
                                 @endforeach
                                 <td class="px-5 py-3 text-center">
                                     @if($row['average'] !== null)
-                                        <span class="font-bold text-lg {{ $row['average'] >= 80 ? 'text-blue-600' : ($row['average'] >= 70 ? 'text-blue-400' : ($row['average'] >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
+                                        <span class="font-bold text-lg {{ $row['average'] >= 80 ? 'text-blue-600' : ($row['average'] >= 70 ? 'text-blue-600' : ($row['average'] >= 60 ? 'text-amber-600' : 'text-red-600')) }}">
                                             {{ $row['average'] }}
                                         </span>
                                     @else

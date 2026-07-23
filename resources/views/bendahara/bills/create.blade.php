@@ -103,15 +103,15 @@
                 </div>
 
                 {{-- Info tarif --}}
-                <div class="bg-blue-500/5 border border-blue-200 rounded-xl p-4 text-xs text-blue-300">
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-xs text-blue-600">
                     <p class="font-medium mb-1">Urutan penentuan tarif:</p>
-                    <ol class="space-y-0.5 text-blue-400/80 list-decimal list-inside">
+                    <ol class="space-y-0.5 text-blue-600/80 list-decimal list-inside">
                         <li>Override per siswa (jika ada)</li>
                         <li>Tarif kelas / jurusan</li>
                         <li>Input manual (jika tidak ada keduanya)</li>
                     </ol>
                     <p class="mt-2">
-                        <a href="{{ route('bendahara.bills.overrides') }}" class="underline text-blue-400 hover:text-blue-300">
+                        <a href="{{ route('bendahara.bills.overrides') }}" class="underline text-blue-600 hover:text-blue-600">
                             Kelola tarif override per siswa →
                         </a>
                     </p>

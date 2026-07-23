@@ -24,7 +24,7 @@
     @endif
 
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -53,7 +53,7 @@
                         <span class="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full
                             {{ $session->is_closed
                                 ? 'bg-white text-gray-500 border border-gray-200'
-                                : 'bg-blue-600/10 text-blue-600 border border-blue-200' }}">
+                                : 'bg-blue-50 text-blue-600 border border-blue-200' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ $session->is_closed ? 'bg-gray-500' : 'bg-blue-500 animate-pulse' }}"></span>
                             {{ $session->is_closed ? 'Ditutup' : 'Aktif' }}
                         </span>
@@ -69,7 +69,7 @@
                     <div class="px-5 mb-4">
                         <div class="flex justify-between text-xs text-gray-500 mb-1.5">
                             <span>{{ $attended }} / {{ $total }} hadir</span>
-                            <span class="{{ $rate >= 80 ? 'text-blue-600' : ($rate >= 60 ? 'text-amber-400' : 'text-red-400') }}">
+                            <span class="{{ $rate >= 80 ? 'text-blue-600' : ($rate >= 60 ? 'text-amber-700' : 'text-red-600') }}">
                                 {{ $rate }}%
                             </span>
                         </div>
@@ -81,10 +81,10 @@
                                 <span class="text-xs text-blue-600">{{ $session->attendances->where('status', 'hadir')->count() }} hadir</span>
                             @endif
                             @if($session->attendances->where('status', 'terlambat')->count() > 0)
-                                <span class="text-xs text-amber-400">{{ $session->attendances->where('status', 'terlambat')->count() }} terlambat</span>
+                                <span class="text-xs text-amber-700">{{ $session->attendances->where('status', 'terlambat')->count() }} terlambat</span>
                             @endif
                             @if($session->attendances->where('status', 'alfa')->count() > 0)
-                                <span class="text-xs text-red-400">{{ $session->attendances->where('status', 'alfa')->count() }} alfa</span>
+                                <span class="text-xs text-red-600">{{ $session->attendances->where('status', 'alfa')->count() }} alfa</span>
                             @endif
                         </div>
                     </div>

@@ -212,7 +212,7 @@
                                     <div class="mt-2 space-y-1">
                                         <p class="text-xs text-gray-500">File saat ini (upload baru untuk mengganti):</p>
                                         @foreach($existingFiles as $i => $fp)
-                                            <p class="text-xs text-blue-400">{{ $i+1 }}. {{ basename($fp) }}</p>
+                                            <p class="text-xs text-blue-600">{{ $i+1 }}. {{ basename($fp) }}</p>
                                         @endforeach
                                     </div>
                                 @endif

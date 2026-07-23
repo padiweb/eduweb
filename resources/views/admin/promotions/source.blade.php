@@ -48,7 +48,7 @@
                 ⬆ Semua Naik Kelas
             </button>
             <button type="button" onclick="setAllStudents('lulus')"
-                    class="text-xs text-blue-400 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
+                    class="text-xs text-blue-600 bg-blue-50 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
                 🎓 Semua Lulus
             </button>
         </div>
@@ -80,7 +80,7 @@
                             @if($classroom->grade >= ($school->school_program_years * 2 / 2 + 9))
                                 <button type="button"
                                         onclick="setAllInClass('{{ $classroom->id }}', 'lulus', {{ $classroom->grade }})"
-                                        class="text-xs text-blue-400 hover:text-blue-300 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
+                                        class="text-xs text-blue-600 hover:text-blue-600 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg transition-colors">
                                     🎓 Semua Lulus
                                 </button>
                             @endif

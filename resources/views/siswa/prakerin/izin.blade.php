@@ -29,7 +29,7 @@
                     <span class="text-gray-500 text-sm">Jenis</span>
                     <span class="px-2.5 py-0.5 text-xs font-semibold rounded-lg
                         {{ $absence->type === 'sakit' ? 'bg-red-50 text-red-600' :
-                           ($absence->type === 'libur' ? 'bg-blue-50 text-blue-400' :
+                           ($absence->type === 'libur' ? 'bg-blue-50 text-blue-600' :
                            'bg-orange-50 text-orange-600') }}">
                         {{ $absence->type_label }}
                     </span>

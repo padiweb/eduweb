@@ -324,6 +324,171 @@
         /* Alpine cloak */
         [x-cloak] { display: none !important; }
 
+        /* ══════════════════════════════════════════════
+           DESIGN SYSTEM PREMIUM — semua tombol & badge
+        ══════════════════════════════════════════════ */
+
+        /* ── TOMBOL PRIMER BIRU ── */
+        .bg-blue-600, .bg-blue-500, .bg-blue-700,
+        a.bg-blue-600, button.bg-blue-600,
+        a[class*="bg-blue-6"], button[class*="bg-blue-6"] {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.30) !important;
+            transition: all 0.18s ease !important;
+            border: none !important;
+        }
+        .bg-blue-600:hover, .bg-blue-700:hover,
+        a.bg-blue-600:hover, button.bg-blue-600:hover,
+        .hover\:bg-blue-700:hover, .hover\:bg-blue-600:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.45) !important;
+            transform: translateY(-1px) !important;
+            color: #ffffff !important;
+        }
+
+        /* ── TOMBOL BAHAYA MERAH ── */
+        .bg-red-600, .bg-red-500, .bg-red-700,
+        a.bg-red-600, button.bg-red-600 {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.28) !important;
+            transition: all 0.18s ease !important;
+        }
+        .bg-red-600:hover, a.bg-red-600:hover, button.bg-red-600:hover {
+            box-shadow: 0 4px 14px rgba(239,68,68,0.40) !important;
+            transform: translateY(-1px) !important;
+            color: #ffffff !important;
+        }
+
+        /* ── TOMBOL SUKSES HIJAU ── */
+        .bg-emerald-500, .bg-emerald-600, .bg-green-500, .bg-green-600 {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.28) !important;
+        }
+        .bg-emerald-500:hover, .bg-emerald-600:hover { box-shadow: 0 4px 14px rgba(16,185,129,0.40) !important; transform: translateY(-1px) !important; }
+
+        /* ── TOMBOL AMBER/ORANGE ── */
+        .bg-amber-500, .bg-amber-600 {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+            color: #ffffff !important; font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(245,158,11,0.28) !important;
+        }
+        .bg-orange-600, .bg-orange-500 {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+            color: #ffffff !important; font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(249,115,22,0.28) !important;
+        }
+
+        /* ── TOMBOL GHOST MERAH (hapus/tutup) ── 
+           Pakai outline style yang jelas terlihat
+        ── */
+        a[class*="bg-red-50"][class*="text-red"],
+        button[class*="bg-red-50"][class*="text-red"] {
+            background: #fff1f2 !important;
+            color: #dc2626 !important;
+            border: 1.5px solid #fca5a5 !important;
+            font-weight: 600 !important;
+            transition: all 0.18s ease !important;
+        }
+        a[class*="bg-red-50"][class*="text-red"]:hover,
+        button[class*="bg-red-50"][class*="text-red"]:hover {
+            background: #dc2626 !important;
+            color: #ffffff !important;
+            border-color: #dc2626 !important;
+            box-shadow: 0 3px 10px rgba(220,38,38,0.35) !important;
+        }
+
+        /* ── TOMBOL GHOST BIRU (secondary) ── */
+        a[class*="bg-blue-50"][class*="text-blue"],
+        button[class*="bg-blue-50"][class*="text-blue"] {
+            background: #eff6ff !important;
+            color: #2563eb !important;
+            border: 1.5px solid #bfdbfe !important;
+            font-weight: 600 !important;
+            transition: all 0.18s ease !important;
+        }
+        a[class*="bg-blue-50"][class*="text-blue"]:hover,
+        button[class*="bg-blue-50"][class*="text-blue"]:hover {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 3px 10px rgba(37,99,235,0.30) !important;
+        }
+
+        /* ── TOMBOL SECONDARY (bg-white border) ── */
+        a[class*="bg-white"][class*="border-gray"],
+        button[class*="bg-white"][class*="border-gray"] {
+            background: #f8fafc !important;
+            color: #475569 !important;
+            border: 1.5px solid #e2e8f0 !important;
+            font-weight: 500 !important;
+            transition: all 0.15s ease !important;
+        }
+        a[class*="bg-white"][class*="border-gray"]:hover,
+        button[class*="bg-white"][class*="border-gray"]:hover {
+            background: #eff6ff !important;
+            color: #2563eb !important;
+            border-color: #bfdbfe !important;
+        }
+
+        /* ── CATCH-ALL: semua tombol berwarna → teks putih ── */
+        button[class*="bg-blue-5"], button[class*="bg-blue-6"], button[class*="bg-blue-7"],
+        button[class*="bg-red-5"],  button[class*="bg-red-6"],  button[class*="bg-red-7"],
+        button[class*="bg-emerald-5"], button[class*="bg-emerald-6"],
+        button[class*="bg-green-5"],   button[class*="bg-green-6"],
+        button[class*="bg-amber-5"],   button[class*="bg-amber-6"],
+        button[class*="bg-orange-5"],  button[class*="bg-orange-6"],
+        button[class*="bg-indigo-5"],  button[class*="bg-indigo-6"],
+        a[class*="bg-blue-5"], a[class*="bg-blue-6"], a[class*="bg-blue-7"],
+        a[class*="bg-red-5"],  a[class*="bg-red-6"],
+        a[class*="bg-emerald-5"], a[class*="bg-emerald-6"],
+        a[class*="bg-green-5"],   a[class*="bg-green-6"],
+        a[class*="bg-amber-5"],   a[class*="bg-amber-6"],
+        a[class*="bg-orange-5"],  a[class*="bg-orange-6"],
+        a[class*="bg-indigo-5"],  a[class*="bg-indigo-6"] {
+            color: #ffffff !important;
+        }
+
+        /* ── BADGE / PILL STATUS ── */
+        [class*="bg-blue-50"][class*="text-blue"]   { background: #eff6ff !important; color: #1d4ed8 !important; }
+        [class*="bg-green-50"][class*="text-green"] { background: #f0fdf4 !important; color: #15803d !important; }
+        [class*="bg-emerald-50"][class*="text-emerald"] { background: #ecfdf5 !important; color: #047857 !important; }
+        [class*="bg-red-50"][class*="text-red"]     { background: #fff1f2 !important; color: #b91c1c !important; }
+        [class*="bg-amber-50"][class*="text-amber"] { background: #fffbeb !important; color: #b45309 !important; }
+        [class*="bg-orange-50"][class*="text-orange"] { background: #fff7ed !important; color: #c2410c !important; }
+        [class*="bg-gray-100"][class*="text-gray"]  { background: #f1f5f9 !important; color: #475569 !important; }
+
+        /* ── WARNA TEKS YANG CUKUP KONTRAS ── */
+        .text-blue-600   { color: #2563eb !important; }
+        .text-blue-700   { color: #1d4ed8 !important; }
+        .text-red-600    { color: #dc2626 !important; }
+        .text-red-700    { color: #b91c1c !important; }
+        .text-emerald-600 { color: #059669 !important; }
+        .text-emerald-700 { color: #047857 !important; }
+        .text-green-600  { color: #16a34a !important; }
+        .text-green-700  { color: #15803d !important; }
+        .text-amber-600  { color: #d97706 !important; }
+        .text-amber-700  { color: #b45309 !important; }
+        .text-orange-600 { color: #ea580c !important; }
+        .text-orange-700 { color: #c2410c !important; }
+        .text-gray-500   { color: #64748b !important; }
+        .text-gray-600   { color: #475569 !important; }
+
+        /* ── INPUT FOCUS RING ── */
+        input:focus, select:focus, textarea:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+            outline: none !important;
+        }
+
+        /* ── TABLE HOVER ── */
+        tbody tr:hover td { background: #f8fafc !important; }
+
         /* ════════════════════════════════════════════════════
            1. TAB NAV — scroll horizontal, TIDAK flex-wrap
         ════════════════════════════════════════════════════ */

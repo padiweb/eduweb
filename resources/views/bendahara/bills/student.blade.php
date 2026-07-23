@@ -88,7 +88,7 @@
                             <p class="text-xs text-red-600">Sisa Rp {{ number_format($remaining, 0, ',', '.') }}</p>
                         @endif
                         @if($bill->amount_discount > 0)
-                            <p class="text-xs text-blue-400">Disc Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
+                            <p class="text-xs text-blue-600">Disc Rp {{ number_format($bill->amount_discount, 0, ',', '.') }}</p>
                         @endif
                     </div>
                 </div>
@@ -447,7 +447,7 @@
                         class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-3 py-2 focus:border-amber-500 focus:outline-none resize-none"></textarea>
                     <p class="text-xs text-gray-500 mt-1">Alasan wajib diisi untuk keperluan audit keuangan</p>
                 </div>
-                <div class="bg-blue-500/5 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-300">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-600">
                     Jumlah yang dibebaskan <strong>tidak akan masuk ke pemasukan kas sekolah</strong>.
                     Sisa tagihan akan berkurang sesuai jumlah keringanan.
                 </div>

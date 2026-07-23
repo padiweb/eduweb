@@ -23,11 +23,11 @@
 
     {{-- Info jenis beasiswa --}}
     <div class="grid grid-cols-2 gap-3 mb-5">
-        <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 text-xs text-blue-300">
+        <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-xs text-blue-600">
             <p class="font-semibold mb-1">Beasiswa Dana (Cash)</p>
             <p>Uang beasiswa diterima sekolah → masuk pemasukan kas. Contoh: PIP, beasiswa perusahaan.</p>
         </div>
-        <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 text-xs text-blue-500">
+        <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-xs text-blue-500">
             <p class="font-semibold mb-1">Beasiswa Potongan (Waiver)</p>
             <p>Tagihan dikurangi → tidak masuk pemasukan. Contoh: keringanan sekolah, beasiswa prestasi.</p>
         </div>
@@ -48,10 +48,10 @@
                     {{ $stype === 'waiver'
                         ? 'bg-blue-50 border border-blue-200'
                         : 'bg-blue-50 border border-blue-200' }}">
-                    <span class="text-xs font-bold {{ $stype === 'waiver' ? 'text-blue-600' : 'text-blue-400' }}">
+                    <span class="text-xs font-bold {{ $stype === 'waiver' ? 'text-blue-600' : 'text-blue-600' }}">
                         {{ $program->code ?? strtoupper(substr($program->name, 0, 3)) }}
                     </span>
-                    <span class="text-xs {{ $stype === 'waiver' ? 'text-blue-500' : 'text-blue-300' }}">
+                    <span class="text-xs {{ $stype === 'waiver' ? 'text-blue-500' : 'text-blue-600' }}">
                         {{ $stype === 'waiver' ? 'Potong' : 'Dana' }}
                     </span>
                 </div>
@@ -91,7 +91,7 @@
                         @if(($program->scholarship_type ?? 'cash') === 'waiver')
                             <span class="text-blue-600 font-medium">Potongan tagihan</span>
                         @else
-                            <span class="text-blue-400 font-medium">Dana masuk kas</span>
+                            <span class="text-blue-600 font-medium">Dana masuk kas</span>
                         @endif
                     </p>
                     @if($program->description)

@@ -115,7 +115,7 @@
                 </div>
 
                 {{-- Info approval --}}
-                <div class="bg-amber-500/5 border border-amber-200 rounded-xl p-5">
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
                     <h3 class="text-sm font-semibold text-amber-600 mb-2">⚠ Informasi Approval</h3>
                     <p class="text-xs text-gray-500 leading-relaxed">
                         Pengeluaran dengan kategori yang membutuhkan approval <strong>akan otomatis masuk ke antrian persetujuan kepala sekolah</strong>.

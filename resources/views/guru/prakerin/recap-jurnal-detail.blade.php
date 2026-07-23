@@ -70,7 +70,7 @@
                     $dotColor   = 'bg-red-500';
                 } else {
                     $border = 'border-blue-200';
-                    $badgeClass = 'bg-blue-50 border-blue-200 text-blue-400';
+                    $badgeClass = 'bg-blue-50 border-blue-200 text-blue-600';
                     $badgeText  = 'Hari Ini';
                     $dotColor   = 'bg-blue-500';
                 }
@@ -86,7 +86,7 @@
                         <div>
                             <span class="text-gray-700 text-sm font-medium">
                                 {{ $day['date']->translatedFormat('D, d M Y') }}
-                                @if ($isToday) <span class="text-blue-400 text-xs ml-1">Hari ini</span> @endif
+                                @if ($isToday) <span class="text-blue-600 text-xs ml-1">Hari ini</span> @endif
                             </span>
                             @if ($journal)
                                 <p class="text-gray-500 text-xs">
@@ -145,8 +145,8 @@
                             <div class="pt-3 border-t border-gray-200">
                                 @if ($journal->teacher_note)
                                     <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1.5">Catatan Pembimbing</p>
-                                    <div class="p-3 bg-blue-500/5 border border-blue-200 rounded-xl">
-                                        <p class="text-blue-300 text-sm">{{ $journal->teacher_note }}</p>
+                                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
+                                        <p class="text-blue-600 text-sm">{{ $journal->teacher_note }}</p>
                                         <p class="text-gray-500 text-xs mt-1">{{ $journal->noted_at?->translatedFormat('d M Y, H:i') }}</p>
                                     </div>
                                 @else
@@ -156,7 +156,7 @@
                                                placeholder="Tulis catatan untuk jurnal ini..."
                                                class="flex-1 bg-white border border-gray-200 text-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-blue-400 placeholder-gray-400 min-w-0">
                                         <button type="submit"
-                                                class="px-3 py-2 bg-blue-50 hover:bg-blue-600/40 text-blue-400 text-sm rounded-xl border border-blue-200 transition-colors whitespace-nowrap">
+                                                class="px-3 py-2 bg-blue-50 hover:bg-blue-50 text-blue-600 text-sm rounded-xl border border-blue-200 transition-colors whitespace-nowrap">
                                             Simpan
                                         </button>
                                     </form>

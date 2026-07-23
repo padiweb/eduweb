@@ -32,7 +32,7 @@
     @endif
 
     {{-- Info --}}
-    <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-300">
+    <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-600">
         Nilai default program: <strong>{{ $program->default_value_formatted }}</strong>.
         Isi kolom Override jika siswa tertentu punya nominal berbeda — kosongkan untuk pakai nilai default.
         Setelah semua siswa ditambahkan, klik <strong>Terapkan</strong> di halaman program.

@@ -37,11 +37,11 @@
                 Tercatat pukul {{ $attendance?->scanned_at?->format('H:i:s') }} WIB
             </p>
             @if($isLate)
-                <div class="bg-amber-900/20 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-700 mb-5">
+                <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-700 mb-5">
                     Kamu tercatat terlambat. Harap lebih tepat waktu besok.
                 </div>
             @else
-                <div class="bg-emerald-900/20 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-700 mb-5">
+                <div class="bg-emerald-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-700 mb-5">
                     +1 poin reward telah ditambahkan ke akunmu!
                 </div>
             @endif

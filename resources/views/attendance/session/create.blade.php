@@ -10,7 +10,7 @@
         </div>
 
         @if(session('error'))
-            <div class="mb-4 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm">
+            <div class="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
                 {{ session('error') }}
             </div>
         @endif
@@ -31,7 +31,7 @@
                         @endforeach
                     </select>
                     @error('classroom_id')
-                        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -47,7 +47,7 @@
                         @endforeach
                     </select>
                     @error('subject_id')
-                        <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
+                        <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 

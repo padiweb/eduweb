@@ -19,7 +19,7 @@
     @endif
 
     {{-- Info kenapa tidak ada hapus --}}
-    <div class="bg-blue-500/5 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-400">
+    <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-xs text-blue-600">
         <strong>Catatan:</strong> Sumber dana tidak dapat dihapus karena menyimpan history keuangan. Gunakan tombol <strong>Nonaktifkan</strong> jika sumber dana tidak lagi digunakan.
     </div>
 

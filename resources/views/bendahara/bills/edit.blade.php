@@ -110,7 +110,7 @@
                     onsubmit="return confirm('Yakin hapus tagihan ini? Tindakan tidak dapat dibatalkan.')">
                     @csrf @method('DELETE')
                     <button type="submit"
-                        class="w-full bg-red-50 hover:bg-red-600/40 border border-red-200 text-red-600 text-sm font-medium py-2 rounded-lg transition-colors">
+                        class="w-full bg-red-50 hover:bg-red-50 border border-red-200 text-red-600 text-sm font-medium py-2 rounded-lg transition-colors">
                         Hapus Tagihan Ini
                     </button>
                 </form>

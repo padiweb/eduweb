@@ -37,7 +37,7 @@
         </div>
     @endif
     @if(session('error'))
-        <div class="mb-4 flex items-center gap-3 bg-red-900/30 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+        <div class="mb-4 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
             {{ session('error') }}
         </div>
     @endif
@@ -46,7 +46,7 @@
     <div class="flex flex-wrap gap-1 mb-4 bg-white border border-gray-200 rounded-xl p-1 w-fit">
         @foreach(['siswa'=>'Siswa','guru'=>'Guru','wali_kelas'=>'Wali Kelas','kesiswaan'=>'Kesiswaan','admin'=>'Admin','bendahara'=>'Bendahara','kepala_sekolah'=>'Kepala Sekolah'] as $role => $label)
             <a href="{{ route('admin.users.index', ['tab' => $role]) }}"
-               class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $tab === $role ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-white' }}">
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ $tab === $role ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-blue-600' }}">
                 {{ $label }}
             </a>
         @endforeach
@@ -154,7 +154,7 @@
                             <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}"
                                   onsubmit="return confirm('Hapus {{ addslashes($user->name) }}?')">
                                 @csrf @method('DELETE')
-                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-red-900/40 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors">
+                                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white hover:bg-red-50 border border-gray-200 hover:border-red-200 text-white hover:text-red-600 transition-colors">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                     </svg>
@@ -167,7 +167,7 @@
             <div class="px-5 py-4 border-t border-gray-200">{{ $users->links() }}</div>
         @else
             <div class="px-5 py-12 text-center">
-                <svg class="w-12 h-12 text-blue-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
                 </svg>
                 <p class="text-gray-500 text-sm">Belum ada {{ str_replace('_',' ',$tab) }}.</p>

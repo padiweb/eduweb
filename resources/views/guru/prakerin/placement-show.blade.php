@@ -120,7 +120,7 @@
 
                             <td class="px-5 py-3">
                                 @if ($day['checkout'])
-                                    <p class="text-blue-400 text-xs font-semibold">{{ $day['checkout']->selfie_taken_at?->format('H:i') ?? $day['checkout']->created_at->format('H:i') }}</p>
+                                    <p class="text-blue-600 text-xs font-semibold">{{ $day['checkout']->selfie_taken_at?->format('H:i') ?? $day['checkout']->created_at->format('H:i') }}</p>
                                     @if ($day['checkout']->selfie_path)
                                         <a href="{{ Storage::url($day['checkout']->selfie_path) }}" target="_blank">
                                             <img src="{{ Storage::url($day['checkout']->selfie_path) }}" alt="selfie pulang"
@@ -148,8 +148,8 @@
                                             <p class="text-gray-600 text-xs leading-relaxed">{{ Str::limit($day['journal']->content, 250) }}</p>
                                             @if ($day['journal']->teacher_note)
                                                 <div class="mt-2 pt-2 border-t border-gray-200">
-                                                    <p class="text-blue-400 text-xs font-semibold">Catatan guru:</p>
-                                                    <p class="text-blue-300 text-xs">{{ $day['journal']->teacher_note }}</p>
+                                                    <p class="text-blue-600 text-xs font-semibold">Catatan guru:</p>
+                                                    <p class="text-blue-600 text-xs">{{ $day['journal']->teacher_note }}</p>
                                                 </div>
                                             @else
                                                 <form action="{{ route('guru.prakerin.journal.note', $day['journal']) }}"
@@ -158,7 +158,7 @@
                                                     <textarea name="teacher_note" rows="2" placeholder="Tambah catatan..."
                                                               class="w-full bg-gray-100 border border-gray-200 text-gray-900 rounded-lg px-2 py-1.5 text-xs resize-none focus:outline-none focus:border-blue-400 placeholder-gray-400"></textarea>
                                                     <button type="submit"
-                                                            class="mt-1 px-3 py-1 bg-blue-50 hover:bg-blue-600/40 text-blue-400 text-xs rounded-lg border border-blue-200 transition-colors">
+                                                            class="mt-1 px-3 py-1 bg-blue-50 hover:bg-blue-50 text-blue-600 text-xs rounded-lg border border-blue-200 transition-colors">
                                                         Simpan Catatan
                                                     </button>
                                                 </form>

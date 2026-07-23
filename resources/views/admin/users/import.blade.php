@@ -15,7 +15,7 @@
         <div class="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">{{ session('error') }}</div>
     @endif
     @if(session('import_errors') && count(session('import_errors')) > 0)
-        <div class="mb-4 p-3 rounded-xl bg-amber-500/5 border border-amber-200">
+        <div class="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200">
             <p class="text-amber-600 text-sm font-semibold mb-2">Beberapa baris dilewati:</p>
             @foreach(session('import_errors') as $err)
                 <p class="text-amber-600/70 text-xs">{{ $err }}</p>
@@ -79,7 +79,7 @@
                 <p class="text-gray-500 text-xs mb-3">Download template CSV sesuai role, isi data, lalu upload.</p>
                 <div class="flex gap-2 flex-wrap">
                     <a id="template-link" href="{{ route('admin.users.import.template', ['role' => 'siswa']) }}"
-                       class="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 text-blue-400 text-xs rounded-xl hover:bg-blue-50 transition-colors">
+                       class="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 text-blue-600 text-xs rounded-xl hover:bg-blue-50 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                         Download Template
                     </a>
