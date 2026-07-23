@@ -178,6 +178,7 @@
         /* ── MAIN AREA ── */
         .simans-main {
             flex: 1;
+            min-width: 0;           /* KRITIS: izinkan flex item shrink */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -241,6 +242,7 @@
         /* ── PAGE CONTENT ── */
         .simans-content {
             flex: 1;
+            min-width: 0;           /* KRITIS: izinkan shrink */
             padding: 22px 24px;
         }
 
@@ -311,7 +313,7 @@
         @media (max-width: 1023px) {
             .simans-sidebar { transform: translateX(-100%); }
             .simans-sidebar.open { transform: translateX(0); box-shadow: 8px 0 32px rgba(15,23,42,.18); }
-            .simans-main { padding-left: 0; }
+            .simans-main { padding-left: 0; min-width: 0; }
             .simans-hamburger { display: flex !important; }
         }
         @media (max-width: 767px) {
