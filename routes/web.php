@@ -390,6 +390,11 @@ Route::middleware(['auth', 'school.active'])->group(function () {
 
         // Penggajian (placeholder, akan diisi fase 2)
         Route::get('/payroll', fn() => view('bendahara.payroll.index'))->name('payroll.index');
+
+        // Pengaturan Rekening Bank
+        Route::get('/settings/bank', [\App\Http\Controllers\Bendahara\BankSettingController::class, 'index'])->name('settings.bank');
+        Route::post('/settings/bank', [\App\Http\Controllers\Bendahara\BankSettingController::class, 'update'])->name('settings.bank.update');
+        Route::delete('/settings/bank/logo', [\App\Http\Controllers\Bendahara\BankSettingController::class, 'deleteLogo'])->name('settings.bank.logo.delete');
     });
 
     // ─────────────────────────────────────────────────────────────────────────

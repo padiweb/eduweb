@@ -431,52 +431,8 @@
                 Batal
             </a>
             
-                {{-- Rekening Bank --}}
-                <div class="bg-white border border-gray-200 rounded-xl p-5 mt-5">
-                    <h2 class="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
-                        </svg>
-                        Informasi Rekening Pembayaran
-                    </h2>
-                    <p class="text-xs text-gray-500 mb-4">Informasi ini akan tampil di halaman pembayaran siswa saat hendak transfer.</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nama Bank</label>
-                            <input type="text" name="bank_name" value="{{ $school->bank_name }}"
-                                   placeholder="BCA, BRI, Mandiri, BNI, dll"
-                                   class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Nomor Rekening</label>
-                            <input type="text" name="bank_account_number" value="{{ $school->bank_account_number }}"
-                                   placeholder="1234567890"
-                                   class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Atas Nama</label>
-                            <input type="text" name="bank_account_name" value="{{ $school->bank_account_name }}"
-                                   placeholder="Nama pemilik rekening"
-                                   class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Logo Bank <span class="text-gray-400 font-normal">(opsional)</span></label>
-                            <input type="file" name="bank_logo" accept="image/*"
-                                   class="w-full bg-white border border-gray-200 text-gray-700 text-sm rounded-xl px-3 py-2 file:mr-3 file:text-xs file:bg-blue-600 file:text-white file:border-0 file:rounded file:px-2 file:py-1">
-                            @if($school->bank_logo_path)
-                                <img src="{{ Storage::url($school->bank_logo_path) }}" class="h-8 mt-2 object-contain">
-                            @endif
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Instruksi Transfer</label>
-                        <textarea name="payment_instructions" rows="2"
-                                  placeholder="Contoh: Transfer ke rekening di atas, sertakan nama siswa di keterangan, lalu upload bukti transfer."
-                                  class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none resize-none">{{ $school->payment_instructions }}</textarea>
-                    </div>
-                </div>
 
-                <button type="submit"
+                                <button type="submit"
                     class="px-6 py-2.5 text-sm font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors">
                 Simpan Pengaturan
             </button>
