@@ -40,3 +40,11 @@ Schedule::command('prakerin:check-violations')
     ->withoutOverlapping()
     ->runInBackground()
     ->appendOutputTo(storage_path('logs/scheduler.log'));
+
+// Cek jurnal prakerin — dijalankan jam 00:10 untuk cek kemarin
+// Siswa yang hadir tapi tidak isi jurnal mendapat poin pelanggaran
+Schedule::command('prakerin:check-jurnal')
+    ->dailyAt('00:10')
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/scheduler.log'));

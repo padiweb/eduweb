@@ -63,8 +63,9 @@ class Violation extends Model
     public function scopeAutomatic($query)
     {
         return $query->whereIn('source', [
-            'absen_terlambat', 'absen_alfa',
+            'absen_terlambat', 'absen_alfa', 'auto_attendance',
             'tugas_terlambat', 'tugas_tidak_kumpul',
+            'prakerin_no_journal', 'prakerin_no_absen',
         ]);
     }
 
@@ -73,12 +74,15 @@ class Violation extends Model
     public function getSourceLabelAttribute(): string
     {
         return match ($this->source) {
-            'manual'             => 'Manual',
-            'absen_terlambat'    => 'Absen Terlambat',
-            'absen_alfa'         => 'Alfa',
-            'tugas_terlambat'    => 'Tugas Terlambat',
-            'tugas_tidak_kumpul' => 'Tidak Kumpul Tugas',
-            default              => $this->source,
+            'manual'               => 'Manual',
+            'absen_terlambat'      => 'Absen Terlambat',
+            'absen_alfa'           => 'Alfa',
+            'auto_attendance'      => 'Alfa (Otomatis)',
+            'tugas_terlambat'      => 'Tugas Terlambat',
+            'tugas_tidak_kumpul'   => 'Tidak Kumpul Tugas',
+            'prakerin_no_journal'  => 'Tidak Isi Jurnal PKL',
+            'prakerin_no_absen'    => 'Tidak Absen PKL',
+            default                => $this->source,
         };
     }
 

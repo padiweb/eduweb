@@ -208,12 +208,13 @@ class PrakerinController extends Controller
         // Support isi jurnal hari lalu (maks 7 hari ke belakang)
         $date       = $request->get('date', today()->format('Y-m-d'));
         $dateCarbon = \Carbon\Carbon::parse($date);
-        // Validasi range
-        if ($dateCarbon->gt(today()) || $dateCarbon->lt(today()->subDays(7))) {
+        // Jurnal hanya bisa diisi untuk hari ini atau kemarin
+        // (Lebih dari kemarin = sudah terlambat dan poin sudah diberikan)
+        if ($dateCarbon->gt(today()) || $dateCarbon->lt(today()->subDays(1))) {
             $dateCarbon = today();
         }
         $date   = $dateCarbon->format('Y-m-d');
-        $isLate = $dateCarbon->lt(today());
+        $isLate = $dateCarbon->lt(today()); // kemarin = terlambat
 
         $journal = PrakerinJournal::with('photos')
             ->where('placement_id', $placement->id)
@@ -237,8 +238,8 @@ class PrakerinController extends Controller
         if (! $placement) return back()->with('error', 'Tidak ada penempatan aktif.');
 
         $dateCarbon = \Carbon\Carbon::parse($request->journal_date);
-        if ($dateCarbon->gt(today()) || $dateCarbon->lt(today()->subDays(7))) {
-            return back()->with('error', 'Tanggal jurnal tidak valid.');
+        if ($dateCarbon->gt(today()) || $dateCarbon->lt(today()->subDays(1))) {
+            return back()->with('error', 'Jurnal hanya bisa diisi untuk hari ini atau kemarin.');
         }
         $dateStr = $dateCarbon->format('Y-m-d');
         $isLate  = $dateCarbon->lt(today());

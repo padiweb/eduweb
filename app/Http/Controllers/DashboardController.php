@@ -281,9 +281,10 @@ class DashboardController extends Controller
             ->latest()->take(10)->get();
 
         // Tunggakan per kelas via JOIN (bukan N+1)
+        // nama tabel pivot: classroom_students (dengan s)
         $tunggakanPerKelas = DB::table('payment_bills as pb')
             ->join('users as u', 'pb.user_id', '=', 'u.id')
-            ->join('classroom_student as cs', 'u.id', '=', 'cs.student_id')
+            ->join('classroom_students as cs', 'u.id', '=', 'cs.student_id')
             ->join('classrooms as c', 'cs.classroom_id', '=', 'c.id')
             ->join('academic_years as ay', 'c.academic_year_id', '=', 'ay.id')
             ->where('pb.school_id', $schoolId)

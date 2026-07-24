@@ -245,8 +245,11 @@ class AttendanceService
             $session, $presentStudentIds, $absentStudentIds,
             $teacher, $subjectName, $notes
         ) {
+            // ── Roll call: catat alfa TANPA buat violation dulu ──
+            // Violation baru dibuat saat sesi DITUTUP (manual atau otomatis).
+            // Siswa masih bisa absen sebelum sesi ditutup (lemah sinyal, dll).
             foreach ($absentStudentIds as $studentId) {
-                $att = Attendance::updateOrCreate(
+                Attendance::updateOrCreate(
                     ['session_id' => $session->id, 'student_id' => $studentId],
                     [
                         'school_id'       => $session->school_id,
@@ -256,12 +259,9 @@ class AttendanceService
                         'entered_by'      => $teacher->id,
                         'entry_reason'    => 'Tidak hadir saat roll call oleh ' . $teacher->name,
                         'entry_at'        => now(),
+                        'violation_created' => false, // reset agar bisa dapat poin saat tutup sesi
                     ]
                 );
-                // Buat poin pelanggaran alfa
-                if (! $att->violation_created) {
-                    $this->createAlfaViolation($att, $session);
-                }
             }
 
             $enrolledIds  = $session->classroom->students()->pluck('users.id');
@@ -269,7 +269,7 @@ class AttendanceService
             $stillMissing = $enrolledIds->diff($recordedIds)->diff(collect($presentStudentIds));
 
             foreach ($stillMissing as $studentId) {
-                $att = Attendance::create([
+                Attendance::create([
                     'school_id'       => $session->school_id,
                     'session_id'      => $session->id,
                     'student_id'      => $studentId,
@@ -279,9 +279,8 @@ class AttendanceService
                     'entered_by'      => $teacher->id,
                     'entry_reason'    => 'Tidak hadir saat roll call oleh ' . $teacher->name,
                     'entry_at'        => now(),
+                    'violation_created' => false,
                 ]);
-                // Buat poin pelanggaran alfa
-                $this->createAlfaViolation($att, $session);
             }
 
             AttendanceValidation::create([
@@ -303,14 +302,23 @@ class AttendanceService
     }
 
     // ── 6. AUTO-ALFA SAAT SESI DITUTUP ────────────────────────────────────
+    // Ini dipanggil saat sesi DITUTUP (manual oleh guru atau otomatis sistem).
+    // Pada titik ini, semua yang masih alfa mendapat poin pelanggaran.
 
     public function autoAlfaOnClose(AttendanceSession $session): void
     {
         $enrolledIds = $session->classroom->students()->pluck('users.id');
-        $presentIds  = $session->attendances()->pluck('student_id');
-        $missingIds  = $enrolledIds->diff($presentIds);
 
-        DB::transaction(function () use ($session, $missingIds) {
+        // Ambil semua attendance yang ada di sesi ini
+        $existingAttendances = $session->attendances()->get()->keyBy('student_id');
+
+        // Siswa yang belum ada record sama sekali → buat alfa baru
+        $presentIds = $existingAttendances->pluck('student_id');
+        $missingIds = $enrolledIds->diff($presentIds);
+
+        DB::transaction(function () use ($session, $missingIds, $existingAttendances) {
+
+            // 1. Buat record alfa untuk yang belum ada sama sekali
             foreach ($missingIds as $studentId) {
                 $att = Attendance::create([
                     'school_id'       => $session->school_id,
@@ -322,8 +330,15 @@ class AttendanceService
                     'entry_reason'    => 'Otomatis alfa saat sesi ditutup',
                     'entry_at'        => now(),
                 ]);
-                // Buat poin pelanggaran untuk alfa
                 $this->createAlfaViolation($att, $session);
+            }
+
+            // 2. Buat violation untuk yang SUDAH alfa dari roll call (violation_created = false)
+            //    Ini menangani kasus: siswa di-roll call alfa, tapi sesi baru ditutup sekarang
+            foreach ($existingAttendances as $att) {
+                if ($att->status === 'alfa' && ! $att->violation_created) {
+                    $this->createAlfaViolation($att, $session);
+                }
             }
         });
     }

@@ -343,7 +343,8 @@ class UserManagementController extends Controller
     public function importStore(Request $request)
     {
         $request->validate([
-            'file'       => 'required|file|mimes:xlsx,xls,csv|max:5120',
+            // Terima xlsx, xls, csv. MIME 'text/csv' dan 'text/plain' juga valid untuk CSV
+            'file'       => 'required|file|max:5120',
             'kelas_id'   => 'nullable|exists:classrooms,id',
             'role'       => 'required|in:siswa,guru,wali_kelas,kesiswaan,bendahara,admin',
         ]);
@@ -353,6 +354,11 @@ class UserManagementController extends Controller
         $role      = $request->role;
         $file      = $request->file('file');
         $ext       = strtolower($file->getClientOriginalExtension());
+
+        // Validasi ekstensi manual (lebih reliable dari MIME type)
+        if (! in_array($ext, ['csv', 'xlsx', 'xls'])) {
+            return back()->withErrors(['file' => 'File harus berformat CSV, XLSX, atau XLS. Ekstensi yang diterima: .csv, .xlsx, .xls']);
+        }
 
         // Parse file
         $rows = [];
