@@ -277,8 +277,9 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/pelanggaran', [\App\Http\Controllers\Siswa\ViolationController::class, 'index'])->name('violations');
 
         // Profil siswa
-        Route::get('/profil', [\App\Http\Controllers\Siswa\ProfileController::class, 'edit'])->name('profile.edit');
-        Route::post('/profil', [\App\Http\Controllers\Siswa\ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profil',      [\App\Http\Controllers\Siswa\ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profil/edit', [\App\Http\Controllers\Siswa\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profil',     [\App\Http\Controllers\Siswa\ProfileController::class, 'update'])->name('profile.update');
 
         // Tugas & Nilai — /nilai HARUS di atas /{assignment}
         Route::prefix('tugas')->name('assignments.')->group(function () {

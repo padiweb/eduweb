@@ -7,10 +7,18 @@ use App\Models\StudentDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
+    // Tampilkan halaman profil (view data)
+    public function show()
+    {
+        $user   = auth()->user();
+        $detail = $user->studentDetail;
+        return view('siswa.profile.show', compact('user', 'detail'));
+    }
+
+    // Form edit profil
     public function edit()
     {
         $user   = auth()->user();
@@ -18,74 +26,64 @@ class ProfileController extends Controller
         return view('siswa.profile.edit', compact('user', 'detail'));
     }
 
+    // Proses simpan
     public function update(Request $request)
     {
         $user = auth()->user();
 
-        // Validasi data user
         $request->validate([
             'phone'    => ['nullable', 'string', 'max:20'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        // Validasi detail biodata
         $detailData = $request->validate([
-            'birth_place'      => ['nullable', 'string', 'max:100'],
-            'birth_date'       => ['nullable', 'date', 'before:today'],
-            'gender'           => ['nullable', 'in:L,P'],
-            'religion'         => ['nullable', 'in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu'],
-            'nik'              => ['nullable', 'string', 'max:16', 'regex:/^\d{16}$/'],
-            'no_kk'            => ['nullable', 'string', 'max:16', 'regex:/^\d{16}$/'],
-            'whatsapp'         => ['nullable', 'string', 'max:20'],
-            'father_name'      => ['nullable', 'string', 'max:100'],
-            'mother_name'      => ['nullable', 'string', 'max:100'],
-            'parent_whatsapp'  => ['nullable', 'string', 'max:20'],
-            // Alamat
-            'is_abroad'        => ['nullable', 'boolean'],
-            'country'          => ['nullable', 'string', 'max:100'],
-            'province'         => ['nullable', 'string', 'max:100'],
-            'regency'          => ['nullable', 'string', 'max:100'],
-            'district'         => ['nullable', 'string', 'max:100'],
-            'village'          => ['nullable', 'string', 'max:100'],
-            'street'           => ['nullable', 'string', 'max:255'],
-            // Foto
-            'photo'            => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+            'birth_place'     => ['nullable', 'string', 'max:100'],
+            'birth_date'      => ['nullable', 'date', 'before:today'],
+            'gender'          => ['nullable', 'in:L,P'],
+            'religion'        => ['nullable', 'in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu'],
+            'nik'             => ['nullable', 'string', 'max:16', 'regex:/^\d{16}$/'],
+            'no_kk'           => ['nullable', 'string', 'max:16', 'regex:/^\d{16}$/'],
+            'whatsapp'        => ['nullable', 'string', 'max:20'],
+            'father_name'     => ['nullable', 'string', 'max:100'],
+            'mother_name'     => ['nullable', 'string', 'max:100'],
+            'parent_whatsapp' => ['nullable', 'string', 'max:20'],
+            'is_abroad'       => ['nullable', 'boolean'],
+            'country'         => ['nullable', 'string', 'max:100'],
+            'province'        => ['nullable', 'string', 'max:100'],
+            'regency'         => ['nullable', 'string', 'max:100'],
+            'district'        => ['nullable', 'string', 'max:100'],
+            'village'         => ['nullable', 'string', 'max:100'],
+            'street'          => ['nullable', 'string', 'max:255'],
+            'photo'           => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
         ], [
-            'nik.regex'    => 'NIK harus 16 digit angka.',
-            'no_kk.regex'  => 'Nomor KK harus 16 digit angka.',
+            'nik.regex'         => 'NIK harus 16 digit angka.',
+            'no_kk.regex'       => 'Nomor KK harus 16 digit angka.',
             'birth_date.before' => 'Tanggal lahir tidak valid.',
         ]);
 
-        // Update password jika diisi
         if ($request->filled('password')) {
             $user->update(['password' => Hash::make($request->password)]);
         }
 
-        // Update phone
         if ($request->has('phone')) {
             $user->update(['phone' => $request->phone]);
         }
 
-        // Bangun alamat lengkap untuk kolom address
+        // Bangun alamat lengkap
         $isAbroad = (bool) $request->is_abroad;
+        $detailData['is_abroad'] = $isAbroad;
         if ($isAbroad) {
             $detailData['address'] = implode(', ', array_filter([
-                $request->street,
-                $request->country,
+                $request->street, $request->country,
             ]));
         } else {
             $detailData['address'] = implode(', ', array_filter([
-                $request->street,
-                $request->village,
-                $request->district,
-                $request->regency,
-                $request->province,
-                'Indonesia',
+                $request->street, $request->village,
+                $request->district, $request->regency,
+                $request->province, 'Indonesia',
             ]));
         }
-        $detailData['is_abroad'] = $isAbroad;
 
-        // Handle foto
         if ($request->hasFile('photo')) {
             $old = $user->studentDetail?->photo_path;
             if ($old && Storage::disk('public')->exists($old)) {
@@ -96,12 +94,9 @@ class ProfileController extends Controller
         }
         unset($detailData['photo']);
 
-        // Simpan atau buat detail
-        StudentDetail::updateOrCreate(
-            ['user_id' => $user->id],
-            $detailData
-        );
+        StudentDetail::updateOrCreate(['user_id' => $user->id], $detailData);
 
-        return back()->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('siswa.profile.show')
+            ->with('success', 'Profil berhasil diperbarui.');
     }
 }

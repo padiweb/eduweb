@@ -3,7 +3,14 @@
 <div style="max-width:680px;margin:0 auto">
 
 <div style="margin-bottom:24px">
-    <h1 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 4px">Profil Saya</h1>
+    <a href="{{ route('siswa.profile.show') }}"
+       style="display:inline-flex;align-items:center;gap:5px;font-size:13px;color:#64748b;text-decoration:none;margin-bottom:10px">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+        </svg>
+        Kembali ke Profil
+    </a>
+    <h1 style="font-size:22px;font-weight:800;color:#0f172a;margin:0 0 4px">Edit Profil</h1>
     <p style="font-size:13px;color:#64748b;margin:0">Lengkapi biodata untuk keperluan administrasi sekolah</p>
 </div>
 
@@ -253,7 +260,7 @@
 </div>
 
 <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-bottom:40px">
-    <a href="{{ route('siswa.siswa.dashboard') }}"
+    <a href="{{ route('siswa.profile.show') }}"
        style="padding:10px 20px;background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;font-weight:600;color:#64748b;text-decoration:none">
         Batal
     </a>
