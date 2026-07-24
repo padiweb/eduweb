@@ -52,9 +52,20 @@ class AcademicYearController extends Controller
             AcademicYear::where('school_id', $school->id)->update(['is_active' => false]);
             // Aktifkan yang dipilih
             $academicYear->update(['is_active' => true]);
+
+            // CATATAN LOGIKA SEMESTER BARU:
+            // - Sesi absensi siswa: otomatis dimulai baru (karena dibuat per kelas per academic_year)
+            // - Tugas guru: dibuat baru oleh guru (tidak ada carryover)
+            // - Jurnal guru: dimulai baru
+            // - TAGIHAN: TETAP ada (tunggakan tetap jalan lintas semester)
+            // - PELANGGARAN: TETAP ada sampai siswa lulus (tidak di-reset per semester)
+            // - Sesi absensi guru: tetap berjalan harian (tidak terkait academic_year)
         });
 
-        return back()->with('success', $academicYear->label . ' sekarang aktif.');
+        $msg = $academicYear->label . ' sekarang aktif. ';
+        $msg .= 'Catatan: Tagihan belum lunas tetap aktif, poin pelanggaran tetap berjalan.';
+
+        return back()->with('success', $msg);
     }
 
     public function destroy(AcademicYear $academicYear)

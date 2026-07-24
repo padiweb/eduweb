@@ -109,11 +109,21 @@ class PaymentTypeController extends Controller
     {
         $this->authorize($paymentType);
 
-        if ($paymentType->bills()->count() > 0) {
-            return back()->withErrors(['delete' => 'Jenis pembayaran tidak dapat dihapus karena sudah ada tagihan yang menggunakannya.']);
+        // Hanya blokir jika ada pembayaran yang sudah masuk (transaksi approved)
+        $hasPayments = $paymentType->bills()
+            ->whereHas('transactions', fn($q) => $q->where('status', 'approved'))
+            ->exists();
+
+        if ($hasPayments) {
+            return back()->withErrors(['delete' => 'Jenis pembayaran tidak dapat dihapus karena sudah ada pembayaran yang diterima. Nonaktifkan saja jika tidak ingin dipakai.']);
         }
 
-        // Hapus tarif yang terhubung
+        // Hapus tagihan yang belum ada pembayaran (termasuk tagihan 0 rupiah)
+        $paymentType->bills()
+            ->whereDoesntHave('transactions', fn($q) => $q->where('status', 'approved'))
+            ->delete();
+
+        // Hapus tarif dan jenis pembayaran
         $paymentType->rates()->delete();
         $paymentType->delete();
 

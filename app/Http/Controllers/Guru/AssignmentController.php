@@ -45,9 +45,15 @@ class AssignmentController extends Controller
             'subject_id'   => $s->subject_id,
         ])->unique(fn($s) => $s['classroom_id'].'-'.$s['subject_id'])->values();
 
+        // Filter opsional per mapel / kelas
+        $filterSubjectId   = request('subject_id')   ? (int) request('subject_id')   : null;
+        $filterClassroomId = request('classroom_id') ? (int) request('classroom_id') : null;
+
         $assignments = Assignment::where('teacher_id', $teacher->id)
             ->with(['classroom', 'subject'])
             ->withCount('submissions')
+            ->when($filterSubjectId,   fn($q) => $q->where('subject_id',   $filterSubjectId))
+            ->when($filterClassroomId, fn($q) => $q->where('classroom_id', $filterClassroomId))
             ->orderBy('classroom_id')
             ->orderBy('subject_id')
             ->orderByDesc('created_at')
@@ -55,7 +61,8 @@ class AssignmentController extends Controller
             ->groupBy(fn($a) => $a->classroom_id . '-' . $a->subject_id);
 
         return view('guru.assignments.index', compact(
-            'classrooms', 'subjects', 'assignments', 'scheduleMap'
+            'classrooms', 'subjects', 'assignments', 'scheduleMap',
+            'filterSubjectId', 'filterClassroomId'
         ));
     }
 

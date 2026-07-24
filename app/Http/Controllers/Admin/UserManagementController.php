@@ -470,4 +470,18 @@ class UserManagementController extends Controller
         ]);
     }
 
-}
+
+
+    public function resetPassword(Request $request, User $user)
+    {
+        $school = auth()->user()->school;
+        if ($user->school_id !== $school->id) abort(403);
+
+        $request->validate([
+            'new_password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user->update(['password' => \Illuminate\Support\Facades\Hash::make($request->new_password)]);
+
+        return back()->with('success', "Password {$user->name} berhasil direset.");
+    }}

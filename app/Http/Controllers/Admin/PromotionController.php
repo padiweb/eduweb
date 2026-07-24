@@ -170,12 +170,25 @@ class PromotionController extends Controller
     private function promoteStudent(User $student, ?int $targetClassId, ?string $notes): void
     {
         if ($targetClassId) {
-            // Cek apakah siswa sudah ada di kelas tujuan
-            $alreadyInClass = $student->classrooms()
-                ->where('classrooms.id', $targetClassId)
-                ->exists();
+            $school     = auth()->user()->school;
+            $activeYear = AcademicYear::where('school_id', $school->id)
+                ->where('is_active', true)->first();
 
-            if (! $alreadyInClass) {
+            // Detach dari SEMUA kelas di tahun ajaran aktif
+            // (agar kelas lama kosong setelah naik kelas)
+            if ($activeYear) {
+                $oldClassIds = $student->classrooms()
+                    ->where('academic_year_id', $activeYear->id)
+                    ->pluck('classrooms.id');
+                if ($oldClassIds->isNotEmpty()) {
+                    $student->classrooms()->detach($oldClassIds->toArray());
+                }
+            }
+
+            // Attach ke kelas baru (tujuan promosi)
+            $alreadyInTarget = $student->classrooms()
+                ->where('classrooms.id', $targetClassId)->exists();
+            if (! $alreadyInTarget) {
                 $student->classrooms()->attach($targetClassId);
             }
         }

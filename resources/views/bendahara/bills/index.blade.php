@@ -76,9 +76,14 @@
                         </div>
                         <div class="min-w-28">
                             <p class="text-xs text-gray-500">Sisa</p>
-                            <p class="text-sm font-semibold {{ $remaining > 0 ? 'text-red-600' : 'text-gray-500' }}">
-                                {{ $remaining > 0 ? 'Rp ' . number_format($remaining, 0, ',', '.') : 'Lunas' }}
-                            </p>
+                            @if($summary->total_bills === 0)
+                                <p class="text-sm font-medium text-gray-400">Tidak ada tagihan</p>
+                            @elseif($remaining > 0)
+                                <p class="text-sm font-bold text-red-600">Rp {{ number_format($remaining, 0, ',', '.') }}</p>
+                                <p class="text-xs text-red-500">Belum lunas</p>
+                            @else
+                                <p class="text-sm font-semibold text-green-600">Lunas</p>
+                            @endif
                         </div>
                     </div>
                     @endif

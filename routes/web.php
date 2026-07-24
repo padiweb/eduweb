@@ -93,6 +93,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         // Manajemen User — /positions & /create HARUS di atas /{user}
         Route::get('/users/import', [UserManagementController::class, 'importView'])->name('users.import');
         Route::post('/users/import', [UserManagementController::class, 'importStore'])->name('users.import.store');
+        Route::post('/users/{user}/reset-password', [UserManagementController::class, 'resetPassword'])->name('users.reset-password');
         Route::get('/users/import/template', [UserManagementController::class, 'downloadTemplate'])->name('users.import.template');
         Route::get('/users/positions', [UserManagementController::class, 'positions'])->name('users.positions');
         Route::post('/users/positions', [UserManagementController::class, 'storePosition'])->name('users.positions.store');
@@ -338,6 +339,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::post('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'store'])->name('bills.store');
         Route::post('/bills/check-rate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'checkRate'])->name('bills.check-rate');
         Route::post('/tagihan/recalculate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'recalculate'])->name('bills.recalculate');
+        Route::post('/tagihan/bulk-cancel', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'bulkCancel'])->name('bills.bulk-cancel');
         Route::get('/bills/student/{student}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'studentBills'])->name('bills.student');
         Route::post('/bills/generate-spp', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'generateSpp'])->name('bills.generate-spp');
         Route::get('/tunggakan', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'tunggakan'])->name('bills.tunggakan');

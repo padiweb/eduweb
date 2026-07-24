@@ -9,11 +9,14 @@
         // Data dari App\Http\Controllers\Siswa\ViolationController
 
         $sourceColors = [
-            'manual'             => ['bg-red-50 border-red-200 text-red-600',       'Manual'],
-            'absen_terlambat'    => ['bg-amber-50 border-amber-200 text-amber-600', 'Absen Terlambat'],
-            'absen_alfa'         => ['bg-red-50 border-red-200 text-red-600',       'Alfa'],
-            'tugas_terlambat'    => ['bg-amber-50 border-amber-200 text-amber-600', 'Tugas Terlambat'],
-            'tugas_tidak_kumpul' => ['bg-orange-50 border-orange-200 text-orange-600', 'Tidak Kumpul'],
+            'manual'               => ['bg-red-50 border-red-200 text-red-600',        'Manual'],
+            'absen_terlambat'      => ['bg-amber-50 border-amber-200 text-amber-600',  'Absen Terlambat'],
+            'absen_alfa'           => ['bg-red-50 border-red-200 text-red-600',        'Alfa'],
+            'auto_attendance'      => ['bg-red-50 border-red-200 text-red-700',        'Alfa (Otomatis)'],
+            'tugas_terlambat'      => ['bg-amber-50 border-amber-200 text-amber-600',  'Tugas Terlambat'],
+            'tugas_tidak_kumpul'   => ['bg-orange-50 border-orange-200 text-orange-600','Tidak Kumpul'],
+            'prakerin_no_journal'  => ['bg-violet-50 border-violet-200 text-violet-600','Tidak Isi Jurnal PKL'],
+            'prakerin_no_absen'    => ['bg-rose-50 border-rose-200 text-rose-600',     'Tidak Absen PKL'],
         ];
     @endphp
 
@@ -130,7 +133,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
             @php
                 $terlambat = $violations->where('source', 'absen_terlambat')->sum('points');
-                $alfa      = $violations->where('source', 'absen_alfa')->sum('points');
+                $alfa      = $violations->whereIn('source', ['absen_alfa', 'auto_attendance'])->sum('points');
                 $tugas     = $violations->whereIn('source', ['tugas_terlambat','tugas_tidak_kumpul'])->sum('points');
                 $manual    = $violations->where('source', 'manual')->sum('points');
             @endphp

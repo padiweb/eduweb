@@ -34,6 +34,40 @@
         </div>
     @endif
 
+    {{-- Filter mapel --}}
+    <form method="GET" action="{{ route('guru.assignments.index') }}"
+          style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:18px;padding:14px 18px;background:#fff;border:1px solid #e2e8f0;border-radius:12px">
+        <select name="subject_id" onchange="this.form.submit()"
+                style="border:1.5px solid #e2e8f0;border-radius:9px;padding:7px 12px;font-size:13px;color:#334155;outline:none;background:#fff;min-width:200px">
+            <option value="">Semua Mata Pelajaran</option>
+            @foreach($subjects as $subj)
+                <option value="{{ $subj->id }}" {{ $filterSubjectId == $subj->id ? 'selected' : '' }}>
+                    {{ $subj->name }}
+                </option>
+            @endforeach
+        </select>
+        <select name="classroom_id" onchange="this.form.submit()"
+                style="border:1.5px solid #e2e8f0;border-radius:9px;padding:7px 12px;font-size:13px;color:#334155;outline:none;background:#fff;min-width:160px">
+            <option value="">Semua Kelas</option>
+            @foreach($classrooms as $cls)
+                <option value="{{ $cls->id }}" {{ $filterClassroomId == $cls->id ? 'selected' : '' }}>
+                    {{ $cls->name }}
+                </option>
+            @endforeach
+        </select>
+        @if($filterSubjectId || $filterClassroomId)
+            <a href="{{ route('guru.assignments.index') }}"
+               style="font-size:12px;color:#64748b;text-decoration:none;padding:7px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px">
+                Reset Filter
+            </a>
+        @endif
+        @if($filterSubjectId || $filterClassroomId)
+            <span style="font-size:12px;color:#64748b;margin-left:auto">
+                {{ $assignments->sum('count') }} tugas ditampilkan
+            </span>
+        @endif
+    </form>
+
     @if($assignments->isEmpty())
         <div class="bg-white border border-gray-200 rounded-xl p-12 text-center">
             <svg class="w-12 h-12 text-blue-600 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">

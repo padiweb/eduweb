@@ -166,7 +166,6 @@ class StudentAssignmentController extends Controller
         )->orderBy('name')->get();
 
         $subjectScores = $subjects->map(function ($subject) use ($student, $classroom) {
-            // Ambil semua tugas — baik yang sudah ditutup maupun yang masih aktif
             $assignments = Assignment::where('classroom_id', $classroom->id)
                 ->where('subject_id', $subject->id)
                 ->with(['submissions' => fn($q) => $q->where('student_id', $student->id)])
@@ -175,16 +174,28 @@ class StudentAssignmentController extends Controller
 
             $gradedCount = 0;
             $totalScore  = 0;
+            $scores      = []; // semua nilai berurutan untuk trend
 
             foreach ($assignments as $a) {
                 $sub = $a->submissions->first();
                 if ($sub && $sub->score !== null) {
                     $totalScore += $sub->score;
                     $gradedCount++;
+                    $scores[] = (float) $sub->score;
                 }
             }
 
+            // Trend: bandingkan nilai terakhir dengan sebelumnya
+            $trend = 'same'; // 'up', 'down', 'same'
+            if (count($scores) >= 2) {
+                $last   = end($scores);
+                $prev   = $scores[count($scores) - 2];
+                if ($last > $prev)      $trend = 'up';
+                elseif ($last < $prev)  $trend = 'down';
+            }
+
             return [
+                'trend'  => $trend,
                 'subject'      => $subject,
                 'assignments'  => $assignments,
                 'average'      => $gradedCount > 0 ? round($totalScore / $gradedCount, 1) : null,

@@ -123,28 +123,62 @@
 
         {{-- Dalam negeri --}}
         <div id="addr-domestic" style="{{ $detail->is_abroad ? 'display:none' : '' }}">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px" class="form-grid">
-                <div>
-                    <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Provinsi</label>
-                    <input type="text" name="province" id="province-input"
-                           value="{{ $detail->province }}" placeholder="Cari provinsi..."
-                           autocomplete="off"
-                           style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
+            {{-- Dropdown wilayah via API (id="addr-api") --}}
+            <div id="addr-api">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px" class="form-grid">
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Provinsi</label>
+                        <select id="select-province" name="province" disabled
+                                style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none;background:#fff">
+                            <option value="">Memuat data provinsi...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kabupaten / Kota</label>
+                        <select id="select-regency" name="regency" disabled
+                                style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none;background:#fff">
+                            <option value="">Pilih Provinsi dahulu</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kecamatan</label>
+                        <select id="select-district" name="district" disabled
+                                style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none;background:#fff">
+                            <option value="">Pilih Kab/Kota dahulu</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kelurahan / Desa</label>
+                        <select id="select-village" name="village" disabled
+                                style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none;background:#fff">
+                            <option value="">Pilih Kecamatan dahulu</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kabupaten / Kota</label>
-                    <input type="text" name="regency" value="{{ $detail->regency }}" placeholder="Kab/Kota..."
-                           style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
-                </div>
-                <div>
-                    <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kecamatan</label>
-                    <input type="text" name="district" value="{{ $detail->district }}" placeholder="Kecamatan..."
-                           style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
-                </div>
-                <div>
-                    <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kelurahan / Desa</label>
-                    <input type="text" name="village" value="{{ $detail->village }}" placeholder="Kelurahan/Desa..."
-                           style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
+            </div>
+            {{-- Fallback input teks (jika API tidak tersedia) --}}
+            <div id="addr-fallback" style="display:none">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px" class="form-grid">
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Provinsi</label>
+                        <input type="text" name="province" value="{{ $detail->province }}" placeholder="Nama provinsi..."
+                               style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kabupaten / Kota</label>
+                        <input type="text" name="regency" value="{{ $detail->regency }}" placeholder="Kab/Kota..."
+                               style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kecamatan</label>
+                        <input type="text" name="district" value="{{ $detail->district }}" placeholder="Kecamatan..."
+                               style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:11.5px;font-weight:600;color:#475569;margin-bottom:5px">Kelurahan / Desa</label>
+                        <input type="text" name="village" value="{{ $detail->village }}" placeholder="Kelurahan/Desa..."
+                               style="width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 12px;font-size:13px;color:#334155;outline:none">
+                    </div>
                 </div>
             </div>
             <div>
@@ -260,28 +294,130 @@ function toggleAbroad(cb) {
     }
 }
 
-// Autocomplete provinsi Indonesia
-var provinsiList = [
-    'Aceh','Bali','Banten','Bengkulu','DI Yogyakarta','DKI Jakarta',
-    'Gorontalo','Jambi','Jawa Barat','Jawa Tengah','Jawa Timur','Kalimantan Barat',
-    'Kalimantan Selatan','Kalimantan Tengah','Kalimantan Timur','Kalimantan Utara',
-    'Kepulauan Bangka Belitung','Kepulauan Riau','Lampung','Maluku','Maluku Utara',
-    'Nusa Tenggara Barat','Nusa Tenggara Timur','Papua','Papua Barat','Papua Selatan',
-    'Papua Tengah','Papua Pegunungan','Riau','Sulawesi Barat','Sulawesi Selatan',
-    'Sulawesi Tengah','Sulawesi Tenggara','Sulawesi Utara','Sumatera Barat',
-    'Sumatera Selatan','Sumatera Utara'
-];
+// ── WILAYAH INDONESIA - via emsifa API ──────────────────────────────────
+// API: https://emsifa.github.io/api-wilayah-indonesia/api/
+// Fallback ke input teks biasa jika offline
 
-var provinsiInput = document.getElementById('province-input');
-var datalist = document.createElement('datalist');
-datalist.id = 'provinsi-list';
-provinsiList.forEach(function(p) {
-    var opt = document.createElement('option');
-    opt.value = p;
-    datalist.appendChild(opt);
+var API_BASE = 'https://emsifa.github.io/api-wilayah-indonesia/api';
+
+var provSelect   = document.getElementById('select-province');
+var regSelect    = document.getElementById('select-regency');
+var distSelect   = document.getElementById('select-district');
+var villSelect   = document.getElementById('select-village');
+
+function makeOption(val, text, selected) {
+    var o = document.createElement('option');
+    o.value = text; // simpan nama, bukan ID
+    o.dataset.id = val;
+    o.textContent = text;
+    if (selected) o.selected = true;
+    return o;
+}
+
+function resetSelect(el, placeholder) {
+    el.innerHTML = '';
+    el.appendChild(makeOption('', placeholder));
+    el.disabled = true;
+}
+
+// Load provinsi
+fetch(API_BASE + '/provinces.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        var savedProvince = '{{ $detail->province }}';
+        provSelect.disabled = false;
+        data.forEach(function(p) {
+            provSelect.appendChild(makeOption(p.id, p.name, p.name === savedProvince));
+        });
+        // Trigger load kabupaten jika provinsi sudah ada
+        if (savedProvince) {
+            var selectedOpt = provSelect.querySelector('option[value="' + savedProvince + '"]');
+            if (selectedOpt) loadRegency(selectedOpt.dataset.id);
+        }
+    })
+    .catch(function() {
+        // Jika API gagal, tampilkan input teks
+        showFallback();
+    });
+
+function loadRegency(provinceId) {
+    resetSelect(regSelect, 'Memuat...');
+    resetSelect(distSelect, 'Pilih Kecamatan');
+    resetSelect(villSelect, 'Pilih Kelurahan/Desa');
+    var savedRegency = '{{ $detail->regency }}';
+    fetch(API_BASE + '/regencies/' + provinceId + '.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            regSelect.disabled = false;
+            regSelect.innerHTML = '';
+            regSelect.appendChild(makeOption('', 'Pilih Kab/Kota'));
+            data.forEach(function(r) {
+                regSelect.appendChild(makeOption(r.id, r.name, r.name === savedRegency));
+            });
+            if (savedRegency) {
+                var opt = regSelect.querySelector('option[value="' + savedRegency + '"]');
+                if (opt) loadDistrict(opt.dataset.id);
+            }
+        });
+}
+
+function loadDistrict(regencyId) {
+    resetSelect(distSelect, 'Memuat...');
+    resetSelect(villSelect, 'Pilih Kelurahan/Desa');
+    var savedDistrict = '{{ $detail->district }}';
+    fetch(API_BASE + '/districts/' + regencyId + '.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            distSelect.disabled = false;
+            distSelect.innerHTML = '';
+            distSelect.appendChild(makeOption('', 'Pilih Kecamatan'));
+            data.forEach(function(d) {
+                distSelect.appendChild(makeOption(d.id, d.name, d.name === savedDistrict));
+            });
+            if (savedDistrict) {
+                var opt = distSelect.querySelector('option[value="' + savedDistrict + '"]');
+                if (opt) loadVillage(opt.dataset.id);
+            }
+        });
+}
+
+function loadVillage(districtId) {
+    resetSelect(villSelect, 'Memuat...');
+    var savedVillage = '{{ $detail->village }}';
+    fetch(API_BASE + '/villages/' + districtId + '.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            villSelect.disabled = false;
+            villSelect.innerHTML = '';
+            villSelect.appendChild(makeOption('', 'Pilih Kelurahan/Desa'));
+            data.forEach(function(v) {
+                villSelect.appendChild(makeOption(v.id, v.name, v.name === savedVillage));
+            });
+        });
+}
+
+// Event listeners
+provSelect.addEventListener('change', function() {
+    var opt = this.options[this.selectedIndex];
+    if (opt.dataset.id) loadRegency(opt.dataset.id);
+    else { resetSelect(regSelect,'Pilih Kab/Kota'); resetSelect(distSelect,'Pilih Kecamatan'); resetSelect(villSelect,'Pilih Kelurahan/Desa'); }
 });
-document.body.appendChild(datalist);
-if (provinsiInput) provinsiInput.setAttribute('list', 'provinsi-list');
+regSelect.addEventListener('change', function() {
+    var opt = this.options[this.selectedIndex];
+    if (opt.dataset.id) loadDistrict(opt.dataset.id);
+    else { resetSelect(distSelect,'Pilih Kecamatan'); resetSelect(villSelect,'Pilih Kelurahan/Desa'); }
+});
+distSelect.addEventListener('change', function() {
+    var opt = this.options[this.selectedIndex];
+    if (opt.dataset.id) loadVillage(opt.dataset.id);
+    else resetSelect(villSelect,'Pilih Kelurahan/Desa');
+});
+
+function showFallback() {
+    // API tidak tersedia - tampilkan input teks
+    document.getElementById('addr-api').style.display = 'none';
+    document.getElementById('addr-fallback').style.display = 'block';
+}
 </script>
 
 </x-simans-layout>

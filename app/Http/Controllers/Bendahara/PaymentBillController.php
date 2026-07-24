@@ -661,8 +661,44 @@ class PaymentBillController extends Controller
     // ── Tambahan ──────────────────────────────────────────────────────────────
 
     /**
+     * Batalkan semua tagihan untuk satu jenis pembayaran + tahun ajaran
+     * (bulk cancel — hanya yang belum ada pembayaran)
+     */
+    public function bulkCancel(Request $request)
+    {
+        $data = $request->validate([
+            'payment_type_id'  => 'required|exists:payment_types,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'period_label'     => 'nullable|string|max:50',
+        ]);
+
+        $school = $this->school();
+        $type   = PaymentType::findOrFail($data['payment_type_id']);
+        if ($type->school_id !== $school->id) abort(403);
+
+        $query = PaymentBill::where('school_id', $school->id)
+            ->where('payment_type_id', $data['payment_type_id'])
+            ->where('academic_year_id', $data['academic_year_id'])
+            ->whereDoesntHave('transactions', fn($q) => $q->where('status', 'approved'));
+
+        if (! empty($data['period_label'])) {
+            $query->where('period_label', $data['period_label']);
+        }
+
+        $bills  = $query->get();
+        $count  = $bills->count();
+
+        foreach ($bills as $bill) {
+            $bill->installments()->delete();
+            $bill->transactions()->where('status', 'pending')->delete();
+            $bill->delete();
+        }
+
+        return back()->with('success', "Berhasil membatalkan {$count} tagihan yang belum ada pembayaran.");
+    }
+
+    /**
      * Recalculate tagihan yang amount_base = 0 karena tarif belum ada saat tagihan dibuat.
-     * Dipanggil dari form di halaman payment types.
      */
     public function recalculate(Request $request)
     {
