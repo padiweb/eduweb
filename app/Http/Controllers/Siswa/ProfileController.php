@@ -91,7 +91,7 @@ class ProfileController extends Controller
 
         StudentDetail::updateOrCreate(['user_id' => $user->id], $detailData);
 
-        return redirect()->route('siswa.profile.show')
+        return redirect()->to(url('/siswa/profil'))
             ->with('success', 'Profil berhasil diperbarui.');
     }
 }
