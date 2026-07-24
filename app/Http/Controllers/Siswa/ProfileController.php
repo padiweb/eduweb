@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    // Tampilkan halaman profil (view data)
     public function show()
     {
         $user   = auth()->user();
@@ -18,7 +17,6 @@ class ProfileController extends Controller
         return view('siswa.profile.show', compact('user', 'detail'));
     }
 
-    // Form edit profil
     public function edit()
     {
         $user   = auth()->user();
@@ -26,7 +24,6 @@ class ProfileController extends Controller
         return view('siswa.profile.edit', compact('user', 'detail'));
     }
 
-    // Proses simpan
     public function update(Request $request)
     {
         $user = auth()->user();
@@ -64,12 +61,10 @@ class ProfileController extends Controller
         if ($request->filled('password')) {
             $user->update(['password' => Hash::make($request->password)]);
         }
-
         if ($request->has('phone')) {
             $user->update(['phone' => $request->phone]);
         }
 
-        // Bangun alamat lengkap
         $isAbroad = (bool) $request->is_abroad;
         $detailData['is_abroad'] = $isAbroad;
         if ($isAbroad) {
