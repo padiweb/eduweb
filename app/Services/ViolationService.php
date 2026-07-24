@@ -42,11 +42,17 @@ class ViolationService
 
             if ($exists) return null;
 
+            // Cari reported_by yang valid — admin pertama sekolah, atau user 1 sebagai last resort
+            $reportedBy = \App\Models\User::where('school_id', $attendance->school_id)
+                ->whereIn('role', ['admin', 'kesiswaan'])
+                ->where('is_active', true)
+                ->value('id') ?? 1;
+
             $violation = Violation::create([
                 'school_id'     => $attendance->school_id,
                 'student_id'    => $attendance->student_id,
                 'category_id'   => $category->id,
-                'reported_by'   => 1, // sistem
+                'reported_by'   => $reportedBy,
                 'attendance_id' => $attendance->id,
                 'incident_date' => today(),
                 'description'   => $this->getAutoDescription($source, $attendance),
@@ -227,11 +233,16 @@ class ViolationService
                 default                => "Pelanggaran prakerin: {$source}",
             };
 
+            $reportedBy = \App\Models\User::where('school_id', $school->id)
+                ->whereIn('role', ['admin', 'kesiswaan'])
+                ->where('is_active', true)
+                ->value('id') ?? 1;
+
             return Violation::create([
                 'school_id'     => $school->id,
                 'student_id'    => $placement->student_id,
                 'category_id'   => $category->id,
-                'reported_by'   => 1,
+                'reported_by'   => $reportedBy,
                 'incident_date' => $date,
                 'description'   => $desc,
                 'points'        => $points,

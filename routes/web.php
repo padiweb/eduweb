@@ -44,6 +44,14 @@ Route::post('/absensi-guru/confirm', [TeacherAttendanceController::class, 'confi
      ->middleware('auth')
      ->name('teacher.attendance.confirm');
 
+// Wilayah Indonesia — publik, tidak perlu login
+Route::prefix('api/wilayah')->name('wilayah.')->group(function () {
+    Route::get('/provinces',              [\App\Http\Controllers\WilayahController::class, 'getProvinces'])->name('provinces');
+    Route::get('/regencies/{provinceId}', [\App\Http\Controllers\WilayahController::class, 'getRegencies'])->name('regencies');
+    Route::get('/districts/{regencyId}',  [\App\Http\Controllers\WilayahController::class, 'getDistricts'])->name('districts');
+    Route::get('/villages/{districtId}',  [\App\Http\Controllers\WilayahController::class, 'getVillages'])->name('villages');
+});
+
 Route::middleware(['auth', 'school.active'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
