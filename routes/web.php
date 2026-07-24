@@ -162,7 +162,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     // ─────────────────────────────────────────────────────────────────────────
     // GURU / WALI KELAS / KESISWAAN / ADMIN
     // ─────────────────────────────────────────────────────────────────────────
-    Route::middleware('role:guru,wali_kelas,kesiswaan,admin')->prefix('guru')->name('guru.')->group(function () {
+    Route::middleware('role:guru,wali_kelas,kesiswaan,admin,kepala_sekolah')->prefix('guru')->name('guru.')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'guru'])->name('dashboard');
 
@@ -237,7 +237,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     // ─────────────────────────────────────────────────────────────────────────
     // KESISWAAN
     // ─────────────────────────────────────────────────────────────────────────
-    Route::middleware('role:kesiswaan,admin')->prefix('kesiswaan')->name('kesiswaan.')->group(function () {
+    Route::middleware('role:kesiswaan,admin,kepala_sekolah')->prefix('kesiswaan')->name('kesiswaan.')->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'kesiswaan'])->name('dashboard');
 
@@ -266,6 +266,10 @@ Route::middleware(['auth', 'school.active'])->group(function () {
 
         // Pelanggaran
         Route::get('/pelanggaran', [\App\Http\Controllers\Siswa\ViolationController::class, 'index'])->name('violations');
+
+        // Profil siswa
+        Route::get('/profil', [\App\Http\Controllers\Siswa\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profil', [\App\Http\Controllers\Siswa\ProfileController::class, 'update'])->name('profile.update');
 
         // Tugas & Nilai — /nilai HARUS di atas /{assignment}
         Route::prefix('tugas')->name('assignments.')->group(function () {
@@ -333,6 +337,7 @@ Route::middleware(['auth', 'school.active'])->group(function () {
         Route::get('/bills/create', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'create'])->name('bills.create');
         Route::post('/bills', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'store'])->name('bills.store');
         Route::post('/bills/check-rate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'checkRate'])->name('bills.check-rate');
+        Route::post('/tagihan/recalculate', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'recalculate'])->name('bills.recalculate');
         Route::get('/bills/student/{student}', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'studentBills'])->name('bills.student');
         Route::post('/bills/generate-spp', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'generateSpp'])->name('bills.generate-spp');
         Route::get('/tunggakan', [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'tunggakan'])->name('bills.tunggakan');
@@ -402,6 +407,13 @@ Route::middleware(['auth', 'school.active'])->group(function () {
     // ─────────────────────────────────────────────────────────────────────────
     Route::middleware('role:kepala_sekolah')->prefix('kepala')->name('kepala.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'kepala'])->name('dashboard');
+
+        // Monitoring — kepala sekolah bisa lihat data tanpa bisa ubah
+        Route::get('/absensi/guru',   [\App\Http\Controllers\Admin\TeacherAttendanceAdminController::class, 'index'])->name('absensi.guru');
+        Route::get('/absensi/siswa',  [\App\Http\Controllers\Attendance\AttendanceController::class, 'index'])->name('absensi.siswa');
+        Route::get('/keuangan',       [\App\Http\Controllers\Bendahara\FinanceDashboardController::class, 'index'])->name('keuangan');
+        Route::get('/tagihan',        [\App\Http\Controllers\Bendahara\PaymentBillController::class, 'tunggakan'])->name('tagihan');
+        Route::get('/pelanggaran',    [\App\Http\Controllers\Kesiswaan\ViolationController::class, 'index'])->name('pelanggaran');
     });
 
 });

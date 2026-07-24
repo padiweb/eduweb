@@ -10,6 +10,8 @@ class StudentDetail extends Model
 {
     protected $fillable = [
         'user_id', 'birth_place', 'birth_date', 'address',
+        'province', 'regency', 'district', 'village', 'street',
+        'is_abroad', 'country',
         'gender', 'religion', 'nik', 'no_kk', 'whatsapp',
         'father_name', 'mother_name', 'parent_whatsapp', 'photo_path',
     ];

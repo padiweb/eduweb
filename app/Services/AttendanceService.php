@@ -394,20 +394,46 @@ class AttendanceService
     private function createAlfaViolation(Attendance $attendance, AttendanceSession $session): void
     {
         try {
+            // Jangan buat violation duplikat
+            if ($attendance->violation_created) return;
+
+            // Pastikan belum ada violation untuk attendance ini
+            if (\App\Models\Violation::where('attendance_id', $attendance->id)->exists()) {
+                $attendance->update(['violation_created' => true]);
+                return;
+            }
+
             $category = ViolationCategory::firstOrCreate(
                 ['school_id' => $session->school_id, 'name' => 'Tidak Hadir Tanpa Keterangan (Alfa)'],
                 ['severity' => 'sedang', 'default_points' => 3]
             );
 
+            // Cari reported_by yang valid:
+            // 1. Guru yang membuka sesi
+            // 2. User yang sedang login
+            // 3. Admin pertama sekolah (fallback untuk scheduler)
+            $reportedBy = $session->opened_by
+                ?? auth()->id()
+                ?? \App\Models\User::where('school_id', $session->school_id)
+                    ->where('role', 'admin')
+                    ->where('is_active', true)
+                    ->value('id');
+
+            if (! $reportedBy) {
+                Log::warning("createAlfaViolation: tidak ada reported_by untuk school_id={$session->school_id}");
+                return;
+            }
+
             Violation::create([
                 'school_id'     => $session->school_id,
                 'student_id'    => $attendance->student_id,
                 'category_id'   => $category->id,
-                'reported_by'   => $session->opened_by ?? auth()->id() ?? 1,
+                'reported_by'   => $reportedBy,
                 'attendance_id' => $attendance->id,
                 'incident_date' => $session->session_date,
-                'description'   => 'Tidak hadir (alfa) pada ' . $session->session_date->translatedFormat('l, d F Y') .
-                                   ' — ' . $session->classroom->name,
+                'description'   => 'Tidak hadir (alfa) pada '
+                    . $session->session_date->translatedFormat('l, d F Y')
+                    . ' — ' . $session->classroom->name,
                 'points'        => $category->default_points,
                 'source'        => 'auto_attendance',
             ]);
@@ -415,7 +441,8 @@ class AttendanceService
             $attendance->update(['violation_created' => true]);
 
         } catch (\Throwable $e) {
-            Log::warning('Gagal buat pelanggaran alfa: ' . $e->getMessage());
+            Log::error('Gagal buat pelanggaran alfa student_id='
+                . $attendance->student_id . ': ' . $e->getMessage());
         }
     }
 

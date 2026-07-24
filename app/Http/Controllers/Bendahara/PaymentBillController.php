@@ -112,10 +112,9 @@ class PaymentBillController extends Controller
 
             if ($exists) { $skipped++; continue; }
 
-            // Resolusi tarif
-            $resolved   = $this->resolveBaseAmount($type->id, $year->id, $student, $school->id);
-            $baseAmount = $resolved['amount'];
-            $rate       = $resolved['rate'];
+            // Resolusi tarif — pakai resolveRate (tarif per kelas/jurusan/umum)
+            $rate        = $this->resolveRate($type->id, $year->id, $student, $school->id);
+            $baseAmount  = $rate ? $rate->amount : 0;
 
             $discount    = $this->resolveDiscount($student->id, $type->id, $year->id, $data['period_date']);
             $discountAmt = $this->calcDiscount($baseAmount, $discount);
@@ -660,6 +659,63 @@ class PaymentBillController extends Controller
     }
 
     // ── Tambahan ──────────────────────────────────────────────────────────────
+
+    /**
+     * Recalculate tagihan yang amount_base = 0 karena tarif belum ada saat tagihan dibuat.
+     * Dipanggil dari form di halaman payment types.
+     */
+    public function recalculate(Request $request)
+    {
+        $data = $request->validate([
+            'payment_type_id'  => 'required|exists:payment_types,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+        ]);
+
+        $school = $this->school();
+        $type   = PaymentType::findOrFail($data['payment_type_id']);
+        if ($type->school_id !== $school->id) abort(403);
+
+        // Ambil tagihan yang amount_base = 0 untuk jenis dan tahun ini
+        $bills = PaymentBill::where('school_id', $school->id)
+            ->where('payment_type_id', $data['payment_type_id'])
+            ->where('academic_year_id', $data['academic_year_id'])
+            ->where('amount_base', 0)
+            ->where('amount_paid', 0) // hanya yang belum ada pembayaran
+            ->with('student')
+            ->get();
+
+        if ($bills->isEmpty()) {
+            return back()->with('info', 'Tidak ada tagihan dengan nominal 0 untuk jenis pembayaran ini.');
+        }
+
+        $updated = 0;
+        foreach ($bills as $bill) {
+            $rate = $this->resolveRate($type->id, $data['academic_year_id'], $bill->student, $school->id);
+            if (! $rate || $rate->amount === 0) continue;
+
+            $baseAmount  = $rate->amount;
+            $discount    = $this->resolveDiscount(
+                $bill->user_id, $type->id,
+                $data['academic_year_id'],
+                $bill->period_date->format('Y-m-d')
+            );
+            $discountAmt = $this->calcDiscount($baseAmount, $discount);
+            $billed      = max(0, $baseAmount - $discountAmt);
+
+            $bill->update([
+                'payment_rate_id' => $rate->id,
+                'amount_base'     => $baseAmount,
+                'amount_discount' => $discountAmt,
+                'amount_billed'   => $billed,
+                'amount_remaining'=> $billed,
+                'status'          => $billed > 0 ? 'unpaid' : 'paid',
+            ]);
+            $updated++;
+        }
+
+        return back()->with('success',
+            "Berhasil memperbarui {$updated} tagihan dari {$bills->count()} tagihan bernominal 0.");
+    }
 
     public function checkRate(Request $request)
     {

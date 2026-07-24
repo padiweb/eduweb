@@ -151,6 +151,21 @@ class PrakerinController extends Controller
             $within   = $distance <= ($loc->radius_meters ?? 300);
         }
 
+        // CEK GEOFENCE DULU sebelum simpan apapun
+        if (! $within && $loc->latitude && $loc->longitude) {
+            return response()->json([
+                'success' => false,
+                'message' => sprintf(
+                    'Absensi ditolak. Anda berada %.0fm dari %s (radius izin: %dm). '
+                    . 'Pindah ke dalam area %s dan coba lagi.',
+                    round($distance),
+                    $loc->name,
+                    $loc->radius_meters ?? 300,
+                    $loc->name
+                ),
+            ], 422);
+        }
+
         // Cek terlambat
         $status      = 'hadir';
         $checkinTime = $loc->checkin_time;
@@ -160,7 +175,7 @@ class PrakerinController extends Controller
             if ($nowTime > $lateAfter) $status = 'terlambat';
         }
 
-        // Simpan selfie
+        // Simpan selfie — hanya setelah lulus geofence
         $selfieData  = preg_replace('/^data:image\/\w+;base64,/', '', $request->selfie);
         $selfiePath  = 'prakerin/selfie/' . date('Y/m') . '/' . $user->id . '_' . $type . '_' . time() . '.jpg';
         Storage::disk('public')->put($selfiePath, base64_decode($selfieData));
@@ -177,19 +192,16 @@ class PrakerinController extends Controller
             'longitude'             => $lng,
             'gps_accuracy'          => $request->accuracy,
             'distance_from_location'=> $distance,
-            'is_within_geofence'    => $within,
+            'is_within_geofence'    => true, // sudah pasti dalam radius di sini
             'ip_address'            => $request->ip(),
             'user_agent'            => $request->userAgent(),
         ]);
 
         $label = $type === 'check_in' ? 'Absen masuk' : 'Absen pulang';
+
         if ($status === 'terlambat') {
             return response()->json(['success' => true, 'warning' => true,
                 'message' => "{$label} berhasil, tercatat terlambat."]);
-        }
-        if (! $within && $loc->latitude) {
-            return response()->json(['success' => true, 'warning' => true,
-                'message' => "{$label} berhasil, namun lokasi Anda " . round($distance) . "m dari {$loc->name} (di luar radius {$loc->radius_meters}m)."]);
         }
         return response()->json(['success' => true, 'message' => "{$label} berhasil dicatat."]);
     }
